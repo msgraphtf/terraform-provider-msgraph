@@ -9,7 +9,7 @@ import (
 
 func main() {
 	providerserver.Serve(context.Background(), msgraph.New, providerserver.ServeOpts{
-		Address: "regsistry.terraform.io/hsheppard/msgraph",
+		Address: "regsistry.terraform.io/99-lives/msgraph",
 	})
 
 }

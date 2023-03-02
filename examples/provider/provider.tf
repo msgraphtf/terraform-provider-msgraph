@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     msgraph = {
-      source = "hsheppard/msgraph"
+      source = "99-lives/msgraph"
     }
   }
 }
