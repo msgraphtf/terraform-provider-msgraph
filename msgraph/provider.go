@@ -103,9 +103,9 @@ func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.D
 
 // Resources satisfies the provider.Provider interface for msGraphProvider.
 func (p *msGraphProvider) Resources(ctx context.Context) []func() resource.Resource {
-	//return []func() resource.Resource{
-	//	// Provider specific implementation
-	//}
-	return nil
+	return []func() resource.Resource{
+		// Provider specific implementation
+		NewUserResource,
+	}
 }
 
