@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 // Ensure the implementation satisfies the provider.Provider interface.
@@ -49,6 +50,9 @@ type msgraphProviderModel struct {
 // Configure satisfies the provider.Provider interface for msGraphProvider.
 func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	// Provider specific implementation.
+
+	tflog.Info(ctx, "Configuring MS Graph client")
+
 	var config msgraphProviderModel
 	diags := req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -68,6 +72,7 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 		fmt.Printf("Error")
 		return
 	}
+	tflog.Info(ctx, "Creating MS Graph client")
 
 	client, err := msgraphsdk.NewGraphServiceClientWithCredentials(cred, []string{"https://graph.microsoft.com/.default"})
 	if err != nil {
@@ -84,6 +89,8 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 
 	resp.DataSourceData = client
 	resp.ResourceData = client
+
+	tflog.Info(ctx, "Configured MS Graph client", map[string]any{"success": true})
 }
 
 // DataSources satisfies the provider.Provider interface for msGraphProvider.

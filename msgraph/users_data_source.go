@@ -2,7 +2,6 @@ package msgraph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -71,7 +70,6 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		userState := usersModel{
 			DisplayName: types.StringValue(*user.GetDisplayName()),
 		}
-		fmt.Printf("%s\n", *user.GetDisplayName())
 
 		state.Users = append(state.Users, userState)
 
