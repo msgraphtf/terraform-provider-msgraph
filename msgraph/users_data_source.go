@@ -48,6 +48,23 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 	}
 }
 
+// Configure adds the provider configured client to the data source.
+func (d *usersDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	d.client = req.ProviderData.(*msgraphsdk.GraphServiceClient)
+}
+
+type usersDataSourceModel struct {
+	Users []usersModel `tfsdk:"users"`
+}
+
+type usersModel struct {
+	DisplayName types.String `tfsdk:"display_name"`
+}
+
 // Read refreshes the Terraform state with the latest data.
 func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var state usersDataSourceModel
@@ -83,21 +100,4 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-}
-
-// Configure adds the provider configured client to the data source.
-func (d *usersDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
-	if req.ProviderData == nil {
-		return
-	}
-
-	d.client = req.ProviderData.(*msgraphsdk.GraphServiceClient)
-}
-
-type usersDataSourceModel struct {
-	Users []usersModel `tfsdk:"users"`
-}
-
-type usersModel struct {
-	DisplayName types.String `tfsdk:"display_name"`
 }
