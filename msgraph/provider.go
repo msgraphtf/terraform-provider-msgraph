@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"terraform-provider-msgraph/msgraph/users"
+
 	azidentity "github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 
@@ -97,7 +99,7 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		// Provider specific implementation
-		NewUsersDataSource,
+		users.NewUsersDataSource,
 	}
 }
 
@@ -105,7 +107,7 @@ func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.D
 func (p *msGraphProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		// Provider specific implementation
-		NewUserResource,
+		users.NewUserResource,
 	}
 }
 
