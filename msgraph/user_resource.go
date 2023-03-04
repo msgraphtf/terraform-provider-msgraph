@@ -199,10 +199,10 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	// Retrieve values from plan
 	var plan userResourceModel
 	diags := req.Plan.Get(ctx, &plan)
-    resp.Diagnostics.Append(diags...)
-    if resp.Diagnostics.HasError() {
-        return
-    }
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	// Get current state
 	var state userResourceModel
@@ -243,12 +243,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	// Update resource state with Computed values
-
 	diags = resp.State.Set(ctx, plan)
-    resp.Diagnostics.Append(diags...)
-    if resp.Diagnostics.HasError() {
-        return
-    }
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 }
 
@@ -256,11 +255,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// Retrieve values from state
 	var state userResourceModel
-    diags := req.State.Get(ctx, &state)
-    resp.Diagnostics.Append(diags...)
-    if resp.Diagnostics.HasError() {
-        return
-    }
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	// Delete user
 	err := r.client.UsersById(state.Id.ValueString()).Delete(context.Background(), nil)
@@ -270,8 +269,6 @@ func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 			printOdataError(err),
 		)
 	}
-
-
 }
 
 func printOdataError(err error) string {
