@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -18,8 +19,9 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ resource.Resource              = &userResource{}
-	_ resource.ResourceWithConfigure = &userResource{}
+	_ resource.Resource                = &userResource{}
+	_ resource.ResourceWithConfigure   = &userResource{}
+	_ resource.ResourceWithImportState = &userResource{}
 )
 
 // NewUserResource is a helper function to simplify the provider implementation.
@@ -60,7 +62,7 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Required: true,
 					},
 					"password": schema.StringAttribute{
-						Required:  true,
+						Optional:  true,
 						Sensitive: true,
 					},
 				},
@@ -82,7 +84,7 @@ type userResourceModel struct {
 	AccountEnabled    types.Bool               `tfsdk:"account_enabled"`
 	DisplayName       types.String             `tfsdk:"display_name"`
 	MailNickname      types.String             `tfsdk:"mail_nickname"`
-	PasswordProfile   userPasswordProfileModel `tfsdk:"password_profile"`
+	PasswordProfile   *userPasswordProfileModel `tfsdk:"password_profile"`
 	UserPrincipalName types.String             `tfsdk:"user_principal_name"`
 	Id                types.String             `tfsdk:"id"`
 }
@@ -181,8 +183,17 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
 	state.DisplayName = types.StringValue(*result.GetDisplayName())
 	state.MailNickname = types.StringValue(*result.GetMailNickname())
+
+	passwordProfile := new(userPasswordProfileModel)
+	passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
+	passwordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())
+	passwordProfile.Password = types.StringNull()
+	state.PasswordProfile = passwordProfile
+
 	state.PasswordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
 	state.PasswordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())
+
+
 	state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
 	state.Id = types.StringValue(*result.GetId())
 
@@ -269,6 +280,11 @@ func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 			printOdataError(err),
 		)
 	}
+}
+
+func (r *userResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// Retrieve import ID and save to id attribute
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
 func printOdataError(err error) string {
