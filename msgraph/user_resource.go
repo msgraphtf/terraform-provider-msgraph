@@ -191,6 +191,61 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	// Retrieve values from plan
+	var plan userResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+    resp.Diagnostics.Append(diags...)
+    if resp.Diagnostics.HasError() {
+        return
+    }
+
+	// Get current state
+	var state userResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Generate API request body from plan
+	requestBody := models.NewUser()
+	accountEnabled := plan.AccountEnabled.ValueBool()
+	requestBody.SetAccountEnabled(&accountEnabled)
+	displayName := plan.DisplayName.ValueString()
+	requestBody.SetDisplayName(&displayName)
+	mailNickname := plan.MailNickname.ValueString()
+	requestBody.SetMailNickname(&mailNickname)
+
+	passwordProfile := models.NewPasswordProfile()
+	forceChangePasswordNextSignIn := plan.PasswordProfile.ForceChangePasswordNextSignIn.ValueBool()
+	passwordProfile.SetForceChangePasswordNextSignIn(&forceChangePasswordNextSignIn)
+	forceChangePasswordNextSignInMfa := plan.PasswordProfile.ForceChangePasswordNextSignInWithMfa.ValueBool()
+	passwordProfile.SetForceChangePasswordNextSignInWithMfa(&forceChangePasswordNextSignInMfa)
+	password := plan.PasswordProfile.Password.ValueString()
+	passwordProfile.SetPassword(&password)
+	requestBody.SetPasswordProfile(passwordProfile)
+
+	userPrincipalName := plan.UserPrincipalName.ValueString()
+	requestBody.SetUserPrincipalName(&userPrincipalName)
+
+	_, err := r.client.UsersById(state.Id.ValueString()).Patch(context.Background(), requestBody, nil)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error updating user: "+plan.Id.ValueString(),
+			printOdataError(err),
+		)
+		return
+	}
+
+	// Update resource state with Computed values
+	plan.Id = types.StringValue(state.Id.ValueString())
+
+	diags = resp.State.Set(ctx, plan)
+    resp.Diagnostics.Append(diags...)
+    if resp.Diagnostics.HasError() {
+        return
+    }
+
 }
 
 // Delete deletes the resource and removes the Terraform state on success.
