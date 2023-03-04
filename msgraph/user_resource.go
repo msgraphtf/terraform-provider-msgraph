@@ -254,6 +254,24 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	// Retrieve values from state
+	var state userResourceModel
+    diags := req.State.Get(ctx, &state)
+    resp.Diagnostics.Append(diags...)
+    if resp.Diagnostics.HasError() {
+        return
+    }
+
+	// Delete user
+	err := r.client.UsersById(state.Id.ValueString()).Delete(context.Background(), nil)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error deleting user: "+state.Id.ValueString(),
+			printOdataError(err),
+		)
+	}
+
+
 }
 
 func printOdataError(err error) string {
