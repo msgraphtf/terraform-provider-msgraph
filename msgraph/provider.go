@@ -99,6 +99,7 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		// Provider specific implementation
+		users.NewUserDataSource,
 		users.NewUsersDataSource,
 	}
 }
