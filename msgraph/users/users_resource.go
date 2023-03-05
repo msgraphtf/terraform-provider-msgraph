@@ -84,12 +84,12 @@ type userResourceModel struct {
 	AccountEnabled    types.Bool               `tfsdk:"account_enabled"`
 	DisplayName       types.String             `tfsdk:"display_name"`
 	MailNickname      types.String             `tfsdk:"mail_nickname"`
-	PasswordProfile   *userPasswordProfileModel `tfsdk:"password_profile"`
+	PasswordProfile   *userResourcePasswordProfileModel `tfsdk:"password_profile"`
 	UserPrincipalName types.String             `tfsdk:"user_principal_name"`
 	Id                types.String             `tfsdk:"id"`
 }
 
-type userPasswordProfileModel struct {
+type userResourcePasswordProfileModel struct {
 	ForceChangePasswordNextSignIn        types.Bool   `tfsdk:"force_change_password_next_sign_in"`
 	ForceChangePasswordNextSignInWithMfa types.Bool   `tfsdk:"force_change_password_next_sign_in_with_mfa"`
 	Password                             types.String `tfsdk:"password"`
@@ -184,7 +184,7 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	state.DisplayName = types.StringValue(*result.GetDisplayName())
 	state.MailNickname = types.StringValue(*result.GetMailNickname())
 
-	passwordProfile := new(userPasswordProfileModel)
+	passwordProfile := new(userResourcePasswordProfileModel)
 	passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
 	passwordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())
 	passwordProfile.Password = types.StringNull()
