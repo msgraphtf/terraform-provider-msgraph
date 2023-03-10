@@ -2,12 +2,12 @@ package users
 
 import (
 	"context"
-	"strconv"
+	//"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
+	//"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/users"
@@ -106,7 +106,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	qparams := users.UserItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &users.UserItemRequestBuilderGetQueryParameters{
-			Select: []string{"accountEnabled, displayName, mailNickname, passwordProfile, userPrincipalName, Id"},
+			Select: UserProperties[:],
 		},
 	}
 
@@ -118,8 +118,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		)
 		return
 	}
-
-	tflog.Info(ctx, "PASSWORD: "+strconv.FormatBool(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn()))
 
 	// Map response to model
 	state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
