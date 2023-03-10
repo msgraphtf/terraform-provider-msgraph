@@ -7,7 +7,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	//"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/users"
@@ -35,6 +34,9 @@ func (d *userDataSource) Metadata(_ context.Context, req datasource.MetadataRequ
 func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
+			"about_me": schema.StringAttribute{
+				Computed: true,
+			},
 			"account_enabled": schema.BoolAttribute{
 				Computed: true,
 			},
@@ -79,6 +81,7 @@ func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 }
 
 type userDataSourceModel struct {
+	AboutMe           types.String             `tfsdk:"about_me"`
 	AccountEnabled    types.Bool               `tfsdk:"account_enabled"`
 	DisplayName       types.String             `tfsdk:"display_name"`
 	MailNickname      types.String             `tfsdk:"mail_nickname"`
@@ -90,10 +93,6 @@ type userDataSourceModel struct {
 type userDataSourcePasswordProfileModel struct {
 	ForceChangePasswordNextSignIn        types.Bool   `tfsdk:"force_change_password_next_sign_in"`
 	ForceChangePasswordNextSignInWithMfa types.Bool   `tfsdk:"force_change_password_next_sign_in_with_mfa"`
-}
-
-type userModel struct {
-	DisplayName types.String `tfsdk:"display_name"`
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -120,6 +119,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	// Map response to model
+	if result.GetAboutMe() != nil {
+		state.AboutMe = types.StringValue(*result.GetAboutMe())
+	}
 	state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
 	state.DisplayName = types.StringValue(*result.GetDisplayName())
 	state.MailNickname = types.StringValue(*result.GetMailNickname())
