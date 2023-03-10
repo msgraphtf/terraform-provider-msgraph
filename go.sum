@@ -199,8 +199,8 @@ github.com/microsoft/kiota-serialization-text-go v0.7.0 h1:uayeq8fpDcZgL0zDyLkYZ
 github.com/microsoft/kiota-serialization-text-go v0.7.0/go.mod h1:2su1PTllHCMNkHugmvpYad+AKBXUUGoiNP3xOAJUL7w=
 github.com/microsoftgraph/msgraph-sdk-go v0.56.0 h1:+83WyAn8HnSvqiTZbCmkOD6YTDk/bjJ9i/4BiOgAiaM=
 github.com/microsoftgraph/msgraph-sdk-go v0.56.0/go.mod h1:H0exrGKrXr18BcUWqFwZFM5wsO6C8QjLzPE2O7dE5kE=
-github.com/microsoftgraph/msgraph-sdk-go-core v0.34.0 h1:QhlqBWAQbo1XNvsiQQpexPbZ68vrsn/pik/pNHU80Oc=
-github.com/microsoftgraph/msgraph-sdk-go-core v0.34.0/go.mod h1:I/pAwhonki9tvQ6ai10P9PZKkPxQPzks0/emsvYz++c=
+github.com/microsoftgraph/msgraph-sdk-go-core v0.34.1 h1:tGDR/Je5mnf4Kn01w8/5HyywPL07JonFfe6Ip0w7a08=
+github.com/microsoftgraph/msgraph-sdk-go-core v0.34.1/go.mod h1:28uAIh5Oa9x4yfiKCrjTbG+1hikkf82jEzSKb7gC+Dg=
 github.com/mitchellh/cli v1.1.5 h1:OxRIeJXpAMztws/XHlN2vu6imG5Dpq+j61AzAX5fLng=
 github.com/mitchellh/cli v1.1.5/go.mod h1:v8+iFts2sPIKUV1ltktPXMCC8fumSKFItNcD2cLtRR4=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
