@@ -3,7 +3,7 @@ package users
 var UserProperties = [...]string {
 	"aboutMe",
 	"accountEnabled",
-//	"ageGroup",
+	"ageGroup",
 //	"assignedLicenses",
 //	"assignedPlans",
 //	"birthday",

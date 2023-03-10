@@ -40,15 +40,22 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"account_enabled": schema.BoolAttribute{
 				Computed: true,
 			},
+			"age_group": schema.StringAttribute{
+				Computed: true,
+				//TODO: Validators: (Allowed values: null, Minor, NotAdult and Adult)
+			},
 			"display_name": schema.StringAttribute{
+				Computed: true,
+			},
+			"id": schema.StringAttribute{
+				Optional: true,
 				Computed: true,
 			},
 			"mail_nickname": schema.StringAttribute{
 				Computed: true,
-				Optional: true,
+				//TODO: Optional: true,
 			},
 			"password_profile": schema.SingleNestedAttribute{
-				Optional: true,
 				Computed: true,
 				Attributes: map[string]schema.Attribute{
 					"force_change_password_next_sign_in": schema.BoolAttribute{
@@ -60,11 +67,7 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				},
 			},
 			"user_principal_name": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
-			},
-			"id": schema.StringAttribute{
-				Optional: true,
+				//TODO: Optional: true,
 				Computed: true,
 			},
 		},
@@ -83,11 +86,12 @@ func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 type userDataSourceModel struct {
 	AboutMe           types.String             `tfsdk:"about_me"`
 	AccountEnabled    types.Bool               `tfsdk:"account_enabled"`
+	AgeGroup          types.String             `tfsdk:"age_group"`
 	DisplayName       types.String             `tfsdk:"display_name"`
+	Id                types.String             `tfsdk:"id"`
 	MailNickname      types.String             `tfsdk:"mail_nickname"`
 	PasswordProfile   *userDataSourcePasswordProfileModel `tfsdk:"password_profile"`
 	UserPrincipalName types.String             `tfsdk:"user_principal_name"`
-	Id                types.String             `tfsdk:"id"`
 }
 
 type userDataSourcePasswordProfileModel struct {
@@ -109,6 +113,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		},
 	}
 
+	// TODO: Allow using UserPrincipalName or MailNickname as ID to search for
 	result, err := d.client.UsersById(state.Id.ValueString()).Get(context.Background(), &qparams)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -119,12 +124,11 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	// Map response to model
-	if result.GetAboutMe() != nil {
-		state.AboutMe = types.StringValue(*result.GetAboutMe())
-	}
-	state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
-	state.DisplayName = types.StringValue(*result.GetDisplayName())
-	state.MailNickname = types.StringValue(*result.GetMailNickname())
+	if result.GetAboutMe()  != nil {state.AboutMe = types.StringValue(*result.GetAboutMe())}
+	if result.GetAgeGroup() != nil {state.AboutMe = types.StringValue(*result.GetAgeGroup())}
+	state.DisplayName       = types.StringValue(*result.GetDisplayName())
+	state.MailNickname      = types.StringValue(*result.GetMailNickname())
+	state.Id                = types.StringValue(*result.GetId())
 
 	passwordProfile := new(userDataSourcePasswordProfileModel)
 	passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
@@ -132,7 +136,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	state.PasswordProfile = passwordProfile
 
 	state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
-	state.Id = types.StringValue(*result.GetId())
 
 
 	// Overwrite items with refreshed state
@@ -141,5 +144,4 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
 }
