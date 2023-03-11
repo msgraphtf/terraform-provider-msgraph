@@ -90,6 +90,24 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"company_name": schema.StringAttribute{
 				Computed: true,
 			},
+			"consent_provided_for_minor": schema.StringAttribute{
+				Computed: true,
+			},
+			"country": schema.StringAttribute{
+				Computed: true,
+			},
+			"creation_type": schema.StringAttribute{
+				Computed: true,
+			},
+			"deleted_date_time": schema.StringAttribute{
+				Computed: true,
+			},
+			"created_date_time": schema.StringAttribute{
+				Computed: true,
+			},
+			"department": schema.StringAttribute{
+				Computed: true,
+			},
 			"display_name": schema.StringAttribute{
 				Computed: true,
 			},
@@ -141,7 +159,13 @@ type userDataSourceModel struct {
 	Birthday          types.String   `tfsdk:"birthday"`
 	BusinessPhones    []types.String `tfsdk:"business_phones"`
 	City              types.String   `tfsdk:"city"`
+	ConsentProvidedForMinor types.String `tfsdk:"consent_provided_for_minor"`
+	Country           types.String   `tfsdk:"country"`
+	CreatedDateTime   types.String   `tfsdk:"created_date_time"`
+	CreationType      types.String   `tfsdk:"creation_type"`
+	DeletedDateTime   types.String   `tfsdk:"deleted_date_time"`
 	CompanyName       types.String   `tfsdk:"company_name"`
+	Department        types.String   `tfsdk:"department"`
 	DisplayName       types.String   `tfsdk:"display_name"`
 	Id                types.String   `tfsdk:"id"`
 	MailNickname      types.String   `tfsdk:"mail_nickname"`
@@ -225,8 +249,13 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.BusinessPhones = append(state.BusinessPhones, types.StringValue(businessPhone))
 	}
 
-	if result.GetCity()        != nil {state.City = types.StringValue(*result.GetCity())}
-	if result.GetCompanyName() != nil {state.CompanyName = types.StringValue(*result.GetCompanyName())}
+	if result.GetCity()                    != nil {state.City                    = types.StringValue(*result.GetCity())}
+	if result.GetCompanyName()             != nil {state.CompanyName             = types.StringValue(*result.GetCompanyName())}
+	if result.GetConsentProvidedForMinor() != nil {state.ConsentProvidedForMinor = types.StringValue(*result.GetConsentProvidedForMinor())}
+	state.CreatedDateTime   = types.StringValue(result.GetCreatedDateTime().String())
+	if result.GetCreationType()            != nil {state.CreationType            = types.StringValue(*result.GetCreationType())}
+	if result.GetDeletedDateTime()         != nil {state.DeletedDateTime         = types.StringValue(result.GetDeletedDateTime().String())}
+	if result.GetDepartment()              != nil {state.Department              = types.StringValue(*result.GetDepartment())}
 
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
