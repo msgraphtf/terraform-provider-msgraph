@@ -84,6 +84,9 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed: true,
 				ElementType: types.StringType,
 			},
+			"city": schema.StringAttribute{
+				Computed: true,
+			},
 			"display_name": schema.StringAttribute{
 				Computed: true,
 			},
@@ -134,6 +137,7 @@ type userDataSourceModel struct {
 	AssignedPlans     []userDataSourceAssignedPlanModel `tfsdk:"assigned_plans"`
 	Birthday          types.String   `tfsdk:"birthday"`
 	BusinessPhones    []types.String `tfsdk:"business_phones"`
+	City              types.String   `tfsdk:"city"`
 	DisplayName       types.String   `tfsdk:"display_name"`
 	Id                types.String   `tfsdk:"id"`
 	MailNickname      types.String   `tfsdk:"mail_nickname"`
@@ -216,6 +220,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	for _, businessPhone := range result.GetBusinessPhones() {
 		state.BusinessPhones = append(state.BusinessPhones, types.StringValue(businessPhone))
 	}
+
+	if result.GetCity() != nil {state.City = types.StringValue(*result.GetCity())}
 
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
