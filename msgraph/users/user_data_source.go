@@ -87,6 +87,9 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"city": schema.StringAttribute{
 				Computed: true,
 			},
+			"company_name": schema.StringAttribute{
+				Computed: true,
+			},
 			"display_name": schema.StringAttribute{
 				Computed: true,
 			},
@@ -138,6 +141,7 @@ type userDataSourceModel struct {
 	Birthday          types.String   `tfsdk:"birthday"`
 	BusinessPhones    []types.String `tfsdk:"business_phones"`
 	City              types.String   `tfsdk:"city"`
+	CompanyName       types.String   `tfsdk:"company_name"`
 	DisplayName       types.String   `tfsdk:"display_name"`
 	Id                types.String   `tfsdk:"id"`
 	MailNickname      types.String   `tfsdk:"mail_nickname"`
@@ -221,7 +225,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.BusinessPhones = append(state.BusinessPhones, types.StringValue(businessPhone))
 	}
 
-	if result.GetCity() != nil {state.City = types.StringValue(*result.GetCity())}
+	if result.GetCity()        != nil {state.City = types.StringValue(*result.GetCity())}
+	if result.GetCompanyName() != nil {state.CompanyName = types.StringValue(*result.GetCompanyName())}
 
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())

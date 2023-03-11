@@ -9,7 +9,7 @@ var UserProperties = [...]string {
 	"birthday",
 	"businessPhones",
 	"city",
-//	"companyName",
+	"companyName",
 //	"consentProvidedForMinor",
 //	"country",
 //	"createdDateTime",
