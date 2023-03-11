@@ -215,6 +215,9 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 					},
 				},
 			},
+			"mail": schema.StringAttribute{
+				Computed: true,
+			},
 			"mail_nickname": schema.StringAttribute{
 				Computed: true,
 				//TODO: Optional: true,
@@ -286,6 +289,7 @@ type userDataSourceModel struct {
 	LegalAgeGroupClassification     types.String                         `tfsdk:"legal_age_group_classification"`
 	LastPasswordChangeDateTime      types.String                         `tfsdk:"last_password_change_date_time"`
 	LicenseAssignmentStates         []userDataSourceLicenseAssignmentStatesModel `tfsdk:"license_assignment_states"`
+	Mail                            types.String                         `tfsdk:"mail"`
 	MailNickname                    types.String                         `tfsdk:"mail_nickname"`
 	PasswordProfile                 *userDataSourcePasswordProfileModel  `tfsdk:"password_profile"`
 	UserPrincipalName               types.String                         `tfsdk:"user_principal_name"`
@@ -458,7 +462,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.LicenseAssignmentStates = append(state.LicenseAssignmentStates, *licenseAssignmentStateState)
 	}
 
-
+	if result.GetMail() != nil {state.Mail = types.StringValue(*result.GetMail())}
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
 
 	// Map password profile
