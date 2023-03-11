@@ -215,12 +215,114 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 					},
 				},
 			},
-			"mail": schema.StringAttribute{
-				Computed: true,
-			},
+			//"mail": schema.StringAttribute{ // This property can only be used to access the authenticated users mailbox, not other users
+			//	Computed: true,
+			//},
 			"mail_nickname": schema.StringAttribute{
 				Computed: true,
 				//TODO: Optional: true,
+			},
+			"mobile_phone": schema.StringAttribute{
+				Computed: true,
+			},
+			"my_site": schema.StringAttribute{
+				Computed: true,
+			},
+			"office_location": schema.StringAttribute{
+				Computed: true,
+			},
+			"on_premises_distinguished_name": schema.StringAttribute{
+				Computed: true,
+			},
+			"on_premises_domain_name": schema.StringAttribute{
+				Computed: true,
+			},
+			"on_premises_extension_attributes": schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"extension_attribute_1": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_2": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_3": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_4": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_5": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_6": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_7": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_8": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_9": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_10": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_11": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_12": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_13": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_14": schema.StringAttribute{
+						Computed: true,
+					},
+					"extension_attribute_15": schema.StringAttribute{
+						Computed: true,
+					},
+				},
+			},
+			"on_premises_immutable_id": schema.StringAttribute{
+				Computed: true,
+			},
+			"on_premises_last_sync_date_time": schema.StringAttribute{
+				Computed: true,
+			},
+			"on_premises_provisioning_errors": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"category": schema.StringAttribute{
+							Computed: true,
+						},
+						"occured_date_time": schema.StringAttribute{
+							Computed: true,
+						},
+						"property_causing_error": schema.StringAttribute{
+							Computed: true,
+						},
+						"value": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
+			},
+			"on_premises_sam_account_name": schema.StringAttribute{
+				Computed: true,
+			},
+			"on_premises_security_identifier": schema.StringAttribute{
+				Computed: true,
+			},
+			"on_premises_sync_enabled": schema.BoolAttribute{
+				Computed: true,
+			},
+			"on_premises_user_principal_name": schema.StringAttribute{
+				Computed: true,
 			},
 			"password_profile": schema.SingleNestedAttribute{
 				Computed: true,
@@ -289,8 +391,21 @@ type userDataSourceModel struct {
 	LegalAgeGroupClassification     types.String                         `tfsdk:"legal_age_group_classification"`
 	LastPasswordChangeDateTime      types.String                         `tfsdk:"last_password_change_date_time"`
 	LicenseAssignmentStates         []userDataSourceLicenseAssignmentStatesModel `tfsdk:"license_assignment_states"`
-	Mail                            types.String                         `tfsdk:"mail"`
+	//Mail                            types.String                         `tfsdk:"mail"`
 	MailNickname                    types.String                         `tfsdk:"mail_nickname"`
+	MobilePhone                     types.String                         `tfsdk:"mobile_phone"`
+	OfficeLocation                  types.String                         `tfsdk:"office_location"`
+	MySite                          types.String                         `tfsdk:"my_site"`
+	OnPremisesDistinguishedName     types.String                         `tfsdk:"on_premises_distinguished_name"`
+	OnPremisesDomainName            types.String                         `tfsdk:"on_premises_domain_name"`
+	OnPremisesExtensionAttributes   *userDataSourceOnPremisesExtensionAttributesModel `tfsdk:"on_premises_extension_attributes"`
+	OnPremisesImmutableId           types.String                         `tfsdk:"on_premises_immutable_id"`
+	OnPremisesLastSyncDateTime      types.String                         `tfsdk:"on_premises_last_sync_date_time"`
+	OnPremisesProvisioningErrors    []userDataSourceOnPremisesProvisioningErrorModel `tfsdk:"on_premises_provisioning_errors"`
+	OnPremisesSamAccountName        types.String                         `tfsdk:"on_premises_sam_account_name"`
+	OnPremisesSecurityIdentifier    types.String                         `tfsdk:"on_premises_security_identifier"`
+	OnPremisesSyncEnabled           types.Bool                           `tfsdk:"on_premises_sync_enabled"`
+	OnPremisesUserPrincipalName     types.String                         `tfsdk:"on_premises_user_principal_name"`
 	PasswordProfile                 *userDataSourcePasswordProfileModel  `tfsdk:"password_profile"`
 	UserPrincipalName               types.String                         `tfsdk:"user_principal_name"`
 }
@@ -331,6 +446,31 @@ type userDataSourceLicenseAssignmentStatesModel struct {
 	LastUpdatedDateTime types.String   `tfsdk:"last_updated_date_time"`
 	SkuId               types.String   `tfsdk:"sku_id"`
 	State               types.String   `tfsdk:"state"`
+}
+
+type userDataSourceOnPremisesExtensionAttributesModel struct {
+	ExtensionAttribute1  types.String `tfsdk:"extension_attribute_1"`
+	ExtensionAttribute2  types.String `tfsdk:"extension_attribute_2"`
+	ExtensionAttribute3  types.String `tfsdk:"extension_attribute_3"`
+	ExtensionAttribute4  types.String `tfsdk:"extension_attribute_4"`
+	ExtensionAttribute5  types.String `tfsdk:"extension_attribute_5"`
+	ExtensionAttribute6  types.String `tfsdk:"extension_attribute_6"`
+	ExtensionAttribute7  types.String `tfsdk:"extension_attribute_7"`
+	ExtensionAttribute8  types.String `tfsdk:"extension_attribute_8"`
+	ExtensionAttribute9  types.String `tfsdk:"extension_attribute_9"`
+	ExtensionAttribute10 types.String `tfsdk:"extension_attribute_10"`
+	ExtensionAttribute11 types.String `tfsdk:"extension_attribute_11"`
+	ExtensionAttribute12 types.String `tfsdk:"extension_attribute_12"`
+	ExtensionAttribute13 types.String `tfsdk:"extension_attribute_13"`
+	ExtensionAttribute14 types.String `tfsdk:"extension_attribute_14"`
+	ExtensionAttribute15 types.String `tfsdk:"extension_attribute_15"`
+}
+
+type userDataSourceOnPremisesProvisioningErrorModel struct {
+	Category             types.String `tfsdk:"category"`
+	OccuredDateTime      types.String `tfsdk:"occured_date_time"`
+	PropertyCausingError types.String `tfsdk:"property_causing_error"`
+	Value                types.String `tfsdk:"value"`
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -462,8 +602,49 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.LicenseAssignmentStates = append(state.LicenseAssignmentStates, *licenseAssignmentStateState)
 	}
 
-	if result.GetMail() != nil {state.Mail = types.StringValue(*result.GetMail())}
-	state.MailNickname      = types.StringValue(*result.GetMailNickname())
+	//if result.GetMail() != nil {state.Mail = types.StringValue(*result.GetMail())}
+	state.MailNickname = types.StringValue(*result.GetMailNickname())
+	if result.GetMobilePhone()                 != nil {state.MobilePhone = types.StringValue(*result.GetMobilePhone())}
+	if result.GetMySite()                      != nil {state.MySite      = types.StringValue(*result.GetMySite())}
+	if result.GetOfficeLocation()              != nil {state.OfficeLocation = types.StringValue(*result.GetOfficeLocation())}
+	if result.GetOnPremisesDistinguishedName() != nil {state.OnPremisesDistinguishedName = types.StringValue(*result.GetOnPremisesDistinguishedName())}
+	if result.GetOnPremisesDomainName()        != nil {state.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())}
+
+	onPremisesExtensionAttributes := new(userDataSourceOnPremisesExtensionAttributesModel)
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1()  != nil {onPremisesExtensionAttributes.ExtensionAttribute1  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2()  != nil {onPremisesExtensionAttributes.ExtensionAttribute2  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3()  != nil {onPremisesExtensionAttributes.ExtensionAttribute3  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4()  != nil {onPremisesExtensionAttributes.ExtensionAttribute4  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5()  != nil {onPremisesExtensionAttributes.ExtensionAttribute5  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6()  != nil {onPremisesExtensionAttributes.ExtensionAttribute6  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7()  != nil {onPremisesExtensionAttributes.ExtensionAttribute7  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8()  != nil {onPremisesExtensionAttributes.ExtensionAttribute8  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9()  != nil {onPremisesExtensionAttributes.ExtensionAttribute9  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10() != nil {onPremisesExtensionAttributes.ExtensionAttribute10 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11() != nil {onPremisesExtensionAttributes.ExtensionAttribute11 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12() != nil {onPremisesExtensionAttributes.ExtensionAttribute12 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13() != nil {onPremisesExtensionAttributes.ExtensionAttribute13 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14() != nil {onPremisesExtensionAttributes.ExtensionAttribute14 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15() != nil {onPremisesExtensionAttributes.ExtensionAttribute15 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15())}
+	state.OnPremisesExtensionAttributes = onPremisesExtensionAttributes
+
+	if result.GetOnPremisesImmutableId() != nil {state.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())}
+	if result.GetOnPremisesLastSyncDateTime() != nil {state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())}
+
+	for _, onPremisesProvisioningError := range result.GetOnPremisesProvisioningErrors() {
+			onPremisesProvisioningErrorState := userDataSourceOnPremisesProvisioningErrorModel{
+				Category:              types.StringValue(*onPremisesProvisioningError.GetCategory()),
+				OccuredDateTime:        types.StringValue(onPremisesProvisioningError.GetOccurredDateTime().String()),
+				PropertyCausingError:   types.StringValue(*onPremisesProvisioningError.GetPropertyCausingError()),
+				Value:                  types.StringValue(*onPremisesProvisioningError.GetValue()),
+			}
+		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, onPremisesProvisioningErrorState)
+	}
+
+	if result.GetOnPremisesSamAccountName()     != nil {state.OnPremisesSamAccountName     = types.StringValue(*result.GetOnPremisesSamAccountName())}
+	if result.GetOnPremisesSecurityIdentifier() != nil {state.OnPremisesSecurityIdentifier = types.StringValue(*result.GetOnPremisesSecurityIdentifier())}
+	if result.GetOnPremisesSyncEnabled()        != nil {state.OnPremisesSyncEnabled        = types.BoolValue(*result.GetOnPremisesSyncEnabled())}
+	if result.GetOnPremisesUserPrincipalName()  != nil {state.OnPremisesUserPrincipalName  = types.StringValue(*result.GetOnPremisesUserPrincipalName())}
 
 	// Map password profile
 	passwordProfile := new(userDataSourcePasswordProfileModel)
