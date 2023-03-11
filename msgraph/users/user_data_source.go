@@ -189,36 +189,36 @@ func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 }
 
 type userDataSourceModel struct {
-	AboutMe           types.String   `tfsdk:"about_me"`
-	AccountEnabled    types.Bool     `tfsdk:"account_enabled"`
-	AgeGroup          types.String   `tfsdk:"age_group"`
-	AssignedLicenses  []userDataSourceAssignedLicenseModel `tfsdk:"assigned_licenses"`
-	AssignedPlans     []userDataSourceAssignedPlanModel `tfsdk:"assigned_plans"`
-	Birthday          types.String   `tfsdk:"birthday"`
-	BusinessPhones    []types.String `tfsdk:"business_phones"`
-	City              types.String   `tfsdk:"city"`
-	CompanyName       types.String   `tfsdk:"company_name"`
-	ConsentProvidedForMinor types.String `tfsdk:"consent_provided_for_minor"`
-	Country           types.String   `tfsdk:"country"`
-	CreatedDateTime   types.String   `tfsdk:"created_date_time"`
-	CreationType      types.String   `tfsdk:"creation_type"`
-	DeletedDateTime   types.String   `tfsdk:"deleted_date_time"`
-	Department        types.String   `tfsdk:"department"`
-	DisplayName       types.String   `tfsdk:"display_name"`
-	EmployeeHireDate  types.String   `tfsdk:"employee_hire_date"`
-	EmployeeId        types.String   `tfsdk:"employee_id"`
-	EmployeeLeaveDateTime types.String `tfsdk:"employee_leave_date_time"`
-	EmployeeOrgData   *userDataSourceEmployeeOrgData `tfsdk:"employee_org_data"`
-	EmployeeType      types.String   `tfsdk:"employee_type"`
-	ExternalUserState types.String   `tfsdk:"external_user_state"`
-	ExternalUserStateChangeDateTime types.String `tfsdk:"external_user_state_change_date_time"`
-	FaxNumber         types.String   `tfsdk:"fax_number"`
-	GivenName         types.String   `tfsdk:"given_name"`
-	HireDate          types.String   `tfsdk:"hire_date"`
-	Id                types.String   `tfsdk:"id"`
-	MailNickname      types.String   `tfsdk:"mail_nickname"`
-	PasswordProfile   *userDataSourcePasswordProfileModel `tfsdk:"password_profile"`
-	UserPrincipalName types.String   `tfsdk:"user_principal_name"`
+	AboutMe                         types.String                         `tfsdk:"about_me"`
+	AccountEnabled                  types.Bool                           `tfsdk:"account_enabled"`
+	AgeGroup                        types.String                         `tfsdk:"age_group"`
+	AssignedLicenses                []userDataSourceAssignedLicenseModel `tfsdk:"assigned_licenses"`
+	AssignedPlans                   []userDataSourceAssignedPlanModel    `tfsdk:"assigned_plans"`
+	Birthday                        types.String                         `tfsdk:"birthday"`
+	BusinessPhones                  []types.String                       `tfsdk:"business_phones"`
+	City                            types.String                         `tfsdk:"city"`
+	CompanyName                     types.String                         `tfsdk:"company_name"`
+	ConsentProvidedForMinor         types.String                         `tfsdk:"consent_provided_for_minor"`
+	Country                         types.String                         `tfsdk:"country"`
+	CreatedDateTime                 types.String                         `tfsdk:"created_date_time"`
+	CreationType                    types.String                         `tfsdk:"creation_type"`
+	DeletedDateTime                 types.String                         `tfsdk:"deleted_date_time"`
+	Department                      types.String                         `tfsdk:"department"`
+	DisplayName                     types.String                         `tfsdk:"display_name"`
+	EmployeeHireDate                types.String                         `tfsdk:"employee_hire_date"`
+	EmployeeId                      types.String                         `tfsdk:"employee_id"`
+	EmployeeLeaveDateTime           types.String                         `tfsdk:"employee_leave_date_time"`
+	EmployeeOrgData                 *userDataSourceEmployeeOrgData       `tfsdk:"employee_org_data"`
+	EmployeeType                    types.String                         `tfsdk:"employee_type"`
+	ExternalUserState               types.String                         `tfsdk:"external_user_state"`
+	ExternalUserStateChangeDateTime types.String                         `tfsdk:"external_user_state_change_date_time"`
+	FaxNumber                       types.String                         `tfsdk:"fax_number"`
+	GivenName                       types.String                         `tfsdk:"given_name"`
+	HireDate                        types.String                         `tfsdk:"hire_date"`
+	Id                              types.String                         `tfsdk:"id"`
+	MailNickname                    types.String                         `tfsdk:"mail_nickname"`
+	PasswordProfile                 *userDataSourcePasswordProfileModel  `tfsdk:"password_profile"`
+	UserPrincipalName               types.String                         `tfsdk:"user_principal_name"`
 }
 
 type userDataSourceAssignedLicenseModel struct {
@@ -309,6 +309,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetCreationType()            != nil {state.CreationType            = types.StringValue(*result.GetCreationType())}
 	if result.GetDeletedDateTime()         != nil {state.DeletedDateTime         = types.StringValue(result.GetDeletedDateTime().String())}
 	if result.GetDepartment()              != nil {state.Department              = types.StringValue(*result.GetDepartment())}
+	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	if result.GetEmployeeHireDate()        != nil {state.EmployeeHireDate        = types.StringValue(result.GetEmployeeHireDate().String())}
 	if result.GetEmployeeId()              != nil {state.EmployeeId              = types.StringValue(*result.GetEmployeeId())}
 	if result.GetEmployeeLeaveDateTime()   != nil {state.EmployeeLeaveDateTime   = types.StringValue(result.GetEmployeeLeaveDateTime().String())}
@@ -320,17 +321,16 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 	state.EmployeeOrgData = employeeOrgData
 
-	if result.GetEmployeeType() != nil {state.EmployeeType = types.StringValue(*result.GetEmployeeType())}
-	if result.GetExternalUserState() != nil {state.ExternalUserState = types.StringValue(*result.GetExternalUserState())}
+	if result.GetEmployeeType()                    != nil {state.EmployeeType                    = types.StringValue(*result.GetEmployeeType())}
+	if result.GetExternalUserState()               != nil {state.ExternalUserState               = types.StringValue(*result.GetExternalUserState())}
 	if result.GetExternalUserStateChangeDateTime() != nil {state.ExternalUserStateChangeDateTime = types.StringValue(result.GetExternalUserStateChangeDateTime().String())}
-	if result.GetFaxNumber() != nil {state.FaxNumber = types.StringValue(*result.GetFaxNumber())}
-	if result.GetGivenName() != nil {state.GivenName = types.StringValue(*result.GetGivenName())}
-	if result.GetHireDate() != nil {state.HireDate = types.StringValue(result.GetHireDate().String())}
+	if result.GetFaxNumber()                       != nil {state.FaxNumber                       = types.StringValue(*result.GetFaxNumber())}
+	if result.GetGivenName()                       != nil {state.GivenName                       = types.StringValue(*result.GetGivenName())}
+	if result.GetHireDate()                        != nil {state.HireDate                        = types.StringValue(result.GetHireDate().String())}
+	state.Id = types.StringValue(*result.GetId())
 
 
-	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
-	state.Id                = types.StringValue(*result.GetId())
 
 	// Map password profile
 	passwordProfile := new(userDataSourcePasswordProfileModel)
