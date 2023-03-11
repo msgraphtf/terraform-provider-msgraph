@@ -324,6 +324,13 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"on_premises_user_principal_name": schema.StringAttribute{
 				Computed: true,
 			},
+			"other_mails": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
+			"password_policies": schema.StringAttribute{
+				Computed: true,
+			},
 			"password_profile": schema.SingleNestedAttribute{
 				Computed: true,
 				Attributes: map[string]schema.Attribute{
@@ -337,6 +344,22 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 						Computed: true,
 					},
 				},
+			},
+			"past_projects": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
+			"postal_code": schema.StringAttribute{
+				Computed: true,
+			},
+			"preferred_data_location": schema.StringAttribute{
+				Computed: true,
+			},
+			"preferred_language": schema.StringAttribute{
+				Computed: true,
+			},
+			"preferred_name": schema.StringAttribute{
+				Computed: true,
 			},
 			"user_principal_name": schema.StringAttribute{
 				//TODO: Optional: true,
@@ -406,7 +429,14 @@ type userDataSourceModel struct {
 	OnPremisesSecurityIdentifier    types.String                         `tfsdk:"on_premises_security_identifier"`
 	OnPremisesSyncEnabled           types.Bool                           `tfsdk:"on_premises_sync_enabled"`
 	OnPremisesUserPrincipalName     types.String                         `tfsdk:"on_premises_user_principal_name"`
+	OtherMails                      []types.String                       `tfsdk:"other_mails"`
+	PasswordPolicies                types.String                         `tfsdk:"password_policies"`
 	PasswordProfile                 *userDataSourcePasswordProfileModel  `tfsdk:"password_profile"`
+	PastProjects                    []types.String                       `tfsdk:"past_projects"`
+	PostalCode                      types.String                         `tfsdk:"postal_code"`
+	PreferredDataLocation           types.String                         `tfsdk:"preferred_data_location"`
+	PreferredLanguage               types.String                         `tfsdk:"preferred_language"`
+	PreferredName                   types.String                         `tfsdk:"preferred_name"`
 	UserPrincipalName               types.String                         `tfsdk:"user_principal_name"`
 }
 
@@ -646,11 +676,25 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetOnPremisesSyncEnabled()        != nil {state.OnPremisesSyncEnabled        = types.BoolValue(*result.GetOnPremisesSyncEnabled())}
 	if result.GetOnPremisesUserPrincipalName()  != nil {state.OnPremisesUserPrincipalName  = types.StringValue(*result.GetOnPremisesUserPrincipalName())}
 
-	// Map password profile
+	for _, other_mail := range result.GetOtherMails() {
+		state.OtherMails = append(state.OtherMails, types.StringValue(other_mail))
+	}
+
+	if result.GetPasswordPolicies() != nil {state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())}
+
 	passwordProfile := new(userDataSourcePasswordProfileModel)
 	passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
 	passwordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())
 	state.PasswordProfile = passwordProfile
+
+	for _, past_project := range result.GetPastProjects() {
+		state.PastProjects = append(state.PastProjects, types.StringValue(past_project))
+	}
+
+	if result.GetPostalCode()            != nil {state.PostalCode            = types.StringValue(*result.GetPostalCode())}
+	if result.GetPreferredDataLocation() != nil {state.PreferredDataLocation = types.StringValue(*result.GetPreferredDataLocation())}
+	if result.GetPreferredLanguage()     != nil {state.PreferredLanguage     = types.StringValue(*result.GetPreferredLanguage())}
+	if result.GetPreferredName()         != nil {state.PreferredName         = types.StringValue(*result.GetPreferredName())}
 
 	state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
 
