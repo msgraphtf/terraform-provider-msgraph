@@ -169,6 +169,26 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 					},
 				},
 			},
+			"im_addresses": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
+			"interests": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
+			"is_resource_account": schema.BoolAttribute{
+				Computed: true,
+			},
+			"job_title": schema.StringAttribute{
+				Computed: true,
+			},
+			"last_password_change_date_time": schema.StringAttribute{
+				Computed: true,
+			},
+			"legal_age_group_classification": schema.StringAttribute{
+				Computed: true,
+			},
 			"mail_nickname": schema.StringAttribute{
 				Computed: true,
 				//TODO: Optional: true,
@@ -233,6 +253,12 @@ type userDataSourceModel struct {
 	HireDate                        types.String                         `tfsdk:"hire_date"`
 	Id                              types.String                         `tfsdk:"id"`
 	Identities                      []userDataSourceIdentities           `tfsdk:"identities"`
+	ImAddresses                     []types.String                       `tfsdk:"im_addresses"`
+	Interests                       []types.String                       `tfsdk:"interests"`
+	IsResourceAccount               types.Bool                           `tfsdk:"is_resource_account"`
+	JobTitle                        types.String                         `tfsdk:"job_title"`
+	LegalAgeGroupClassification     types.String                         `tfsdk:"legal_age_group_classification"`
+	LastPasswordChangeDateTime      types.String                         `tfsdk:"last_password_change_date_time"`
 	MailNickname                    types.String                         `tfsdk:"mail_nickname"`
 	PasswordProfile                 *userDataSourcePasswordProfileModel  `tfsdk:"password_profile"`
 	UserPrincipalName               types.String                         `tfsdk:"user_principal_name"`
@@ -360,6 +386,18 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 		state.Identities = append(state.Identities, identitiesState)
 	}
+
+	for _, imAddress := range result.GetImAddresses() {
+		state.ImAddresses = append(state.ImAddresses, types.StringValue(imAddress))
+	}
+	for _, interest := range result.GetInterests() {
+		state.Interests = append(state.Interests, types.StringValue(interest))
+	}
+
+	if result.GetIsResourceAccount()           != nil {state.IsResourceAccount           = types.BoolValue(*result.GetIsResourceAccount())}
+	if result.GetJobTitle()                    != nil {state.JobTitle                    = types.StringValue(*result.GetJobTitle())}
+	if result.GetLastPasswordChangeDateTime()  != nil {state.LastPasswordChangeDateTime  = types.StringValue(result.GetLastPasswordChangeDateTime().String())}
+	if result.GetLegalAgeGroupClassification() != nil {state.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())}
 
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
 
