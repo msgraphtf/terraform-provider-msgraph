@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	//"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/microsoftgraph/msgraph-sdk-go/users"
 )
 
@@ -43,6 +44,20 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"age_group": schema.StringAttribute{
 				Computed: true,
 				//TODO: Validators: (Allowed values: null, Minor, NotAdult and Adult)
+			},
+			"assigned_licenses": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"disabled_plans": schema.ListAttribute{
+							Computed: true,
+							ElementType: types.StringType,
+						},
+						"skus": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
 			},
 			"display_name": schema.StringAttribute{
 				Computed: true,
@@ -87,11 +102,17 @@ type userDataSourceModel struct {
 	AboutMe           types.String             `tfsdk:"about_me"`
 	AccountEnabled    types.Bool               `tfsdk:"account_enabled"`
 	AgeGroup          types.String             `tfsdk:"age_group"`
+	AssignedLicenses  []userDataSourceAssignedLicenseModel `tfsdk:"assigned_licenses"`
 	DisplayName       types.String             `tfsdk:"display_name"`
 	Id                types.String             `tfsdk:"id"`
 	MailNickname      types.String             `tfsdk:"mail_nickname"`
 	PasswordProfile   *userDataSourcePasswordProfileModel `tfsdk:"password_profile"`
 	UserPrincipalName types.String             `tfsdk:"user_principal_name"`
+}
+
+type userDataSourceAssignedLicenseModel struct {
+	DisabledPlans []types.String `tfsdk:"disabled_plans"`
+	Sku           types.String `tfsdk:"skus"`
 }
 
 type userDataSourcePasswordProfileModel struct {
@@ -125,7 +146,22 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	// Map response to model
 	if result.GetAboutMe()  != nil {state.AboutMe = types.StringValue(*result.GetAboutMe())}
+	state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
 	if result.GetAgeGroup() != nil {state.AboutMe = types.StringValue(*result.GetAgeGroup())}
+
+	assignedLicenses := result.GetAssignedLicenses()
+	for _, license := range assignedLicenses{
+		assignedLicensesState := userDataSourceAssignedLicenseModel{
+			Sku: types.StringValue(license.GetSkuId().String()),
+		}
+
+		for _, disabledLicense := range license.GetDisabledPlans() {
+			assignedLicensesState.DisabledPlans = append(assignedLicensesState.DisabledPlans, types.StringValue(disabledLicense.String()))
+		}
+
+		state.AssignedLicenses = append(state.AssignedLicenses, assignedLicensesState)
+	}
+
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
 	state.Id                = types.StringValue(*result.GetId())
