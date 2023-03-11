@@ -60,7 +60,7 @@ var UserProperties = [...]string {
 	"preferredDataLocation",
 	"preferredLanguage",
 	"preferredName",
-//	"provisionedPlans",
+	"provisionedPlans",
 //	"proxyAddresses",
 //	"refreshTokensValidFromDateTime",
 //	"responsibilities",

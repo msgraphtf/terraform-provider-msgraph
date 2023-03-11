@@ -361,6 +361,22 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"preferred_name": schema.StringAttribute{
 				Computed: true,
 			},
+			"provisioned_plans": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"capability_status": schema.StringAttribute{
+							Computed: true,
+						},
+						"provisioning_status": schema.StringAttribute{
+							Computed: true,
+						},
+						"service": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
+			},
 			"user_principal_name": schema.StringAttribute{
 				//TODO: Optional: true,
 				Computed: true,
@@ -437,6 +453,7 @@ type userDataSourceModel struct {
 	PreferredDataLocation           types.String                         `tfsdk:"preferred_data_location"`
 	PreferredLanguage               types.String                         `tfsdk:"preferred_language"`
 	PreferredName                   types.String                         `tfsdk:"preferred_name"`
+	ProvisionedPlans                []UserDataSourceProvisionedPlansModel `tfsdk:"provisioned_plans"`
 	UserPrincipalName               types.String                         `tfsdk:"user_principal_name"`
 }
 
@@ -501,6 +518,12 @@ type userDataSourceOnPremisesProvisioningErrorModel struct {
 	OccuredDateTime      types.String `tfsdk:"occured_date_time"`
 	PropertyCausingError types.String `tfsdk:"property_causing_error"`
 	Value                types.String `tfsdk:"value"`
+}
+
+type UserDataSourceProvisionedPlansModel struct {
+	CapabilityStatus   types.String `tfsdk:"capability_status"`
+	ProvisioningStatus types.String `tfsdk:"provisioning_status"`
+	Service            types.String `tfsdk:"service"`
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -697,6 +720,15 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetPreferredName()         != nil {state.PreferredName         = types.StringValue(*result.GetPreferredName())}
 
 	state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
+
+	for _, provisionedPlan := range result.GetProvisionedPlans() {
+		provisionedPlanState := UserDataSourceProvisionedPlansModel{
+			CapabilityStatus:   types.StringValue(*provisionedPlan.GetCapabilityStatus()),
+			ProvisioningStatus: types.StringValue(*provisionedPlan.GetProvisioningStatus()),
+			Service:            types.StringValue(*provisionedPlan.GetService()),
+		}
+		state.ProvisionedPlans = append(state.ProvisionedPlans, provisionedPlanState)
+	}
 
 
 	// Overwrite items with refreshed state
