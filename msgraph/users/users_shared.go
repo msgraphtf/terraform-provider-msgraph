@@ -7,7 +7,7 @@ var UserProperties = [...]string {
 	"assignedLicenses",
 	"assignedPlans",
 	"birthday",
-//	"businessPhones",
+	"businessPhones",
 //	"city",
 //	"companyName",
 //	"consentProvidedForMinor",

@@ -80,6 +80,10 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"birthday": schema.StringAttribute{
 				Computed: true,
 			},
+			"business_phones": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
 			"display_name": schema.StringAttribute{
 				Computed: true,
 			},
@@ -123,17 +127,18 @@ func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 }
 
 type userDataSourceModel struct {
-	AboutMe           types.String `tfsdk:"about_me"`
-	AccountEnabled    types.Bool   `tfsdk:"account_enabled"`
-	AgeGroup          types.String `tfsdk:"age_group"`
+	AboutMe           types.String   `tfsdk:"about_me"`
+	AccountEnabled    types.Bool     `tfsdk:"account_enabled"`
+	AgeGroup          types.String   `tfsdk:"age_group"`
 	AssignedLicenses  []userDataSourceAssignedLicenseModel `tfsdk:"assigned_licenses"`
 	AssignedPlans     []userDataSourceAssignedPlanModel `tfsdk:"assigned_plans"`
-	Birthday          types.String `tfsdk:"birthday"`
-	DisplayName       types.String `tfsdk:"display_name"`
-	Id                types.String `tfsdk:"id"`
-	MailNickname      types.String `tfsdk:"mail_nickname"`
+	Birthday          types.String   `tfsdk:"birthday"`
+	BusinessPhones    []types.String `tfsdk:"business_phones"`
+	DisplayName       types.String   `tfsdk:"display_name"`
+	Id                types.String   `tfsdk:"id"`
+	MailNickname      types.String   `tfsdk:"mail_nickname"`
 	PasswordProfile   *userDataSourcePasswordProfileModel `tfsdk:"password_profile"`
-	UserPrincipalName types.String `tfsdk:"user_principal_name"`
+	UserPrincipalName types.String   `tfsdk:"user_principal_name"`
 }
 
 type userDataSourceAssignedLicenseModel struct {
@@ -185,8 +190,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetAgeGroup() != nil {state.AboutMe = types.StringValue(*result.GetAgeGroup())}
 
 	// Map assigned licenses
-	assignedLicenses := result.GetAssignedLicenses()
-	for _, license := range assignedLicenses{
+	for _, license := range result.GetAssignedLicenses(){
 		assignedLicensesState := userDataSourceAssignedLicenseModel{
 			Sku: types.StringValue(license.GetSkuId().String()),
 		}
@@ -197,8 +201,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	// Map assigned plans
-	assignedPlans := result.GetAssignedPlans()
-	for _, plan := range assignedPlans{
+	for _, plan := range result.GetAssignedPlans(){
 		assignedPlansState := userDataSourceAssignedPlanModel{
 			AssignedDateTime: types.StringValue(plan.GetAssignedDateTime().String()),
 			CapabilityStatus: types.StringValue(*plan.GetCapabilityStatus()),
@@ -209,6 +212,11 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	if result.GetBirthday() != nil {state.Birthday = types.StringValue(result.GetBirthday().String())}
+
+	for _, businessPhone := range result.GetBusinessPhones() {
+		state.BusinessPhones = append(state.BusinessPhones, types.StringValue(businessPhone))
+	}
+
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
 	state.Id                = types.StringValue(*result.GetId())
