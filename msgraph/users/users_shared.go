@@ -35,7 +35,7 @@ var UserProperties = [...]string {
 	"jobTitle",
 	"lastPasswordChangeDateTime",
 	"legalAgeGroupClassification",
-//	"licenseAssignmentStates",
+	"licenseAssignmentStates",
 //	"mail",
 	"mailNickname",
 //	"mailboxSettings",

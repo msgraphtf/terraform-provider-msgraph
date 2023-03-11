@@ -189,6 +189,32 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"legal_age_group_classification": schema.StringAttribute{
 				Computed: true,
 			},
+			"license_assignment_states": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"assigned_by_group": schema.StringAttribute{
+							Computed: true,
+						},
+						"disabled_plans": schema.ListAttribute{
+							Computed: true,
+							ElementType: types.StringType,
+						},
+						"error": schema.StringAttribute{
+							Computed: true,
+						},
+						"last_updated_date_time": schema.StringAttribute{
+							Computed: true,
+						},
+						"sku_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"state": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
+			},
 			"mail_nickname": schema.StringAttribute{
 				Computed: true,
 				//TODO: Optional: true,
@@ -259,6 +285,7 @@ type userDataSourceModel struct {
 	JobTitle                        types.String                         `tfsdk:"job_title"`
 	LegalAgeGroupClassification     types.String                         `tfsdk:"legal_age_group_classification"`
 	LastPasswordChangeDateTime      types.String                         `tfsdk:"last_password_change_date_time"`
+	LicenseAssignmentStates         []userDataSourceLicenseAssignmentStatesModel `tfsdk:"license_assignment_states"`
 	MailNickname                    types.String                         `tfsdk:"mail_nickname"`
 	PasswordProfile                 *userDataSourcePasswordProfileModel  `tfsdk:"password_profile"`
 	UserPrincipalName               types.String                         `tfsdk:"user_principal_name"`
@@ -291,6 +318,15 @@ type userDataSourcePasswordProfileModel struct {
 	ForceChangePasswordNextSignIn        types.Bool   `tfsdk:"force_change_password_next_sign_in"`
 	ForceChangePasswordNextSignInWithMfa types.Bool   `tfsdk:"force_change_password_next_sign_in_with_mfa"`
 	Password                             types.String `tfsdk:"password"`
+}
+
+type userDataSourceLicenseAssignmentStatesModel struct {
+	AssignedByGroup     types.String   `tfsdk:"assigned_by_group"`
+	DisabledPlans       []types.String `tfsdk:"disabled_plans"` // WARNING: Is this a issue being a duplicated attribute name? 
+	Error               types.String   `tfsdk:"error"`
+	LastUpdatedDateTime types.String   `tfsdk:"last_updated_date_time"`
+	SkuId               types.String   `tfsdk:"sku_id"`
+	State               types.String   `tfsdk:"state"`
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -398,6 +434,30 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetJobTitle()                    != nil {state.JobTitle                    = types.StringValue(*result.GetJobTitle())}
 	if result.GetLastPasswordChangeDateTime()  != nil {state.LastPasswordChangeDateTime  = types.StringValue(result.GetLastPasswordChangeDateTime().String())}
 	if result.GetLegalAgeGroupClassification() != nil {state.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())}
+
+	for _, licenseAssignmentState := range result.GetLicenseAssignmentStates() {
+		licenseAssignmentStateState := new(userDataSourceLicenseAssignmentStatesModel)
+		if licenseAssignmentState.GetAssignedByGroup() != nil {
+			licenseAssignmentStateState.AssignedByGroup = types.StringValue(*licenseAssignmentState.GetAssignedByGroup())
+		}
+		for _, disabledLicense := range licenseAssignmentState.GetDisabledPlans() {
+			licenseAssignmentStateState.DisabledPlans = append(licenseAssignmentStateState.DisabledPlans, types.StringValue(disabledLicense.String()))
+		}
+		if licenseAssignmentState.GetError() != nil {
+			licenseAssignmentStateState.Error = types.StringValue(*licenseAssignmentState.GetError())
+		}
+		if licenseAssignmentState.GetLastUpdatedDateTime() != nil {
+			licenseAssignmentStateState.LastUpdatedDateTime = types.StringValue(licenseAssignmentState.GetLastUpdatedDateTime().String())
+		}
+		if licenseAssignmentState.GetSkuId() != nil {
+			licenseAssignmentStateState.SkuId = types.StringValue(licenseAssignmentState.GetSkuId().String())
+		}
+		if licenseAssignmentState.GetState() != nil {
+			licenseAssignmentStateState.State = types.StringValue(*licenseAssignmentState.GetState())
+		}
+		state.LicenseAssignmentStates = append(state.LicenseAssignmentStates, *licenseAssignmentStateState)
+	}
+
 
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
 
