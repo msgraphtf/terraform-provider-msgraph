@@ -108,6 +108,29 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"department": schema.StringAttribute{
 				Computed: true,
 			},
+			"employee_hire_date": schema.StringAttribute{
+				Computed: true,
+			},
+			"employee_id": schema.StringAttribute{
+				Computed: true,
+			},
+			"employee_leave_date_time": schema.StringAttribute{
+				Computed: true,
+			},
+			"employee_org_data": schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"cost_center": schema.StringAttribute{
+						Computed: true,
+					},
+					"division": schema.StringAttribute{
+						Computed: true,
+					},
+				},
+			},
+			"employee_type": schema.StringAttribute{
+				Computed: true,
+			},
 			"display_name": schema.StringAttribute{
 				Computed: true,
 			},
@@ -165,6 +188,11 @@ type userDataSourceModel struct {
 	CreationType      types.String   `tfsdk:"creation_type"`
 	DeletedDateTime   types.String   `tfsdk:"deleted_date_time"`
 	CompanyName       types.String   `tfsdk:"company_name"`
+	EmployeeHireDate  types.String   `tfsdk:"employee_hire_date"`
+	EmployeeId        types.String   `tfsdk:"employee_id"`
+	EmployeeLeaveDateTime types.String `tfsdk:"employee_leave_date_time"`
+	EmployeeOrgData   *userDataSourceEmployeeOrgData `tfsdk:"employee_org_data"`
+	EmployeeType      types.String   `tfsdk:"employee_type"`
 	Department        types.String   `tfsdk:"department"`
 	DisplayName       types.String   `tfsdk:"display_name"`
 	Id                types.String   `tfsdk:"id"`
@@ -183,6 +211,11 @@ type userDataSourceAssignedPlanModel struct {
 	CapabilityStatus types.String `tfsdk:"capability_status"`
 	Service          types.String `tfsdk:"service"`
 	ServicePlanID    types.String `tfsdk:"service_plan_id"`
+}
+
+type userDataSourceEmployeeOrgData struct {
+	CostCenter types.String `tfsdk:"cost_center"`
+	Division   types.String `tfsdk:"division"`
 }
 
 type userDataSourcePasswordProfileModel struct {
@@ -252,10 +285,23 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetCity()                    != nil {state.City                    = types.StringValue(*result.GetCity())}
 	if result.GetCompanyName()             != nil {state.CompanyName             = types.StringValue(*result.GetCompanyName())}
 	if result.GetConsentProvidedForMinor() != nil {state.ConsentProvidedForMinor = types.StringValue(*result.GetConsentProvidedForMinor())}
-	state.CreatedDateTime   = types.StringValue(result.GetCreatedDateTime().String())
+	state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
 	if result.GetCreationType()            != nil {state.CreationType            = types.StringValue(*result.GetCreationType())}
 	if result.GetDeletedDateTime()         != nil {state.DeletedDateTime         = types.StringValue(result.GetDeletedDateTime().String())}
 	if result.GetDepartment()              != nil {state.Department              = types.StringValue(*result.GetDepartment())}
+	if result.GetEmployeeHireDate()        != nil {state.EmployeeHireDate        = types.StringValue(result.GetEmployeeHireDate().String())}
+	if result.GetEmployeeId()              != nil {state.EmployeeId              = types.StringValue(*result.GetEmployeeId())}
+	if result.GetEmployeeLeaveDateTime()   != nil {state.EmployeeLeaveDateTime   = types.StringValue(result.GetEmployeeLeaveDateTime().String())}
+
+	employeeOrgData := new(userDataSourceEmployeeOrgData)
+	if result.GetEmployeeOrgData() != nil {
+		if result.GetEmployeeOrgData().GetCostCenter() != nil {employeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())}
+		if result.GetEmployeeOrgData().GetDivision()   != nil {employeeOrgData.Division   = types.StringValue(*result.GetEmployeeOrgData().GetDivision())}
+	}
+	state.EmployeeOrgData = employeeOrgData
+
+	if result.GetEmployeeType() != nil {state.EmployeeType = types.StringValue(*result.GetEmployeeType())}
+
 
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
