@@ -100,6 +100,9 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 					"force_change_password_next_sign_in_with_mfa": schema.BoolAttribute{
 						Computed: true,
 					},
+					"password": schema.StringAttribute{
+						Computed: true,
+					},
 				},
 			},
 			"user_principal_name": schema.StringAttribute{
@@ -148,6 +151,7 @@ type userDataSourceAssignedPlanModel struct {
 type userDataSourcePasswordProfileModel struct {
 	ForceChangePasswordNextSignIn        types.Bool   `tfsdk:"force_change_password_next_sign_in"`
 	ForceChangePasswordNextSignInWithMfa types.Bool   `tfsdk:"force_change_password_next_sign_in_with_mfa"`
+	Password                             types.String `tfsdk:"password"`
 }
 
 // Read refreshes the Terraform state with the latest data.
