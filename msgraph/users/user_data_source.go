@@ -9,6 +9,7 @@ import (
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	//"github.com/microsoftgraph/msgraph-sdk-go/models"
+	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/microsoftgraph/msgraph-sdk-go/users"
 )
 
@@ -219,7 +220,6 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			//},
 			"mail_nickname": schema.StringAttribute{
 				Computed: true,
-				//TODO: Optional: true,
 			},
 			"mobile_phone": schema.StringAttribute{
 				Computed: true,
@@ -417,7 +417,7 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed: true,
 			},
 			"user_principal_name": schema.StringAttribute{
-				//TODO: Optional: true,
+				Optional: true,
 				Computed: true,
 			},
 			"user_type": schema.StringAttribute{
@@ -595,8 +595,19 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		},
 	}
 
-	// TODO: Allow using UserPrincipalName or MailNickname as ID to search for
-	result, err := d.client.UsersById(state.Id.ValueString()).Get(context.Background(), &qparams)
+	var result models.Userable
+	var err error
+	if !state.Id.IsNull() {
+		result, err = d.client.UsersById(state.Id.ValueString()).Get(context.Background(), &qparams)
+	} else if !state.UserPrincipalName.IsNull() {
+		result, err = d.client.UsersById(state.UserPrincipalName.ValueString()).Get(context.Background(), &qparams)
+	} else {
+		resp.Diagnostics.AddError(
+			"Missing argument",
+			"Either `id` or `user_principal_name` must be supplied.",
+		)
+		return
+	}
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error getting user",
