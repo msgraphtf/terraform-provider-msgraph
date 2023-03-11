@@ -131,6 +131,21 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"employee_type": schema.StringAttribute{
 				Computed: true,
 			},
+			"external_user_state": schema.StringAttribute{
+				Computed: true,
+			},
+			"external_user_state_change_date_time": schema.StringAttribute{
+				Computed: true,
+			},
+			"fax_number": schema.StringAttribute{
+				Computed: true,
+			},
+			"given_name": schema.StringAttribute{
+				Computed: true,
+			},
+			"hire_date": schema.StringAttribute{
+				Computed: true,
+			},
 			"display_name": schema.StringAttribute{
 				Computed: true,
 			},
@@ -182,19 +197,24 @@ type userDataSourceModel struct {
 	Birthday          types.String   `tfsdk:"birthday"`
 	BusinessPhones    []types.String `tfsdk:"business_phones"`
 	City              types.String   `tfsdk:"city"`
+	CompanyName       types.String   `tfsdk:"company_name"`
 	ConsentProvidedForMinor types.String `tfsdk:"consent_provided_for_minor"`
 	Country           types.String   `tfsdk:"country"`
 	CreatedDateTime   types.String   `tfsdk:"created_date_time"`
 	CreationType      types.String   `tfsdk:"creation_type"`
 	DeletedDateTime   types.String   `tfsdk:"deleted_date_time"`
-	CompanyName       types.String   `tfsdk:"company_name"`
+	Department        types.String   `tfsdk:"department"`
+	DisplayName       types.String   `tfsdk:"display_name"`
 	EmployeeHireDate  types.String   `tfsdk:"employee_hire_date"`
 	EmployeeId        types.String   `tfsdk:"employee_id"`
 	EmployeeLeaveDateTime types.String `tfsdk:"employee_leave_date_time"`
 	EmployeeOrgData   *userDataSourceEmployeeOrgData `tfsdk:"employee_org_data"`
 	EmployeeType      types.String   `tfsdk:"employee_type"`
-	Department        types.String   `tfsdk:"department"`
-	DisplayName       types.String   `tfsdk:"display_name"`
+	ExternalUserState types.String   `tfsdk:"external_user_state"`
+	ExternalUserStateChangeDateTime types.String `tfsdk:"external_user_state_change_date_time"`
+	FaxNumber         types.String   `tfsdk:"fax_number"`
+	GivenName         types.String   `tfsdk:"given_name"`
+	HireDate          types.String   `tfsdk:"hire_date"`
 	Id                types.String   `tfsdk:"id"`
 	MailNickname      types.String   `tfsdk:"mail_nickname"`
 	PasswordProfile   *userDataSourcePasswordProfileModel `tfsdk:"password_profile"`
@@ -301,6 +321,11 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	state.EmployeeOrgData = employeeOrgData
 
 	if result.GetEmployeeType() != nil {state.EmployeeType = types.StringValue(*result.GetEmployeeType())}
+	if result.GetExternalUserState() != nil {state.ExternalUserState = types.StringValue(*result.GetExternalUserState())}
+	if result.GetExternalUserStateChangeDateTime() != nil {state.ExternalUserStateChangeDateTime = types.StringValue(result.GetExternalUserStateChangeDateTime().String())}
+	if result.GetFaxNumber() != nil {state.FaxNumber = types.StringValue(*result.GetFaxNumber())}
+	if result.GetGivenName() != nil {state.GivenName = types.StringValue(*result.GetGivenName())}
+	if result.GetHireDate() != nil {state.HireDate = types.StringValue(result.GetHireDate().String())}
 
 
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
