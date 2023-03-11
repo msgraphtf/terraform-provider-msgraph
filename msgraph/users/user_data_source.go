@@ -43,7 +43,6 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"age_group": schema.StringAttribute{
 				Computed: true,
-				//TODO: Validators: (Allowed values: null, Minor, NotAdult and Adult)
 			},
 			"assigned_licenses": schema.ListNestedAttribute{
 				Computed: true,
@@ -54,6 +53,25 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 							ElementType: types.StringType,
 						},
 						"skus": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
+			},
+			"assigned_plans": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"assigned_date_time": schema.StringAttribute{
+							Computed: true,
+						},
+						"capability_status": schema.StringAttribute{
+							Computed: true,
+						},
+						"service": schema.StringAttribute{
+							Computed: true,
+						},
+						"service_plan_id": schema.StringAttribute{
 							Computed: true,
 						},
 					},
@@ -103,6 +121,7 @@ type userDataSourceModel struct {
 	AccountEnabled    types.Bool               `tfsdk:"account_enabled"`
 	AgeGroup          types.String             `tfsdk:"age_group"`
 	AssignedLicenses  []userDataSourceAssignedLicenseModel `tfsdk:"assigned_licenses"`
+	AssignedPlans     []userDataSourceAssignedPlanModel `tfsdk:"assigned_plans"`
 	DisplayName       types.String             `tfsdk:"display_name"`
 	Id                types.String             `tfsdk:"id"`
 	MailNickname      types.String             `tfsdk:"mail_nickname"`
@@ -113,6 +132,13 @@ type userDataSourceModel struct {
 type userDataSourceAssignedLicenseModel struct {
 	DisabledPlans []types.String `tfsdk:"disabled_plans"`
 	Sku           types.String `tfsdk:"skus"`
+}
+
+type userDataSourceAssignedPlanModel struct {
+	AssignedDateTime types.String `tfsdk:"assigned_date_time"`
+	CapabilityStatus types.String `tfsdk:"capability_status"`
+	Service          types.String `tfsdk:"service"`
+	ServicePlanID    types.String `tfsdk:"service_plan_id"`
 }
 
 type userDataSourcePasswordProfileModel struct {
@@ -144,28 +170,41 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
+
 	// Map response to model
 	if result.GetAboutMe()  != nil {state.AboutMe = types.StringValue(*result.GetAboutMe())}
 	state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
 	if result.GetAgeGroup() != nil {state.AboutMe = types.StringValue(*result.GetAgeGroup())}
 
+	// Map assigned licenses
 	assignedLicenses := result.GetAssignedLicenses()
 	for _, license := range assignedLicenses{
 		assignedLicensesState := userDataSourceAssignedLicenseModel{
 			Sku: types.StringValue(license.GetSkuId().String()),
 		}
-
 		for _, disabledLicense := range license.GetDisabledPlans() {
 			assignedLicensesState.DisabledPlans = append(assignedLicensesState.DisabledPlans, types.StringValue(disabledLicense.String()))
 		}
-
 		state.AssignedLicenses = append(state.AssignedLicenses, assignedLicensesState)
+	}
+
+	// Map assigned plans
+	assignedPlans := result.GetAssignedPlans()
+	for _, plan := range assignedPlans{
+		assignedPlansState := userDataSourceAssignedPlanModel{
+			AssignedDateTime: types.StringValue(plan.GetAssignedDateTime().String()),
+			CapabilityStatus: types.StringValue(*plan.GetCapabilityStatus()),
+			Service:          types.StringValue(*plan.GetService()),
+			ServicePlanID:    types.StringValue(plan.GetServicePlanId().String()),
+		}
+		state.AssignedPlans = append(state.AssignedPlans, assignedPlansState)
 	}
 
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
 	state.Id                = types.StringValue(*result.GetId())
 
+	// Map password profile
 	passwordProfile := new(userDataSourcePasswordProfileModel)
 	passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
 	passwordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())

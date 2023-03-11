@@ -5,7 +5,7 @@ var UserProperties = [...]string {
 	"accountEnabled",
 	"ageGroup",
 	"assignedLicenses",
-//	"assignedPlans",
+	"assignedPlans",
 //	"birthday",
 //	"businessPhones",
 //	"city",
