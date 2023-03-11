@@ -28,7 +28,7 @@ var UserProperties = [...]string {
 	"givenName",
 	"hireDate",
 	"id",
-//	"identities",
+	"identities",
 //	"imAddresses",
 //	"interests",
 //	"isResourceAccount",
