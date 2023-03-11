@@ -77,6 +77,9 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 					},
 				},
 			},
+			"birthday": schema.StringAttribute{
+				Computed: true,
+			},
 			"display_name": schema.StringAttribute{
 				Computed: true,
 			},
@@ -117,16 +120,17 @@ func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 }
 
 type userDataSourceModel struct {
-	AboutMe           types.String             `tfsdk:"about_me"`
-	AccountEnabled    types.Bool               `tfsdk:"account_enabled"`
-	AgeGroup          types.String             `tfsdk:"age_group"`
+	AboutMe           types.String `tfsdk:"about_me"`
+	AccountEnabled    types.Bool   `tfsdk:"account_enabled"`
+	AgeGroup          types.String `tfsdk:"age_group"`
 	AssignedLicenses  []userDataSourceAssignedLicenseModel `tfsdk:"assigned_licenses"`
 	AssignedPlans     []userDataSourceAssignedPlanModel `tfsdk:"assigned_plans"`
-	DisplayName       types.String             `tfsdk:"display_name"`
-	Id                types.String             `tfsdk:"id"`
-	MailNickname      types.String             `tfsdk:"mail_nickname"`
+	Birthday          types.String `tfsdk:"birthday"`
+	DisplayName       types.String `tfsdk:"display_name"`
+	Id                types.String `tfsdk:"id"`
+	MailNickname      types.String `tfsdk:"mail_nickname"`
 	PasswordProfile   *userDataSourcePasswordProfileModel `tfsdk:"password_profile"`
-	UserPrincipalName types.String             `tfsdk:"user_principal_name"`
+	UserPrincipalName types.String `tfsdk:"user_principal_name"`
 }
 
 type userDataSourceAssignedLicenseModel struct {
@@ -200,6 +204,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.AssignedPlans = append(state.AssignedPlans, assignedPlansState)
 	}
 
+	if result.GetBirthday() != nil {state.Birthday = types.StringValue(result.GetBirthday().String())}
 	state.DisplayName       = types.StringValue(*result.GetDisplayName())
 	state.MailNickname      = types.StringValue(*result.GetMailNickname())
 	state.Id                = types.StringValue(*result.GetId())
