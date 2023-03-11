@@ -2,7 +2,6 @@ package users
 
 import (
 	"context"
-	//"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -377,8 +376,51 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 					},
 				},
 			},
+			"proxy_addresses": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
+			"refresh_tokens_valid_from_date_time": schema.StringAttribute{
+				Computed: true,
+			},
+			"responsibilities": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
+			"schools": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
+			"security_identifier": schema.StringAttribute{
+				Computed: true,
+			},
+			"show_in_address_list": schema.BoolAttribute{
+				Computed: true,
+			},
+			"sign_in_sessions_valid_from_date_time": schema.StringAttribute{
+				Computed: true,
+			},
+			"skills": schema.ListAttribute{
+				Computed: true,
+				ElementType: types.StringType,
+			},
+			"state": schema.StringAttribute{
+				Computed: true,
+			},
+			"street_address": schema.StringAttribute{
+				Computed: true,
+			},
+			"surname": schema.StringAttribute{
+				Computed: true,
+			},
+			"usage_location": schema.StringAttribute{
+				Computed: true,
+			},
 			"user_principal_name": schema.StringAttribute{
 				//TODO: Optional: true,
+				Computed: true,
+			},
+			"user_type": schema.StringAttribute{
 				Computed: true,
 			},
 		},
@@ -454,7 +496,20 @@ type userDataSourceModel struct {
 	PreferredLanguage               types.String                         `tfsdk:"preferred_language"`
 	PreferredName                   types.String                         `tfsdk:"preferred_name"`
 	ProvisionedPlans                []UserDataSourceProvisionedPlansModel `tfsdk:"provisioned_plans"`
+	ProxyAddresses                  []types.String                       `tfsdk:"proxy_addresses"`
+	RefreshTokensValidFromDateTime  types.String                         `tfsdk:"refresh_tokens_valid_from_date_time"`
+	Responsibilities                []types.String                       `tfsdk:"responsibilities"`
+	Schools                         []types.String                       `tfsdk:"schools"`
+	SecurityIdentifier              types.String                         `tfsdk:"security_identifier"`
+	ShowInAddressList               types.Bool                           `tfsdk:"show_in_address_list"`
+	SignInSessionsValidFromDateTime types.String                         `tfsdk:"sign_in_sessions_valid_from_date_time"`
+	Skills                          []types.String                       `tfsdk:"skills"`
+	State                           types.String                         `tfsdk:"state"`
+	StreetAddress                   types.String                         `tfsdk:"street_address"`
+	Surname                         types.String                         `tfsdk:"surname"`
+	UsageLocation                   types.String                         `tfsdk:"usage_location"`
 	UserPrincipalName               types.String                         `tfsdk:"user_principal_name"`
+	UserType                        types.String                         `tfsdk:"user_type"`
 }
 
 type userDataSourceAssignedLicenseModel struct {
@@ -719,8 +774,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetPreferredLanguage()     != nil {state.PreferredLanguage     = types.StringValue(*result.GetPreferredLanguage())}
 	if result.GetPreferredName()         != nil {state.PreferredName         = types.StringValue(*result.GetPreferredName())}
 
-	state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
-
 	for _, provisionedPlan := range result.GetProvisionedPlans() {
 		provisionedPlanState := UserDataSourceProvisionedPlansModel{
 			CapabilityStatus:   types.StringValue(*provisionedPlan.GetCapabilityStatus()),
@@ -730,6 +783,35 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.ProvisionedPlans = append(state.ProvisionedPlans, provisionedPlanState)
 	}
 
+	for _, proxy_address := range result.GetProxyAddresses() {
+		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(proxy_address))
+	}
+
+	// TODO: Report issue to msgraph-sdk-go, MISSING FROM SDK
+	//if result.GetRefreshTokensValidFromDateTime() != nil {state.RefreshTokensValidFromDateTime = types.StringValue(*result.GetRefreshTokensValidFromDateTime())}
+
+	for _, responsibility := range result.GetResponsibilities() {
+		state.Responsibilities = append(state.Responsibilities, types.StringValue(responsibility))
+	}
+
+	for _, school := range result.GetSchools() {
+		state.Schools = append(state.Schools, types.StringValue(school))
+	}
+
+	if result.GetSecurityIdentifier() != nil {state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())}
+	if result.GetShowInAddressList()  != nil {state.ShowInAddressList  = types.BoolValue(*result.GetShowInAddressList())}
+	if result.GetSignInSessionsValidFromDateTime()  != nil {state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())}
+
+	for _, skill := range result.GetSkills() {
+		state.Skills = append(state.Skills, types.StringValue(skill))
+	}
+
+	if result.GetState() != nil {state.State = types.StringValue(*result.GetState())}
+	if result.GetStreetAddress() != nil {state.StreetAddress = types.StringValue(*result.GetStreetAddress())}
+	if result.GetSurname() != nil {state.Surname = types.StringValue(*result.GetSurname())}
+	if result.GetUsageLocation() != nil {state.UsageLocation = types.StringValue(*result.GetUsageLocation())}
+	state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
+	if result.GetUserType() != nil {state.UserType = types.StringValue(*result.GetUserType())}
 
 	// Overwrite items with refreshed state
 	diags := resp.State.Set(ctx, &state)
