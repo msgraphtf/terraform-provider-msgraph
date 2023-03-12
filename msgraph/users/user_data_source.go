@@ -380,9 +380,6 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed: true,
 				ElementType: types.StringType,
 			},
-			"refresh_tokens_valid_from_date_time": schema.StringAttribute{
-				Computed: true,
-			},
 			"responsibilities": schema.ListAttribute{
 				Computed: true,
 				ElementType: types.StringType,
@@ -497,7 +494,6 @@ type userDataSourceModel struct {
 	PreferredName                   types.String                         `tfsdk:"preferred_name"`
 	ProvisionedPlans                []UserDataSourceProvisionedPlansModel `tfsdk:"provisioned_plans"`
 	ProxyAddresses                  []types.String                       `tfsdk:"proxy_addresses"`
-	RefreshTokensValidFromDateTime  types.String                         `tfsdk:"refresh_tokens_valid_from_date_time"`
 	Responsibilities                []types.String                       `tfsdk:"responsibilities"`
 	Schools                         []types.String                       `tfsdk:"schools"`
 	SecurityIdentifier              types.String                         `tfsdk:"security_identifier"`
@@ -797,9 +793,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	for _, proxy_address := range result.GetProxyAddresses() {
 		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(proxy_address))
 	}
-
-	// TODO: Report issue to msgraph-sdk-go, MISSING FROM SDK
-	//if result.GetRefreshTokensValidFromDateTime() != nil {state.RefreshTokensValidFromDateTime = types.StringValue(*result.GetRefreshTokensValidFromDateTime())}
 
 	for _, responsibility := range result.GetResponsibilities() {
 		state.Responsibilities = append(state.Responsibilities, types.StringValue(responsibility))

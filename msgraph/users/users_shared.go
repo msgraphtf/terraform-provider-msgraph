@@ -62,7 +62,7 @@ var UserProperties = [...]string {
 	"preferredName",
 	"provisionedPlans",
 	"proxyAddresses",
-	"refreshTokensValidFromDateTime",
+	//"refreshTokensValidFromDateTime", // This property is documented in the MS Graph API, but is apparently not supposed to be present, and `signInSessionsValidFromDateTime` should be used instead. See: https://github.com/microsoftgraph/msgraph-sdk-go/issues/227
 	"responsibilities",
 	"schools",
 	"securityIdentifier",
