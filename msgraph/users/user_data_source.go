@@ -30,6 +30,15 @@ func (d *userDataSource) Metadata(_ context.Context, req datasource.MetadataRequ
 	resp.TypeName = req.ProviderTypeName + "_user"
 }
 
+// Configure adds the provider configured client to the data source.
+func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	d.client = req.ProviderData.(*msgraphsdk.GraphServiceClient)
+}
+
 // Schema defines the schema for the data source.
 func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
@@ -456,15 +465,6 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 		},
 	}
-}
-
-// Configure adds the provider configured client to the data source.
-func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
-	if req.ProviderData == nil {
-		return
-	}
-
-	d.client = req.ProviderData.(*msgraphsdk.GraphServiceClient)
 }
 
 type userDataSourceModel struct {
