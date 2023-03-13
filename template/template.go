@@ -22,14 +22,15 @@ type templateInput struct {
 }
 
 type schemaInput struct {
-	NameUpperCamel string
-	NameLowerCamel string
-	NameSnake      string
-	TypeSchema     string
-	TypeModel      string
-	Computed       bool
-	Optional       bool
-	Required       bool
+	NameUpperCamel      string
+	NameLowerCamel      string
+	NameSnake           string
+	TypeSchema          string
+	TypeModel           string
+	Computed            bool
+	Optional            bool
+	Required            bool
+	MarkdownDescription string
 }
 
 type csvSchema struct {
@@ -38,6 +39,7 @@ type csvSchema struct {
 	Computed bool `csv:"Computed"`
 	Optional bool `csv:"Optional"`
 	Required bool `csv:"Required"`
+	Description string `csv:"Description"`
 }
 
 func main() {
@@ -77,21 +79,25 @@ func main() {
 		switch row.Type {
 			case "String":
 				schemaRow.TypeSchema = "String"
-				schemaRow.TypeModel  = "String"
+				schemaRow.TypeModel  = "types.String"
+			case "String collection":
+				schemaRow.TypeSchema = "List"
+				schemaRow.TypeModel  = "[]types.String"
 			case "Boolean":
 				schemaRow.TypeSchema = "Bool"
-				schemaRow.TypeModel  = "Bool"
+				schemaRow.TypeModel  = "types.Bool"
 			case "DateTimeOffset":
 				schemaRow.TypeSchema = "String"
-				schemaRow.TypeModel  = "String"
+				schemaRow.TypeModel  = "types.String"
 			default:
 				schemaRow.TypeSchema = "FIXME"
-				schemaRow.TypeModel  = "FIXME"
+				schemaRow.TypeModel  = "types.FIXME"
 		}
 
 		schemaRow.Computed = row.Computed
 		schemaRow.Optional = row.Optional
 		schemaRow.Required = row.Required
+		schemaRow.MarkdownDescription = row.Description
 		schema = append(schema, *schemaRow)
 	}
 

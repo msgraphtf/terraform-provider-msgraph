@@ -53,6 +53,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				{{- else if .Computed}}
 				Computed: true,
 				{{- end}}
+				MarkdownDescription: "{{.MarkdownDescription}}",
 			},{{end}}
 		},
 	}
@@ -60,7 +61,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 
 type {{.DataSourceNameLowerCamel}}DataSourceModel struct {
 	{{- range .Schema}}
-	{{.NameUpperCamel}} types.{{.TypeModel}}
+	{{.NameUpperCamel}} {{.TypeModel}}
 	{{- end}}
 }
 
