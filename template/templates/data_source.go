@@ -46,14 +46,19 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 		Attributes: map[string]schema.Attribute{
 			{{- range .Schema}}
 			"{{.NameSnake}}": schema.{{.TypeSchema}}Attribute{
+				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
 				Required: true,
-				{{- else if .Optional}}
+				{{- end}}
+				{{- if .Optional}}
 				Optional: true,
-				{{- else if .Computed}}
+				{{- end}}
+				{{- if .Computed}}
 				Computed: true,
 				{{- end}}
-				MarkdownDescription: "{{.MarkdownDescription}}",
+				{{- if .ElementType}}
+				ElementType: {{.ElementType}},
+				{{- end}}
 			},{{end}}
 		},
 	}

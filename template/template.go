@@ -2,11 +2,12 @@ package main
 
 import (
 	//"encoding/csv"
+	"encoding/csv"
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"text/template"
-	"encoding/csv"
 
 	"github.com/gocarina/gocsv"
 	"github.com/iancoleman/strcase"
@@ -22,15 +23,16 @@ type templateInput struct {
 }
 
 type schemaInput struct {
-	NameUpperCamel      string
+	Computed            bool
+	ElementType         string
+	MarkdownDescription string
 	NameLowerCamel      string
 	NameSnake           string
-	TypeSchema          string
-	TypeModel           string
-	Computed            bool
+	NameUpperCamel      string
 	Optional            bool
 	Required            bool
-	MarkdownDescription string
+	TypeModel           string
+	TypeSchema          string
 }
 
 type csvSchema struct {
@@ -45,12 +47,12 @@ type csvSchema struct {
 func main() {
 
 	// Get template
-	t1 := template.New("dataSource")
+	templateDataSource := template.New("dataSource")
 	templateFile, err := os.ReadFile("template/templates/data_source.go")
 	if err != nil {
 		fmt.Print(err)
 	}
-	t1, err = t1.Parse(string(templateFile))
+	templateDataSource, err = templateDataSource.Parse(string(templateFile))
 
 	// Get inputs
 	packageName    := os.Args[1]
@@ -76,19 +78,23 @@ func main() {
 		schemaRow.NameSnake      = strcase.ToSnake(row.Name)
 
 		// Convert types from MS Graph docs to Go and terraform types
-		switch row.Type {
-			case "String":
+		switch {
+			case row.Type == "String":
 				schemaRow.TypeSchema = "String"
 				schemaRow.TypeModel  = "types.String"
-			case "String collection":
+			case row.Type == "String collection":
 				schemaRow.TypeSchema = "List"
 				schemaRow.TypeModel  = "[]types.String"
-			case "Boolean":
+				schemaRow.ElementType = "types.StringType"
+			case row.Type == "Boolean":
 				schemaRow.TypeSchema = "Bool"
 				schemaRow.TypeModel  = "types.Bool"
-			case "DateTimeOffset":
+			case row.Type == "DateTimeOffset":
 				schemaRow.TypeSchema = "String"
 				schemaRow.TypeModel  = "types.String"
+			case strings.HasSuffix(row.Type, "collection"):
+				schemaRow.TypeSchema = "NestedList"
+				schemaRow.TypeModel  = "[]"+dataSourceName+"DataSource"+strcase.ToCamel(row.Type)
 			default:
 				schemaRow.TypeSchema = "FIXME"
 				schemaRow.TypeModel  = "types.FIXME"
@@ -117,6 +123,6 @@ func main() {
 	if err != nil {
 		fmt.Print(err)
 	}
-	t1.Execute(outfile, inputValues)
+	templateDataSource.Execute(outfile, inputValues)
 
 }
