@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
-	//"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/microsoftgraph/msgraph-sdk-go/users"
 )
@@ -36,73 +35,108 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"about_me": schema.StringAttribute{
+				Description: "A freeform text entry field for the user to describe themselves.",
 				Computed: true,
 			},
 			"account_enabled": schema.BoolAttribute{
+				Description: "true if the account is enabled; otherwise, false.",
+				MarkdownDescription: "`true` if the account is enabled; otherwise, `false`.",
 				Computed: true,
 			},
 			"age_group": schema.StringAttribute{
+				Description: "Sets the age group of the user. Allowed values: null, Minor, NotAdult and Adult. Refer to the legal age group property definitions for further information.",
+				MarkdownDescription: "Sets the age group of the user. Allowed values: `null`, `Minor`, `NotAdult` and `Adult`. Refer to the [legal age group property definitions](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#legal-age-group-property-definitions) for further information.",
 				Computed: true,
 			},
 			"assigned_licenses": schema.ListNestedAttribute{
+				Description: "The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate directly-assigned and inherited licenses. Use the licenseAssignmentStates property to identify the directly-assigned and inherited licenses. Not nullable.",
+				MarkdownDescription: "The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate directly-assigned and inherited licenses. Use the **licenseAssignmentStates** property to identify the directly-assigned and inherited licenses. Not nullable.",
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"disabled_plans": schema.ListAttribute{
+							Description: "A collection of the unique identifiers for plans that have been disabled.",
+							MarkdownDescription: "A collection of the unique identifiers for plans that have been disabled.",
 							Computed: true,
 							ElementType: types.StringType,
 						},
 						"skus": schema.StringAttribute{
+							Description: "The unique identifier for the SKU.",
+							MarkdownDescription: "The unique identifier for the SKU.",
 							Computed: true,
 						},
 					},
 				},
 			},
 			"assigned_plans": schema.ListNestedAttribute{
+				Description: "The plans that are assigned to the user. Read-only. Not nullable.",
+				MarkdownDescription: "The plans that are assigned to the user. Read-only. Not nullable.",
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"assigned_date_time": schema.StringAttribute{
+							Description: "The date and time at which the plan was assigned. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.",
+							MarkdownDescription: "The date and time at which the plan was assigned. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`.",
 							Computed: true,
 						},
 						"capability_status": schema.StringAttribute{
+							Description: "Condition of the capability assignment. The possible values are Enabled, Warning, Suspended, Deleted, LockedOut. See a detailed description of each value.",
+							MarkdownDescription: "Condition of the capability assignment. The possible values are `Enabled`, `Warning`, `Suspended`, `Deleted`, `LockedOut`. See a [detailed description](https://learn.microsoft.com/en-us/graph/api/resources/assignedplan?view=graph-rest-1.0#capabilitystatus-values) of each value.",
 							Computed: true,
 						},
 						"service": schema.StringAttribute{
+							Description: "The name of the service; for example, exchange.",
+							MarkdownDescription: "The name of the service; for example, `exchange`.",
 							Computed: true,
 						},
 						"service_plan_id": schema.StringAttribute{
+							Description: "A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see Product names and service plan identifiers for licensing.",
+							MarkdownDescription: "A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see [Product names and service plan identifiers for licensing](https://learn.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference).",
 							Computed: true,
 						},
 					},
 				},
 			},
 			"birthday": schema.StringAttribute{
+				Description: "The birthday of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.",
+				MarkdownDescription: "The birthday of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`.",
 				Computed: true,
 			},
 			"business_phones": schema.ListAttribute{
+				Description: "The telephone numbers for the user. NOTE: Although this is a string collection, only one number can be set for this property. Read-only for users synced from on-premises directory.",
+				MarkdownDescription: "The telephone numbers for the user. NOTE: Although this is a string collection, only one number can be set for this property. Read-only for users synced from on-premises directory.",
 				Computed: true,
 				ElementType: types.StringType,
 			},
 			"city": schema.StringAttribute{
+				Description: "The city in which the user is located. Maximum length is 128 characters.",
+				MarkdownDescription:" The city in which the user is located. Maximum length is 128 characters.",
 				Computed: true,
 			},
 			"company_name": schema.StringAttribute{
+				Description: "The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.",
+				MarkdownDescription: "The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.",
 				Computed: true,
 			},
 			"consent_provided_for_minor": schema.StringAttribute{
+				Description: "Sets whether consent has been obtained for minors. Allowed values: null, Granted, Denied and NotRequired. Refer to the legal age group property definitions for further information.",
+				MarkdownDescription: "Sets whether consent has been obtained for minors. Allowed values: `null`, `Granted`, `Denied` and `NotRequired`. Refer to the [legal age group property definitions](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#legal-age-group-property-definitions) for further information.",
 				Computed: true,
 			},
 			"country": schema.StringAttribute{
+				Description: "The country/region in which the user is located; for example, US or UK.",
+				MarkdownDescription: "The country/region in which the user is located; for example, `US` or `UK`.",
+				Computed: true,
+			},
+			"created_date_time": schema.StringAttribute{
+				Description: "The date and time the user was created, in ISO 8601 format and in UTC time. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Azure AD. Property is null for some users created before June 2018 and on-premises users that were synced to Azure AD before June 2018. Read-only.",
+				MarkdownDescription: "The date and time the user was created, in ISO 8601 format and in UTC time. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Azure AD. Property is `null` for some users created before June 2018 and on-premises users that were synced to Azure AD before June 2018. Read-only.",
 				Computed: true,
 			},
 			"creation_type": schema.StringAttribute{
 				Computed: true,
 			},
 			"deleted_date_time": schema.StringAttribute{
-				Computed: true,
-			},
-			"created_date_time": schema.StringAttribute{
 				Computed: true,
 			},
 			"department": schema.StringAttribute{

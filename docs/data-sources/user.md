@@ -17,15 +17,165 @@ description: |-
 
 ### Optional
 
-- `mail_nickname` (String)
-- `password_profile` (Attributes) (see [below for nested schema](#nestedatt--password_profile))
 - `user_principal_name` (String)
 
 ### Read-Only
 
-- `account_enabled` (Boolean)
+- `about_me` (String) A freeform text entry field for the user to describe themselves.
+- `account_enabled` (Boolean) `true` if the account is enabled; otherwise, `false`.
+- `age_group` (String) Sets the age group of the user. Allowed values: `null`, `Minor`, `NotAdult` and `Adult`. Refer to the [legal age group property definitions](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#legal-age-group-property-definitions) for further information.
+- `assigned_licenses` (Attributes List) The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate directly-assigned and inherited licenses. Use the **licenseAssignmentStates** property to identify the directly-assigned and inherited licenses. Not nullable. (see [below for nested schema](#nestedatt--assigned_licenses))
+- `assigned_plans` (Attributes List) The plans that are assigned to the user. Read-only. Not nullable. (see [below for nested schema](#nestedatt--assigned_plans))
+- `birthday` (String) The birthday of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`.
+- `business_phones` (List of String) The telephone numbers for the user. NOTE: Although this is a string collection, only one number can be set for this property. Read-only for users synced from on-premises directory.
+- `city` (String) The city in which the user is located. Maximum length is 128 characters.
+- `company_name` (String) The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.
+- `consent_provided_for_minor` (String) Sets whether consent has been obtained for minors. Allowed values: `null`, `Granted`, `Denied` and `NotRequired`. Refer to the [legal age group property definitions](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#legal-age-group-property-definitions) for further information.
+- `country` (String) The country/region in which the user is located; for example, `US` or `UK`.
+- `created_date_time` (String) The date and time the user was created, in ISO 8601 format and in UTC time. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Azure AD. Property is `null` for some users created before June 2018 and on-premises users that were synced to Azure AD before June 2018. Read-only.
+- `creation_type` (String)
+- `deleted_date_time` (String)
+- `department` (String)
 - `display_name` (String)
+- `employee_hire_date` (String)
+- `employee_id` (String)
+- `employee_leave_date_time` (String)
+- `employee_org_data` (Attributes) (see [below for nested schema](#nestedatt--employee_org_data))
+- `employee_type` (String)
+- `external_user_state` (String)
+- `external_user_state_change_date_time` (String)
+- `fax_number` (String)
+- `given_name` (String)
+- `hire_date` (String)
 - `id` (String) The ID of this resource.
+- `identities` (Attributes List) (see [below for nested schema](#nestedatt--identities))
+- `im_addresses` (List of String)
+- `interests` (List of String)
+- `is_resource_account` (Boolean)
+- `job_title` (String)
+- `last_password_change_date_time` (String)
+- `legal_age_group_classification` (String)
+- `license_assignment_states` (Attributes List) (see [below for nested schema](#nestedatt--license_assignment_states))
+- `mail_nickname` (String)
+- `mobile_phone` (String)
+- `my_site` (String)
+- `office_location` (String)
+- `on_premises_distinguished_name` (String)
+- `on_premises_domain_name` (String)
+- `on_premises_extension_attributes` (Attributes) (see [below for nested schema](#nestedatt--on_premises_extension_attributes))
+- `on_premises_immutable_id` (String)
+- `on_premises_last_sync_date_time` (String)
+- `on_premises_provisioning_errors` (Attributes List) (see [below for nested schema](#nestedatt--on_premises_provisioning_errors))
+- `on_premises_sam_account_name` (String)
+- `on_premises_security_identifier` (String)
+- `on_premises_sync_enabled` (Boolean)
+- `on_premises_user_principal_name` (String)
+- `other_mails` (List of String)
+- `password_policies` (String)
+- `password_profile` (Attributes) (see [below for nested schema](#nestedatt--password_profile))
+- `past_projects` (List of String)
+- `postal_code` (String)
+- `preferred_data_location` (String)
+- `preferred_language` (String)
+- `preferred_name` (String)
+- `provisioned_plans` (Attributes List) (see [below for nested schema](#nestedatt--provisioned_plans))
+- `proxy_addresses` (List of String)
+- `responsibilities` (List of String)
+- `schools` (List of String)
+- `security_identifier` (String)
+- `show_in_address_list` (Boolean)
+- `sign_in_sessions_valid_from_date_time` (String)
+- `skills` (List of String)
+- `state` (String)
+- `street_address` (String)
+- `surname` (String)
+- `usage_location` (String)
+- `user_type` (String)
+
+<a id="nestedatt--assigned_licenses"></a>
+### Nested Schema for `assigned_licenses`
+
+Read-Only:
+
+- `disabled_plans` (List of String) A collection of the unique identifiers for plans that have been disabled.
+- `skus` (String) The unique identifier for the SKU.
+
+
+<a id="nestedatt--assigned_plans"></a>
+### Nested Schema for `assigned_plans`
+
+Read-Only:
+
+- `assigned_date_time` (String) The date and time at which the plan was assigned. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`.
+- `capability_status` (String) Condition of the capability assignment. The possible values are `Enabled`, `Warning`, `Suspended`, `Deleted`, `LockedOut`. See a [detailed description](https://learn.microsoft.com/en-us/graph/api/resources/assignedplan?view=graph-rest-1.0#capabilitystatus-values) of each value.
+- `service` (String) The name of the service; for example, `exchange`.
+- `service_plan_id` (String) A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see [Product names and service plan identifiers for licensing](https://learn.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference).
+
+
+<a id="nestedatt--employee_org_data"></a>
+### Nested Schema for `employee_org_data`
+
+Read-Only:
+
+- `cost_center` (String)
+- `division` (String)
+
+
+<a id="nestedatt--identities"></a>
+### Nested Schema for `identities`
+
+Read-Only:
+
+- `issuer` (String)
+- `issuer_assigned_id` (String)
+- `sign_in_type` (String)
+
+
+<a id="nestedatt--license_assignment_states"></a>
+### Nested Schema for `license_assignment_states`
+
+Read-Only:
+
+- `assigned_by_group` (String)
+- `disabled_plans` (List of String)
+- `error` (String)
+- `last_updated_date_time` (String)
+- `sku_id` (String)
+- `state` (String)
+
+
+<a id="nestedatt--on_premises_extension_attributes"></a>
+### Nested Schema for `on_premises_extension_attributes`
+
+Read-Only:
+
+- `extension_attribute_1` (String)
+- `extension_attribute_10` (String)
+- `extension_attribute_11` (String)
+- `extension_attribute_12` (String)
+- `extension_attribute_13` (String)
+- `extension_attribute_14` (String)
+- `extension_attribute_15` (String)
+- `extension_attribute_2` (String)
+- `extension_attribute_3` (String)
+- `extension_attribute_4` (String)
+- `extension_attribute_5` (String)
+- `extension_attribute_6` (String)
+- `extension_attribute_7` (String)
+- `extension_attribute_8` (String)
+- `extension_attribute_9` (String)
+
+
+<a id="nestedatt--on_premises_provisioning_errors"></a>
+### Nested Schema for `on_premises_provisioning_errors`
+
+Read-Only:
+
+- `category` (String)
+- `occured_date_time` (String)
+- `property_causing_error` (String)
+- `value` (String)
+
 
 <a id="nestedatt--password_profile"></a>
 ### Nested Schema for `password_profile`
@@ -34,5 +184,16 @@ Read-Only:
 
 - `force_change_password_next_sign_in` (Boolean)
 - `force_change_password_next_sign_in_with_mfa` (Boolean)
+- `password` (String)
+
+
+<a id="nestedatt--provisioned_plans"></a>
+### Nested Schema for `provisioned_plans`
+
+Read-Only:
+
+- `capability_status` (String)
+- `provisioning_status` (String)
+- `service` (String)
 
 

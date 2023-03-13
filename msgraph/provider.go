@@ -38,6 +38,7 @@ func (p *msGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"tennant_id": schema.StringAttribute{
+				Description: "Azure AD Tenant ID.",
 				Optional: true,
 			},
 		},
