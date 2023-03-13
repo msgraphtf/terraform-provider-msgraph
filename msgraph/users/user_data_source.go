@@ -487,7 +487,7 @@ type userDataSourceModel struct {
 	EmployeeHireDate                types.String                         `tfsdk:"employee_hire_date"`
 	EmployeeId                      types.String                         `tfsdk:"employee_id"`
 	EmployeeLeaveDateTime           types.String                         `tfsdk:"employee_leave_date_time"`
-	EmployeeOrgData                 *userDataSourceEmployeeOrgData       `tfsdk:"employee_org_data"`
+	EmployeeOrgData                 *userDataSourceEmployeeOrgDataModel  `tfsdk:"employee_org_data"`
 	EmployeeType                    types.String                         `tfsdk:"employee_type"`
 	ExternalUserState               types.String                         `tfsdk:"external_user_state"`
 	ExternalUserStateChangeDateTime types.String                         `tfsdk:"external_user_state_change_date_time"`
@@ -495,7 +495,7 @@ type userDataSourceModel struct {
 	GivenName                       types.String                         `tfsdk:"given_name"`
 	HireDate                        types.String                         `tfsdk:"hire_date"`
 	Id                              types.String                         `tfsdk:"id"`
-	Identities                      []userDataSourceIdentities           `tfsdk:"identities"`
+	Identities                      []userDataSourceIdentitiesModel      `tfsdk:"identities"`
 	ImAddresses                     []types.String                       `tfsdk:"im_addresses"`
 	Interests                       []types.String                       `tfsdk:"interests"`
 	IsResourceAccount               types.Bool                           `tfsdk:"is_resource_account"`
@@ -526,7 +526,7 @@ type userDataSourceModel struct {
 	PreferredDataLocation           types.String                         `tfsdk:"preferred_data_location"`
 	PreferredLanguage               types.String                         `tfsdk:"preferred_language"`
 	PreferredName                   types.String                         `tfsdk:"preferred_name"`
-	ProvisionedPlans                []UserDataSourceProvisionedPlansModel `tfsdk:"provisioned_plans"`
+	ProvisionedPlans                []userDataSourceProvisionedPlansModel `tfsdk:"provisioned_plans"`
 	ProxyAddresses                  []types.String                       `tfsdk:"proxy_addresses"`
 	Responsibilities                []types.String                       `tfsdk:"responsibilities"`
 	Schools                         []types.String                       `tfsdk:"schools"`
@@ -554,12 +554,12 @@ type userDataSourceAssignedPlanModel struct {
 	ServicePlanID    types.String `tfsdk:"service_plan_id"`
 }
 
-type userDataSourceEmployeeOrgData struct {
+type userDataSourceEmployeeOrgDataModel struct {
 	CostCenter types.String `tfsdk:"cost_center"`
 	Division   types.String `tfsdk:"division"`
 }
 
-type userDataSourceIdentities struct {
+type userDataSourceIdentitiesModel struct {
 	Issuer           types.String `tfsdk:"issuer"`
 	IssuerAssignedId types.String `tfsdk:"issuer_assigned_id"`
 	SignInType       types.String `tfsdk:"sign_in_type"`
@@ -605,7 +605,7 @@ type userDataSourceOnPremisesProvisioningErrorModel struct {
 	Value                types.String `tfsdk:"value"`
 }
 
-type UserDataSourceProvisionedPlansModel struct {
+type userDataSourceProvisionedPlansModel struct {
 	CapabilityStatus   types.String `tfsdk:"capability_status"`
 	ProvisioningStatus types.String `tfsdk:"provisioning_status"`
 	Service            types.String `tfsdk:"service"`
@@ -692,7 +692,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetEmployeeId()              != nil {state.EmployeeId              = types.StringValue(*result.GetEmployeeId())}
 	if result.GetEmployeeLeaveDateTime()   != nil {state.EmployeeLeaveDateTime   = types.StringValue(result.GetEmployeeLeaveDateTime().String())}
 
-	employeeOrgData := new(userDataSourceEmployeeOrgData)
+	employeeOrgData := new(userDataSourceEmployeeOrgDataModel)
 	if result.GetEmployeeOrgData() != nil {
 		if result.GetEmployeeOrgData().GetCostCenter() != nil {employeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())}
 		if result.GetEmployeeOrgData().GetDivision()   != nil {employeeOrgData.Division   = types.StringValue(*result.GetEmployeeOrgData().GetDivision())}
@@ -708,7 +708,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	state.Id = types.StringValue(*result.GetId())
 
 	for _, identity := range result.GetIdentities() {
-		identitiesState := userDataSourceIdentities{
+		identitiesState := userDataSourceIdentitiesModel{
 			Issuer:           types.StringValue(*identity.GetIssuer()),
 			IssuerAssignedId: types.StringValue(*identity.GetIssuerAssignedId()),
 			SignInType:       types.StringValue(*identity.GetSignInType()),
@@ -816,7 +816,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetPreferredName()         != nil {state.PreferredName         = types.StringValue(*result.GetPreferredName())}
 
 	for _, provisionedPlan := range result.GetProvisionedPlans() {
-		provisionedPlanState := UserDataSourceProvisionedPlansModel{
+		provisionedPlanState := userDataSourceProvisionedPlansModel{
 			CapabilityStatus:   types.StringValue(*provisionedPlan.GetCapabilityStatus()),
 			ProvisioningStatus: types.StringValue(*provisionedPlan.GetProvisioningStatus()),
 			Service:            types.StringValue(*provisionedPlan.GetService()),
