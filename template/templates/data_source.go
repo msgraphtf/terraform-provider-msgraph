@@ -59,6 +59,9 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				{{- if .ElementType}}
 				ElementType: {{.ElementType}},
 				{{- end}}
+				{{- if .NestedObject}}
+				NestedObject: {{.NestedObject}},
+				{{- end}}
 			},{{end}}
 		},
 	}
@@ -66,7 +69,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 
 type {{.DataSourceNameLowerCamel}}DataSourceModel struct {
 	{{- range .Schema}}
-	{{.NameUpperCamel}} {{.TypeModel}}
+	{{.NameUpperCamel}} {{.TypeModel}} `tfsdk:"{{.NameSnake}}"`
 	{{- end}}
 }
 

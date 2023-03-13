@@ -23,24 +23,25 @@ type templateInput struct {
 }
 
 type schemaInput struct {
-	Computed            bool
-	ElementType         string
-	MarkdownDescription string
+	NameUpperCamel      string
 	NameLowerCamel      string
 	NameSnake           string
-	NameUpperCamel      string
-	Optional            bool
-	Required            bool
 	TypeModel           string
 	TypeSchema          string
+	MarkdownDescription string
+	Required            bool
+	Optional            bool
+	Computed            bool
+	ElementType         string
+	NestedObject        bool
 }
 
 type csvSchema struct {
-	Name string `csv:"Property"`
-	Type string `csv:"Type"`
-	Computed bool `csv:"Computed"`
-	Optional bool `csv:"Optional"`
-	Required bool `csv:"Required"`
+	Name        string `csv:"Property"`
+	Type        string `csv:"Type"`
+	Computed    bool   `csv:"Computed"`
+	Optional    bool   `csv:"Optional"`
+	Required    bool   `csv:"Required"`
 	Description string `csv:"Description"`
 }
 
@@ -55,19 +56,21 @@ func main() {
 	templateDataSource, err = templateDataSource.Parse(string(templateFile))
 
 	// Get inputs
-	packageName    := os.Args[1]
+	packageName := os.Args[1]
 	dataSourceName := os.Args[2]
-	f, err := os.Open("template/input/"+dataSourceName+".csv")
-    defer f.Close()
-	rawCsv := []*csvSchema{}
+
+	// Configure gocsv
 	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
-            r := csv.NewReader(in)
-            r.Comma = '|'
-			r.LazyQuotes = true
-            return r // Allows use pipe as delimiter
-        })
+		r := csv.NewReader(in)
+		r.Comma = '|'
+		r.LazyQuotes = true
+		return r // Allows use pipe as delimiter
+	})
+
+	f, err := os.Open("template/input/" + packageName + "/" + dataSourceName + ".csv")
+	defer f.Close()
+	rawCsv := []*csvSchema{}
 	gocsv.UnmarshalFile(f, &rawCsv)
-	fmt.Print(rawCsv)
 
 	// Generate schema values from CSV columns
 	var schema []schemaInput
@@ -75,29 +78,30 @@ func main() {
 		schemaRow := new(schemaInput)
 		schemaRow.NameUpperCamel = strcase.ToCamel(row.Name)
 		schemaRow.NameLowerCamel = strcase.ToLowerCamel(row.Name)
-		schemaRow.NameSnake      = strcase.ToSnake(row.Name)
+		schemaRow.NameSnake = strcase.ToSnake(row.Name)
 
 		// Convert types from MS Graph docs to Go and terraform types
 		switch {
-			case row.Type == "String":
-				schemaRow.TypeSchema = "String"
-				schemaRow.TypeModel  = "types.String"
-			case row.Type == "String collection":
-				schemaRow.TypeSchema = "List"
-				schemaRow.TypeModel  = "[]types.String"
-				schemaRow.ElementType = "types.StringType"
-			case row.Type == "Boolean":
-				schemaRow.TypeSchema = "Bool"
-				schemaRow.TypeModel  = "types.Bool"
-			case row.Type == "DateTimeOffset":
-				schemaRow.TypeSchema = "String"
-				schemaRow.TypeModel  = "types.String"
-			case strings.HasSuffix(row.Type, "collection"):
-				schemaRow.TypeSchema = "NestedList"
-				schemaRow.TypeModel  = "[]"+dataSourceName+"DataSource"+strcase.ToCamel(row.Type)
-			default:
-				schemaRow.TypeSchema = "FIXME"
-				schemaRow.TypeModel  = "types.FIXME"
+		case row.Type == "String":
+			schemaRow.TypeSchema = "String"
+			schemaRow.TypeModel = "types.String"
+		case row.Type == "String collection":
+			schemaRow.TypeSchema = "List"
+			schemaRow.TypeModel = "[]types.String"
+			schemaRow.ElementType = "types.StringType"
+		case row.Type == "Boolean":
+			schemaRow.TypeSchema = "Bool"
+			schemaRow.TypeModel = "types.Bool"
+		case row.Type == "DateTimeOffset":
+			schemaRow.TypeSchema = "String"
+			schemaRow.TypeModel = "types.String"
+		case strings.HasSuffix(row.Type, "collection"):
+			schemaRow.TypeSchema = "ListNested"
+			schemaRow.TypeModel = "[]" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
+			schemaRow.NestedObject = true
+		default:
+			schemaRow.TypeSchema = "SingleNested"
+			schemaRow.TypeModel = "*" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
 		}
 
 		schemaRow.Computed = row.Computed
@@ -117,9 +121,8 @@ func main() {
 		Schema:                   schema,
 	}
 
-
 	os.MkdirAll("template/out/", os.ModePerm)
-	outfile, err := os.Create("template/out/"+dataSourceName+"_data_source.go")
+	outfile, err := os.Create("template/out/" + dataSourceName + "_data_source.go")
 	if err != nil {
 		fmt.Print(err)
 	}
