@@ -44,8 +44,10 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Configure(_ context.Context, r
 func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
     resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			{{- range .Schema}}
-			"{{.NameSnake}}": schema.{{.TypeSchema}}Attribute{
+
+			{{- /* Define templates for different Attribute types */}}
+			{{- define "StringAttribute" }}
+			"{{.NameSnake}}": schema.StringAttribute{
 				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
 				Required: true,
@@ -56,12 +58,80 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				{{- if .Computed}}
 				Computed: true,
 				{{- end}}
-				{{- if .ElementType}}
+			{{- end}}
+
+			{{- define "BoolAttribute" }}
+			"{{.NameSnake}}": schema.BoolAttribute{
+				MarkdownDescription: "{{.MarkdownDescription}}",
+				{{- if .Required}}
+				Required: true,
+				{{- end}}
+				{{- if .Optional}}
+				Optional: true,
+				{{- end}}
+				{{- if .Computed}}
+				Computed: true,
+				{{- end}}
+			{{- end}}
+
+			{{- define "ListAttribute" }}
+			"{{.NameSnake}}": schema.ListAttribute{
+				MarkdownDescription: "{{.MarkdownDescription}}",
+				{{- if .Required}}
+				Required: true,
+				{{- end}}
+				{{- if .Optional}}
+				Optional: true,
+				{{- end}}
+				{{- if .Computed}}
+				Computed: true,
+				{{- end}}
 				ElementType: {{.ElementType}},
+			{{- end}}
+
+			{{- define "SingleNestedAttribute" }}
+			"{{.NameSnake}}": schema.ListAttribute{
+				MarkdownDescription: "{{.MarkdownDescription}}",
+				{{- if .Required}}
+				Required: true,
 				{{- end}}
-				{{- if .NestedObject}}
-				NestedObject: {{.NestedObject}},
+				{{- if .Optional}}
+				Optional: true,
 				{{- end}}
+				{{- if .Computed}}
+				Computed: true,
+				{{- end}}
+				//TODO: Attributes
+			{{- end}}
+
+			{{- define "ListNestedAttribute" }}
+			"{{.NameSnake}}": schema.ListNestedAttribute{
+				MarkdownDescription: "{{.MarkdownDescription}}",
+				{{- if .Required}}
+				Required: true,
+				{{- end}}
+				{{- if .Optional}}
+				Optional: true,
+				{{- end}}
+				{{- if .Computed}}
+				Computed: true,
+				{{- end}}
+				//TODO: NestedObject
+			{{- end}}
+
+			{{- /* Generate our Attributes from our defined templates above */}}
+			{{- range .Schema}}
+			{{- if eq .AttributeType "String" }}
+			{{template "StringAttribute" .}}
+			{{- else if eq .AttributeType "Bool" }}
+			{{template "BoolAttribute" .}}
+			{{- else if eq .AttributeType "List" }}
+			{{template "ListAttribute" .}}
+			{{- else if eq .AttributeType "SingleNested" }}
+			{{template "SingleNestedAttribute" .}}
+			{{- else if eq .AttributeType "ListNested" }}
+			{{template "ListNestedAttribute" .}}
+			{{- end }}
 			},{{end}}
 		},
 	}
