@@ -58,7 +58,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				{{- if .Computed}}
 				Computed: true,
 				{{- end}}
-			{{- end}}
+			},
+			{{- end }}
 
 			{{- define "BoolAttribute" }}
 			"{{.NameSnake}}": schema.BoolAttribute{
@@ -72,7 +73,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				{{- if .Computed}}
 				Computed: true,
 				{{- end}}
-			{{- end}}
+			},
+			{{- end }}
 
 			{{- define "ListAttribute" }}
 			"{{.NameSnake}}": schema.ListAttribute{
@@ -87,10 +89,11 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				Computed: true,
 				{{- end}}
 				ElementType: {{.ElementType}},
-			{{- end}}
+			},
+			{{- end }}
 
 			{{- define "SingleNestedAttribute" }}
-			"{{.NameSnake}}": schema.ListAttribute{
+			"{{.NameSnake}}": schema.SingleNestedAttribute{
 				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
 				Required: true,
@@ -101,8 +104,11 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				{{- if .Computed}}
 				Computed: true,
 				{{- end}}
-				//TODO: Attributes
-			{{- end}}
+				Attributes: map[string]schema.Attribute{
+				{{- template "generate" .Attributes}}
+				},
+			},
+			{{- end }}
 
 			{{- define "ListNestedAttribute" }}
 			"{{.NameSnake}}": schema.ListNestedAttribute{
@@ -116,23 +122,30 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				{{- if .Computed}}
 				Computed: true,
 				{{- end}}
-				//TODO: NestedObject
-			{{- end}}
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						{{- template "generate" .NestedObject}}
+					},
+				},
+			},
+			{{- end }}
 
 			{{- /* Generate our Attributes from our defined templates above */}}
-			{{- range .Schema}}
+			{{- block "generate" .Schema}}
+			{{- range .}}
 			{{- if eq .AttributeType "String" }}
-			{{template "StringAttribute" .}}
+			{{- template "StringAttribute" .}}
 			{{- else if eq .AttributeType "Bool" }}
-			{{template "BoolAttribute" .}}
+			{{- template "BoolAttribute" .}}
 			{{- else if eq .AttributeType "List" }}
-			{{template "ListAttribute" .}}
+			{{- template "ListAttribute" .}}
 			{{- else if eq .AttributeType "SingleNested" }}
-			{{template "SingleNestedAttribute" .}}
+			{{- template "SingleNestedAttribute" .}}
 			{{- else if eq .AttributeType "ListNested" }}
-			{{template "ListNestedAttribute" .}}
+			{{- template "ListNestedAttribute" .}}
 			{{- end }}
-			},{{end}}
+			{{- end}}
+			{{- end}}
 		},
 	}
 }

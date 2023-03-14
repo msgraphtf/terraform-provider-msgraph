@@ -1,0 +1,3 @@
+Property|Type|Computed|Required|Optional|Description
+disabledPlans|String collection|TRUE|||A collection of the unique identifiers for plans that have been disabled.
+skuId|String|TRUE|||The unique identifier for the SKU.

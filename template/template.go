@@ -22,18 +22,20 @@ type templateInput struct {
 	Schema                   []schemaAttribute
 }
 
+// Used by templates defined inside of data_source_template.go
 type schemaAttribute struct {
 	NameUpperCamel      string
 	NameLowerCamel      string
 	NameSnake           string
 	TypeModel           string
-	AttributeType          string
+	AttributeType       string
 	MarkdownDescription string
 	Required            bool
 	Optional            bool
 	Computed            bool
 	ElementType         string
-	NestedObject        *schemaAttribute
+	Attributes          []schemaAttribute
+	NestedObject        []schemaAttribute
 }
 
 type csvSchema struct {
@@ -47,6 +49,27 @@ type csvSchema struct {
 
 var dataSourceName string
 var packageName string
+
+func openCsv(path string) []*csvSchema {
+
+	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
+		r := csv.NewReader(in)
+		r.Comma = '|'
+		r.LazyQuotes = true
+		return r // Allows use pipe as delimiter
+	})
+
+	f, err := os.Open(path)
+	if err != nil {
+		fmt.Print(err)
+	}
+	defer f.Close()
+	csv := []*csvSchema{}
+	gocsv.UnmarshalFile(f, &csv)
+
+	return csv
+
+}
 
 func generateSchema(schema *[]schemaAttribute, csv []*csvSchema) {
 	for _, row := range csv {
@@ -76,10 +99,21 @@ func generateSchema(schema *[]schemaAttribute, csv []*csvSchema) {
 		case strings.HasSuffix(row.Type, "collection"):
 			nextAttribute.AttributeType = "ListNested"
 			nextAttribute.TypeModel = "[]" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
-			//nextAttribute.NestedObject = true
+
+			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttribute.NameSnake + ".csv")
+			var nestedAttributes []schemaAttribute
+			generateSchema(&nestedAttributes, nestedCsv)
+
+			nextAttribute.NestedObject = nestedAttributes
 		default:
 			nextAttribute.AttributeType = "SingleNested"
 			nextAttribute.TypeModel = "*" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
+
+			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttribute.NameSnake + ".csv")
+			var nestedAttributes []schemaAttribute
+			generateSchema(&nestedAttributes, nestedCsv)
+
+			nextAttribute.Attributes = nestedAttributes
 		}
 
 		nextAttribute.Computed = row.Computed
@@ -105,24 +139,14 @@ func main() {
 	packageName = os.Args[1]
 	dataSourceName = os.Args[2]
 
-	// Configure gocsv
-	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
-		r := csv.NewReader(in)
-		r.Comma = '|'
-		r.LazyQuotes = true
-		return r // Allows use pipe as delimiter
-	})
-
-	f, err := os.Open("template/input/" + packageName + "/" + dataSourceName + ".csv")
-	defer f.Close()
-	rawCsv := []*csvSchema{}
-	gocsv.UnmarshalFile(f, &rawCsv)
+	// Open top level CSV
+	csv := openCsv("template/input/" + packageName + "/" + dataSourceName + ".csv")
 
 	// Generate schema values from CSV columns
 	var schema []schemaAttribute
-	generateSchema(&schema, rawCsv)
+	generateSchema(&schema, csv)
 
-	// Set inputs on struct
+	// Set input values to top level template
 	inputValues := templateInput{
 		PackageName:              packageName,
 		DataSourceName:           dataSourceName,

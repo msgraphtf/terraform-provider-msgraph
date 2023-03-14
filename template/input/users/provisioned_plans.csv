@@ -1,0 +1,4 @@
+Property|Type|Optional|Description
+capabilityStatus|String|TRUE|For example, “Enabled”.
+provisioningStatus|String|TRUE|For example, “Success”.
+service|String|TRUE|The name of the service; for example, “AccessControlS2S”
