@@ -18,24 +18,29 @@ type templateInput struct {
 	DataSourceName           string
 	DataSourceNameUpperCamel string
 	DataSourceNameLowerCamel string
-	DataSourceNameSnake      string
-	Schema                   []schemaAttribute
+	DataSourceAttributeName  string
+	Schema                   []attributeSchema
+	Model                    []attributeModel
 }
 
-// Used by templates defined inside of data_source_template.go
-type schemaAttribute struct {
-	NameUpperCamel      string
-	NameLowerCamel      string
-	NameSnake           string
-	TypeModel           string
+// Used by templates defined inside of data_source_template.go to generate the schema
+type attributeSchema struct {
+	AttributeName       string
 	AttributeType       string
 	MarkdownDescription string
 	Required            bool
 	Optional            bool
 	Computed            bool
 	ElementType         string
-	Attributes          []schemaAttribute
-	NestedObject        []schemaAttribute
+	Attributes          []attributeSchema
+	NestedObject        []attributeSchema
+}
+
+// Used by templates defined inside of data_source_template.go to generate the data models
+type attributeModel struct {
+	ModelName      string
+	ModelType      string
+	AttributeName  string
 }
 
 type csvSchema struct {
@@ -71,57 +76,61 @@ func openCsv(path string) []*csvSchema {
 
 }
 
-func generateSchema(schema *[]schemaAttribute, csv []*csvSchema) {
+func generateSchema(schema *[]attributeSchema, model *[]attributeModel, csv []*csvSchema) {
 	for _, row := range csv {
 
-		// Create new schemaAttribute for array
-		nextAttribute := new(schemaAttribute)
+		// Create new attribute schema and model for array
+		nextAttributeSchema := new(attributeSchema)
+		nextAttributeModel := new(attributeModel)
 
-		nextAttribute.NameUpperCamel = strcase.ToCamel(row.Name)
-		nextAttribute.NameLowerCamel = strcase.ToLowerCamel(row.Name)
-		nextAttribute.NameSnake = strcase.ToSnake(row.Name)
+		nextAttributeSchema.AttributeName = strcase.ToSnake(row.Name)
+		nextAttributeModel.ModelName      = strcase.ToCamel(row.Name)
+		nextAttributeModel.AttributeName  = strcase.ToSnake(row.Name)
 
 		// Convert types from MS Graph docs to Go and terraform types
 		switch {
 		case row.Type == "String":
-			nextAttribute.AttributeType = "String"
-			nextAttribute.TypeModel = "types.String"
+			nextAttributeSchema.AttributeType = "String"
+			nextAttributeModel.ModelType = "types.String"
 		case row.Type == "String collection":
-			nextAttribute.AttributeType = "List"
-			nextAttribute.TypeModel = "[]types.String"
-			nextAttribute.ElementType = "types.StringType"
+			nextAttributeSchema.AttributeType = "List"
+			nextAttributeSchema.ElementType = "types.StringType"
+			nextAttributeModel.ModelType = "[]types.String"
 		case row.Type == "Boolean":
-			nextAttribute.AttributeType = "Bool"
-			nextAttribute.TypeModel = "types.Bool"
+			nextAttributeSchema.AttributeType = "Bool"
+			nextAttributeModel.ModelType = "types.Bool"
 		case row.Type == "DateTimeOffset":
-			nextAttribute.AttributeType = "String"
-			nextAttribute.TypeModel = "types.String"
+			nextAttributeSchema.AttributeType = "String"
+			nextAttributeModel.ModelType = "types.String"
 		case strings.HasSuffix(row.Type, "collection"):
-			nextAttribute.AttributeType = "ListNested"
-			nextAttribute.TypeModel = "[]" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
+			nextAttributeSchema.AttributeType = "ListNested"
+			nextAttributeModel.ModelType = "[]" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
 
-			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttribute.NameSnake + ".csv")
-			var nestedAttributes []schemaAttribute
-			generateSchema(&nestedAttributes, nestedCsv)
+			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttributeSchema.AttributeName + ".csv")
+			var nestedAttributes []attributeSchema
+			var nestedModel []attributeModel
+			generateSchema(&nestedAttributes, &nestedModel, nestedCsv)
 
-			nextAttribute.NestedObject = nestedAttributes
+			nextAttributeSchema.NestedObject = nestedAttributes
 		default:
-			nextAttribute.AttributeType = "SingleNested"
-			nextAttribute.TypeModel = "*" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
+			nextAttributeSchema.AttributeType = "SingleNested"
+			nextAttributeModel.ModelType = "*" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
 
-			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttribute.NameSnake + ".csv")
-			var nestedAttributes []schemaAttribute
-			generateSchema(&nestedAttributes, nestedCsv)
+			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttributeSchema.AttributeName + ".csv")
+			var nestedAttributes []attributeSchema
+			var nestedModel []attributeModel
+			generateSchema(&nestedAttributes, &nestedModel, nestedCsv)
 
-			nextAttribute.Attributes = nestedAttributes
+			nextAttributeSchema.Attributes = nestedAttributes
 		}
 
-		nextAttribute.Computed = row.Computed
-		nextAttribute.Optional = row.Optional
-		nextAttribute.Required = row.Required
-		nextAttribute.MarkdownDescription = row.Description
+		nextAttributeSchema.Computed = row.Computed
+		nextAttributeSchema.Optional = row.Optional
+		nextAttributeSchema.Required = row.Required
+		nextAttributeSchema.MarkdownDescription = row.Description
 
-		*schema = append(*schema, *nextAttribute)
+		*schema = append(*schema, *nextAttributeSchema)
+		*model = append(*model, *nextAttributeModel)
 	}
 }
 
@@ -143,8 +152,9 @@ func main() {
 	csv := openCsv("template/input/" + packageName + "/" + dataSourceName + ".csv")
 
 	// Generate schema values from CSV columns
-	var schema []schemaAttribute
-	generateSchema(&schema, csv)
+	var schema []attributeSchema
+	var model []attributeModel
+	generateSchema(&schema, &model, csv)
 
 	// Set input values to top level template
 	inputValues := templateInput{
@@ -152,8 +162,9 @@ func main() {
 		DataSourceName:           dataSourceName,
 		DataSourceNameUpperCamel: strcase.ToCamel(dataSourceName),
 		DataSourceNameLowerCamel: strcase.ToLowerCamel(dataSourceName),
-		DataSourceNameSnake:      strcase.ToSnake(dataSourceName),
+		DataSourceAttributeName:  strcase.ToSnake(dataSourceName),
 		Schema:                   schema,
+		Model:                    model,
 	}
 
 	os.MkdirAll("template/out/", os.ModePerm)

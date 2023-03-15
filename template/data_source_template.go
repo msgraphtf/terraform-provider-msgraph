@@ -28,7 +28,7 @@ type {{.DataSourceName}}DataSource struct{
 
 // Metadata returns the data source type name.
 func (d *{{.DataSourceNameLowerCamel}}DataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-    resp.TypeName = req.ProviderTypeName + "_{{.DataSourceNameSnake}}"
+    resp.TypeName = req.ProviderTypeName + "_{{.DataSourceAttributeName}}"
 }
 
 // Configure adds the provider configured client to the data source.
@@ -47,7 +47,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 
 			{{- /* Define templates for different Attribute types */}}
 			{{- define "StringAttribute" }}
-			"{{.NameSnake}}": schema.StringAttribute{
+			"{{.AttributeName}}": schema.StringAttribute{
 				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
 				Required: true,
@@ -62,7 +62,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- end }}
 
 			{{- define "BoolAttribute" }}
-			"{{.NameSnake}}": schema.BoolAttribute{
+			"{{.AttributeName}}": schema.BoolAttribute{
 				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
 				Required: true,
@@ -77,7 +77,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- end }}
 
 			{{- define "ListAttribute" }}
-			"{{.NameSnake}}": schema.ListAttribute{
+			"{{.AttributeName}}": schema.ListAttribute{
 				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
 				Required: true,
@@ -93,7 +93,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- end }}
 
 			{{- define "SingleNestedAttribute" }}
-			"{{.NameSnake}}": schema.SingleNestedAttribute{
+			"{{.AttributeName}}": schema.SingleNestedAttribute{
 				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
 				Required: true,
@@ -105,13 +105,13 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				Computed: true,
 				{{- end}}
 				Attributes: map[string]schema.Attribute{
-				{{- template "generate" .Attributes}}
+				{{- template "generate_schema" .Attributes}}
 				},
 			},
 			{{- end }}
 
 			{{- define "ListNestedAttribute" }}
-			"{{.NameSnake}}": schema.ListNestedAttribute{
+			"{{.AttributeName}}": schema.ListNestedAttribute{
 				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
 				Required: true,
@@ -124,14 +124,14 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 				{{- end}}
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						{{- template "generate" .NestedObject}}
+						{{- template "generate_schema" .NestedObject}}
 					},
 				},
 			},
 			{{- end }}
 
 			{{- /* Generate our Attributes from our defined templates above */}}
-			{{- block "generate" .Schema}}
+			{{- block "generate_schema" .Schema}}
 			{{- range .}}
 			{{- if eq .AttributeType "String" }}
 			{{- template "StringAttribute" .}}
@@ -151,8 +151,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 }
 
 type {{.DataSourceNameLowerCamel}}DataSourceModel struct {
-	{{- range .Schema}}
-	{{.NameUpperCamel}} {{.TypeModel}} `tfsdk:"{{.NameSnake}}"`
+	{{- range .Model}}
+	{{.ModelName}} {{.ModelType}} `tfsdk:"{{.AttributeName}}"`
 	{{- end}}
 }
 
