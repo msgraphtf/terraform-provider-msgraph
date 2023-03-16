@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"encoding/csv"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -38,9 +37,14 @@ type attributeSchema struct {
 
 // Used by templates defined inside of data_source_template.go to generate the data models
 type attributeModel struct {
-	ModelName      string
-	ModelType      string
-	AttributeName  string
+	ModelName string
+	Fields    []modelField
+}
+
+type modelField struct {
+	FieldName     string
+	FieldType     string
+	AttributeName string
 }
 
 type csvSchema struct {
@@ -108,7 +112,7 @@ func generateSchema(schema *[]attributeSchema, csv []*csvSchema) {
 
 			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttributeSchema.AttributeName + ".csv")
 			var nestedAttributes []attributeSchema
-			generateSchema(&nestedAttributes,  nestedCsv)
+			generateSchema(&nestedAttributes, nestedCsv)
 
 			nextAttributeSchema.Attributes = nestedAttributes
 		}
@@ -122,6 +126,46 @@ func generateSchema(schema *[]attributeSchema, csv []*csvSchema) {
 	}
 }
 
+func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) {
+
+	newModel := attributeModel{
+		ModelName: modelName,
+	}
+
+	for _, row := range csv {
+
+		nextModelField := new(modelField)
+		nextModelField.FieldName = strcase.ToCamel(row.Name)
+		nextModelField.AttributeName = strcase.ToSnake(row.Name)
+
+		switch {
+		case row.Type == "String":
+			nextModelField.FieldType = "types.String"
+		case row.Type == "Boolean":
+			nextModelField.FieldType = "types.Bool"
+		case row.Type == "DateTimeOffset":
+			nextModelField.FieldType = "types.String"
+		case row.Type == "String collection":
+			nextModelField.FieldType = "[]types.String"
+		case strings.HasSuffix(row.Type, "collection"):
+			nestedModel := attributeModel{
+				ModelName: "[]" + dataSourceName + strcase.ToCamel(row.Name) + "Model",
+			}
+			nextModelField.FieldType = nestedModel.ModelName
+		default:
+			nestedModel := attributeModel{
+				ModelName: dataSourceName + strcase.ToCamel(row.Name) + "Model",
+			}
+			nextModelField.FieldType = nestedModel.ModelName
+		}
+
+		newModel.Fields = append(newModel.Fields, *nextModelField)
+
+	}
+
+	*model = append(*model, newModel)
+
+}
 
 func main() {
 
@@ -140,10 +184,13 @@ func main() {
 	// Open top level CSV
 	csv := openCsv("template/input/" + packageName + "/" + dataSourceName + ".csv")
 
-	// Generate schema values from CSV columns
+	// Generate schema values from CSV
 	var schema []attributeSchema
-	var model []attributeModel
 	generateSchema(&schema, csv)
+
+	// Generate model values from CSV
+	var model []attributeModel
+	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, csv)
 
 	// Set input values to top level template
 	inputValues := templateInput{

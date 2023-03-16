@@ -150,6 +150,14 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 	}
 }
 
+{{ range .Model}}
+type {{.ModelName}} struct {
+{{- range .Fields}}
+{{.FieldName}} {{.FieldType}} `tfsdk:"{{.AttributeName}}"`
+{{- end}}
+}
+{{- end}}
+
 // Read refreshes the Terraform state with the latest data.
 func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var state {{.DataSourceNameLowerCamel}}DataSourceModel
