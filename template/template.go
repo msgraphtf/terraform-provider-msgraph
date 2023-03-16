@@ -76,50 +76,39 @@ func openCsv(path string) []*csvSchema {
 
 }
 
-func generateSchema(schema *[]attributeSchema, model *[]attributeModel, csv []*csvSchema) {
+func generateSchema(schema *[]attributeSchema, csv []*csvSchema) {
 	for _, row := range csv {
 
 		// Create new attribute schema and model for array
 		nextAttributeSchema := new(attributeSchema)
-		nextAttributeModel := new(attributeModel)
 
 		nextAttributeSchema.AttributeName = strcase.ToSnake(row.Name)
-		nextAttributeModel.ModelName      = strcase.ToCamel(row.Name)
-		nextAttributeModel.AttributeName  = strcase.ToSnake(row.Name)
 
 		// Convert types from MS Graph docs to Go and terraform types
 		switch {
 		case row.Type == "String":
 			nextAttributeSchema.AttributeType = "String"
-			nextAttributeModel.ModelType = "types.String"
 		case row.Type == "String collection":
 			nextAttributeSchema.AttributeType = "List"
 			nextAttributeSchema.ElementType = "types.StringType"
-			nextAttributeModel.ModelType = "[]types.String"
 		case row.Type == "Boolean":
 			nextAttributeSchema.AttributeType = "Bool"
-			nextAttributeModel.ModelType = "types.Bool"
 		case row.Type == "DateTimeOffset":
 			nextAttributeSchema.AttributeType = "String"
-			nextAttributeModel.ModelType = "types.String"
 		case strings.HasSuffix(row.Type, "collection"):
 			nextAttributeSchema.AttributeType = "ListNested"
-			nextAttributeModel.ModelType = "[]" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
 
 			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttributeSchema.AttributeName + ".csv")
 			var nestedAttributes []attributeSchema
-			var nestedModel []attributeModel
-			generateSchema(&nestedAttributes, &nestedModel, nestedCsv)
+			generateSchema(&nestedAttributes, nestedCsv)
 
 			nextAttributeSchema.NestedObject = nestedAttributes
 		default:
 			nextAttributeSchema.AttributeType = "SingleNested"
-			nextAttributeModel.ModelType = "*" + dataSourceName + "DataSource" + strcase.ToCamel(row.Type)
 
 			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttributeSchema.AttributeName + ".csv")
 			var nestedAttributes []attributeSchema
-			var nestedModel []attributeModel
-			generateSchema(&nestedAttributes, &nestedModel, nestedCsv)
+			generateSchema(&nestedAttributes,  nestedCsv)
 
 			nextAttributeSchema.Attributes = nestedAttributes
 		}
@@ -130,9 +119,9 @@ func generateSchema(schema *[]attributeSchema, model *[]attributeModel, csv []*c
 		nextAttributeSchema.MarkdownDescription = row.Description
 
 		*schema = append(*schema, *nextAttributeSchema)
-		*model = append(*model, *nextAttributeModel)
 	}
 }
+
 
 func main() {
 
@@ -154,7 +143,7 @@ func main() {
 	// Generate schema values from CSV columns
 	var schema []attributeSchema
 	var model []attributeModel
-	generateSchema(&schema, &model, csv)
+	generateSchema(&schema, csv)
 
 	// Set input values to top level template
 	inputValues := templateInput{
