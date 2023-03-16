@@ -131,6 +131,7 @@ func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) 
 	newModel := attributeModel{
 		ModelName: modelName,
 	}
+	var nestedModels []attributeModel
 
 	for _, row := range csv {
 
@@ -148,15 +149,17 @@ func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) 
 		case row.Type == "String collection":
 			nextModelField.FieldType = "[]types.String"
 		case strings.HasSuffix(row.Type, "collection"):
-			nestedModel := attributeModel{
-				ModelName: "[]" + dataSourceName + strcase.ToCamel(row.Name) + "Model",
-			}
-			nextModelField.FieldType = nestedModel.ModelName
+			nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel"
+
+			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
+			generateModel(dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel", &nestedModels, nestedCsv)
+
 		default:
-			nestedModel := attributeModel{
-				ModelName: dataSourceName + strcase.ToCamel(row.Name) + "Model",
-			}
-			nextModelField.FieldType = nestedModel.ModelName
+			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel" 
+
+			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
+			generateModel(dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel", &nestedModels, nestedCsv)
+
 		}
 
 		newModel.Fields = append(newModel.Fields, *nextModelField)
@@ -164,6 +167,9 @@ func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) 
 	}
 
 	*model = append(*model, newModel)
+	if len(nestedModels) != 0 {
+		*model = append(*model, nestedModels...)
+	}
 
 }
 
