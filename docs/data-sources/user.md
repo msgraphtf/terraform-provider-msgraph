@@ -17,80 +17,81 @@ description: |-
 
 ### Optional
 
-- `user_principal_name` (String)
+- `id` (String) The unique identifier for the user. Should be treated as an opaque identifier. Inherited from [directoryObject](directoryobject.md). Key. Not nullable. Read-only. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not`, `in`).
+- `user_principal_name` (String) The user principal name (UPN) of the user. The UPN is an Internet-style login name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the **verifiedDomains** property of [organization](organization.md).<br>NOTE: This property cannot contain accent characters. Only the following characters are allowed `A - Z`, `a - z`, `0 - 9`, ` ' . - _ ! # ^ ~`. For the complete list of allowed characters, see [username policies](/azure/active-directory/authentication/concept-sspr-policy#userprincipalname-policies-that-apply-to-all-user-accounts). <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, `endsWith`) and `$orderBy`.
 
 ### Read-Only
 
-- `about_me` (String) A freeform text entry field for the user to describe themselves.
-- `account_enabled` (Boolean) `true` if the account is enabled; otherwise, `false`.
-- `age_group` (String) Sets the age group of the user. Allowed values: `null`, `Minor`, `NotAdult` and `Adult`. Refer to the [legal age group property definitions](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#legal-age-group-property-definitions) for further information.
-- `assigned_licenses` (Attributes List) The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate directly-assigned and inherited licenses. Use the **licenseAssignmentStates** property to identify the directly-assigned and inherited licenses. Not nullable. (see [below for nested schema](#nestedatt--assigned_licenses))
-- `assigned_plans` (Attributes List) The plans that are assigned to the user. Read-only. Not nullable. (see [below for nested schema](#nestedatt--assigned_plans))
-- `birthday` (String) The birthday of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`.
-- `business_phones` (List of String) The telephone numbers for the user. NOTE: Although this is a string collection, only one number can be set for this property. Read-only for users synced from on-premises directory.
-- `city` (String) The city in which the user is located. Maximum length is 128 characters.
-- `company_name` (String) The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.
-- `consent_provided_for_minor` (String) Sets whether consent has been obtained for minors. Allowed values: `null`, `Granted`, `Denied` and `NotRequired`. Refer to the [legal age group property definitions](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#legal-age-group-property-definitions) for further information.
-- `country` (String) The country/region in which the user is located; for example, `US` or `UK`.
-- `created_date_time` (String) The date and time the user was created, in ISO 8601 format and in UTC time. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Azure AD. Property is `null` for some users created before June 2018 and on-premises users that were synced to Azure AD before June 2018. Read-only.
-- `creation_type` (String)
-- `deleted_date_time` (String)
-- `department` (String)
-- `display_name` (String)
-- `employee_hire_date` (String)
-- `employee_id` (String)
-- `employee_leave_date_time` (String)
-- `employee_org_data` (Attributes) (see [below for nested schema](#nestedatt--employee_org_data))
-- `employee_type` (String)
-- `external_user_state` (String)
-- `external_user_state_change_date_time` (String)
-- `fax_number` (String)
-- `given_name` (String)
-- `hire_date` (String)
-- `id` (String) The ID of this resource.
-- `identities` (Attributes List) (see [below for nested schema](#nestedatt--identities))
-- `im_addresses` (List of String)
-- `interests` (List of String)
-- `is_resource_account` (Boolean)
-- `job_title` (String)
-- `last_password_change_date_time` (String)
-- `legal_age_group_classification` (String)
-- `license_assignment_states` (Attributes List) (see [below for nested schema](#nestedatt--license_assignment_states))
-- `mail_nickname` (String)
-- `mobile_phone` (String)
-- `my_site` (String)
-- `office_location` (String)
-- `on_premises_distinguished_name` (String)
-- `on_premises_domain_name` (String)
-- `on_premises_extension_attributes` (Attributes) (see [below for nested schema](#nestedatt--on_premises_extension_attributes))
-- `on_premises_immutable_id` (String)
-- `on_premises_last_sync_date_time` (String)
-- `on_premises_provisioning_errors` (Attributes List) (see [below for nested schema](#nestedatt--on_premises_provisioning_errors))
-- `on_premises_sam_account_name` (String)
-- `on_premises_security_identifier` (String)
-- `on_premises_sync_enabled` (Boolean)
-- `on_premises_user_principal_name` (String)
-- `other_mails` (List of String)
-- `password_policies` (String)
-- `password_profile` (Attributes) (see [below for nested schema](#nestedatt--password_profile))
-- `past_projects` (List of String)
-- `postal_code` (String)
-- `preferred_data_location` (String)
-- `preferred_language` (String)
-- `preferred_name` (String)
-- `provisioned_plans` (Attributes List) (see [below for nested schema](#nestedatt--provisioned_plans))
-- `proxy_addresses` (List of String)
-- `responsibilities` (List of String)
-- `schools` (List of String)
-- `security_identifier` (String)
-- `show_in_address_list` (Boolean)
-- `sign_in_sessions_valid_from_date_time` (String)
-- `skills` (List of String)
-- `state` (String)
-- `street_address` (String)
-- `surname` (String)
-- `usage_location` (String)
-- `user_type` (String)
+- `about_me` (String) A freeform text entry field for the user to describe themselves. Returned only on `$select`.
+- `account_enabled` (Boolean) `true` if the account is enabled; otherwise, `false`. This property is required when a user is created. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, and `in`).
+- `age_group` (String) Sets the age group of the user. Allowed values: `null`, `Minor`, `NotAdult` and `Adult`. Refer to the [legal age group property definitions](#legal-age-group-property-definitions) for further information. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, and `in`).
+- `assigned_licenses` (Attributes List) The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate directly-assigned and inherited licenses. Use the **licenseAssignmentStates** property to identify the directly-assigned and inherited licenses.  Not nullable. Returned only on `$select`. Supports `$filter` (`eq`, `not`, `/$count eq 0`, `/$count ne 0`). (see [below for nested schema](#nestedatt--assigned_licenses))
+- `assigned_plans` (Attributes List) The plans that are assigned to the user. Read-only. Not nullable. <br><br>Returned only on `$select`. Supports `$filter` (`eq` and `not`). (see [below for nested schema](#nestedatt--assigned_plans))
+- `birthday` (String) The birthday of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`. <br><br>Returned only on `$select`.
+- `business_phones` (List of String) The telephone numbers for the user. NOTE: Although this is a string collection, only one number can be set for this property. Read-only for users synced from on-premises directory. <br><br>Returned by default. Supports `$filter` (`eq`, `not`, `ge`, `le`, `startsWith`).
+- `city` (String) The city in which the user is located. Maximum length is 128 characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `company_name` (String) The company name which the user is associated. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.<br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `consent_provided_for_minor` (String) Sets whether consent has been obtained for minors. Allowed values: `null`, `Granted`, `Denied` and `NotRequired`. Refer to the [legal age group property definitions](#legal-age-group-property-definitions) for further information. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, and `in`).
+- `country` (String) The country/region in which the user is located; for example, `US` or `UK`. Maximum length is 128 characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `created_date_time` (String) The date and time the user was created, in ISO 8601 format and in UTC time. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Azure AD. Property is `null` for some users created before June 2018 and on-premises users that were synced to Azure AD before June 2018. Read-only. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`).
+- `creation_type` (String) Indicates whether the user account was created through one of the following methods: <br/> <ul><li>As a regular school or work account (`null`). <li>As an external account (`Invitation`). <li>As a local account for an Azure Active Directory B2C tenant (`LocalAccount`). <li>Through self-service sign-up by an internal user using email verification (`EmailVerified`). <li>Through self-service sign-up by an external user signing up through a link that is part of a user flow (`SelfServiceSignUp`).</ul> <br>Read-only.<br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `in`).
+- `deleted_date_time` (String) The date and time the user was deleted. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`).
+- `department` (String) The name for the department in which the user works. Maximum length is 64 characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`, and `eq` on `null` values).
+- `display_name` (String) The name displayed in the address book for the user. This is usually the combination of the user's first name, middle initial and last name. This property is required when a user is created and it cannot be cleared during updates. Maximum length is 256 characters. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values), `$orderBy`, and `$search`.
+- `employee_hire_date` (String) The date and time when the user was hired or will start work in case of a future hire. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`).
+- `employee_id` (String) The employee identifier assigned to the user by the organization. The maximum length is 16 characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `employee_leave_date_time` (String) The date and time when the user left or will leave the organization. <br><br>To read this property, the calling app must be assigned the *User-LifeCycleInfo.Read.All* permission. To write this property, the calling app must be assigned the *User.Read.All* and *User-LifeCycleInfo.ReadWrite.All* permissions. To read this property in delegated scenarios, the admin needs one of the following Azure AD roles: *Lifecycle Workflows Administrator*, *Global Reader*, or *Global Administrator*. To write this property in delegated scenarios, the admin needs the *Global Administrator* role. <br><br>Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`). <br><br>For more information, see [Configure the employeeLeaveDateTime property for a user](/graph/tutorial-lifecycle-workflows-set-employeeleavedatetime).
+- `employee_org_data` (Attributes) Represents organization data (e.g. division and costCenter) associated with a user. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`). (see [below for nested schema](#nestedatt--employee_org_data))
+- `employee_type` (String) Captures enterprise worker type. For example, `Employee`, `Contractor`, `Consultant`, or `Vendor`. Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`, `startsWith`).
+- `external_user_state` (String) For an external user invited to the tenant using the [invitation API](../api/invitation-post.md), this property represents the invited user's invitation status. For invited users, the state can be `PendingAcceptance` or `Accepted`, or `null` for all other users. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `in`).
+- `external_user_state_change_date_time` (String) Shows the timestamp for the latest change to the **externalUserState** property. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `in`).
+- `fax_number` (String) The fax number of the user. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `given_name` (String) The given name (first name) of the user. Maximum length is 64 characters. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `hire_date` (String) The hire date of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`. <br><br>Returned only on `$select`. <br> **Note:** This property is specific to SharePoint Online. We recommend using the native **employeeHireDate** property to set and update hire date values using Microsoft Graph APIs.
+- `identities` (Attributes List) Represents the identities that can be used to sign in to this user account. An identity can be provided by Microsoft (also known as a local account), by organizations, or by social identity providers such as Facebook, Google, and Microsoft, and tied to a user account. May contain multiple items with the same **signInType** value. <br><br>Returned only on `$select`. Supports `$filter` (`eq`) including on `null` values, only where the **signInType** is not `userPrincipalName`. (see [below for nested schema](#nestedatt--identities))
+- `im_addresses` (List of String) The instant message voice over IP (VOIP) session initiation protocol (SIP) addresses for the user. Read-only. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `not`, `ge`, `le`, `startsWith`).
+- `interests` (List of String) A list for the user to describe their interests. <br><br>Returned only on `$select`.
+- `is_resource_account` (Boolean) Do not use – reserved for future use.
+- `job_title` (String) The user's job title. Maximum length is 128 characters. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not` , `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `last_password_change_date_time` (String) The time when this Azure AD user last changed their password or when their password was created, whichever date the latest action was performed. The date and time information uses ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`. <br><br>Returned only on `$select`.
+- `legal_age_group_classification` (String) Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on **ageGroup** and **consentProvidedForMinor** properties. Allowed values: `null`, `MinorWithOutParentalConsent`, `MinorWithParentalConsent`, `MinorNoParentalConsentRequired`, `NotAdult` and `Adult`. Refer to the [legal age group property definitions](#legal-age-group-property-definitions) for further information. <br><br>Returned only on `$select`.
+- `license_assignment_states` (Attributes List) State of license assignments for this user. Also indicates licenses that are directly-assigned and those that the user has inherited through group memberships. Read-only. <br><br>Returned only on `$select`. (see [below for nested schema](#nestedatt--license_assignment_states))
+- `mail` (String) The SMTP address for the user, for example, `jeff@contoso.onmicrosoft.com`. Changes to this property will also update the user's **proxyAddresses** collection to include the value as an SMTP address. This property cannot contain accent characters. <br/> **NOTE:** We do not recommend updating this property for Azure AD B2C user profiles. Use the **otherMails** property instead. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, `endsWith`, and `eq` on `null` values).
+- `mail_nickname` (String) The mail alias for the user. This property must be specified when a user is created. Maximum length is 64 characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `mobile_phone` (String) The primary cellular telephone number for the user. Read-only for users synced from on-premises directory. Maximum length is 64 characters. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `my_site` (String) The URL for the user's personal site. <br><br>Returned only on `$select`.
+- `office_location` (String) The office location in the user's place of business. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `on_premises_distinguished_name` (String) Contains the on-premises Active Directory `distinguished name` or `DN`. The property is only populated for customers who are synchronizing their on-premises directory to Azure Active Directory via Azure AD Connect. Read-only. <br><br>Returned only on `$select`.
+- `on_premises_domain_name` (String) Contains the on-premises `domainFQDN`, also called dnsDomainName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Azure Active Directory via Azure AD Connect. Read-only. <br><br>Returned only on `$select`.
+- `on_premises_extension_attributes` (Attributes) Contains extensionAttributes1-15 for the user. These extension attributes are also known as Exchange custom attributes 1-15. <br><li>For an **onPremisesSyncEnabled** user, the source of authority for this set of properties is the on-premises and is read-only. </li><li>For a cloud-only user (where **onPremisesSyncEnabled** is `false`), these properties can be set during creation or update of a user object.  </li><li>For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell.</li><br> Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `in`). (see [below for nested schema](#nestedatt--on_premises_extension_attributes))
+- `on_premises_immutable_id` (String) This property is used to associate an on-premises Active Directory user account to their Azure AD user object. This property must be specified when creating a new user account in the Graph if you are using a federated domain for the user's **userPrincipalName** (UPN) property. **NOTE:** The **$** and **\_** characters cannot be used when specifying this property. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`)..
+- `on_premises_last_sync_date_time` (String) Indicates the last time at which the object was synced with the on-premises directory; for example: `2013-02-16T03:04:54Z`. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`. Read-only. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`).
+- `on_premises_provisioning_errors` (Attributes List) Errors when using Microsoft synchronization product during provisioning. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `not`, `ge`, `le`). (see [below for nested schema](#nestedatt--on_premises_provisioning_errors))
+- `on_premises_sam_account_name` (String) Contains the on-premises `samAccountName` synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Azure Active Directory via Azure AD Connect. Read-only. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`).
+- `on_premises_security_identifier` (String) Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. <br><br>Returned only on `$select`.  Supports `$filter` (`eq` including on `null` values).
+- `on_premises_sync_enabled` (Boolean) `true` if this user object is currently being synced from an on-premises Active Directory (AD); otherwise the user isn't being synced and can be managed in Azure Active Directory (Azure AD). Read-only. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `in`, and `eq` on `null` values).
+- `on_premises_user_principal_name` (String) Contains the on-premises `userPrincipalName` synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Azure Active Directory via Azure AD Connect. Read-only. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`).
+- `other_mails` (List of String) A list of additional email addresses for the user; for example: `["bob@contoso.com", "Robert@fabrikam.com"]`. <br>NOTE: This property cannot contain accent characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `not`, `ge`, `le`, `in`, `startsWith`, `endsWith`, `/$count eq 0`, `/$count ne 0`).
+- `password_policies` (String) Specifies password policies for the user. This value is an enumeration with one possible value being `DisableStrongPassword`, which allows weaker passwords than the default policy to be specified. `DisablePasswordExpiration` can also be specified. The two may be specified together; for example: `DisablePasswordExpiration, DisableStrongPassword`. <br><br>Returned only on `$select`. For more information on the default password policies, see [Azure AD pasword policies](/azure/active-directory/authentication/concept-sspr-policy#password-policies-that-only-apply-to-cloud-user-accounts). Supports `$filter` (`ne`, `not`, and `eq` on `null` values).
+- `password_profile` (Attributes) Specifies the password profile for the user. The profile contains the user’s password. This property is required when a user is created. The password in the profile must satisfy minimum requirements as specified by the **passwordPolicies** property. By default, a strong password is required. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `in`, and `eq` on `null` values). (see [below for nested schema](#nestedatt--password_profile))
+- `past_projects` (List of String) A list for the user to enumerate their past projects. <br><br>Returned only on `$select`.
+- `postal_code` (String) The postal code for the user's postal address. The postal code is specific to the user's country/region. In the United States of America, this attribute contains the ZIP code. Maximum length is 40 characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `preferred_data_location` (String) The preferred data location for the user. For more information, see [OneDrive Online Multi-Geo](/sharepoint/dev/solution-guidance/multigeo-introduction).
+- `preferred_language` (String) The preferred language for the user. Should follow ISO 639-1 Code; for example `en-US`. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values)
+- `preferred_name` (String) The preferred name for the user. **Not Supported. This attribute returns an empty string.**<br><br>Returned only on `$select`.
+- `provisioned_plans` (Attributes List) The plans that are provisioned for the user. Read-only. Not nullable. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `not`, `ge`, `le`). (see [below for nested schema](#nestedatt--provisioned_plans))
+- `proxy_addresses` (List of String) For example: `["SMTP: bob@contoso.com", "smtp: bob@sales.contoso.com"]`. Changes to the **mail** property will also update this collection to include the value as an SMTP address. For more information, see [mail and proxyAddresses properties](#mail-and-proxyaddresses-properties). The proxy address prefixed with `SMTP` (capitalized) is the primary proxy address while those prefixed with `smtp` are the secondary proxy addresses. For Azure AD B2C accounts, this property has a limit of ten unique addresses. Read-only in Microsoft Graph; you can update this property only through the [Microsoft 365 admin center](/exchange/recipients-in-exchange-online/manage-user-mailboxes/add-or-remove-email-addresses). Not nullable. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `not`, `ge`, `le`, `startsWith`, `endsWith`, `/$count eq 0`, `/$count ne 0`).
+- `responsibilities` (List of String) A list for the user to enumerate their responsibilities. <br><br>Returned only on `$select`.
+- `schools` (List of String) A list for the user to enumerate the schools they have attended. <br><br>Returned only on `$select`.
+- `security_identifier` (String) Security identifier (SID) of the user, used in Windows scenarios. <br><br>Read-only. Returned by default. <br>Supports `$select` and `$filter` (`eq`, `not`, `ge`, `le`, `startsWith`).
+- `show_in_address_list` (Boolean) **Do not use in Microsoft Graph. Manage this property through the Microsoft 365 admin center instead.** Represents whether the user should be included in the Outlook global address list. See [Known issue](/graph/known-issues#showinaddresslist-property-is-out-of-sync-with-microsoft-exchange).
+- `sign_in_sessions_valid_from_date_time` (String) Any refresh tokens or sessions tokens (session cookies) issued before this time are invalid, and applications will get an error when using an invalid refresh or sessions token to acquire a delegated access token (to access APIs such as Microsoft Graph).  If this happens, the application will need to acquire a new refresh token by making a request to the authorize endpoint. Read-only. Use [revokeSignInSessions](../api/user-revokesigninsessions.md) to reset. <br><br>Returned only on `$select`.
+- `skills` (List of String) A list for the user to enumerate their skills. <br><br>Returned only on `$select`.
+- `state` (String) The state or province in the user's address. Maximum length is 128 characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `street_address` (String) The street address of the user's place of business. Maximum length is 1024 characters. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `surname` (String) The user's surname (family name or last name). Maximum length is 64 characters. <br><br>Returned by default. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `usage_location` (String) A two letter country code (ISO standard 3166). Required for users that will be assigned licenses due to legal requirement to check for availability of services in countries.  Examples include: `US`, `JP`, and `GB`. Not nullable. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`, `startsWith`, and `eq` on `null` values).
+- `user_type` (String) A string value that can be used to classify user types in your directory, such as `Member` and `Guest`. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `in`, and `eq` on `null` values). **NOTE:** For more information about the permissions for member and guest users, see [What are the default user permissions in Azure Active Directory?](/azure/active-directory/fundamentals/users-default-permissions?context=graph/context#member-and-guest-users)
 
 <a id="nestedatt--assigned_licenses"></a>
 ### Nested Schema for `assigned_licenses`
@@ -98,7 +99,7 @@ description: |-
 Read-Only:
 
 - `disabled_plans` (List of String) A collection of the unique identifiers for plans that have been disabled.
-- `skus` (String) The unique identifier for the SKU.
+- `sku_id` (String) The unique identifier for the SKU.
 
 
 <a id="nestedatt--assigned_plans"></a>
@@ -107,9 +108,9 @@ Read-Only:
 Read-Only:
 
 - `assigned_date_time` (String) The date and time at which the plan was assigned. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`.
-- `capability_status` (String) Condition of the capability assignment. The possible values are `Enabled`, `Warning`, `Suspended`, `Deleted`, `LockedOut`. See a [detailed description](https://learn.microsoft.com/en-us/graph/api/resources/assignedplan?view=graph-rest-1.0#capabilitystatus-values) of each value.
+- `capability_status` (String) Condition of the capability assignment. The possible values are `Enabled`, `Warning`, `Suspended`, `Deleted`, `LockedOut`. See [a detailed description](#capabilitystatus-values) of each value.
 - `service` (String) The name of the service; for example, `exchange`.
-- `service_plan_id` (String) A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see [Product names and service plan identifiers for licensing](https://learn.microsoft.com/en-us/azure/active-directory/enterprise-users/licensing-service-plan-reference).
+- `service_plan_id` (String) A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see [Product names and service plan identifiers for licensing](/azure/active-directory/enterprise-users/licensing-service-plan-reference).
 
 
 <a id="nestedatt--employee_org_data"></a>
@@ -117,8 +118,8 @@ Read-Only:
 
 Read-Only:
 
-- `cost_center` (String)
-- `division` (String)
+- `cost_center` (String) The cost center associated with the user. <br><br>Returned only on `$select`. Supports `$filter`.
+- `division` (String) The name of the division in which the user works. <br><br>Returned only on `$select`. Supports `$filter`.
 
 
 <a id="nestedatt--identities"></a>
@@ -126,9 +127,9 @@ Read-Only:
 
 Read-Only:
 
-- `issuer` (String)
-- `issuer_assigned_id` (String)
-- `sign_in_type` (String)
+- `issuer` (String) Specifies the issuer of the identity, for example `facebook.com`.<br>For local accounts (where **signInType** is not `federated`), this property is the local B2C tenant default domain name, for example `contoso.onmicrosoft.com`.<br>For external users from other Azure AD organization, this will be the domain of the federated organization, for example `contoso.com`.<br><br>Supports `$filter`. 512 character limit.
+- `issuer_assigned_id` (String) Specifies the unique identifier assigned to the user by the issuer. The combination of **issuer** and **issuerAssignedId** must be unique within the organization. Represents the sign-in name for the user, when **signInType** is set to `emailAddress` or `userName` (also known as local accounts).<br>When **signInType** is set to: <ul><li>`emailAddress`, (or a custom string that starts with `emailAddress` like `emailAddress1`) **issuerAssignedId** must be a valid email address</li><li>`userName`, **issuerAssignedId** must begin with alphabetical character or number, and can only contain alphanumeric characters and the following symbols: - or _</li></ul>Supports `$filter`. 64 character limit.
+- `sign_in_type` (String) Specifies the user sign-in types in your directory, such as `emailAddress`, `userName`, `federated`, or `userPrincipalName`. `federated` represents a unique identifier for a user from an issuer, that can be in any format chosen by the issuer. Setting or updating a `userPrincipalName` identity will update the value of the **userPrincipalName** property on the user object. The validations performed on the `userPrincipalName` property on the user object, for example, verified domains and acceptable characters, will be performed when setting or updating a `userPrincipalName` identity. Additional validation is enforced on **issuerAssignedId** when the sign-in type is set to `emailAddress` or `userName`. This property can also be set to any custom string.
 
 
 <a id="nestedatt--license_assignment_states"></a>
@@ -136,64 +137,64 @@ Read-Only:
 
 Read-Only:
 
-- `assigned_by_group` (String)
-- `disabled_plans` (List of String)
-- `error` (String)
-- `last_updated_date_time` (String)
-- `sku_id` (String)
-- `state` (String)
+- `assigned_by_group` (String) Indicates whether the license is directly-assigned or inherited from a group. If directly-assigned, this field is `null`; if inherited through a group membership, this field contains the ID of the group. Read-Only.
+- `disabled_plans` (List of String) The service plans that are disabled in this assignment. Read-Only.
+- `error` (String) License assignment failure error. If the license is assigned successfully, this field will be Null. Read-Only. The possible values are `CountViolation`, `MutuallyExclusiveViolation`, `DependencyViolation`, `ProhibitedInUsageLocationViolation`, `UniquenessViolation`, and `Other`. For more information on how to identify and resolve license assignment errors see [here](/azure/active-directory/users-groups-roles/licensing-groups-resolve-problems).
+- `last_updated_date_time` (String) The timestamp when the state of the license assignment was last updated.
+- `sku_id` (String) The unique identifier for the SKU. Read-Only.
+- `state` (String) Indicate the current state of this assignment. Read-Only. The possible values are `Active`, `ActiveWithError`, `Disabled`, and `Error`.
 
 
 <a id="nestedatt--on_premises_extension_attributes"></a>
 ### Nested Schema for `on_premises_extension_attributes`
 
-Read-Only:
+Optional:
 
-- `extension_attribute_1` (String)
-- `extension_attribute_10` (String)
-- `extension_attribute_11` (String)
-- `extension_attribute_12` (String)
-- `extension_attribute_13` (String)
-- `extension_attribute_14` (String)
-- `extension_attribute_15` (String)
-- `extension_attribute_2` (String)
-- `extension_attribute_3` (String)
-- `extension_attribute_4` (String)
-- `extension_attribute_5` (String)
-- `extension_attribute_6` (String)
-- `extension_attribute_7` (String)
-- `extension_attribute_8` (String)
-- `extension_attribute_9` (String)
+- `extension_attribute_1` (String) First customizable extension attribute.
+- `extension_attribute_10` (String) Tenth customizable extension attribute.
+- `extension_attribute_11` (String) Eleventh customizable extension attribute.
+- `extension_attribute_12` (String) Twelfth customizable extension attribute.
+- `extension_attribute_13` (String) Thirteenth customizable extension attribute.
+- `extension_attribute_14` (String) Fourteenth customizable extension attribute.
+- `extension_attribute_15` (String) Fifteenth customizable extension attribute.
+- `extension_attribute_2` (String) Second customizable extension attribute.
+- `extension_attribute_3` (String) Third customizable extension attribute.
+- `extension_attribute_4` (String) Fourth customizable extension attribute.
+- `extension_attribute_5` (String) Fifth customizable extension attribute.
+- `extension_attribute_6` (String) Sixth customizable extension attribute.
+- `extension_attribute_7` (String) Seventh customizable extension attribute.
+- `extension_attribute_8` (String) Eighth customizable extension attribute.
+- `extension_attribute_9` (String) Ninth customizable extension attribute.
 
 
 <a id="nestedatt--on_premises_provisioning_errors"></a>
 ### Nested Schema for `on_premises_provisioning_errors`
 
-Read-Only:
+Optional:
 
-- `category` (String)
-- `occured_date_time` (String)
-- `property_causing_error` (String)
-- `value` (String)
+- `category` (String) Category of the provisioning error. Note: Currently, there is only one possible value. Possible value: *PropertyConflict* - indicates a property value is not unique. Other objects contain the same value for the property.
+- `occurred_date_time` (String) The date and time at which the error occurred.
+- `property_causing_error` (String) Name of the directory property causing the error. Current possible values: *UserPrincipalName* or *ProxyAddress*
+- `value` (String) Value of the property causing the error.
 
 
 <a id="nestedatt--password_profile"></a>
 ### Nested Schema for `password_profile`
 
-Read-Only:
+Optional:
 
-- `force_change_password_next_sign_in` (Boolean)
-- `force_change_password_next_sign_in_with_mfa` (Boolean)
-- `password` (String)
+- `force_change_password_next_sign_in` (Boolean) `true` if the user must change her password on the next login; otherwise `false`.
+- `force_change_password_next_sign_in_with_mfa` (Boolean) If `true`, at next sign-in, the user must perform a multi-factor authentication (MFA) before being forced to change their password. The behavior is identical to **forceChangePasswordNextSignIn** except that the user is required to first perform a multi-factor authentication before password change. After a password change, this property will be automatically reset to `false`. If not set, default is `false`.
+- `password` (String) The password for the user. This property is required when a user is created. It can be updated, but the user will be required to change the password on the next login. The password must satisfy minimum requirements as specified by the user’s **passwordPolicies** property. By default, a strong password is required.
 
 
 <a id="nestedatt--provisioned_plans"></a>
 ### Nested Schema for `provisioned_plans`
 
-Read-Only:
+Optional:
 
-- `capability_status` (String)
-- `provisioning_status` (String)
-- `service` (String)
+- `capability_status` (String) For example, “Enabled”.
+- `provisioning_status` (String) For example, “Success”.
+- `service` (String) The name of the service; for example, “AccessControlS2S”
 
 
