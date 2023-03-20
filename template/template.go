@@ -20,6 +20,7 @@ type templateInput struct {
 	DataSourceAttributeName  string
 	Schema                   []attributeSchema
 	Model                    []attributeModel
+	Read                     []attributeRead
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
@@ -38,13 +39,18 @@ type attributeSchema struct {
 // Used by templates defined inside of data_source_template.go to generate the data models
 type attributeModel struct {
 	ModelName string
-	Fields    []modelField
+	Fields    []attributeModelField
 }
 
-type modelField struct {
+type attributeModelField struct {
 	FieldName     string
 	FieldType     string
 	AttributeName string
+}
+
+type attributeRead struct {
+	AttributeName string
+	AttributeType string
 }
 
 type csvSchema struct {
@@ -135,7 +141,7 @@ func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) 
 
 	for _, row := range csv {
 
-		nextModelField := new(modelField)
+		nextModelField := new(attributeModelField)
 		nextModelField.FieldName = strcase.ToCamel(row.Name)
 		nextModelField.AttributeName = strcase.ToSnake(row.Name)
 
@@ -152,13 +158,13 @@ func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) 
 			nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel"
 
 			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
-			generateModel(dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel", &nestedModels, nestedCsv)
+			generateModel(dataSourceName+strcase.ToCamel(row.Name)+"DataSourceModel", &nestedModels, nestedCsv)
 
 		default:
-			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel" 
+			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel"
 
 			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
-			generateModel(dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel", &nestedModels, nestedCsv)
+			generateModel(dataSourceName+strcase.ToCamel(row.Name)+"DataSourceModel", &nestedModels, nestedCsv)
 
 		}
 
@@ -169,6 +175,26 @@ func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) 
 	*model = append(*model, newModel)
 	if len(nestedModels) != 0 {
 		*model = append(*model, nestedModels...)
+	}
+
+}
+
+func generateRead(read *[]attributeRead, csv []*csvSchema) {
+
+	for _, row := range csv {
+
+		nextAttributeRead := attributeRead{
+			AttributeName: strcase.ToCamel(row.Name),
+		}
+
+		switch {
+		case row.Type == "String":
+			nextAttributeRead.AttributeType = "String"
+		case row.Type == "Boolean":
+			nextAttributeRead.AttributeType = "Boolean"
+		}
+
+		*read = append(*read, nextAttributeRead)
 	}
 
 }
@@ -198,6 +224,11 @@ func main() {
 	var model []attributeModel
 	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, csv)
 
+	// Generate schema values from CSV
+	var read []attributeRead
+	generateRead(&read, csv)
+	fmt.Println(read)
+
 	// Set input values to top level template
 	inputValues := templateInput{
 		PackageName:              packageName,
@@ -207,6 +238,7 @@ func main() {
 		DataSourceAttributeName:  strcase.ToSnake(dataSourceName),
 		Schema:                   schema,
 		Model:                    model,
+		Read:                     read,
 	}
 
 	os.MkdirAll("template/out/", os.ModePerm)

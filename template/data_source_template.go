@@ -46,7 +46,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 		Attributes: map[string]schema.Attribute{
 
 			{{- /* Define templates for different Attribute types */}}
-			{{- define "StringAttribute" }}
+			{{- define "SchemaStringAttribute" }}
 			"{{.AttributeName}}": schema.StringAttribute{
 				MarkdownDescription: "{{.MarkdownDescription}}",
 				{{- if .Required}}
@@ -134,7 +134,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- block "generate_schema" .Schema}}
 			{{- range .}}
 			{{- if eq .AttributeType "String" }}
-			{{- template "StringAttribute" .}}
+			{{- template "SchemaStringAttribute" .}}
 			{{- else if eq .AttributeType "Bool" }}
 			{{- template "BoolAttribute" .}}
 			{{- else if eq .AttributeType "List" }}
@@ -166,5 +166,32 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	{{- /* Define templates for mapping each response type to state */}}
+	{{- define "ReadStringAttribute" }}
+	if result.Get{{.AttributeName}}()  != nil {state.{{.AttributeName}} = types.StringValue(*result.Get{{.AttributeName}}())}
+	{{- end}}
+
+	{{- define "ReadBooleanAttribute" }}
+	if result.Get{{.AttributeName}}()  != nil {state.{{.AttributeName}} = types.BoolValue(*result.Get{{.AttributeName}}())}
+	{{- end}}
+
+	{{- /* Generate statements to map response to state */}}
+	{{- range .Read}}
+	{{- if eq .AttributeType "String"}}
+	{{- template "ReadStringAttribute" .}}
+	{{- else if eq .AttributeType "Boolean"}}
+	{{- template "ReadBooleanAttribute" .}}
+	{{- end}}
+	{{- end}}
+
+
+	// Overwrite items with refreshed state
+	diags := resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 
 }
