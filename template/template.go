@@ -50,7 +50,8 @@ type attributeModelField struct {
 }
 
 type attributeRead struct {
-	AttributeNameUpperCamel string
+	GetMethod string
+	StateAttributeName string
 	AttributeNameLowerCamel string
 	AttributeType string
 	DataSourceName string
@@ -187,7 +188,8 @@ func generateRead(read *[]attributeRead, csv []*csvSchema) {
 	for _, row := range csv {
 
 		nextAttributeRead := attributeRead{
-			AttributeNameUpperCamel: strcase.ToCamel(row.Name),
+			GetMethod: "Get"+strcase.ToCamel(row.Name)+"()",
+			StateAttributeName: strcase.ToCamel(row.Name),
 			AttributeNameLowerCamel: strcase.ToLowerCamel(row.Name),
 			DataSourceName: dataSourceName,
 		}

@@ -173,21 +173,21 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 
 	{{- /* Define templates for mapping each response type to state */}}
 	{{- define "ReadStringAttribute" }}
-	if result.Get{{.AttributeNameUpperCamel}}()  != nil {state.{{.AttributeNameUpperCamel}} = types.StringValue(*result.Get{{.AttributeNameUpperCamel}}())}
+	if result.{{.GetMethod}}  != nil {state.{{.StateAttributeName}} = types.StringValue(*result.{{.GetMethod}})}
 	{{- end}}
 
 	{{- define "ReadBooleanAttribute" }}
-	if result.Get{{.AttributeNameUpperCamel}}()  != nil {state.{{.AttributeNameUpperCamel}} = types.BoolValue(*result.Get{{.AttributeNameUpperCamel}}())}
+	if result.{{.GetMethod}}  != nil {state.{{.StateAttributeName}} = types.BoolValue(*result.{{.GetMethod}})}
 	{{- end}}
 
 	{{- define "ReadStringCollection" }}
-	for _, value := range result.Get{{.AttributeNameUpperCamel}}() {
-		state.{{.AttributeNameUpperCamel}}= append(state.{{.AttributeNameUpperCamel}}, types.StringValue(value))
+	for _, value := range result.{{.GetMethod}} {
+		state.{{.StateAttributeName}}= append(state.{{.StateAttributeName}}, types.StringValue(value))
 	}
 	{{- end}}
 
 	{{- define "ReadDataTimeOffset" }}
-	if result.Get{{.AttributeNameUpperCamel}}()  != nil {state.{{.AttributeNameUpperCamel}} = types.StringValue(result.Get{{.AttributeNameUpperCamel}}().String())}
+	if result.{{.GetMethod}}  != nil {state.{{.StateAttributeName}} = types.StringValue(result.{{.GetMethod}}.String())}
 	{{- end}}
 
 
