@@ -8,6 +8,8 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	"github.com/microsoftgraph/msgraph-sdk-go/models"
+	"github.com/microsoftgraph/msgraph-sdk-go/{{.PackageName}}"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -167,21 +169,40 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 		return
 	}
 
+	{{.PreRead}}
+
 	{{- /* Define templates for mapping each response type to state */}}
 	{{- define "ReadStringAttribute" }}
-	if result.Get{{.AttributeName}}()  != nil {state.{{.AttributeName}} = types.StringValue(*result.Get{{.AttributeName}}())}
+	if result.Get{{.AttributeNameUpperCamel}}()  != nil {state.{{.AttributeNameUpperCamel}} = types.StringValue(*result.Get{{.AttributeNameUpperCamel}}())}
 	{{- end}}
 
 	{{- define "ReadBooleanAttribute" }}
-	if result.Get{{.AttributeName}}()  != nil {state.{{.AttributeName}} = types.BoolValue(*result.Get{{.AttributeName}}())}
+	if result.Get{{.AttributeNameUpperCamel}}()  != nil {state.{{.AttributeNameUpperCamel}} = types.BoolValue(*result.Get{{.AttributeNameUpperCamel}}())}
 	{{- end}}
 
-	{{- /* Generate statements to map response to state */}}
+	{{- define "ReadStringCollection" }}
+	for _, value := range result.Get{{.AttributeNameUpperCamel}}() {
+		state.{{.AttributeNameUpperCamel}}= append(state.{{.AttributeNameUpperCamel}}, types.StringValue(value))
+	}
+	{{- end}}
+
+	{{- define "ReadDataTimeOffset" }}
+	if result.Get{{.AttributeNameUpperCamel}}()  != nil {state.{{.AttributeNameUpperCamel}} = types.StringValue(result.Get{{.AttributeNameUpperCamel}}().String())}
+	{{- end}}
+
+
+	{{/* Generate statements to map response to state */}}
+	{{- block "generate_read" .}}
 	{{- range .Read}}
 	{{- if eq .AttributeType "String"}}
 	{{- template "ReadStringAttribute" .}}
 	{{- else if eq .AttributeType "Boolean"}}
 	{{- template "ReadBooleanAttribute" .}}
+	{{- else if eq .AttributeType "DateTimeOffset"}}
+	{{- template "ReadDataTimeOffset" .}}
+	{{- else if eq .AttributeType "StringCollection"}}
+	{{- template "ReadStringCollection" .}}
+	{{- end}}
 	{{- end}}
 	{{- end}}
 

@@ -20,6 +20,7 @@ type templateInput struct {
 	DataSourceAttributeName  string
 	Schema                   []attributeSchema
 	Model                    []attributeModel
+	PreRead                  string
 	Read                     []attributeRead
 }
 
@@ -49,8 +50,10 @@ type attributeModelField struct {
 }
 
 type attributeRead struct {
-	AttributeName string
+	AttributeNameUpperCamel string
+	AttributeNameLowerCamel string
 	AttributeType string
+	DataSourceName string
 }
 
 type csvSchema struct {
@@ -184,7 +187,9 @@ func generateRead(read *[]attributeRead, csv []*csvSchema) {
 	for _, row := range csv {
 
 		nextAttributeRead := attributeRead{
-			AttributeName: strcase.ToCamel(row.Name),
+			AttributeNameUpperCamel: strcase.ToCamel(row.Name),
+			AttributeNameLowerCamel: strcase.ToLowerCamel(row.Name),
+			DataSourceName: dataSourceName,
 		}
 
 		switch {
@@ -192,6 +197,10 @@ func generateRead(read *[]attributeRead, csv []*csvSchema) {
 			nextAttributeRead.AttributeType = "String"
 		case row.Type == "Boolean":
 			nextAttributeRead.AttributeType = "Boolean"
+		case row.Type == "String collection":
+			nextAttributeRead.AttributeType = "StringCollection"
+		case row.Type == "DateTimeOffset":
+			nextAttributeRead.AttributeType = "DateTimeOffset"
 		}
 
 		*read = append(*read, nextAttributeRead)
@@ -227,7 +236,7 @@ func main() {
 	// Generate schema values from CSV
 	var read []attributeRead
 	generateRead(&read, csv)
-	fmt.Println(read)
+	preRead, err := os.ReadFile("template/input/"+packageName+"/pre_read.go")
 
 	// Set input values to top level template
 	inputValues := templateInput{
@@ -238,6 +247,7 @@ func main() {
 		DataSourceAttributeName:  strcase.ToSnake(dataSourceName),
 		Schema:                   schema,
 		Model:                    model,
+		PreRead:                  string(preRead),
 		Read:                     read,
 	}
 
