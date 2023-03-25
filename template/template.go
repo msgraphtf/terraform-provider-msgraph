@@ -52,9 +52,12 @@ type attributeModelField struct {
 type attributeRead struct {
 	GetMethod string
 	StateAttributeName string
-	AttributeNameLowerCamel string
+	ModelVarName string
+	ModelName string
 	AttributeType string
 	DataSourceName string
+	NestedRead []attributeRead
+	ParentRead *attributeRead
 }
 
 type csvSchema struct {
@@ -183,15 +186,22 @@ func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) 
 
 }
 
-func generateRead(read *[]attributeRead, csv []*csvSchema) {
+func generateRead(read *[]attributeRead, csv []*csvSchema, parent *attributeRead) {
 
 	for _, row := range csv {
 
 		nextAttributeRead := attributeRead{
-			GetMethod: "Get"+strcase.ToCamel(row.Name)+"()",
-			StateAttributeName: strcase.ToCamel(row.Name),
-			AttributeNameLowerCamel: strcase.ToLowerCamel(row.Name),
+			ModelVarName: strcase.ToLowerCamel(row.Name),
 			DataSourceName: dataSourceName,
+		}
+		if parent != nil {
+			nextAttributeRead.ParentRead = parent
+			nextAttributeRead.GetMethod = parent.GetMethod+".Get"+strcase.ToCamel(row.Name)+"()"
+			nextAttributeRead.StateAttributeName = parent.StateAttributeName+"."+strcase.ToCamel(row.Name)
+		} else {
+			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(row.Name)+"()"
+			nextAttributeRead.StateAttributeName = strcase.ToCamel(row.Name)
+			nextAttributeRead.ModelName = dataSourceName+strcase.ToCamel(row.Name)+"DataSourceModel"
 		}
 
 		switch {
@@ -203,6 +213,16 @@ func generateRead(read *[]attributeRead, csv []*csvSchema) {
 			nextAttributeRead.AttributeType = "StringCollection"
 		case row.Type == "DateTimeOffset":
 			nextAttributeRead.AttributeType = "DateTimeOffset"
+		case strings.HasSuffix(row.Type, "collection"):
+			nextAttributeRead.AttributeType = "ListNested"
+		default:
+			nextAttributeRead.AttributeType = "SingleNested"
+
+			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
+			var nestedRead []attributeRead
+			generateRead(&nestedRead, nestedCsv, &nextAttributeRead)
+
+			nextAttributeRead.NestedRead = nestedRead
 		}
 
 		*read = append(*read, nextAttributeRead)
@@ -237,7 +257,7 @@ func main() {
 
 	// Generate schema values from CSV
 	var read []attributeRead
-	generateRead(&read, csv)
+	generateRead(&read, csv, nil)
 	preRead, err := os.ReadFile("template/input/"+packageName+"/pre_read.go")
 
 	// Set input values to top level template

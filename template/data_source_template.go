@@ -190,10 +190,18 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	if result.{{.GetMethod}}  != nil {state.{{.StateAttributeName}} = types.StringValue(result.{{.GetMethod}}.String())}
 	{{- end}}
 
+	{{- define "ReadSingleNestedAttribute" }}
+	{{.ModelVarName}} := new({{.ModelName}})
+	if result.{{.GetMethod}} != nil {
+		{{template "generate_read" .NestedRead}}
+	}
+	state.{{.StateAttributeName}} = {{.ModelVarName}}
+	{{- end}}
+
 
 	{{/* Generate statements to map response to state */}}
-	{{- block "generate_read" .}}
-	{{- range .Read}}
+	{{- block "generate_read" .Read}}
+	{{- range .}}
 	{{- if eq .AttributeType "String"}}
 	{{- template "ReadStringAttribute" .}}
 	{{- else if eq .AttributeType "Boolean"}}
@@ -202,6 +210,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	{{- template "ReadDataTimeOffset" .}}
 	{{- else if eq .AttributeType "StringCollection"}}
 	{{- template "ReadStringCollection" .}}
+	{{- else if eq .AttributeType "SingleNested"}}
+	{{- template "ReadSingleNestedAttribute" .}}
 	{{- end}}
 	{{- end}}
 	{{- end}}
