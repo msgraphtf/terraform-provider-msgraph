@@ -39,7 +39,6 @@ func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 	d.client = req.ProviderData.(*msgraphsdk.GraphServiceClient)
 }
 
-
 // Schema defines the schema for the data source.
 func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
@@ -690,6 +689,7 @@ type userProvisionedPlansDataSourceModel struct {
 	ProvisioningStatus types.String `tfsdk:"provisioning_status"`
 	Service            types.String `tfsdk:"service"`
 }
+
 // Read refreshes the Terraform state with the latest data.
 func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var state userDataSourceModel
@@ -725,11 +725,14 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-
 	// Map response to model
-	if result.GetAboutMe()  != nil {state.AboutMe = types.StringValue(*result.GetAboutMe())}
+	if result.GetAboutMe() != nil {
+		state.AboutMe = types.StringValue(*result.GetAboutMe())
+	}
 	state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
-	if result.GetAgeGroup() != nil {state.AboutMe = types.StringValue(*result.GetAgeGroup())}
+	if result.GetAgeGroup() != nil {
+		state.AboutMe = types.StringValue(*result.GetAgeGroup())
+	}
 
 	// Map assigned licenses
 	for _, license := range result.GetAssignedLicenses() {
@@ -753,37 +756,73 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.AssignedPlans = append(state.AssignedPlans, assignedPlansState)
 	}
 
-	if result.GetBirthday() != nil {state.Birthday = types.StringValue(result.GetBirthday().String())}
+	if result.GetBirthday() != nil {
+		state.Birthday = types.StringValue(result.GetBirthday().String())
+	}
 
 	for _, businessPhone := range result.GetBusinessPhones() {
 		state.BusinessPhones = append(state.BusinessPhones, types.StringValue(businessPhone))
 	}
 
-	if result.GetCity()                    != nil {state.City                    = types.StringValue(*result.GetCity())}
-	if result.GetCompanyName()             != nil {state.CompanyName             = types.StringValue(*result.GetCompanyName())}
-	if result.GetConsentProvidedForMinor() != nil {state.ConsentProvidedForMinor = types.StringValue(*result.GetConsentProvidedForMinor())}
+	if result.GetCity() != nil {
+		state.City = types.StringValue(*result.GetCity())
+	}
+	if result.GetCompanyName() != nil {
+		state.CompanyName = types.StringValue(*result.GetCompanyName())
+	}
+	if result.GetConsentProvidedForMinor() != nil {
+		state.ConsentProvidedForMinor = types.StringValue(*result.GetConsentProvidedForMinor())
+	}
 	state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
-	if result.GetCreationType()            != nil {state.CreationType            = types.StringValue(*result.GetCreationType())}
-	if result.GetDeletedDateTime()         != nil {state.DeletedDateTime         = types.StringValue(result.GetDeletedDateTime().String())}
-	if result.GetDepartment()              != nil {state.Department              = types.StringValue(*result.GetDepartment())}
-	state.DisplayName       = types.StringValue(*result.GetDisplayName())
-	if result.GetEmployeeHireDate()        != nil {state.EmployeeHireDate        = types.StringValue(result.GetEmployeeHireDate().String())}
-	if result.GetEmployeeId()              != nil {state.EmployeeId              = types.StringValue(*result.GetEmployeeId())}
-	if result.GetEmployeeLeaveDateTime()   != nil {state.EmployeeLeaveDateTime   = types.StringValue(result.GetEmployeeLeaveDateTime().String())}
+	if result.GetCreationType() != nil {
+		state.CreationType = types.StringValue(*result.GetCreationType())
+	}
+	if result.GetDeletedDateTime() != nil {
+		state.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
+	}
+	if result.GetDepartment() != nil {
+		state.Department = types.StringValue(*result.GetDepartment())
+	}
+	state.DisplayName = types.StringValue(*result.GetDisplayName())
+	if result.GetEmployeeHireDate() != nil {
+		state.EmployeeHireDate = types.StringValue(result.GetEmployeeHireDate().String())
+	}
+	if result.GetEmployeeId() != nil {
+		state.EmployeeId = types.StringValue(*result.GetEmployeeId())
+	}
+	if result.GetEmployeeLeaveDateTime() != nil {
+		state.EmployeeLeaveDateTime = types.StringValue(result.GetEmployeeLeaveDateTime().String())
+	}
 
 	employeeOrgData := new(userEmployeeOrgDataDataSourceModel)
 	if result.GetEmployeeOrgData() != nil {
-		if result.GetEmployeeOrgData().GetCostCenter() != nil {employeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())}
-		if result.GetEmployeeOrgData().GetDivision()   != nil {employeeOrgData.Division   = types.StringValue(*result.GetEmployeeOrgData().GetDivision())}
+		if result.GetEmployeeOrgData().GetCostCenter() != nil {
+			employeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())
+		}
+		if result.GetEmployeeOrgData().GetDivision() != nil {
+			employeeOrgData.Division = types.StringValue(*result.GetEmployeeOrgData().GetDivision())
+		}
 	}
 	state.EmployeeOrgData = employeeOrgData
 
-	if result.GetEmployeeType()                    != nil {state.EmployeeType                    = types.StringValue(*result.GetEmployeeType())}
-	if result.GetExternalUserState()               != nil {state.ExternalUserState               = types.StringValue(*result.GetExternalUserState())}
-	if result.GetExternalUserStateChangeDateTime() != nil {state.ExternalUserStateChangeDateTime = types.StringValue(result.GetExternalUserStateChangeDateTime().String())}
-	if result.GetFaxNumber()                       != nil {state.FaxNumber                       = types.StringValue(*result.GetFaxNumber())}
-	if result.GetGivenName()                       != nil {state.GivenName                       = types.StringValue(*result.GetGivenName())}
-	if result.GetHireDate()                        != nil {state.HireDate                        = types.StringValue(result.GetHireDate().String())}
+	if result.GetEmployeeType() != nil {
+		state.EmployeeType = types.StringValue(*result.GetEmployeeType())
+	}
+	if result.GetExternalUserState() != nil {
+		state.ExternalUserState = types.StringValue(*result.GetExternalUserState())
+	}
+	if result.GetExternalUserStateChangeDateTime() != nil {
+		state.ExternalUserStateChangeDateTime = types.StringValue(result.GetExternalUserStateChangeDateTime().String())
+	}
+	if result.GetFaxNumber() != nil {
+		state.FaxNumber = types.StringValue(*result.GetFaxNumber())
+	}
+	if result.GetGivenName() != nil {
+		state.GivenName = types.StringValue(*result.GetGivenName())
+	}
+	if result.GetHireDate() != nil {
+		state.HireDate = types.StringValue(result.GetHireDate().String())
+	}
 	state.Id = types.StringValue(*result.GetId())
 
 	for _, identity := range result.GetIdentities() {
@@ -802,10 +841,18 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.Interests = append(state.Interests, types.StringValue(interest))
 	}
 
-	if result.GetIsResourceAccount()           != nil {state.IsResourceAccount           = types.BoolValue(*result.GetIsResourceAccount())}
-	if result.GetJobTitle()                    != nil {state.JobTitle                    = types.StringValue(*result.GetJobTitle())}
-	if result.GetLastPasswordChangeDateTime()  != nil {state.LastPasswordChangeDateTime  = types.StringValue(result.GetLastPasswordChangeDateTime().String())}
-	if result.GetLegalAgeGroupClassification() != nil {state.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())}
+	if result.GetIsResourceAccount() != nil {
+		state.IsResourceAccount = types.BoolValue(*result.GetIsResourceAccount())
+	}
+	if result.GetJobTitle() != nil {
+		state.JobTitle = types.StringValue(*result.GetJobTitle())
+	}
+	if result.GetLastPasswordChangeDateTime() != nil {
+		state.LastPasswordChangeDateTime = types.StringValue(result.GetLastPasswordChangeDateTime().String())
+	}
+	if result.GetLegalAgeGroupClassification() != nil {
+		state.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())
+	}
 
 	for _, licenseAssignmentState := range result.GetLicenseAssignmentStates() {
 		licenseAssignmentStateState := new(userLicenseAssignmentStatesDataSourceModel)
@@ -832,53 +879,107 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	//if result.GetMail() != nil {state.Mail = types.StringValue(*result.GetMail())}
 	state.MailNickname = types.StringValue(*result.GetMailNickname())
-	if result.GetMobilePhone()                 != nil {state.MobilePhone = types.StringValue(*result.GetMobilePhone())}
-	if result.GetMySite()                      != nil {state.MySite      = types.StringValue(*result.GetMySite())}
-	if result.GetOfficeLocation()              != nil {state.OfficeLocation = types.StringValue(*result.GetOfficeLocation())}
-	if result.GetOnPremisesDistinguishedName() != nil {state.OnPremisesDistinguishedName = types.StringValue(*result.GetOnPremisesDistinguishedName())}
-	if result.GetOnPremisesDomainName()        != nil {state.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())}
+	if result.GetMobilePhone() != nil {
+		state.MobilePhone = types.StringValue(*result.GetMobilePhone())
+	}
+	if result.GetMySite() != nil {
+		state.MySite = types.StringValue(*result.GetMySite())
+	}
+	if result.GetOfficeLocation() != nil {
+		state.OfficeLocation = types.StringValue(*result.GetOfficeLocation())
+	}
+	if result.GetOnPremisesDistinguishedName() != nil {
+		state.OnPremisesDistinguishedName = types.StringValue(*result.GetOnPremisesDistinguishedName())
+	}
+	if result.GetOnPremisesDomainName() != nil {
+		state.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())
+	}
 
 	onPremisesExtensionAttributes := new(userOnPremisesExtensionAttributesDataSourceModel)
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1()  != nil {onPremisesExtensionAttributes.ExtensionAttribute1  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2()  != nil {onPremisesExtensionAttributes.ExtensionAttribute2  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3()  != nil {onPremisesExtensionAttributes.ExtensionAttribute3  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4()  != nil {onPremisesExtensionAttributes.ExtensionAttribute4  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5()  != nil {onPremisesExtensionAttributes.ExtensionAttribute5  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6()  != nil {onPremisesExtensionAttributes.ExtensionAttribute6  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7()  != nil {onPremisesExtensionAttributes.ExtensionAttribute7  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8()  != nil {onPremisesExtensionAttributes.ExtensionAttribute8  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9()  != nil {onPremisesExtensionAttributes.ExtensionAttribute9  = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10() != nil {onPremisesExtensionAttributes.ExtensionAttribute10 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11() != nil {onPremisesExtensionAttributes.ExtensionAttribute11 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12() != nil {onPremisesExtensionAttributes.ExtensionAttribute12 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13() != nil {onPremisesExtensionAttributes.ExtensionAttribute13 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14() != nil {onPremisesExtensionAttributes.ExtensionAttribute14 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14())}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15() != nil {onPremisesExtensionAttributes.ExtensionAttribute15 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15())}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute2 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute3 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute4 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute5 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute6 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute7 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute8 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute9 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute10 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute11 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute12 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute13 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute14 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14())
+	}
+	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15() != nil {
+		onPremisesExtensionAttributes.ExtensionAttribute15 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15())
+	}
 	state.OnPremisesExtensionAttributes = onPremisesExtensionAttributes
 
-	if result.GetOnPremisesImmutableId() != nil {state.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())}
-	if result.GetOnPremisesLastSyncDateTime() != nil {state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())}
+	if result.GetOnPremisesImmutableId() != nil {
+		state.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())
+	}
+	if result.GetOnPremisesLastSyncDateTime() != nil {
+		state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
+	}
 
 	for _, onPremisesProvisioningError := range result.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrorState := userOnPremisesProvisioningErrorsDataSourceModel{
-				Category:              types.StringValue(*onPremisesProvisioningError.GetCategory()),
-				OccurredDateTime:        types.StringValue(onPremisesProvisioningError.GetOccurredDateTime().String()),
-				PropertyCausingError:   types.StringValue(*onPremisesProvisioningError.GetPropertyCausingError()),
-				Value:                  types.StringValue(*onPremisesProvisioningError.GetValue()),
-			}
+		onPremisesProvisioningErrorState := userOnPremisesProvisioningErrorsDataSourceModel{
+			Category:             types.StringValue(*onPremisesProvisioningError.GetCategory()),
+			OccurredDateTime:     types.StringValue(onPremisesProvisioningError.GetOccurredDateTime().String()),
+			PropertyCausingError: types.StringValue(*onPremisesProvisioningError.GetPropertyCausingError()),
+			Value:                types.StringValue(*onPremisesProvisioningError.GetValue()),
+		}
 		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, onPremisesProvisioningErrorState)
 	}
 
-	if result.GetOnPremisesSamAccountName()     != nil {state.OnPremisesSamAccountName     = types.StringValue(*result.GetOnPremisesSamAccountName())}
-	if result.GetOnPremisesSecurityIdentifier() != nil {state.OnPremisesSecurityIdentifier = types.StringValue(*result.GetOnPremisesSecurityIdentifier())}
-	if result.GetOnPremisesSyncEnabled()        != nil {state.OnPremisesSyncEnabled        = types.BoolValue(*result.GetOnPremisesSyncEnabled())}
-	if result.GetOnPremisesUserPrincipalName()  != nil {state.OnPremisesUserPrincipalName  = types.StringValue(*result.GetOnPremisesUserPrincipalName())}
+	if result.GetOnPremisesSamAccountName() != nil {
+		state.OnPremisesSamAccountName = types.StringValue(*result.GetOnPremisesSamAccountName())
+	}
+	if result.GetOnPremisesSecurityIdentifier() != nil {
+		state.OnPremisesSecurityIdentifier = types.StringValue(*result.GetOnPremisesSecurityIdentifier())
+	}
+	if result.GetOnPremisesSyncEnabled() != nil {
+		state.OnPremisesSyncEnabled = types.BoolValue(*result.GetOnPremisesSyncEnabled())
+	}
+	if result.GetOnPremisesUserPrincipalName() != nil {
+		state.OnPremisesUserPrincipalName = types.StringValue(*result.GetOnPremisesUserPrincipalName())
+	}
 
 	for _, other_mail := range result.GetOtherMails() {
 		state.OtherMails = append(state.OtherMails, types.StringValue(other_mail))
 	}
 
-	if result.GetPasswordPolicies() != nil {state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())}
+	if result.GetPasswordPolicies() != nil {
+		state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())
+	}
 
 	passwordProfile := new(userPasswordProfileDataSourceModel)
 	passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
@@ -889,10 +990,18 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.PastProjects = append(state.PastProjects, types.StringValue(past_project))
 	}
 
-	if result.GetPostalCode()            != nil {state.PostalCode            = types.StringValue(*result.GetPostalCode())}
-	if result.GetPreferredDataLocation() != nil {state.PreferredDataLocation = types.StringValue(*result.GetPreferredDataLocation())}
-	if result.GetPreferredLanguage()     != nil {state.PreferredLanguage     = types.StringValue(*result.GetPreferredLanguage())}
-	if result.GetPreferredName()         != nil {state.PreferredName         = types.StringValue(*result.GetPreferredName())}
+	if result.GetPostalCode() != nil {
+		state.PostalCode = types.StringValue(*result.GetPostalCode())
+	}
+	if result.GetPreferredDataLocation() != nil {
+		state.PreferredDataLocation = types.StringValue(*result.GetPreferredDataLocation())
+	}
+	if result.GetPreferredLanguage() != nil {
+		state.PreferredLanguage = types.StringValue(*result.GetPreferredLanguage())
+	}
+	if result.GetPreferredName() != nil {
+		state.PreferredName = types.StringValue(*result.GetPreferredName())
+	}
 
 	for _, provisionedPlan := range result.GetProvisionedPlans() {
 		provisionedPlanState := userProvisionedPlansDataSourceModel{
@@ -915,20 +1024,36 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.Schools = append(state.Schools, types.StringValue(school))
 	}
 
-	if result.GetSecurityIdentifier() != nil {state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())}
-	if result.GetShowInAddressList()  != nil {state.ShowInAddressList  = types.BoolValue(*result.GetShowInAddressList())}
-	if result.GetSignInSessionsValidFromDateTime()  != nil {state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())}
+	if result.GetSecurityIdentifier() != nil {
+		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
+	}
+	if result.GetShowInAddressList() != nil {
+		state.ShowInAddressList = types.BoolValue(*result.GetShowInAddressList())
+	}
+	if result.GetSignInSessionsValidFromDateTime() != nil {
+		state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())
+	}
 
 	for _, skill := range result.GetSkills() {
 		state.Skills = append(state.Skills, types.StringValue(skill))
 	}
 
-	if result.GetState() != nil {state.State = types.StringValue(*result.GetState())}
-	if result.GetStreetAddress() != nil {state.StreetAddress = types.StringValue(*result.GetStreetAddress())}
-	if result.GetSurname() != nil {state.Surname = types.StringValue(*result.GetSurname())}
-	if result.GetUsageLocation() != nil {state.UsageLocation = types.StringValue(*result.GetUsageLocation())}
+	if result.GetState() != nil {
+		state.State = types.StringValue(*result.GetState())
+	}
+	if result.GetStreetAddress() != nil {
+		state.StreetAddress = types.StringValue(*result.GetStreetAddress())
+	}
+	if result.GetSurname() != nil {
+		state.Surname = types.StringValue(*result.GetSurname())
+	}
+	if result.GetUsageLocation() != nil {
+		state.UsageLocation = types.StringValue(*result.GetUsageLocation())
+	}
 	state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
-	if result.GetUserType() != nil {state.UserType = types.StringValue(*result.GetUserType())}
+	if result.GetUserType() != nil {
+		state.UserType = types.StringValue(*result.GetUserType())
+	}
 
 	// Overwrite items with refreshed state
 	diags := resp.State.Set(ctx, &state)
