@@ -58,6 +58,7 @@ type attributeRead struct {
 	DataSourceName string
 	NestedRead []attributeRead
 	ParentRead *attributeRead
+	ResultVarName string
 }
 
 type csvSchema struct {
@@ -193,14 +194,20 @@ func generateRead(read *[]attributeRead, csv []*csvSchema, parent *attributeRead
 		nextAttributeRead := attributeRead{
 			ModelVarName: strcase.ToLowerCamel(row.Name),
 			DataSourceName: dataSourceName,
+			ResultVarName: "result",
 		}
-		if parent != nil {
+		if parent != nil && parent.AttributeType == "SingleNested" {
 			nextAttributeRead.ParentRead = parent
 			nextAttributeRead.GetMethod = parent.GetMethod+".Get"+strcase.ToCamel(row.Name)+"()"
 			nextAttributeRead.StateAttributeName = parent.StateAttributeName+"."+strcase.ToCamel(row.Name)
+		} else if parent != nil && parent.AttributeType == "ListNested" {
+			nextAttributeRead.ParentRead = parent
+			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(row.Name)+"()"
+			nextAttributeRead.StateAttributeName = parent.ModelVarName+"."+strcase.ToCamel(row.Name)
+			nextAttributeRead.ResultVarName = "value"
 		} else {
 			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(row.Name)+"()"
-			nextAttributeRead.StateAttributeName = strcase.ToCamel(row.Name)
+			nextAttributeRead.StateAttributeName = "state."+strcase.ToCamel(row.Name)
 			nextAttributeRead.ModelName = dataSourceName+strcase.ToCamel(row.Name)+"DataSourceModel"
 		}
 
@@ -215,6 +222,12 @@ func generateRead(read *[]attributeRead, csv []*csvSchema, parent *attributeRead
 			nextAttributeRead.AttributeType = "DateTimeOffset"
 		case strings.HasSuffix(row.Type, "collection"):
 			nextAttributeRead.AttributeType = "ListNested"
+
+			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
+			var nestedRead []attributeRead
+			generateRead(&nestedRead, nestedCsv, &nextAttributeRead)
+
+			nextAttributeRead.NestedRead = nestedRead
 		default:
 			nextAttributeRead.AttributeType = "SingleNested"
 
