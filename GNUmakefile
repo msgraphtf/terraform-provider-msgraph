@@ -7,3 +7,6 @@ testacc:
 
 gendocs:
 	go generate ./main.go
+
+gends:
+	go run ./template/template.go $(args); go fmt ./template/out/user_data_source.go
