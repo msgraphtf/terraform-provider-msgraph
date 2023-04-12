@@ -12,15 +12,18 @@ import (
 	"github.com/microsoftgraph/msgraph-sdk-go/users"
 )
 
+// Ensure the implementation satisfies the expected interfaces.
 var (
 	_ datasource.DataSource              = &userDataSource{}
 	_ datasource.DataSourceWithConfigure = &userDataSource{}
 )
 
+// NewUserDataSource is a helper function to simplify the provider implementation.
 func NewUserDataSource() datasource.DataSource {
 	return &userDataSource{}
 }
 
+// UserDataSource is the data source implementation.
 type userDataSource struct {
 	client *msgraphsdk.GraphServiceClient
 }
@@ -55,44 +58,40 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				MarkdownDescription: "Sets the age group of the user. Allowed values: `null`, `Minor`, `NotAdult` and `Adult`. Refer to the [legal age group property definitions](#legal-age-group-property-definitions) for further information. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, and `in`).",
 				Computed:            true,
 			},
-			"assigned_licenses": schema.ListNestedAttribute{
+			"assigned_licenses": schema.SingleNestedAttribute{
 				MarkdownDescription: "The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate directly-assigned and inherited licenses. Use the **licenseAssignmentStates** property to identify the directly-assigned and inherited licenses.  Not nullable. Returned only on `$select`. Supports `$filter` (`eq`, `not`, `/$count eq 0`, `/$count ne 0`).",
 				Computed:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"disabled_plans": schema.ListAttribute{
-							MarkdownDescription: "A collection of the unique identifiers for plans that have been disabled.",
-							Computed:            true,
-							ElementType:         types.StringType,
-						},
-						"sku_id": schema.StringAttribute{
-							MarkdownDescription: "The unique identifier for the SKU.",
-							Computed:            true,
-						},
+				Attributes: map[string]schema.Attribute{
+					"disabled_plans": schema.ListAttribute{
+						MarkdownDescription: "A collection of the unique identifiers for plans that have been disabled.",
+						Computed:            true,
+						ElementType:         types.StringType,
+					},
+					"sku_id": schema.StringAttribute{
+						MarkdownDescription: "The unique identifier for the SKU.",
+						Computed:            true,
 					},
 				},
 			},
-			"assigned_plans": schema.ListNestedAttribute{
+			"assigned_plans": schema.SingleNestedAttribute{
 				MarkdownDescription: "The plans that are assigned to the user. Read-only. Not nullable. <br><br>Returned only on `$select`. Supports `$filter` (`eq` and `not`).",
 				Computed:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"assigned_date_time": schema.StringAttribute{
-							MarkdownDescription: "The date and time at which the plan was assigned. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`.",
-							Computed:            true,
-						},
-						"capability_status": schema.StringAttribute{
-							MarkdownDescription: "Condition of the capability assignment. The possible values are `Enabled`, `Warning`, `Suspended`, `Deleted`, `LockedOut`. See [a detailed description](#capabilitystatus-values) of each value.",
-							Computed:            true,
-						},
-						"service": schema.StringAttribute{
-							MarkdownDescription: "The name of the service; for example, `exchange`.",
-							Computed:            true,
-						},
-						"service_plan_id": schema.StringAttribute{
-							MarkdownDescription: "A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see [Product names and service plan identifiers for licensing](/azure/active-directory/enterprise-users/licensing-service-plan-reference).",
-							Computed:            true,
-						},
+				Attributes: map[string]schema.Attribute{
+					"assigned_date_time": schema.StringAttribute{
+						MarkdownDescription: "The date and time at which the plan was assigned. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`.",
+						Computed:            true,
+					},
+					"capability_status": schema.StringAttribute{
+						MarkdownDescription: "Condition of the capability assignment. The possible values are `Enabled`, `Warning`, `Suspended`, `Deleted`, `LockedOut`. See [a detailed description](#capabilitystatus-values) of each value.",
+						Computed:            true,
+					},
+					"service": schema.StringAttribute{
+						MarkdownDescription: "The name of the service; for example, `exchange`.",
+						Computed:            true,
+					},
+					"service_plan_id": schema.StringAttribute{
+						MarkdownDescription: "A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see [Product names and service plan identifiers for licensing](/azure/active-directory/enterprise-users/licensing-service-plan-reference).",
+						Computed:            true,
 					},
 				},
 			},
@@ -196,23 +195,21 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Optional:            true,
 				Computed:            true,
 			},
-			"identities": schema.ListNestedAttribute{
+			"identities": schema.SingleNestedAttribute{
 				MarkdownDescription: "Represents the identities that can be used to sign in to this user account. An identity can be provided by Microsoft (also known as a local account), by organizations, or by social identity providers such as Facebook, Google, and Microsoft, and tied to a user account. May contain multiple items with the same **signInType** value. <br><br>Returned only on `$select`. Supports `$filter` (`eq`) including on `null` values, only where the **signInType** is not `userPrincipalName`.",
 				Computed:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"issuer": schema.StringAttribute{
-							MarkdownDescription: "Specifies the issuer of the identity, for example `facebook.com`.<br>For local accounts (where **signInType** is not `federated`), this property is the local B2C tenant default domain name, for example `contoso.onmicrosoft.com`.<br>For external users from other Azure AD organization, this will be the domain of the federated organization, for example `contoso.com`.<br><br>Supports `$filter`. 512 character limit.",
-							Computed:            true,
-						},
-						"issuer_assigned_id": schema.StringAttribute{
-							MarkdownDescription: "Specifies the unique identifier assigned to the user by the issuer. The combination of **issuer** and **issuerAssignedId** must be unique within the organization. Represents the sign-in name for the user, when **signInType** is set to `emailAddress` or `userName` (also known as local accounts).<br>When **signInType** is set to: <ul><li>`emailAddress`, (or a custom string that starts with `emailAddress` like `emailAddress1`) **issuerAssignedId** must be a valid email address</li><li>`userName`, **issuerAssignedId** must begin with alphabetical character or number, and can only contain alphanumeric characters and the following symbols: - or _</li></ul>Supports `$filter`. 64 character limit.",
-							Computed:            true,
-						},
-						"sign_in_type": schema.StringAttribute{
-							MarkdownDescription: "Specifies the user sign-in types in your directory, such as `emailAddress`, `userName`, `federated`, or `userPrincipalName`. `federated` represents a unique identifier for a user from an issuer, that can be in any format chosen by the issuer. Setting or updating a `userPrincipalName` identity will update the value of the **userPrincipalName** property on the user object. The validations performed on the `userPrincipalName` property on the user object, for example, verified domains and acceptable characters, will be performed when setting or updating a `userPrincipalName` identity. Additional validation is enforced on **issuerAssignedId** when the sign-in type is set to `emailAddress` or `userName`. This property can also be set to any custom string.",
-							Computed:            true,
-						},
+				Attributes: map[string]schema.Attribute{
+					"issuer": schema.StringAttribute{
+						MarkdownDescription: "Specifies the issuer of the identity, for example `facebook.com`.<br>For local accounts (where **signInType** is not `federated`), this property is the local B2C tenant default domain name, for example `contoso.onmicrosoft.com`.<br>For external users from other Azure AD organization, this will be the domain of the federated organization, for example `contoso.com`.<br><br>Supports `$filter`. 512 character limit.",
+						Computed:            true,
+					},
+					"issuer_assigned_id": schema.StringAttribute{
+						MarkdownDescription: "Specifies the unique identifier assigned to the user by the issuer. The combination of **issuer** and **issuerAssignedId** must be unique within the organization. Represents the sign-in name for the user, when **signInType** is set to `emailAddress` or `userName` (also known as local accounts).<br>When **signInType** is set to: <ul><li>`emailAddress`, (or a custom string that starts with `emailAddress` like `emailAddress1`) **issuerAssignedId** must be a valid email address</li><li>`userName`, **issuerAssignedId** must begin with alphabetical character or number, and can only contain alphanumeric characters and the following symbols: - or _</li></ul>Supports `$filter`. 64 character limit.",
+						Computed:            true,
+					},
+					"sign_in_type": schema.StringAttribute{
+						MarkdownDescription: "Specifies the user sign-in types in your directory, such as `emailAddress`, `userName`, `federated`, or `userPrincipalName`. `federated` represents a unique identifier for a user from an issuer, that can be in any format chosen by the issuer. Setting or updating a `userPrincipalName` identity will update the value of the **userPrincipalName** property on the user object. The validations performed on the `userPrincipalName` property on the user object, for example, verified domains and acceptable characters, will be performed when setting or updating a `userPrincipalName` identity. Additional validation is enforced on **issuerAssignedId** when the sign-in type is set to `emailAddress` or `userName`. This property can also be set to any custom string.",
+						Computed:            true,
 					},
 				},
 			},
@@ -242,36 +239,34 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				MarkdownDescription: "Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on **ageGroup** and **consentProvidedForMinor** properties. Allowed values: `null`, `MinorWithOutParentalConsent`, `MinorWithParentalConsent`, `MinorNoParentalConsentRequired`, `NotAdult` and `Adult`. Refer to the [legal age group property definitions](#legal-age-group-property-definitions) for further information. <br><br>Returned only on `$select`.",
 				Computed:            true,
 			},
-			"license_assignment_states": schema.ListNestedAttribute{
+			"license_assignment_states": schema.SingleNestedAttribute{
 				MarkdownDescription: "State of license assignments for this user. Also indicates licenses that are directly-assigned and those that the user has inherited through group memberships. Read-only. <br><br>Returned only on `$select`.",
 				Computed:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"assigned_by_group": schema.StringAttribute{
-							MarkdownDescription: "Indicates whether the license is directly-assigned or inherited from a group. If directly-assigned, this field is `null`; if inherited through a group membership, this field contains the ID of the group. Read-Only.",
-							Computed:            true,
-						},
-						"disabled_plans": schema.ListAttribute{
-							MarkdownDescription: "The service plans that are disabled in this assignment. Read-Only.",
-							Computed:            true,
-							ElementType:         types.StringType,
-						},
-						"error": schema.StringAttribute{
-							MarkdownDescription: "License assignment failure error. If the license is assigned successfully, this field will be Null. Read-Only. The possible values are `CountViolation`, `MutuallyExclusiveViolation`, `DependencyViolation`, `ProhibitedInUsageLocationViolation`, `UniquenessViolation`, and `Other`. For more information on how to identify and resolve license assignment errors see [here](/azure/active-directory/users-groups-roles/licensing-groups-resolve-problems).",
-							Computed:            true,
-						},
-						"last_updated_date_time": schema.StringAttribute{
-							MarkdownDescription: "The timestamp when the state of the license assignment was last updated.",
-							Computed:            true,
-						},
-						"sku_id": schema.StringAttribute{
-							MarkdownDescription: "The unique identifier for the SKU. Read-Only.",
-							Computed:            true,
-						},
-						"state": schema.StringAttribute{
-							MarkdownDescription: "Indicate the current state of this assignment. Read-Only. The possible values are `Active`, `ActiveWithError`, `Disabled`, and `Error`.",
-							Computed:            true,
-						},
+				Attributes: map[string]schema.Attribute{
+					"assigned_by_group": schema.StringAttribute{
+						MarkdownDescription: "Indicates whether the license is directly-assigned or inherited from a group. If directly-assigned, this field is `null`; if inherited through a group membership, this field contains the ID of the group. Read-Only.",
+						Computed:            true,
+					},
+					"disabled_plans": schema.ListAttribute{
+						MarkdownDescription: "The service plans that are disabled in this assignment. Read-Only.",
+						Computed:            true,
+						ElementType:         types.StringType,
+					},
+					"error": schema.StringAttribute{
+						MarkdownDescription: "License assignment failure error. If the license is assigned successfully, this field will be Null. Read-Only. The possible values are `CountViolation`, `MutuallyExclusiveViolation`, `DependencyViolation`, `ProhibitedInUsageLocationViolation`, `UniquenessViolation`, and `Other`. For more information on how to identify and resolve license assignment errors see [here](/azure/active-directory/users-groups-roles/licensing-groups-resolve-problems).",
+						Computed:            true,
+					},
+					"last_updated_date_time": schema.StringAttribute{
+						MarkdownDescription: "The timestamp when the state of the license assignment was last updated.",
+						Computed:            true,
+					},
+					"sku_id": schema.StringAttribute{
+						MarkdownDescription: "The unique identifier for the SKU. Read-Only.",
+						Computed:            true,
+					},
+					"state": schema.StringAttribute{
+						MarkdownDescription: "Indicate the current state of this assignment. Read-Only. The possible values are `Active`, `ActiveWithError`, `Disabled`, and `Error`.",
+						Computed:            true,
 					},
 				},
 			},
@@ -377,27 +372,25 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				MarkdownDescription: "Indicates the last time at which the object was synced with the on-premises directory; for example: `2013-02-16T03:04:54Z`. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is `2014-01-01T00:00:00Z`. Read-only. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `ne`, `not`, `ge`, `le`, `in`).",
 				Computed:            true,
 			},
-			"on_premises_provisioning_errors": schema.ListNestedAttribute{
+			"on_premises_provisioning_errors": schema.SingleNestedAttribute{
 				MarkdownDescription: "Errors when using Microsoft synchronization product during provisioning. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `not`, `ge`, `le`).",
 				Computed:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"category": schema.StringAttribute{
-							MarkdownDescription: "Category of the provisioning error. Note: Currently, there is only one possible value. Possible value: *PropertyConflict* - indicates a property value is not unique. Other objects contain the same value for the property.",
-							Optional:            true,
-						},
-						"occurred_date_time": schema.StringAttribute{
-							MarkdownDescription: "The date and time at which the error occurred.",
-							Optional:            true,
-						},
-						"property_causing_error": schema.StringAttribute{
-							MarkdownDescription: "Name of the directory property causing the error. Current possible values: *UserPrincipalName* or *ProxyAddress*",
-							Optional:            true,
-						},
-						"value": schema.StringAttribute{
-							MarkdownDescription: "Value of the property causing the error.",
-							Optional:            true,
-						},
+				Attributes: map[string]schema.Attribute{
+					"category": schema.StringAttribute{
+						MarkdownDescription: "Category of the provisioning error. Note: Currently, there is only one possible value. Possible value: *PropertyConflict* - indicates a property value is not unique. Other objects contain the same value for the property.",
+						Optional:            true,
+					},
+					"occurred_date_time": schema.StringAttribute{
+						MarkdownDescription: "The date and time at which the error occurred.",
+						Optional:            true,
+					},
+					"property_causing_error": schema.StringAttribute{
+						MarkdownDescription: "Name of the directory property causing the error. Current possible values: *UserPrincipalName* or *ProxyAddress*",
+						Optional:            true,
+					},
+					"value": schema.StringAttribute{
+						MarkdownDescription: "Value of the property causing the error.",
+						Optional:            true,
 					},
 				},
 			},
@@ -465,23 +458,21 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				MarkdownDescription: "The preferred name for the user. **Not Supported. This attribute returns an empty string.**<br><br>Returned only on `$select`.",
 				Computed:            true,
 			},
-			"provisioned_plans": schema.ListNestedAttribute{
+			"provisioned_plans": schema.SingleNestedAttribute{
 				MarkdownDescription: "The plans that are provisioned for the user. Read-only. Not nullable. <br><br>Returned only on `$select`. Supports `$filter` (`eq`, `not`, `ge`, `le`).",
 				Computed:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"capability_status": schema.StringAttribute{
-							MarkdownDescription: "For example, “Enabled”.",
-							Optional:            true,
-						},
-						"provisioning_status": schema.StringAttribute{
-							MarkdownDescription: "For example, “Success”.",
-							Optional:            true,
-						},
-						"service": schema.StringAttribute{
-							MarkdownDescription: "The name of the service; for example, “AccessControlS2S”",
-							Optional:            true,
-						},
+				Attributes: map[string]schema.Attribute{
+					"capability_status": schema.StringAttribute{
+						MarkdownDescription: "For example, “Enabled”.",
+						Optional:            true,
+					},
+					"provisioning_status": schema.StringAttribute{
+						MarkdownDescription: "For example, “Success”.",
+						Optional:            true,
+					},
+					"service": schema.StringAttribute{
+						MarkdownDescription: "The name of the service; for example, “AccessControlS2S”",
+						Optional:            true,
 					},
 				},
 			},
@@ -725,45 +716,49 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	// Map response to model
 	if result.GetAboutMe() != nil {
 		state.AboutMe = types.StringValue(*result.GetAboutMe())
 	}
-	state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
+	if result.GetAccountEnabled() != nil {
+		state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
+	}
 	if result.GetAgeGroup() != nil {
-		state.AboutMe = types.StringValue(*result.GetAgeGroup())
+		state.AgeGroup = types.StringValue(*result.GetAgeGroup())
 	}
+	for _, value := range result.GetAssignedLicenses() {
+		assignedLicenses := new(userAssignedLicensesDataSourceModel)
 
-	// Map assigned licenses
-	for _, license := range result.GetAssignedLicenses() {
-		assignedLicensesState := userAssignedLicensesDataSourceModel{
-			SkuId: types.StringValue(license.GetSkuId().String()),
+		for _, value := range value.GetDisabledPlans() {
+			assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(value.String()))
 		}
-		for _, disabledLicense := range license.GetDisabledPlans() {
-			assignedLicensesState.DisabledPlans = append(assignedLicensesState.DisabledPlans, types.StringValue(disabledLicense.String()))
+		if value.GetSkuId() != nil {
+			assignedLicenses.SkuId = types.StringValue(value.GetSkuId().String())
 		}
-		state.AssignedLicenses = append(state.AssignedLicenses, assignedLicensesState)
+		state.AssignedLicenses = append(state.AssignedLicenses, *assignedLicenses)
 	}
+	for _, value := range result.GetAssignedPlans() {
+		assignedPlans := new(userAssignedPlansDataSourceModel)
 
-	// Map assigned plans
-	for _, plan := range result.GetAssignedPlans() {
-		assignedPlansState := userAssignedPlansDataSourceModel{
-			AssignedDateTime: types.StringValue(plan.GetAssignedDateTime().String()),
-			CapabilityStatus: types.StringValue(*plan.GetCapabilityStatus()),
-			Service:          types.StringValue(*plan.GetService()),
-			ServicePlanId:    types.StringValue(plan.GetServicePlanId().String()),
+		if value.GetAssignedDateTime() != nil {
+			assignedPlans.AssignedDateTime = types.StringValue(value.GetAssignedDateTime().String())
 		}
-		state.AssignedPlans = append(state.AssignedPlans, assignedPlansState)
+		if value.GetCapabilityStatus() != nil {
+			assignedPlans.CapabilityStatus = types.StringValue(*value.GetCapabilityStatus())
+		}
+		if value.GetService() != nil {
+			assignedPlans.Service = types.StringValue(*value.GetService())
+		}
+		if value.GetServicePlanId() != nil {
+			assignedPlans.ServicePlanId = types.StringValue(value.GetServicePlanId().String())
+		}
+		state.AssignedPlans = append(state.AssignedPlans, *assignedPlans)
 	}
-
 	if result.GetBirthday() != nil {
 		state.Birthday = types.StringValue(result.GetBirthday().String())
 	}
-
-	for _, businessPhone := range result.GetBusinessPhones() {
-		state.BusinessPhones = append(state.BusinessPhones, types.StringValue(businessPhone))
+	for _, value := range result.GetBusinessPhones() {
+		state.BusinessPhones = append(state.BusinessPhones, types.StringValue(value))
 	}
-
 	if result.GetCity() != nil {
 		state.City = types.StringValue(*result.GetCity())
 	}
@@ -773,7 +768,12 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetConsentProvidedForMinor() != nil {
 		state.ConsentProvidedForMinor = types.StringValue(*result.GetConsentProvidedForMinor())
 	}
-	state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
+	if result.GetCountry() != nil {
+		state.Country = types.StringValue(*result.GetCountry())
+	}
+	if result.GetCreatedDateTime() != nil {
+		state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
+	}
 	if result.GetCreationType() != nil {
 		state.CreationType = types.StringValue(*result.GetCreationType())
 	}
@@ -783,28 +783,29 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetDepartment() != nil {
 		state.Department = types.StringValue(*result.GetDepartment())
 	}
-	state.DisplayName = types.StringValue(*result.GetDisplayName())
+	if result.GetDisplayName() != nil {
+		state.DisplayName = types.StringValue(*result.GetDisplayName())
+	}
 	if result.GetEmployeeHireDate() != nil {
 		state.EmployeeHireDate = types.StringValue(result.GetEmployeeHireDate().String())
-	}
-	if result.GetEmployeeId() != nil {
-		state.EmployeeId = types.StringValue(*result.GetEmployeeId())
 	}
 	if result.GetEmployeeLeaveDateTime() != nil {
 		state.EmployeeLeaveDateTime = types.StringValue(result.GetEmployeeLeaveDateTime().String())
 	}
-
+	if result.GetEmployeeId() != nil {
+		state.EmployeeId = types.StringValue(*result.GetEmployeeId())
+	}
 	employeeOrgData := new(userEmployeeOrgDataDataSourceModel)
 	if result.GetEmployeeOrgData() != nil {
-		if result.GetEmployeeOrgData().GetCostCenter() != nil {
-			employeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())
-		}
+
 		if result.GetEmployeeOrgData().GetDivision() != nil {
-			employeeOrgData.Division = types.StringValue(*result.GetEmployeeOrgData().GetDivision())
+			state.EmployeeOrgData.Division = types.StringValue(*result.GetEmployeeOrgData().GetDivision())
+		}
+		if result.GetEmployeeOrgData().GetCostCenter() != nil {
+			state.EmployeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())
 		}
 	}
 	state.EmployeeOrgData = employeeOrgData
-
 	if result.GetEmployeeType() != nil {
 		state.EmployeeType = types.StringValue(*result.GetEmployeeType())
 	}
@@ -823,24 +824,29 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetHireDate() != nil {
 		state.HireDate = types.StringValue(result.GetHireDate().String())
 	}
-	state.Id = types.StringValue(*result.GetId())
+	if result.GetId() != nil {
+		state.Id = types.StringValue(*result.GetId())
+	}
+	for _, value := range result.GetIdentities() {
+		identities := new(userIdentitiesDataSourceModel)
 
-	for _, identity := range result.GetIdentities() {
-		identitiesState := userIdentitiesDataSourceModel{
-			Issuer:           types.StringValue(*identity.GetIssuer()),
-			IssuerAssignedId: types.StringValue(*identity.GetIssuerAssignedId()),
-			SignInType:       types.StringValue(*identity.GetSignInType()),
+		if value.GetIssuer() != nil {
+			identities.Issuer = types.StringValue(*value.GetIssuer())
 		}
-		state.Identities = append(state.Identities, identitiesState)
+		if value.GetIssuerAssignedId() != nil {
+			identities.IssuerAssignedId = types.StringValue(*value.GetIssuerAssignedId())
+		}
+		if value.GetSignInType() != nil {
+			identities.SignInType = types.StringValue(*value.GetSignInType())
+		}
+		state.Identities = append(state.Identities, *identities)
 	}
-
-	for _, imAddress := range result.GetImAddresses() {
-		state.ImAddresses = append(state.ImAddresses, types.StringValue(imAddress))
+	for _, value := range result.GetImAddresses() {
+		state.ImAddresses = append(state.ImAddresses, types.StringValue(value))
 	}
-	for _, interest := range result.GetInterests() {
-		state.Interests = append(state.Interests, types.StringValue(interest))
+	for _, value := range result.GetInterests() {
+		state.Interests = append(state.Interests, types.StringValue(value))
 	}
-
 	if result.GetIsResourceAccount() != nil {
 		state.IsResourceAccount = types.BoolValue(*result.GetIsResourceAccount())
 	}
@@ -853,32 +859,35 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetLegalAgeGroupClassification() != nil {
 		state.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())
 	}
+	for _, value := range result.GetLicenseAssignmentStates() {
+		licenseAssignmentStates := new(userLicenseAssignmentStatesDataSourceModel)
 
-	for _, licenseAssignmentState := range result.GetLicenseAssignmentStates() {
-		licenseAssignmentStateState := new(userLicenseAssignmentStatesDataSourceModel)
-		if licenseAssignmentState.GetAssignedByGroup() != nil {
-			licenseAssignmentStateState.AssignedByGroup = types.StringValue(*licenseAssignmentState.GetAssignedByGroup())
+		if value.GetAssignedByGroup() != nil {
+			licenseAssignmentStates.AssignedByGroup = types.StringValue(*value.GetAssignedByGroup())
 		}
-		for _, disabledLicense := range licenseAssignmentState.GetDisabledPlans() {
-			licenseAssignmentStateState.DisabledPlans = append(licenseAssignmentStateState.DisabledPlans, types.StringValue(disabledLicense.String()))
+		for _, value := range value.GetDisabledPlans() {
+			licenseAssignmentStates.DisabledPlans = append(licenseAssignmentStates.DisabledPlans, types.StringValue(value.String()))
 		}
-		if licenseAssignmentState.GetError() != nil {
-			licenseAssignmentStateState.Error = types.StringValue(*licenseAssignmentState.GetError())
+		if value.GetError() != nil {
+			licenseAssignmentStates.Error = types.StringValue(*value.GetError())
 		}
-		if licenseAssignmentState.GetLastUpdatedDateTime() != nil {
-			licenseAssignmentStateState.LastUpdatedDateTime = types.StringValue(licenseAssignmentState.GetLastUpdatedDateTime().String())
+		if value.GetLastUpdatedDateTime() != nil {
+			licenseAssignmentStates.LastUpdatedDateTime = types.StringValue(value.GetLastUpdatedDateTime().String())
 		}
-		if licenseAssignmentState.GetSkuId() != nil {
-			licenseAssignmentStateState.SkuId = types.StringValue(licenseAssignmentState.GetSkuId().String())
+		if value.GetSkuId() != nil {
+			licenseAssignmentStates.SkuId = types.StringValue(value.GetSkuId().String())
 		}
-		if licenseAssignmentState.GetState() != nil {
-			licenseAssignmentStateState.State = types.StringValue(*licenseAssignmentState.GetState())
+		if value.GetState() != nil {
+			licenseAssignmentStates.State = types.StringValue(*value.GetState())
 		}
-		state.LicenseAssignmentStates = append(state.LicenseAssignmentStates, *licenseAssignmentStateState)
+		state.LicenseAssignmentStates = append(state.LicenseAssignmentStates, *licenseAssignmentStates)
 	}
-
-	//if result.GetMail() != nil {state.Mail = types.StringValue(*result.GetMail())}
-	state.MailNickname = types.StringValue(*result.GetMailNickname())
+	if result.GetMail() != nil {
+		state.Mail = types.StringValue(*result.GetMail())
+	}
+	if result.GetMailNickname() != nil {
+		state.MailNickname = types.StringValue(*result.GetMailNickname())
+	}
 	if result.GetMobilePhone() != nil {
 		state.MobilePhone = types.StringValue(*result.GetMobilePhone())
 	}
@@ -894,72 +903,79 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetOnPremisesDomainName() != nil {
 		state.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())
 	}
-
 	onPremisesExtensionAttributes := new(userOnPremisesExtensionAttributesDataSourceModel)
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute2 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute3 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute4 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute5 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute6 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute7 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute8 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute9 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute10 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute11 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute12 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute13 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute14 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14())
-	}
-	if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15() != nil {
-		onPremisesExtensionAttributes.ExtensionAttribute15 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15())
+	if result.GetOnPremisesExtensionAttributes() != nil {
+
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute2 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute3 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute4 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute5 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute6 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute7 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute8 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute9 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute10 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute11 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute12 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute13 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute14 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14())
+		}
+		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15() != nil {
+			state.OnPremisesExtensionAttributes.ExtensionAttribute15 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15())
+		}
 	}
 	state.OnPremisesExtensionAttributes = onPremisesExtensionAttributes
-
 	if result.GetOnPremisesImmutableId() != nil {
 		state.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())
 	}
 	if result.GetOnPremisesLastSyncDateTime() != nil {
 		state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
 	}
+	for _, value := range result.GetOnPremisesProvisioningErrors() {
+		onPremisesProvisioningErrors := new(userOnPremisesProvisioningErrorsDataSourceModel)
 
-	for _, onPremisesProvisioningError := range result.GetOnPremisesProvisioningErrors() {
-		onPremisesProvisioningErrorState := userOnPremisesProvisioningErrorsDataSourceModel{
-			Category:             types.StringValue(*onPremisesProvisioningError.GetCategory()),
-			OccurredDateTime:     types.StringValue(onPremisesProvisioningError.GetOccurredDateTime().String()),
-			PropertyCausingError: types.StringValue(*onPremisesProvisioningError.GetPropertyCausingError()),
-			Value:                types.StringValue(*onPremisesProvisioningError.GetValue()),
+		if value.GetCategory() != nil {
+			onPremisesProvisioningErrors.Category = types.StringValue(*value.GetCategory())
 		}
-		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, onPremisesProvisioningErrorState)
+		if value.GetOccurredDateTime() != nil {
+			onPremisesProvisioningErrors.OccurredDateTime = types.StringValue(value.GetOccurredDateTime().String())
+		}
+		if value.GetPropertyCausingError() != nil {
+			onPremisesProvisioningErrors.PropertyCausingError = types.StringValue(*value.GetPropertyCausingError())
+		}
+		if value.GetValue() != nil {
+			onPremisesProvisioningErrors.Value = types.StringValue(*value.GetValue())
+		}
+		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, *onPremisesProvisioningErrors)
 	}
-
 	if result.GetOnPremisesSamAccountName() != nil {
 		state.OnPremisesSamAccountName = types.StringValue(*result.GetOnPremisesSamAccountName())
 	}
@@ -972,24 +988,29 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetOnPremisesUserPrincipalName() != nil {
 		state.OnPremisesUserPrincipalName = types.StringValue(*result.GetOnPremisesUserPrincipalName())
 	}
-
-	for _, other_mail := range result.GetOtherMails() {
-		state.OtherMails = append(state.OtherMails, types.StringValue(other_mail))
+	for _, value := range result.GetOtherMails() {
+		state.OtherMails = append(state.OtherMails, types.StringValue(value))
 	}
-
 	if result.GetPasswordPolicies() != nil {
 		state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())
 	}
-
 	passwordProfile := new(userPasswordProfileDataSourceModel)
-	passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
-	passwordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())
-	state.PasswordProfile = passwordProfile
+	if result.GetPasswordProfile() != nil {
 
-	for _, past_project := range result.GetPastProjects() {
-		state.PastProjects = append(state.PastProjects, types.StringValue(past_project))
+		if result.GetPasswordProfile().GetForceChangePasswordNextSignIn() != nil {
+			state.PasswordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
+		}
+		if result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa() != nil {
+			state.PasswordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())
+		}
+		if result.GetPasswordProfile().GetPassword() != nil {
+			state.PasswordProfile.Password = types.StringValue(*result.GetPasswordProfile().GetPassword())
+		}
 	}
-
+	state.PasswordProfile = passwordProfile
+	for _, value := range result.GetPastProjects() {
+		state.PastProjects = append(state.PastProjects, types.StringValue(value))
+	}
 	if result.GetPostalCode() != nil {
 		state.PostalCode = types.StringValue(*result.GetPostalCode())
 	}
@@ -1002,28 +1023,29 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetPreferredName() != nil {
 		state.PreferredName = types.StringValue(*result.GetPreferredName())
 	}
+	for _, value := range result.GetProvisionedPlans() {
+		provisionedPlans := new(userProvisionedPlansDataSourceModel)
 
-	for _, provisionedPlan := range result.GetProvisionedPlans() {
-		provisionedPlanState := userProvisionedPlansDataSourceModel{
-			CapabilityStatus:   types.StringValue(*provisionedPlan.GetCapabilityStatus()),
-			ProvisioningStatus: types.StringValue(*provisionedPlan.GetProvisioningStatus()),
-			Service:            types.StringValue(*provisionedPlan.GetService()),
+		if value.GetCapabilityStatus() != nil {
+			provisionedPlans.CapabilityStatus = types.StringValue(*value.GetCapabilityStatus())
 		}
-		state.ProvisionedPlans = append(state.ProvisionedPlans, provisionedPlanState)
+		if value.GetProvisioningStatus() != nil {
+			provisionedPlans.ProvisioningStatus = types.StringValue(*value.GetProvisioningStatus())
+		}
+		if value.GetService() != nil {
+			provisionedPlans.Service = types.StringValue(*value.GetService())
+		}
+		state.ProvisionedPlans = append(state.ProvisionedPlans, *provisionedPlans)
 	}
-
-	for _, proxy_address := range result.GetProxyAddresses() {
-		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(proxy_address))
+	for _, value := range result.GetProxyAddresses() {
+		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(value))
 	}
-
-	for _, responsibility := range result.GetResponsibilities() {
-		state.Responsibilities = append(state.Responsibilities, types.StringValue(responsibility))
+	for _, value := range result.GetResponsibilities() {
+		state.Responsibilities = append(state.Responsibilities, types.StringValue(value))
 	}
-
-	for _, school := range result.GetSchools() {
-		state.Schools = append(state.Schools, types.StringValue(school))
+	for _, value := range result.GetSchools() {
+		state.Schools = append(state.Schools, types.StringValue(value))
 	}
-
 	if result.GetSecurityIdentifier() != nil {
 		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
 	}
@@ -1033,11 +1055,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetSignInSessionsValidFromDateTime() != nil {
 		state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())
 	}
-
-	for _, skill := range result.GetSkills() {
-		state.Skills = append(state.Skills, types.StringValue(skill))
+	for _, value := range result.GetSkills() {
+		state.Skills = append(state.Skills, types.StringValue(value))
 	}
-
 	if result.GetState() != nil {
 		state.State = types.StringValue(*result.GetState())
 	}
@@ -1050,7 +1070,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetUsageLocation() != nil {
 		state.UsageLocation = types.StringValue(*result.GetUsageLocation())
 	}
-	state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
+	if result.GetUserPrincipalName() != nil {
+		state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
+	}
 	if result.GetUserType() != nil {
 		state.UserType = types.StringValue(*result.GetUserType())
 	}
@@ -1061,4 +1083,5 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
 }

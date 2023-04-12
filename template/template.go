@@ -104,16 +104,16 @@ func generateSchema(schema *[]attributeSchema, csv []*csvSchema) {
 
 		// Convert types from MS Graph docs to Go and terraform types
 		switch {
-		case row.Type == "String":
+		case row.Type == "String" || row.Type == "Guid":
 			nextAttributeSchema.AttributeType = "String"
-		case row.Type == "String collection":
+		case row.Type == "String collection" || row.Type == "Guid collection":
 			nextAttributeSchema.AttributeType = "List"
 			nextAttributeSchema.ElementType = "types.StringType"
 		case row.Type == "Boolean":
 			nextAttributeSchema.AttributeType = "Bool"
 		case row.Type == "DateTimeOffset":
 			nextAttributeSchema.AttributeType = "String"
-		case strings.HasSuffix(row.Type, "collection"):
+		case row.Type == "String collection":
 			nextAttributeSchema.AttributeType = "ListNested"
 
 			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttributeSchema.AttributeName + ".csv")
@@ -154,13 +154,13 @@ func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) 
 		nextModelField.AttributeName = strcase.ToSnake(row.Name)
 
 		switch {
-		case row.Type == "String":
+		case row.Type == "String" || row.Type == "Guid":
 			nextModelField.FieldType = "types.String"
 		case row.Type == "Boolean":
 			nextModelField.FieldType = "types.Bool"
 		case row.Type == "DateTimeOffset":
 			nextModelField.FieldType = "types.String"
-		case row.Type == "String collection":
+		case row.Type == "String collection" || row.Type == "Guid collection":
 			nextModelField.FieldType = "[]types.String"
 		case strings.HasSuffix(row.Type, "collection"):
 			nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel"
@@ -214,10 +214,14 @@ func generateRead(read *[]attributeRead, csv []*csvSchema, parent *attributeRead
 		switch {
 		case row.Type == "String":
 			nextAttributeRead.AttributeType = "String"
+		case row.Type == "Guid":
+			nextAttributeRead.AttributeType = "DateTimeOffset"
 		case row.Type == "Boolean":
 			nextAttributeRead.AttributeType = "Boolean"
 		case row.Type == "String collection":
 			nextAttributeRead.AttributeType = "StringCollection"
+		case row.Type == "Guid collection":
+			nextAttributeRead.AttributeType = "GuidCollection"
 		case row.Type == "DateTimeOffset":
 			nextAttributeRead.AttributeType = "DateTimeOffset"
 		case strings.HasSuffix(row.Type, "collection"):

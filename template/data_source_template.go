@@ -186,6 +186,12 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	}
 	{{- end}}
 
+	{{- define "ReadGuidCollection" }}
+	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
+		{{.StateAttributeName}} = append({{.StateAttributeName}}, types.StringValue(value.String()))
+	}
+	{{- end}}
+
 	{{- define "ReadDataTimeOffset" }}
 	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue({{.ResultVarName}}.{{.GetMethod}}.String())}
 	{{- end}}
@@ -218,6 +224,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	{{- template "ReadDataTimeOffset" .}}
 	{{- else if eq .AttributeType "StringCollection"}}
 	{{- template "ReadStringCollection" .}}
+	{{- else if eq .AttributeType "GuidCollection"}}
+	{{- template "ReadGuidCollection" .}}
 	{{- else if eq .AttributeType "SingleNested"}}
 	{{- template "ReadSingleNestedAttribute" .}}
 	{{- else if eq .AttributeType "ListNested"}}
