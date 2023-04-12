@@ -12,7 +12,7 @@ require (
 	github.com/hashicorp/terraform-plugin-log v0.8.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.26.1
 	github.com/iancoleman/strcase v0.2.0
-	github.com/microsoftgraph/msgraph-sdk-go v0.58.0
+	github.com/microsoftgraph/msgraph-sdk-go v0.61.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v0.36.0
 )
 
@@ -61,8 +61,8 @@ require (
 	github.com/microsoft/kiota-abstractions-go v0.19.0 // indirect
 	github.com/microsoft/kiota-authentication-azure-go v0.6.0 // indirect
 	github.com/microsoft/kiota-http-go v0.16.1 // indirect
-	github.com/microsoft/kiota-serialization-form-go v0.9.0 // indirect
-	github.com/microsoft/kiota-serialization-json-go v0.9.0 // indirect
+	github.com/microsoft/kiota-serialization-form-go v0.9.1 // indirect
+	github.com/microsoft/kiota-serialization-json-go v0.9.1 // indirect
 	github.com/microsoft/kiota-serialization-text-go v0.7.0 // indirect
 	github.com/mitchellh/cli v1.1.5 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
