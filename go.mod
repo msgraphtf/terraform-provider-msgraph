@@ -13,12 +13,12 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.26.1
 	github.com/iancoleman/strcase v0.2.0
 	github.com/microsoftgraph/msgraph-sdk-go v0.61.0
-	github.com/microsoftgraph/msgraph-sdk-go-core v0.36.0
+	github.com/microsoftgraph/msgraph-sdk-go-core v0.36.1
 )
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.4.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/internal v1.2.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.5.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/internal v1.3.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v0.9.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
@@ -58,9 +58,9 @@ require (
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
-	github.com/microsoft/kiota-abstractions-go v0.19.0 // indirect
+	github.com/microsoft/kiota-abstractions-go v0.19.1 // indirect
 	github.com/microsoft/kiota-authentication-azure-go v0.6.0 // indirect
-	github.com/microsoft/kiota-http-go v0.16.1 // indirect
+	github.com/microsoft/kiota-http-go v0.16.2 // indirect
 	github.com/microsoft/kiota-serialization-form-go v0.9.1 // indirect
 	github.com/microsoft/kiota-serialization-json-go v0.9.1 // indirect
 	github.com/microsoft/kiota-serialization-text-go v0.7.0 // indirect
