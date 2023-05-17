@@ -12,12 +12,12 @@ require (
 	github.com/hashicorp/terraform-plugin-log v0.8.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.26.1
 	github.com/iancoleman/strcase v0.2.0
-	github.com/microsoftgraph/msgraph-sdk-go v1.0.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.2.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.0
 )
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.5.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.6.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.3.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v0.9.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
