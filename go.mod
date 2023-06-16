@@ -5,9 +5,10 @@ go 1.18
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.3.0
+	github.com/getkin/kin-openapi v0.118.0
 	github.com/gocarina/gocsv v0.0.0-20230226133904-70c27cb2918a
 	github.com/hashicorp/terraform-plugin-docs v0.15.0
-	github.com/hashicorp/terraform-plugin-framework v1.3.0
+	github.com/hashicorp/terraform-plugin-framework v1.3.1
 	github.com/hashicorp/terraform-plugin-go v0.15.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.26.1
@@ -32,12 +33,10 @@ require (
 	github.com/cloudflare/circl v1.3.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.14.1 // indirect
-	github.com/getkin/kin-openapi v0.118.0 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
-	github.com/go-test/deep v1.0.8 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
