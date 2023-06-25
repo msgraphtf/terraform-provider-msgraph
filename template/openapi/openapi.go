@@ -19,6 +19,14 @@ type attributeRaw struct {
 
 func main() {
 
+	attributes := RecurseSchema("microsoft.graph.user")
+
+	readAttributes(attributes, 0)
+
+}
+
+func RecurseSchema(schema string) []attributeRaw {
+
 	fmt.Println("Loading")
 	doc, err = openapi3.NewLoader().LoadFromFile("./msgraph-metadata/openapi/v1.0/openapi.yaml")
 	if err != nil {
@@ -26,18 +34,12 @@ func main() {
 	}
 	fmt.Println("Loaded")
 
-	//fmt.Printf("%s", doc.Components.Schemas["microsoft.graph.authorizationInfo"].Value.Type)
-	recurseSchema("microsoft.graph.user")
-
-}
-
-func recurseSchema(schema string) {
-
 	var attributes []attributeRaw
 
 	recurseSchemaUp(*&doc.Components.Schemas[schema].Value, &attributes)
 
-	readAttributes(attributes, 0)
+	return attributes
+
 }
 
 func recurseSchemaUp(schema *openapi3.Schema, attributes *[]attributeRaw) {
