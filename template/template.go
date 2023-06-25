@@ -10,6 +10,8 @@ import (
 
 	"github.com/gocarina/gocsv"
 	"github.com/iancoleman/strcase"
+
+	"terraform-provider-msgraph/template/openapi"
 )
 
 type templateInput struct {
@@ -28,7 +30,7 @@ type templateInput struct {
 type attributeSchema struct {
 	AttributeName       string
 	AttributeType       string
-	MarkdownDescription string
+	Description string
 	Required            bool
 	Optional            bool
 	Computed            bool
@@ -94,47 +96,48 @@ func openCsv(path string) []*csvSchema {
 
 }
 
-func generateSchema(schema *[]attributeSchema, csv []*csvSchema) {
-	for _, row := range csv {
+func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw) {
+
+	//TODO: Does not account for optional attributes
+
+	for _, attr := range attributes {
 
 		// Create new attribute schema and model for array
 		nextAttributeSchema := new(attributeSchema)
 
-		nextAttributeSchema.AttributeName = strcase.ToSnake(row.Name)
+		nextAttributeSchema.AttributeName = strcase.ToSnake(attr.Name)
 
 		// Convert types from MS Graph docs to Go and terraform types
 		switch {
-		case row.Type == "String" || row.Type == "Guid":
+		case attr.Type == "string" || attr.Type == "Guid":
 			nextAttributeSchema.AttributeType = "String"
-		case row.Type == "String collection" || row.Type == "Guid collection":
+		case attr.Type == "arraystring" || attr.Type == "Guid collection":
 			nextAttributeSchema.AttributeType = "List"
 			nextAttributeSchema.ElementType = "types.StringType"
-		case row.Type == "Boolean":
+		case attr.Type == "boolean":
 			nextAttributeSchema.AttributeType = "Bool"
-		case row.Type == "DateTimeOffset":
+		case attr.Type == "DateTimeOffset":
 			nextAttributeSchema.AttributeType = "String"
-		case row.Type == "String collection":
+		case attr.Type == "array":
 			nextAttributeSchema.AttributeType = "ListNested"
 
-			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttributeSchema.AttributeName + ".csv")
 			var nestedAttributes []attributeSchema
-			generateSchema(&nestedAttributes, nestedCsv)
+			generateSchema(&nestedAttributes, attr.NestedAttribute)
 
 			nextAttributeSchema.NestedObject = nestedAttributes
 		default:
 			nextAttributeSchema.AttributeType = "SingleNested"
 
-			nestedCsv := openCsv("template/input/" + packageName + "/" + nextAttributeSchema.AttributeName + ".csv")
 			var nestedAttributes []attributeSchema
-			generateSchema(&nestedAttributes, nestedCsv)
+			generateSchema(&nestedAttributes, attr.NestedAttribute)
 
 			nextAttributeSchema.Attributes = nestedAttributes
 		}
 
-		nextAttributeSchema.Computed = row.Computed
-		nextAttributeSchema.Optional = row.Optional
-		nextAttributeSchema.Required = row.Required
-		nextAttributeSchema.MarkdownDescription = row.Description
+		nextAttributeSchema.Computed = true
+		//nextAttributeSchema.Optional = attr.Optional
+		//nextAttributeSchema.Required = attr.Required
+		nextAttributeSchema.Description = attr.Description
 
 		*schema = append(*schema, *nextAttributeSchema)
 	}
@@ -249,6 +252,8 @@ func generateRead(read *[]attributeRead, csv []*csvSchema, parent *attributeRead
 
 func main() {
 
+	attributes := openapi.RecurseSchema("microsoft.graph.user")
+
 	// Get template
 	templateDataSource := template.New("dataSource")
 	templateFile, err := os.ReadFile("template/data_source_template.go")
@@ -266,7 +271,7 @@ func main() {
 
 	// Generate schema values from CSV
 	var schema []attributeSchema
-	generateSchema(&schema, csv)
+	generateSchema(&schema, attributes)
 
 	// Generate model values from CSV
 	var model []attributeModel

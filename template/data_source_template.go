@@ -50,7 +50,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- /* Define templates for different Attribute types */}}
 			{{- define "SchemaStringAttribute" }}
 			"{{.AttributeName}}": schema.StringAttribute{
-				MarkdownDescription: "{{.MarkdownDescription}}",
+				Description: "{{.Description}}",
 				{{- if .Required}}
 				Required: true,
 				{{- end}}
@@ -65,7 +65,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 
 			{{- define "BoolAttribute" }}
 			"{{.AttributeName}}": schema.BoolAttribute{
-				MarkdownDescription: "{{.MarkdownDescription}}",
+				Description: "{{.Description}}",
 				{{- if .Required}}
 				Required: true,
 				{{- end}}
@@ -80,7 +80,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 
 			{{- define "ListAttribute" }}
 			"{{.AttributeName}}": schema.ListAttribute{
-				MarkdownDescription: "{{.MarkdownDescription}}",
+				Description: "{{.Description}}",
 				{{- if .Required}}
 				Required: true,
 				{{- end}}
@@ -96,7 +96,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 
 			{{- define "SingleNestedAttribute" }}
 			"{{.AttributeName}}": schema.SingleNestedAttribute{
-				MarkdownDescription: "{{.MarkdownDescription}}",
+				Description: "{{.Description}}",
 				{{- if .Required}}
 				Required: true,
 				{{- end}}
@@ -114,7 +114,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 
 			{{- define "ListNestedAttribute" }}
 			"{{.AttributeName}}": schema.ListNestedAttribute{
-				MarkdownDescription: "{{.MarkdownDescription}}",
+				Description: "{{.Description}}",
 				{{- if .Required}}
 				Required: true,
 				{{- end}}

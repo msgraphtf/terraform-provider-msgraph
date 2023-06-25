@@ -1,4 +1,4 @@
-package main
+package openapi
 
 import (
 	"fmt"
@@ -11,21 +11,22 @@ import (
 var doc *openapi3.T
 var err error
 
-type attributeRaw struct {
+type AttributeRaw struct {
 	Name            string
 	Type            string
-	NestedAttribute []attributeRaw
+	Description     string
+	NestedAttribute []AttributeRaw
 }
 
 func main() {
 
 	attributes := RecurseSchema("microsoft.graph.user")
 
-	readAttributes(attributes, 0)
+	ReadAttributes(attributes, 0)
 
 }
 
-func RecurseSchema(schema string) []attributeRaw {
+func RecurseSchema(schema string) []AttributeRaw {
 
 	fmt.Println("Loading")
 	doc, err = openapi3.NewLoader().LoadFromFile("./msgraph-metadata/openapi/v1.0/openapi.yaml")
@@ -34,7 +35,7 @@ func RecurseSchema(schema string) []attributeRaw {
 	}
 	fmt.Println("Loaded")
 
-	var attributes []attributeRaw
+	var attributes []AttributeRaw
 
 	recurseSchemaUp(*&doc.Components.Schemas[schema].Value, &attributes)
 
@@ -42,7 +43,7 @@ func RecurseSchema(schema string) []attributeRaw {
 
 }
 
-func recurseSchemaUp(schema *openapi3.Schema, attributes *[]attributeRaw) {
+func recurseSchemaUp(schema *openapi3.Schema, attributes *[]AttributeRaw) {
 
 	if schema.Title != "" {
 		recurseSchemaDown(schema, attributes, nil)
@@ -54,7 +55,7 @@ func recurseSchemaUp(schema *openapi3.Schema, attributes *[]attributeRaw) {
 
 }
 
-func recurseSchemaDown(schema *openapi3.Schema, attributes *[]attributeRaw, parentAttribute *attributeRaw) {
+func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, parentAttribute *AttributeRaw) {
 
 	keys := make([]string, 0)
 	for k := range schema.Properties {
@@ -65,24 +66,28 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]attributeRaw, pare
 
 	for _, k := range keys {
 
-		var newAttribute attributeRaw
+		var newAttribute AttributeRaw
 		if k == "@odata.type" {
 			continue
 		}
 		if schema.Properties[k].Value.Type == "array" && schema.Properties[k].Value.Items.Value.Type == "object" { // Type of array of objects
 			newAttribute.Name = k
 			newAttribute.Type = schema.Properties[k].Value.Type
+			newAttribute.Description = schema.Properties[k].Value.Description
 			arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
 			recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value, attributes, &newAttribute)
 		} else if schema.Properties[k].Value.Type == "array" { // Type of array of primitive type
 			newAttribute.Name = k
 			newAttribute.Type = schema.Properties[k].Value.Type + schema.Properties[k].Value.Items.Value.Type
+			newAttribute.Description = schema.Properties[k].Value.Description
 		} else if schema.Properties[k].Value.Type != "" { // Type of primitive type
 			newAttribute.Name = k
 			newAttribute.Type = schema.Properties[k].Value.Type
+			newAttribute.Description = schema.Properties[k].Value.Description
 		} else if schema.Properties[k].Value.AnyOf != nil { // Type of nested object
 			newAttribute.Name = k
 			newAttribute.Type = k
+			newAttribute.Description = schema.Properties[k].Value.Description
 			nestedSchema := strings.Split(schema.Properties[k].Value.AnyOf[0].Ref, "/")[3]
 			recurseSchemaDown(*&doc.Components.Schemas[nestedSchema].Value, attributes, &newAttribute)
 		}
@@ -96,7 +101,7 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]attributeRaw, pare
 	}
 }
 
-func readAttributes(attributes []attributeRaw, indent int) {
+func ReadAttributes(attributes []AttributeRaw, indent int) {
 
 	for _, attribute := range attributes {
 
@@ -106,7 +111,7 @@ func readAttributes(attributes []attributeRaw, indent int) {
 		//fmt.Printf("%s: %s: %s\n", attribute.Name, attribute.Type, attribute.NestedAttribute)
 		fmt.Printf("%s: %s\n", attribute.Name, attribute.Type)
 		if attribute.NestedAttribute != nil {
-			readAttributes(attribute.NestedAttribute, indent+1)
+			ReadAttributes(attribute.NestedAttribute, indent+1)
 		}
 	}
 
