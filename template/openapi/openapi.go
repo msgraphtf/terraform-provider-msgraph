@@ -67,7 +67,7 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 	for _, k := range keys {
 
 		var newAttribute AttributeRaw
-		if k == "@odata.type" {
+		if k == "@odata.type" || schema.Properties[k].Value.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}
 		if schema.Properties[k].Value.Type == "array" && schema.Properties[k].Value.Items.Value.Type == "object" { // Type of array of objects
