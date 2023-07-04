@@ -143,39 +143,37 @@ func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw
 	}
 }
 
-func generateModel(modelName string, model *[]attributeModel, csv []*csvSchema) {
+func generateModel(modelName string, model *[]attributeModel, attributes []openapi.AttributeRaw) {
 
 	newModel := attributeModel{
 		ModelName: modelName,
 	}
 	var nestedModels []attributeModel
 
-	for _, row := range csv {
+	for _, attr := range attributes {
 
 		nextModelField := new(attributeModelField)
-		nextModelField.FieldName = strcase.ToCamel(row.Name)
-		nextModelField.AttributeName = strcase.ToSnake(row.Name)
+		nextModelField.FieldName = strcase.ToCamel(attr.Name)
+		nextModelField.AttributeName = strcase.ToSnake(attr.Name)
 
 		switch {
-		case row.Type == "String" || row.Type == "Guid":
+		case attr.Type == "string" || attr.Type == "Guid":
 			nextModelField.FieldType = "types.String"
-		case row.Type == "Boolean":
+		case attr.Type == "integer" || attr.Type == "Integer":
+			nextModelField.FieldType = "types.String"
+		case attr.Type == "boolean":
 			nextModelField.FieldType = "types.Bool"
-		case row.Type == "DateTimeOffset":
-			nextModelField.FieldType = "types.String"
-		case row.Type == "String collection" || row.Type == "Guid collection":
+		case attr.Type == "arraystring" || attr.Type == "Guid collection":
 			nextModelField.FieldType = "[]types.String"
-		case strings.HasSuffix(row.Type, "collection"):
-			nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel"
+		case attr.Type == "array":
+			nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
 
-			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
-			generateModel(dataSourceName+strcase.ToCamel(row.Name)+"DataSourceModel", &nestedModels, nestedCsv)
+			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.NestedAttribute)
 
 		default:
-			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(row.Name) + "DataSourceModel"
+			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
 
-			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
-			generateModel(dataSourceName+strcase.ToCamel(row.Name)+"DataSourceModel", &nestedModels, nestedCsv)
+			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.NestedAttribute)
 
 		}
 
@@ -275,7 +273,7 @@ func main() {
 
 	// Generate model values from CSV
 	var model []attributeModel
-	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, csv)
+	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, attributes)
 
 	// Generate schema values from CSV
 	var read []attributeRead
