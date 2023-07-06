@@ -9,7 +9,7 @@ require (
 	github.com/gocarina/gocsv v0.0.0-20230226133904-70c27cb2918a
 	github.com/hashicorp/terraform-plugin-docs v0.15.0
 	github.com/hashicorp/terraform-plugin-framework v1.3.2
-	github.com/hashicorp/terraform-plugin-go v0.17.0
+	github.com/hashicorp/terraform-plugin-go v0.18.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.27.0
 	github.com/iancoleman/strcase v0.2.0
