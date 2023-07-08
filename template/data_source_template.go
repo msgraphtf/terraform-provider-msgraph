@@ -48,7 +48,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 		Attributes: map[string]schema.Attribute{
 
 			{{- /* Define templates for different Attribute types */}}
-			{{- define "SchemaStringAttribute" }}
+			{{- define "StringAttribute" }}
 			"{{.AttributeName}}": schema.StringAttribute{
 				Description: "{{.Description}}",
 				{{- if .Required}}
@@ -136,7 +136,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- block "generate_schema" .Schema}}
 			{{- range .}}
 			{{- if eq .AttributeType "String" }}
-			{{- template "SchemaStringAttribute" .}}
+			{{- template "StringAttribute" .}}
 			{{- else if eq .AttributeType "Bool" }}
 			{{- template "BoolAttribute" .}}
 			{{- else if eq .AttributeType "List" }}
