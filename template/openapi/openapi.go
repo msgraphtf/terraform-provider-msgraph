@@ -70,16 +70,24 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 		if k == "@odata.type" || schema.Properties[k].Value.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}
-		if schema.Properties[k].Value.Type == "array" && schema.Properties[k].Value.Items.Value.Type == "object" { // Type of array of objects
-			newAttribute.Name = k
-			newAttribute.Type = schema.Properties[k].Value.Type
-			newAttribute.Description = schema.Properties[k].Value.Description
-			arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
-			recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value, attributes, &newAttribute)
-		} else if schema.Properties[k].Value.Type == "array" { // Type of array of primitive type
-			newAttribute.Name = k
-			newAttribute.Type = schema.Properties[k].Value.Type + schema.Properties[k].Value.Items.Value.Type
-			newAttribute.Description = schema.Properties[k].Value.Description
+		if schema.Properties[k].Value.Type == "array" { // Array
+			if schema.Properties[k].Value.Items.Value.Type == "object" { // Array of objects
+				newAttribute.Name = k
+				newAttribute.Type = schema.Properties[k].Value.Type
+				newAttribute.Description = schema.Properties[k].Value.Description
+				arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
+				recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value, attributes, &newAttribute)
+			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil {
+				newAttribute.Name = k
+				newAttribute.Type = schema.Properties[k].Value.Type
+				newAttribute.Description = schema.Properties[k].Value.Description
+				arraySchema := strings.Split(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref, "/")[3]
+				recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value, attributes, &newAttribute)
+			} else { // Array of primitive type
+				newAttribute.Name = k
+				newAttribute.Type = schema.Properties[k].Value.Type + schema.Properties[k].Value.Items.Value.Type
+				newAttribute.Description = schema.Properties[k].Value.Description
+			}
 		} else if schema.Properties[k].Value.Type != "" { // Type of primitive type
 			newAttribute.Name = k
 			newAttribute.Type = schema.Properties[k].Value.Type
