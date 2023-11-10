@@ -193,11 +193,10 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 		case "array":
 			switch attr.ArrayOf {
 			case "string":
-				switch attr.Format {
-				case "uuid":
-					nextAttributeRead.AttributeType = "GuidCollection"
-				default:
-					nextAttributeRead.AttributeType = "StringCollection"
+				if attr.Format == "" {
+					nextAttributeRead.AttributeType = "String"
+				} else {
+					nextAttributeRead.AttributeType = "StringFormattedCollection"
 				}
 			case "object":
 				nextAttributeRead.AttributeType = "ListNested"

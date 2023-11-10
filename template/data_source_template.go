@@ -211,7 +211,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	}
 	{{- end}}
 
-	{{- define "ReadGuidCollection" }}
+	{{- define "ReadStringFormattedCollection" }}
 	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
 		{{.StateAttributeName}} = append({{.StateAttributeName}}, types.StringValue(value.String()))
 	}
@@ -247,8 +247,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	{{- template "ReadBooleanAttribute" .}}
 	{{- else if eq .AttributeType "StringCollection"}}
 	{{- template "ReadStringCollection" .}}
-	{{- else if eq .AttributeType "GuidCollection"}}
-	{{- template "ReadGuidCollection" .}}
+	{{- else if eq .AttributeType "StringFormattedCollection"}}
+	{{- template "ReadStringFormattedCollection" .}}
 	{{- else if eq .AttributeType "SingleNested"}}
 	{{- template "ReadSingleNestedAttribute" .}}
 	{{- else if eq .AttributeType "ListNested"}}
