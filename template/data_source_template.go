@@ -205,13 +205,13 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.BoolValue(*{{.ResultVarName}}.{{.GetMethod}})}
 	{{- end}}
 
-	{{- define "ReadStringCollection" }}
+	{{- define "ReadArrayString" }}
 	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
 		{{.StateAttributeName}}= append({{.StateAttributeName}}, types.StringValue(value))
 	}
 	{{- end}}
 
-	{{- define "ReadStringFormattedCollection" }}
+	{{- define "ReadArrayStringFormatted" }}
 	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
 		{{.StateAttributeName}} = append({{.StateAttributeName}}, types.StringValue(value.String()))
 	}
@@ -245,10 +245,10 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	{{- template "ReadInt64Attribute" .}}
 	{{- else if eq .AttributeType "Boolean"}}
 	{{- template "ReadBooleanAttribute" .}}
-	{{- else if eq .AttributeType "StringCollection"}}
-	{{- template "ReadStringCollection" .}}
-	{{- else if eq .AttributeType "StringFormattedCollection"}}
-	{{- template "ReadStringFormattedCollection" .}}
+	{{- else if eq .AttributeType "ArrayString"}}
+	{{- template "ReadArrayString" .}}
+	{{- else if eq .AttributeType "ArrayStringFormatted"}}
+	{{- template "ReadArrayStringFormatted" .}}
 	{{- else if eq .AttributeType "SingleNested"}}
 	{{- template "ReadSingleNestedAttribute" .}}
 	{{- else if eq .AttributeType "ListNested"}}
