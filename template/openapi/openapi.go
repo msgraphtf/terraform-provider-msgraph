@@ -15,6 +15,7 @@ type AttributeRaw struct {
 	Name            string
 	Type            string
 	Description     string
+	Format          string
 	NestedAttribute []AttributeRaw
 }
 
@@ -87,11 +88,13 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 				newAttribute.Name = k
 				newAttribute.Type = schema.Properties[k].Value.Type + schema.Properties[k].Value.Items.Value.Type
 				newAttribute.Description = schema.Properties[k].Value.Description
+				newAttribute.Format = schema.Properties[k].Value.Items.Value.Format
 			}
 		} else if schema.Properties[k].Value.Type != "" { // Type of primitive type
 			newAttribute.Name = k
 			newAttribute.Type = schema.Properties[k].Value.Type
 			newAttribute.Description = schema.Properties[k].Value.Description
+			newAttribute.Format = schema.Properties[k].Value.Format
 		} else if schema.Properties[k].Value.AnyOf != nil { // Type of nested object
 			newAttribute.Name = k
 			newAttribute.Type = k

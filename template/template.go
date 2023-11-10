@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 	"text/template"
 
 	"github.com/gocarina/gocsv"
@@ -188,57 +187,58 @@ func generateModel(modelName string, model *[]attributeModel, attributes []opena
 
 }
 
-func generateRead(read *[]attributeRead, csv []*csvSchema, parent *attributeRead) {
+func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, parent *attributeRead) {
 
-	for _, row := range csv {
+	for _, attr := range attributes {
 
 		nextAttributeRead := attributeRead{
-			ModelVarName: strcase.ToLowerCamel(row.Name),
+			ModelVarName: strcase.ToLowerCamel(attr.Name),
 			DataSourceName: dataSourceName,
 			ResultVarName: "result",
 		}
 		if parent != nil && parent.AttributeType == "SingleNested" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = parent.GetMethod+".Get"+strcase.ToCamel(row.Name)+"()"
-			nextAttributeRead.StateAttributeName = parent.StateAttributeName+"."+strcase.ToCamel(row.Name)
+			nextAttributeRead.GetMethod = parent.GetMethod+".Get"+strcase.ToCamel(attr.Name)+"()"
+			nextAttributeRead.StateAttributeName = parent.StateAttributeName+"."+strcase.ToCamel(attr.Name)
+			nextAttributeRead.ModelName = dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel"
 		} else if parent != nil && parent.AttributeType == "ListNested" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(row.Name)+"()"
-			nextAttributeRead.StateAttributeName = parent.ModelVarName+"."+strcase.ToCamel(row.Name)
+			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(attr.Name)+"()"
+			nextAttributeRead.StateAttributeName = parent.ModelVarName+"."+strcase.ToCamel(attr.Name)
 			nextAttributeRead.ResultVarName = "value"
 		} else {
-			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(row.Name)+"()"
-			nextAttributeRead.StateAttributeName = "state."+strcase.ToCamel(row.Name)
-			nextAttributeRead.ModelName = dataSourceName+strcase.ToCamel(row.Name)+"DataSourceModel"
+			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(attr.Name)+"()"
+			nextAttributeRead.StateAttributeName = "state."+strcase.ToCamel(attr.Name)
+			nextAttributeRead.ModelName = dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel"
 		}
 
 		switch {
-		case row.Type == "String":
-			nextAttributeRead.AttributeType = "String"
-		case row.Type == "Guid":
+		case attr.Format == "date-time":
 			nextAttributeRead.AttributeType = "DateTimeOffset"
-		case row.Type == "Boolean":
-			nextAttributeRead.AttributeType = "Boolean"
-		case row.Type == "String collection":
-			nextAttributeRead.AttributeType = "StringCollection"
-		case row.Type == "Guid collection":
+		case attr.Type == "arraystring" && attr.Format == "uuid":
 			nextAttributeRead.AttributeType = "GuidCollection"
-		case row.Type == "DateTimeOffset":
+		case attr.Format == "uuid":
 			nextAttributeRead.AttributeType = "DateTimeOffset"
-		case strings.HasSuffix(row.Type, "collection"):
+		case attr.Type == "string":
+			nextAttributeRead.AttributeType = "String"
+		case attr.Type == "boolean":
+			nextAttributeRead.AttributeType = "Boolean"
+		case attr.Type == "arraystring":
+			nextAttributeRead.AttributeType = "StringCollection"
+		case attr.Type == "array":
 			nextAttributeRead.AttributeType = "ListNested"
 
-			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
+			//nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(attr.Name) + ".csv")
 			var nestedRead []attributeRead
-			generateRead(&nestedRead, nestedCsv, &nextAttributeRead)
+			generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
 
 			nextAttributeRead.NestedRead = nestedRead
 		default:
 			nextAttributeRead.AttributeType = "SingleNested"
 
-			nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(row.Name) + ".csv")
+			//nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(attr.Name) + ".csv")
 			var nestedRead []attributeRead
-			generateRead(&nestedRead, nestedCsv, &nextAttributeRead)
+			generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
 
 			nextAttributeRead.NestedRead = nestedRead
 		}
@@ -265,7 +265,7 @@ func main() {
 	dataSourceName = os.Args[2]
 
 	// Open top level CSV
-	csv := openCsv("template/input/" + packageName + "/" + dataSourceName + ".csv")
+	//csv := openCsv("template/input/" + packageName + "/" + dataSourceName + ".csv")
 
 	// Generate schema values from CSV
 	var schema []attributeSchema
@@ -277,7 +277,7 @@ func main() {
 
 	// Generate schema values from CSV
 	var read []attributeRead
-	generateRead(&read, csv, nil)
+	generateRead(&read, attributes, nil)
 	preRead, err := os.ReadFile("template/input/"+packageName+"/pre_read.go")
 
 	// Set input values to top level template
