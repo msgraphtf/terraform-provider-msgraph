@@ -24,15 +24,15 @@ type templateInput struct {
 
 // Used by templates defined inside of data_source_template.go to generate the schema
 type attributeSchema struct {
-	AttributeName       string
-	AttributeType       string
-	Description string
-	Required            bool
-	Optional            bool
-	Computed            bool
-	ElementType         string
-	Attributes          []attributeSchema
-	NestedObject        []attributeSchema
+	AttributeName string
+	AttributeType string
+	Description   string
+	Required      bool
+	Optional      bool
+	Computed      bool
+	ElementType   string
+	Attributes    []attributeSchema
+	NestedObject  []attributeSchema
 }
 
 // Used by templates defined inside of data_source_template.go to generate the data models
@@ -48,15 +48,15 @@ type attributeModelField struct {
 }
 
 type attributeRead struct {
-	GetMethod string
+	GetMethod          string
 	StateAttributeName string
-	ModelVarName string
-	ModelName string
-	AttributeType string
-	DataSourceName string
-	NestedRead []attributeRead
-	ParentRead *attributeRead
-	ResultVarName string
+	ModelVarName       string
+	ModelName          string
+	AttributeType      string
+	DataSourceName     string
+	NestedRead         []attributeRead
+	ParentRead         *attributeRead
+	ResultVarName      string
 }
 
 var dataSourceName string
@@ -74,19 +74,17 @@ func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw
 		nextAttributeSchema.AttributeName = strcase.ToSnake(attr.Name)
 
 		// Convert types from MS Graph docs to Go and terraform types
-		switch {
-		case attr.Type == "string" || attr.Type == "Guid":
+		switch attr.Type {
+		case "string":
 			nextAttributeSchema.AttributeType = "String"
-		case attr.Type == "integer":
+		case "integer":
 			nextAttributeSchema.AttributeType = "Integer"
-		case attr.Type == "arraystring" || attr.Type == "Guid collection":
+		case "boolean":
+			nextAttributeSchema.AttributeType = "Bool"
+		case "arraystring":
 			nextAttributeSchema.AttributeType = "List"
 			nextAttributeSchema.ElementType = "types.StringType"
-		case attr.Type == "boolean":
-			nextAttributeSchema.AttributeType = "Bool"
-		case attr.Type == "DateTimeOffset":
-			nextAttributeSchema.AttributeType = "String"
-		case attr.Type == "array":
+		case "array":
 			nextAttributeSchema.AttributeType = "ListNested"
 
 			var nestedAttributes []attributeSchema
@@ -103,8 +101,6 @@ func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw
 		}
 
 		nextAttributeSchema.Computed = true
-		//nextAttributeSchema.Optional = attr.Optional
-		//nextAttributeSchema.Required = attr.Required
 		nextAttributeSchema.Description = attr.Description
 
 		*schema = append(*schema, *nextAttributeSchema)
@@ -161,24 +157,24 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 	for _, attr := range attributes {
 
 		nextAttributeRead := attributeRead{
-			ModelVarName: strcase.ToLowerCamel(attr.Name),
+			ModelVarName:   strcase.ToLowerCamel(attr.Name),
 			DataSourceName: dataSourceName,
-			ResultVarName: "result",
+			ResultVarName:  "result",
 		}
 		if parent != nil && parent.AttributeType == "SingleNested" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = parent.GetMethod+".Get"+strcase.ToCamel(attr.Name)+"()"
-			nextAttributeRead.StateAttributeName = parent.StateAttributeName+"."+strcase.ToCamel(attr.Name)
-			nextAttributeRead.ModelName = dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel"
+			nextAttributeRead.GetMethod = parent.GetMethod + ".Get" + strcase.ToCamel(attr.Name) + "()"
+			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(attr.Name)
+			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
 		} else if parent != nil && parent.AttributeType == "ListNested" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(attr.Name)+"()"
-			nextAttributeRead.StateAttributeName = parent.ModelVarName+"."+strcase.ToCamel(attr.Name)
+			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(attr.Name) + "()"
+			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(attr.Name)
 			nextAttributeRead.ResultVarName = "value"
 		} else {
-			nextAttributeRead.GetMethod = "Get"+strcase.ToCamel(attr.Name)+"()"
-			nextAttributeRead.StateAttributeName = "state."+strcase.ToCamel(attr.Name)
-			nextAttributeRead.ModelName = dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel"
+			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(attr.Name) + "()"
+			nextAttributeRead.StateAttributeName = "state." + strcase.ToCamel(attr.Name)
+			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
 		}
 
 		switch attr.Type {
@@ -194,10 +190,10 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 			nextAttributeRead.AttributeType = "Boolean"
 		case "arraystring":
 			switch attr.Format {
-				case "uuid":
-					nextAttributeRead.AttributeType = "GuidCollection"
-				default:
-					nextAttributeRead.AttributeType = "StringCollection"
+			case "uuid":
+				nextAttributeRead.AttributeType = "GuidCollection"
+			default:
+				nextAttributeRead.AttributeType = "StringCollection"
 			}
 		case "array":
 			nextAttributeRead.AttributeType = "ListNested"
@@ -247,7 +243,7 @@ func main() {
 	// Generate schema values from OpenAPI attributes
 	var read []attributeRead
 	generateRead(&read, attributes, nil)
-	preRead, err := os.ReadFile("template/input/"+packageName+"/pre_read.go")
+	preRead, err := os.ReadFile("template/input/" + packageName + "/pre_read.go")
 
 	// Set input values to top level template
 	inputValues := templateInput{
