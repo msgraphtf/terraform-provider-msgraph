@@ -1,5 +1,0 @@
-Property|Type|Optional|Description
-category|String|TRUE|Category of the provisioning error. Note: Currently, there is only one possible value. Possible value: *PropertyConflict* - indicates a property value is not unique. Other objects contain the same value for the property.
-occurredDateTime|DateTimeOffset|TRUE|The date and time at which the error occurred.
-propertyCausingError|String|TRUE|Name of the directory property causing the error. Current possible values: *UserPrincipalName* or *ProxyAddress*
-value|String|TRUE|Value of the property causing the error.

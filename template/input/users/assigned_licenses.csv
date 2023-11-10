@@ -1,3 +1,0 @@
-Property|Type|Computed|Required|Optional|Description
-disabledPlans|Guid collection|TRUE|||A collection of the unique identifiers for plans that have been disabled.
-skuId|Guid|TRUE|||The unique identifier for the SKU.

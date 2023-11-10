@@ -212,23 +212,28 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 			nextAttributeRead.ModelName = dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel"
 		}
 
-		switch {
-		case attr.Format == "date-time":
-			nextAttributeRead.AttributeType = "DateTimeOffset"
-		case attr.Type == "arraystring" && attr.Format == "uuid":
-			nextAttributeRead.AttributeType = "GuidCollection"
-		case attr.Format == "uuid":
-			nextAttributeRead.AttributeType = "DateTimeOffset"
-		case attr.Type == "string":
-			nextAttributeRead.AttributeType = "String"
-		case attr.Type == "boolean":
+		switch attr.Type {
+		case "string":
+			switch attr.Format {
+				case "date-time":
+					nextAttributeRead.AttributeType = "DateTimeOffset"
+				case "uuid":
+					nextAttributeRead.AttributeType = "Guid"
+				default:
+					nextAttributeRead.AttributeType = "String"
+			}
+		case "boolean":
 			nextAttributeRead.AttributeType = "Boolean"
-		case attr.Type == "arraystring":
-			nextAttributeRead.AttributeType = "StringCollection"
-		case attr.Type == "array":
+		case "arraystring":
+			switch attr.Format {
+				case "uuid":
+					nextAttributeRead.AttributeType = "GuidCollection"
+				default:
+					nextAttributeRead.AttributeType = "StringCollection"
+			}
+		case "array":
 			nextAttributeRead.AttributeType = "ListNested"
 
-			//nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(attr.Name) + ".csv")
 			var nestedRead []attributeRead
 			generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
 
@@ -236,7 +241,6 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 		default:
 			nextAttributeRead.AttributeType = "SingleNested"
 
-			//nestedCsv := openCsv("template/input/" + packageName + "/" + strcase.ToSnake(attr.Name) + ".csv")
 			var nestedRead []attributeRead
 			generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
 
@@ -264,18 +268,15 @@ func main() {
 	packageName = os.Args[1]
 	dataSourceName = os.Args[2]
 
-	// Open top level CSV
-	//csv := openCsv("template/input/" + packageName + "/" + dataSourceName + ".csv")
-
-	// Generate schema values from CSV
+	// Generate schema values from OpenAPI attributes
 	var schema []attributeSchema
 	generateSchema(&schema, attributes)
 
-	// Generate model values from CSV
+	// Generate model values from OpenAPI attributes
 	var model []attributeModel
 	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, attributes)
 
-	// Generate schema values from CSV
+	// Generate schema values from OpenAPI attributes
 	var read []attributeRead
 	generateRead(&read, attributes, nil)
 	preRead, err := os.ReadFile("template/input/"+packageName+"/pre_read.go")
