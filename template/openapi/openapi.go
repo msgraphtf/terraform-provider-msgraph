@@ -16,6 +16,7 @@ type AttributeRaw struct {
 	Type            string
 	Description     string
 	Format          string
+	ArrayOf         string
 	NestedAttribute []AttributeRaw
 }
 
@@ -76,19 +77,22 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 				newAttribute.Name = k
 				newAttribute.Type = schema.Properties[k].Value.Type
 				newAttribute.Description = schema.Properties[k].Value.Description
+				newAttribute.ArrayOf = "object"
 				arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
 				recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value, attributes, &newAttribute)
-			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil {
+			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
 				newAttribute.Name = k
 				newAttribute.Type = schema.Properties[k].Value.Type
 				newAttribute.Description = schema.Properties[k].Value.Description
+				newAttribute.ArrayOf = "object"
 				arraySchema := strings.Split(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref, "/")[3]
 				recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value, attributes, &newAttribute)
 			} else { // Array of primitive type
 				newAttribute.Name = k
-				newAttribute.Type = schema.Properties[k].Value.Type + schema.Properties[k].Value.Items.Value.Type
+				newAttribute.Type = schema.Properties[k].Value.Type
 				newAttribute.Description = schema.Properties[k].Value.Description
 				newAttribute.Format = schema.Properties[k].Value.Items.Value.Format
+				newAttribute.ArrayOf = schema.Properties[k].Value.Items.Value.Type
 			}
 		} else if schema.Properties[k].Value.Type != "" { // Primitive type
 			newAttribute.Name = k
@@ -119,7 +123,7 @@ func ReadAttributes(attributes []AttributeRaw, indent int) {
 		for i := 0; i < indent; i++ {
 			fmt.Print("\t")
 		}
-		fmt.Printf("%s: %s: %s\n", attribute.Name, attribute.Type, attribute.Format)
+		fmt.Printf("%s: %s: %s: %s\n", attribute.Name, attribute.Type, attribute.Format, attribute.ArrayOf)
 		if attribute.NestedAttribute != nil {
 			ReadAttributes(attribute.NestedAttribute, indent+1)
 		}

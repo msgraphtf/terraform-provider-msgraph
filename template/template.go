@@ -81,22 +81,21 @@ func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw
 			nextAttributeSchema.AttributeType = "Integer"
 		case "boolean":
 			nextAttributeSchema.AttributeType = "Bool"
-		case "arraystring":
-			nextAttributeSchema.AttributeType = "List"
-			nextAttributeSchema.ElementType = "types.StringType"
 		case "array":
-			nextAttributeSchema.AttributeType = "ListNested"
-
-			var nestedAttributes []attributeSchema
-			generateSchema(&nestedAttributes, attr.NestedAttribute)
-
-			nextAttributeSchema.NestedObject = nestedAttributes
+			switch attr.ArrayOf {
+			case "string":
+				nextAttributeSchema.AttributeType = "List"
+				nextAttributeSchema.ElementType = "types.StringType"
+			case "object":
+				nextAttributeSchema.AttributeType = "ListNested"
+				var nestedAttributes []attributeSchema
+				generateSchema(&nestedAttributes, attr.NestedAttribute)
+				nextAttributeSchema.NestedObject = nestedAttributes
+			}
 		default:
 			nextAttributeSchema.AttributeType = "SingleNested"
-
 			var nestedAttributes []attributeSchema
 			generateSchema(&nestedAttributes, attr.NestedAttribute)
-
 			nextAttributeSchema.Attributes = nestedAttributes
 		}
 
@@ -120,17 +119,20 @@ func generateModel(modelName string, model *[]attributeModel, attributes []opena
 		nextModelField.FieldName = strcase.ToCamel(attr.Name)
 		nextModelField.AttributeName = strcase.ToSnake(attr.Name)
 
-		switch {
-		case attr.Type == "string" || attr.Type == "Guid":
+		switch attr.Type {
+		case "string":
 			nextModelField.FieldType = "types.String"
-		case attr.Type == "integer" || attr.Type == "Integer":
+		case "integer":
 			nextModelField.FieldType = "types.Int64"
-		case attr.Type == "boolean":
+		case "boolean":
 			nextModelField.FieldType = "types.Bool"
-		case attr.Type == "arraystring" || attr.Type == "Guid collection":
-			nextModelField.FieldType = "[]types.String"
-		case attr.Type == "array":
-			nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
+		case "array":
+			switch attr.ArrayOf {
+			case "object":
+				nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
+			case "string":
+				nextModelField.FieldType = "[]types.String"
+			}
 
 			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.NestedAttribute)
 
@@ -188,20 +190,23 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 			nextAttributeRead.AttributeType = "Integer"
 		case "boolean":
 			nextAttributeRead.AttributeType = "Boolean"
-		case "arraystring":
-			switch attr.Format {
-			case "uuid":
-				nextAttributeRead.AttributeType = "GuidCollection"
-			default:
-				nextAttributeRead.AttributeType = "StringCollection"
-			}
 		case "array":
-			nextAttributeRead.AttributeType = "ListNested"
+			switch attr.ArrayOf {
+			case "string":
+				switch attr.Format {
+				case "uuid":
+					nextAttributeRead.AttributeType = "GuidCollection"
+				default:
+					nextAttributeRead.AttributeType = "StringCollection"
+				}
+			case "object":
+				nextAttributeRead.AttributeType = "ListNested"
 
-			var nestedRead []attributeRead
-			generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
+				var nestedRead []attributeRead
+				generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
 
-			nextAttributeRead.NestedRead = nestedRead
+				nextAttributeRead.NestedRead = nestedRead
+			}
 		default:
 			nextAttributeRead.AttributeType = "SingleNested"
 
