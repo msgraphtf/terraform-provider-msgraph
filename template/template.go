@@ -77,6 +77,8 @@ func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw
 		switch {
 		case attr.Type == "string" || attr.Type == "Guid":
 			nextAttributeSchema.AttributeType = "String"
+		case attr.Type == "integer":
+			nextAttributeSchema.AttributeType = "Integer"
 		case attr.Type == "arraystring" || attr.Type == "Guid collection":
 			nextAttributeSchema.AttributeType = "List"
 			nextAttributeSchema.ElementType = "types.StringType"
@@ -126,7 +128,7 @@ func generateModel(modelName string, model *[]attributeModel, attributes []opena
 		case attr.Type == "string" || attr.Type == "Guid":
 			nextModelField.FieldType = "types.String"
 		case attr.Type == "integer" || attr.Type == "Integer":
-			nextModelField.FieldType = "types.String"
+			nextModelField.FieldType = "types.Int64"
 		case attr.Type == "boolean":
 			nextModelField.FieldType = "types.Bool"
 		case attr.Type == "arraystring" || attr.Type == "Guid collection":
@@ -186,6 +188,8 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 			} else {
 				nextAttributeRead.AttributeType = "StringFormatted"
 			}
+		case "integer":
+			nextAttributeRead.AttributeType = "Integer"
 		case "boolean":
 			nextAttributeRead.AttributeType = "Boolean"
 		case "arraystring":

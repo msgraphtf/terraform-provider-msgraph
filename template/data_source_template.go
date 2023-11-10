@@ -63,6 +63,21 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			},
 			{{- end }}
 
+			{{- define "Int64Attribute" }}
+			"{{.AttributeName}}": schema.Int64Attribute{
+				Description: "{{.Description}}",
+				{{- if .Required}}
+				Required: true,
+				{{- end}}
+				{{- if .Optional}}
+				Optional: true,
+				{{- end}}
+				{{- if .Computed}}
+				Computed: true,
+				{{- end}}
+			},
+			{{- end }}
+
 			{{- define "BoolAttribute" }}
 			"{{.AttributeName}}": schema.BoolAttribute{
 				Description: "{{.Description}}",
@@ -137,6 +152,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- range .}}
 			{{- if eq .AttributeType "String" }}
 			{{- template "StringAttribute" .}}
+			{{- else if eq .AttributeType "Integer" }}
+			{{- template "Int64Attribute" .}}
 			{{- else if eq .AttributeType "Bool" }}
 			{{- template "BoolAttribute" .}}
 			{{- else if eq .AttributeType "List" }}
@@ -180,6 +197,10 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue({{.ResultVarName}}.{{.GetMethod}}.String())}
 	{{- end}}
 
+	{{- define "ReadInt64Attribute" }}
+	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.Int64Value(int64(*{{.ResultVarName}}.{{.GetMethod}}))}
+	{{- end}}
+
 	{{- define "ReadBooleanAttribute" }}
 	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.BoolValue(*{{.ResultVarName}}.{{.GetMethod}})}
 	{{- end}}
@@ -220,6 +241,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	{{- template "ReadStringAttribute" .}}
 	{{- else if eq .AttributeType "StringFormatted"}}
 	{{- template "ReadStringFormatted" .}}
+	{{- else if eq .AttributeType "Integer"}}
+	{{- template "ReadInt64Attribute" .}}
 	{{- else if eq .AttributeType "Boolean"}}
 	{{- template "ReadBooleanAttribute" .}}
 	{{- else if eq .AttributeType "StringCollection"}}
