@@ -1,13 +1,10 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
-	"io"
 	"os"
 	"text/template"
 
-	"github.com/gocarina/gocsv"
 	"github.com/iancoleman/strcase"
 
 	"terraform-provider-msgraph/template/openapi"
@@ -62,38 +59,8 @@ type attributeRead struct {
 	ResultVarName string
 }
 
-type csvSchema struct {
-	Name        string `csv:"Property"`
-	Type        string `csv:"Type"`
-	Computed    bool   `csv:"Computed"`
-	Optional    bool   `csv:"Optional"`
-	Required    bool   `csv:"Required"`
-	Description string `csv:"Description"`
-}
-
 var dataSourceName string
 var packageName string
-
-func openCsv(path string) []*csvSchema {
-
-	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
-		r := csv.NewReader(in)
-		r.Comma = '|'
-		r.LazyQuotes = true
-		return r // Allows use pipe as delimiter
-	})
-
-	f, err := os.Open(path)
-	if err != nil {
-		fmt.Print(err)
-	}
-	defer f.Close()
-	csv := []*csvSchema{}
-	gocsv.UnmarshalFile(f, &csv)
-
-	return csv
-
-}
 
 func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw) {
 
