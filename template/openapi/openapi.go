@@ -90,12 +90,12 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 				newAttribute.Description = schema.Properties[k].Value.Description
 				newAttribute.Format = schema.Properties[k].Value.Items.Value.Format
 			}
-		} else if schema.Properties[k].Value.Type != "" { // Type of primitive type
+		} else if schema.Properties[k].Value.Type != "" { // Primitive type
 			newAttribute.Name = k
 			newAttribute.Type = schema.Properties[k].Value.Type
 			newAttribute.Description = schema.Properties[k].Value.Description
 			newAttribute.Format = schema.Properties[k].Value.Format
-		} else if schema.Properties[k].Value.AnyOf != nil { // Type of nested object
+		} else if schema.Properties[k].Value.AnyOf != nil { // Nested object
 			newAttribute.Name = k
 			newAttribute.Type = k
 			newAttribute.Description = schema.Properties[k].Value.Description
@@ -119,8 +119,7 @@ func ReadAttributes(attributes []AttributeRaw, indent int) {
 		for i := 0; i < indent; i++ {
 			fmt.Print("\t")
 		}
-		//fmt.Printf("%s: %s: %s\n", attribute.Name, attribute.Type, attribute.NestedAttribute)
-		fmt.Printf("%s: %s\n", attribute.Name, attribute.Type)
+		fmt.Printf("%s: %s: %s\n", attribute.Name, attribute.Type, attribute.Format)
 		if attribute.NestedAttribute != nil {
 			ReadAttributes(attribute.NestedAttribute, indent+1)
 		}

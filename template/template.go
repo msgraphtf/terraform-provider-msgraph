@@ -181,13 +181,10 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 
 		switch attr.Type {
 		case "string":
-			switch attr.Format {
-				case "date-time":
-					nextAttributeRead.AttributeType = "DateTimeOffset"
-				case "uuid":
-					nextAttributeRead.AttributeType = "Guid"
-				default:
-					nextAttributeRead.AttributeType = "String"
+			if attr.Format == "" {
+				nextAttributeRead.AttributeType = "String"
+			} else {
+				nextAttributeRead.AttributeType = "StringFormatted"
 			}
 		case "boolean":
 			nextAttributeRead.AttributeType = "Boolean"
