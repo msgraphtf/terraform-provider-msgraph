@@ -206,7 +206,7 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 
 				nextAttributeRead.NestedRead = nestedRead
 			}
-		default:
+		case "object":
 			nextAttributeRead.AttributeType = "Object"
 
 			var nestedRead []attributeRead
