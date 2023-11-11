@@ -158,9 +158,9 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- template "BoolAttribute" .}}
 			{{- else if eq .AttributeType "List" }}
 			{{- template "ListAttribute" .}}
-			{{- else if eq .AttributeType "SingleNested" }}
+			{{- else if eq .AttributeType "Object" }}
 			{{- template "SingleNestedAttribute" .}}
-			{{- else if eq .AttributeType "ListNested" }}
+			{{- else if eq .AttributeType "ArrayObject" }}
 			{{- template "ListNestedAttribute" .}}
 			{{- end }}
 			{{- end}}
@@ -249,9 +249,9 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	{{- template "ReadArrayString" .}}
 	{{- else if eq .AttributeType "ArrayStringFormatted"}}
 	{{- template "ReadArrayStringFormatted" .}}
-	{{- else if eq .AttributeType "SingleNested"}}
+	{{- else if eq .AttributeType "Object"}}
 	{{- template "ReadSingleNestedAttribute" .}}
-	{{- else if eq .AttributeType "ListNested"}}
+	{{- else if eq .AttributeType "ArrayObject"}}
 	{{- template "ReadListNestedAttribute" .}}
 	{{- end}}
 	{{- end}}

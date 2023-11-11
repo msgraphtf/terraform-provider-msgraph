@@ -87,13 +87,13 @@ func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw
 				nextAttributeSchema.AttributeType = "List"
 				nextAttributeSchema.ElementType = "types.StringType"
 			case "object":
-				nextAttributeSchema.AttributeType = "ListNested"
+				nextAttributeSchema.AttributeType = "ArrayObject"
 				var nestedAttributes []attributeSchema
 				generateSchema(&nestedAttributes, attr.NestedAttribute)
 				nextAttributeSchema.NestedObject = nestedAttributes
 			}
 		default:
-			nextAttributeSchema.AttributeType = "SingleNested"
+			nextAttributeSchema.AttributeType = "Object"
 			var nestedAttributes []attributeSchema
 			generateSchema(&nestedAttributes, attr.NestedAttribute)
 			nextAttributeSchema.Attributes = nestedAttributes
@@ -163,12 +163,12 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 			DataSourceName: dataSourceName,
 			ResultVarName:  "result",
 		}
-		if parent != nil && parent.AttributeType == "SingleNested" {
+		if parent != nil && parent.AttributeType == "Object" {
 			nextAttributeRead.ParentRead = parent
 			nextAttributeRead.GetMethod = parent.GetMethod + ".Get" + strcase.ToCamel(attr.Name) + "()"
 			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(attr.Name)
 			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
-		} else if parent != nil && parent.AttributeType == "ListNested" {
+		} else if parent != nil && parent.AttributeType == "ArrayObject" {
 			nextAttributeRead.ParentRead = parent
 			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(attr.Name) + "()"
 			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(attr.Name)
@@ -199,7 +199,7 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 					nextAttributeRead.AttributeType = "ArrayStringFormatted"
 				}
 			case "object":
-				nextAttributeRead.AttributeType = "ListNested"
+				nextAttributeRead.AttributeType = "ArrayObject"
 
 				var nestedRead []attributeRead
 				generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
@@ -207,7 +207,7 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 				nextAttributeRead.NestedRead = nestedRead
 			}
 		default:
-			nextAttributeRead.AttributeType = "SingleNested"
+			nextAttributeRead.AttributeType = "Object"
 
 			var nestedRead []attributeRead
 			generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
