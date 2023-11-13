@@ -20,14 +20,6 @@ type AttributeRaw struct {
 	NestedAttribute []AttributeRaw
 }
 
-func main() {
-
-	attributes := RecurseSchema("microsoft.graph.user")
-
-	ReadAttributes(attributes, 0)
-
-}
-
 func RecurseSchema(schema string) []AttributeRaw {
 
 	fmt.Println("Loading")
@@ -72,7 +64,7 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 		if k == "@odata.type" || schema.Properties[k].Value.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}
-		
+
 		newAttribute.Name = k
 		newAttribute.Description = schema.Properties[k].Value.Description
 		newAttribute.Type = schema.Properties[k].Value.Type
@@ -120,5 +112,13 @@ func ReadAttributes(attributes []AttributeRaw, indent int) {
 			ReadAttributes(attribute.NestedAttribute, indent+1)
 		}
 	}
+
+}
+
+func main() {
+
+	attributes := RecurseSchema("microsoft.graph.user")
+
+	ReadAttributes(attributes, 0)
 
 }
