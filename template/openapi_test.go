@@ -1,4 +1,4 @@
-package openapi
+package main
 
 import (
 	"testing"
@@ -22,7 +22,7 @@ func ReadAttributes(attributes []AttributeRaw, indent int) {
 
 func TestRecurseSchema(t *testing.T) {
 
-	attributes := RecurseSchema("microsoft.graph.user", "../../msgraph-metadata/openapi/v1.0/openapi.yaml")
+	attributes := RecurseSchema("microsoft.graph.user", "../msgraph-metadata/openapi/v1.0/openapi.yaml")
 	ReadAttributes(attributes, 0)
 
 }

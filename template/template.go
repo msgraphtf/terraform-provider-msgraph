@@ -7,7 +7,6 @@ import (
 
 	"github.com/iancoleman/strcase"
 
-	"terraform-provider-msgraph/template/openapi"
 )
 
 type templateInput struct {
@@ -62,7 +61,7 @@ type attributeRead struct {
 var dataSourceName string
 var packageName string
 
-func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw) {
+func generateSchema(schema *[]attributeSchema, attributes []AttributeRaw) {
 
 	//TODO: Does not account for optional attributes
 
@@ -106,7 +105,7 @@ func generateSchema(schema *[]attributeSchema, attributes []openapi.AttributeRaw
 	}
 }
 
-func generateModel(modelName string, model *[]attributeModel, attributes []openapi.AttributeRaw) {
+func generateModel(modelName string, model *[]attributeModel, attributes []AttributeRaw) {
 
 	newModel := attributeModel{
 		ModelName: modelName,
@@ -154,7 +153,7 @@ func generateModel(modelName string, model *[]attributeModel, attributes []opena
 
 }
 
-func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, parent *attributeRead) {
+func generateRead(read *[]attributeRead, attributes []AttributeRaw, parent *attributeRead) {
 
 	for _, attr := range attributes {
 
@@ -222,11 +221,11 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 
 func main() {
 
-	attributes := openapi.RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
+	attributes := RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
 
 	// Get template
 	templateDataSource := template.New("dataSource")
-	templateFile, err := os.ReadFile("template/data_source_template.go")
+	templateFile, err := os.ReadFile("template/templates/data_source_template.go")
 	if err != nil {
 		fmt.Print(err)
 	}
