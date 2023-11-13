@@ -20,10 +20,10 @@ type AttributeRaw struct {
 	NestedAttribute []AttributeRaw
 }
 
-func RecurseSchema(schema string) []AttributeRaw {
+func RecurseSchema(schema string, filepath string) []AttributeRaw {
 
 	fmt.Println("Loading")
-	doc, err = openapi3.NewLoader().LoadFromFile("./msgraph-metadata/openapi/v1.0/openapi.yaml")
+	doc, err = openapi3.NewLoader().LoadFromFile(filepath)
 	if err != nil {
 		panic(err)
 	}
@@ -96,29 +96,5 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 		} else {
 			*attributes = append(*attributes, newAttribute)
 		}
-
 	}
-}
-
-func ReadAttributes(attributes []AttributeRaw, indent int) {
-
-	for _, attribute := range attributes {
-
-		for i := 0; i < indent; i++ {
-			fmt.Print("\t")
-		}
-		fmt.Printf("%s: %s: %s: %s\n", attribute.Name, attribute.Type, attribute.Format, attribute.ArrayOf)
-		if attribute.NestedAttribute != nil {
-			ReadAttributes(attribute.NestedAttribute, indent+1)
-		}
-	}
-
-}
-
-func main() {
-
-	attributes := RecurseSchema("microsoft.graph.user")
-
-	ReadAttributes(attributes, 0)
-
 }

@@ -222,7 +222,7 @@ func generateRead(read *[]attributeRead, attributes []openapi.AttributeRaw, pare
 
 func main() {
 
-	attributes := openapi.RecurseSchema("microsoft.graph.user")
+	attributes := openapi.RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
 
 	// Get template
 	templateDataSource := template.New("dataSource")
