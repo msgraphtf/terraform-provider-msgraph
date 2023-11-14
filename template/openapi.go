@@ -35,7 +35,7 @@ func RecurseSchema(schema string, filepath string) []AttributeRaw {
 
 }
 
-func recurseSchemaUp(schema *openapi3.Schema) ([]AttributeRaw){
+func recurseSchemaUp(schema *openapi3.Schema) []AttributeRaw {
 
 	var attributes []AttributeRaw
 
@@ -51,7 +51,7 @@ func recurseSchemaUp(schema *openapi3.Schema) ([]AttributeRaw){
 
 }
 
-func recurseSchemaDown(schema *openapi3.Schema) ([]AttributeRaw) {
+func recurseSchemaDown(schema *openapi3.Schema) []AttributeRaw {
 
 	keys := make([]string, 0)
 	for k := range schema.Properties {
