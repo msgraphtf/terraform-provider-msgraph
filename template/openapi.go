@@ -29,27 +29,29 @@ func RecurseSchema(schema string, filepath string) []AttributeRaw {
 	}
 	fmt.Println("Loaded")
 
-	var attributes []AttributeRaw
-
-	recurseSchemaUp(*&doc.Components.Schemas[schema].Value, &attributes)
+	attributes := recurseSchemaUp(*&doc.Components.Schemas[schema].Value)
 
 	return attributes
 
 }
 
-func recurseSchemaUp(schema *openapi3.Schema, attributes *[]AttributeRaw) {
+func recurseSchemaUp(schema *openapi3.Schema) ([]AttributeRaw){
+
+	var attributes []AttributeRaw
 
 	if schema.Title != "" {
-		recurseSchemaDown(schema, attributes, nil)
+		attributes = append(attributes, recurseSchemaDown(schema)...)
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		recurseSchemaUp(*&doc.Components.Schemas[parentSchema].Value, attributes)
-		recurseSchemaDown(schema.AllOf[1].Value, attributes, nil)
+		attributes = append(attributes, recurseSchemaUp(*&doc.Components.Schemas[parentSchema].Value)...)
+		attributes = append(attributes, recurseSchemaDown(schema.AllOf[1].Value)...)
 	}
+
+	return attributes
 
 }
 
-func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, parentAttribute *AttributeRaw) {
+func recurseSchemaDown(schema *openapi3.Schema) ([]AttributeRaw) {
 
 	keys := make([]string, 0)
 	for k := range schema.Properties {
@@ -57,6 +59,8 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 	}
 
 	sort.Strings(keys)
+
+	var attributes []AttributeRaw
 
 	for _, k := range keys {
 
@@ -74,11 +78,11 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 			if schema.Properties[k].Value.Items.Value.Type == "object" { // Array of objects
 				newAttribute.ArrayOf = "object"
 				arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
-				recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value, attributes, &newAttribute)
+				newAttribute.NestedAttribute = recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value)
 			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
 				newAttribute.ArrayOf = "object"
 				arraySchema := strings.Split(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref, "/")[3]
-				recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value, attributes, &newAttribute)
+				newAttribute.NestedAttribute = recurseSchemaDown(*&doc.Components.Schemas[arraySchema].Value)
 			} else { // Array of primitive type
 				newAttribute.Format = schema.Properties[k].Value.Items.Value.Format
 				newAttribute.ArrayOf = schema.Properties[k].Value.Items.Value.Type
@@ -88,13 +92,11 @@ func recurseSchemaDown(schema *openapi3.Schema, attributes *[]AttributeRaw, pare
 		} else if schema.Properties[k].Value.AnyOf != nil { // Object
 			newAttribute.Type = "object"
 			nestedSchema := strings.Split(schema.Properties[k].Value.AnyOf[0].Ref, "/")[3]
-			recurseSchemaDown(*&doc.Components.Schemas[nestedSchema].Value, attributes, &newAttribute)
+			newAttribute.NestedAttribute = recurseSchemaDown(*&doc.Components.Schemas[nestedSchema].Value)
 		}
 
-		if parentAttribute != nil {
-			parentAttribute.NestedAttribute = append(*&parentAttribute.NestedAttribute, newAttribute)
-		} else {
-			*attributes = append(*attributes, newAttribute)
-		}
+		attributes = append(attributes, newAttribute)
 	}
+
+	return attributes
 }
