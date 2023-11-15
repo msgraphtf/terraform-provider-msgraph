@@ -99,15 +99,16 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 		newProperty.Type = schema.Properties[k].Value.Type
 
 		// Determines what type of data the OpenAPI schema object is
+		// FIXME: Not recursing with arrays of objects
 		if schema.Properties[k].Value.Type == "array" { // Array
 			if schema.Properties[k].Value.Items.Value.Type == "object" { // Array of objects
 				newProperty.ArrayOf = "object"
-				//arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
-				//newProperty.ObjectOf = recurseDownSchemaProperties(doc.Components.Schemas[arraySchema].Value)
+				arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
+				newProperty.ObjectOf = getSchemaObject(doc.Components.Schemas[arraySchema].Value)
 			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
 				newProperty.ArrayOf = "object"
-				//arraySchema := strings.Split(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref, "/")[3]
-				//newProperty.ObjectOf = recurseDownSchemaProperties(doc.Components.Schemas[arraySchema].Value)
+				arraySchema := strings.Split(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref, "/")[3]
+				newProperty.ObjectOf = getSchemaObject(doc.Components.Schemas[arraySchema].Value)
 			} else { // Array of primitive type
 				newProperty.Format = schema.Properties[k].Value.Items.Value.Format
 				newProperty.ArrayOf = schema.Properties[k].Value.Items.Value.Type
@@ -116,8 +117,8 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 			newProperty.Format = schema.Properties[k].Value.Format
 		} else if schema.Properties[k].Value.AnyOf != nil { // Object
 			newProperty.Type = "object"
-			//nestedSchema := strings.Split(schema.Properties[k].Value.AnyOf[0].Ref, "/")[3]
-			//newProperty.ObjectOf = recurseDownSchemaProperties(doc.Components.Schemas[nestedSchema].Value)
+			nestedSchema := strings.Split(schema.Properties[k].Value.AnyOf[0].Ref, "/")[3]
+			newProperty.ObjectOf = getSchemaObject(doc.Components.Schemas[nestedSchema].Value)
 		}
 
 		properties = append(properties, newProperty)
