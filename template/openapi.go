@@ -29,25 +29,25 @@ func RecurseSchema(schema string, filepath string) []OpenAPISchemaProperty {
 	}
 	fmt.Println("Loaded")
 
-	attributes := recurseSchemaUp(doc.Components.Schemas[schema].Value)
+	properties := recurseSchemaUp(doc.Components.Schemas[schema].Value)
 
-	return attributes
+	return properties
 
 }
 
 func recurseSchemaUp(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
-	var attributes []OpenAPISchemaProperty
+	var properties []OpenAPISchemaProperty
 
 	if schema.Title != "" {
-		attributes = append(attributes, recurseSchemaDown(schema)...)
+		properties = append(properties, recurseSchemaDown(schema)...)
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		attributes = append(attributes, recurseSchemaUp(doc.Components.Schemas[parentSchema].Value)...)
-		attributes = append(attributes, recurseSchemaDown(schema.AllOf[1].Value)...)
+		properties = append(properties, recurseSchemaUp(doc.Components.Schemas[parentSchema].Value)...)
+		properties = append(properties, recurseSchemaDown(schema.AllOf[1].Value)...)
 	}
 
-	return attributes
+	return properties
 
 }
 
@@ -60,43 +60,43 @@ func recurseSchemaDown(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
 	sort.Strings(keys)
 
-	var attributes []OpenAPISchemaProperty
+	var properties []OpenAPISchemaProperty
 
 	for _, k := range keys {
 
-		var newAttribute OpenAPISchemaProperty
+		var newProperty OpenAPISchemaProperty
 		if k == "@odata.type" || schema.Properties[k].Value.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}
 
-		newAttribute.Name = k
-		newAttribute.Description = schema.Properties[k].Value.Description
-		newAttribute.Type = schema.Properties[k].Value.Type
+		newProperty.Name = k
+		newProperty.Description = schema.Properties[k].Value.Description
+		newProperty.Type = schema.Properties[k].Value.Type
 
 		// Determines what type of data the OpenAPI schema object is
 		if schema.Properties[k].Value.Type == "array" { // Array
 			if schema.Properties[k].Value.Items.Value.Type == "object" { // Array of objects
-				newAttribute.ArrayOf = "object"
+				newProperty.ArrayOf = "object"
 				arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
-				newAttribute.ObjectOf = recurseSchemaDown(doc.Components.Schemas[arraySchema].Value)
+				newProperty.ObjectOf = recurseSchemaDown(doc.Components.Schemas[arraySchema].Value)
 			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
-				newAttribute.ArrayOf = "object"
+				newProperty.ArrayOf = "object"
 				arraySchema := strings.Split(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref, "/")[3]
-				newAttribute.ObjectOf = recurseSchemaDown(doc.Components.Schemas[arraySchema].Value)
+				newProperty.ObjectOf = recurseSchemaDown(doc.Components.Schemas[arraySchema].Value)
 			} else { // Array of primitive type
-				newAttribute.Format = schema.Properties[k].Value.Items.Value.Format
-				newAttribute.ArrayOf = schema.Properties[k].Value.Items.Value.Type
+				newProperty.Format = schema.Properties[k].Value.Items.Value.Format
+				newProperty.ArrayOf = schema.Properties[k].Value.Items.Value.Type
 			}
 		} else if schema.Properties[k].Value.Type != "" { // Primitive type
-			newAttribute.Format = schema.Properties[k].Value.Format
+			newProperty.Format = schema.Properties[k].Value.Format
 		} else if schema.Properties[k].Value.AnyOf != nil { // Object
-			newAttribute.Type = "object"
+			newProperty.Type = "object"
 			nestedSchema := strings.Split(schema.Properties[k].Value.AnyOf[0].Ref, "/")[3]
-			newAttribute.ObjectOf = recurseSchemaDown(doc.Components.Schemas[nestedSchema].Value)
+			newProperty.ObjectOf = recurseSchemaDown(doc.Components.Schemas[nestedSchema].Value)
 		}
 
-		attributes = append(attributes, newAttribute)
+		properties = append(properties, newProperty)
 	}
 
-	return attributes
+	return properties
 }
