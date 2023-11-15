@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func ReadAttributes(attributes []AttributeRaw, indent int) {
+func ReadAttributes(attributes []OpenAPISchemaProperty, indent int) {
 
 	for _, attribute := range attributes {
 

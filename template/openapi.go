@@ -11,16 +11,16 @@ import (
 var doc *openapi3.T
 var err error
 
-type AttributeRaw struct {
+type OpenAPISchemaProperty struct {
 	Name            string
 	Type            string
 	Description     string
 	Format          string
 	ArrayOf         string
-	ObjectOf []AttributeRaw
+	ObjectOf []OpenAPISchemaProperty
 }
 
-func RecurseSchema(schema string, filepath string) []AttributeRaw {
+func RecurseSchema(schema string, filepath string) []OpenAPISchemaProperty {
 
 	fmt.Println("Loading")
 	doc, err = openapi3.NewLoader().LoadFromFile(filepath)
@@ -35,9 +35,9 @@ func RecurseSchema(schema string, filepath string) []AttributeRaw {
 
 }
 
-func recurseSchemaUp(schema *openapi3.Schema) []AttributeRaw {
+func recurseSchemaUp(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
-	var attributes []AttributeRaw
+	var attributes []OpenAPISchemaProperty
 
 	if schema.Title != "" {
 		attributes = append(attributes, recurseSchemaDown(schema)...)
@@ -51,7 +51,7 @@ func recurseSchemaUp(schema *openapi3.Schema) []AttributeRaw {
 
 }
 
-func recurseSchemaDown(schema *openapi3.Schema) []AttributeRaw {
+func recurseSchemaDown(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
 	keys := make([]string, 0)
 	for k := range schema.Properties {
@@ -60,11 +60,11 @@ func recurseSchemaDown(schema *openapi3.Schema) []AttributeRaw {
 
 	sort.Strings(keys)
 
-	var attributes []AttributeRaw
+	var attributes []OpenAPISchemaProperty
 
 	for _, k := range keys {
 
-		var newAttribute AttributeRaw
+		var newAttribute OpenAPISchemaProperty
 		if k == "@odata.type" || schema.Properties[k].Value.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}

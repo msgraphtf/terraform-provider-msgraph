@@ -61,7 +61,7 @@ type attributeRead struct {
 var dataSourceName string
 var packageName string
 
-func generateSchema(schema *[]attributeSchema, attributes []AttributeRaw) {
+func generateSchema(schema *[]attributeSchema, attributes []OpenAPISchemaProperty) {
 
 	//TODO: Does not account for optional attributes
 
@@ -105,7 +105,7 @@ func generateSchema(schema *[]attributeSchema, attributes []AttributeRaw) {
 	}
 }
 
-func generateModel(modelName string, model *[]attributeModel, attributes []AttributeRaw) {
+func generateModel(modelName string, model *[]attributeModel, attributes []OpenAPISchemaProperty) {
 
 	newModel := attributeModel{
 		ModelName: modelName,
@@ -153,7 +153,7 @@ func generateModel(modelName string, model *[]attributeModel, attributes []Attri
 
 }
 
-func generateRead(read *[]attributeRead, attributes []AttributeRaw, parent *attributeRead) {
+func generateRead(read *[]attributeRead, attributes []OpenAPISchemaProperty, parent *attributeRead) {
 
 	for _, attr := range attributes {
 
