@@ -13,8 +13,8 @@ func ReadAttributes(attributes []AttributeRaw, indent int) {
 			fmt.Print("\t")
 		}
 		fmt.Printf("%s: %s: %s: %s\n", attribute.Name, attribute.Type, attribute.Format, attribute.ArrayOf)
-		if attribute.NestedAttribute != nil {
-			ReadAttributes(attribute.NestedAttribute, indent+1)
+		if attribute.ObjectOf != nil {
+			ReadAttributes(attribute.ObjectOf, indent+1)
 		}
 	}
 

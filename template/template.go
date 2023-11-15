@@ -88,13 +88,13 @@ func generateSchema(schema *[]attributeSchema, attributes []AttributeRaw) {
 			case "object":
 				nextAttributeSchema.AttributeType = "ArrayObject"
 				var nestedAttributes []attributeSchema
-				generateSchema(&nestedAttributes, attr.NestedAttribute)
+				generateSchema(&nestedAttributes, attr.ObjectOf)
 				nextAttributeSchema.NestedObject = nestedAttributes
 			}
 		default:
 			nextAttributeSchema.AttributeType = "Object"
 			var nestedAttributes []attributeSchema
-			generateSchema(&nestedAttributes, attr.NestedAttribute)
+			generateSchema(&nestedAttributes, attr.ObjectOf)
 			nextAttributeSchema.Attributes = nestedAttributes
 		}
 
@@ -133,12 +133,12 @@ func generateModel(modelName string, model *[]attributeModel, attributes []Attri
 				nextModelField.FieldType = "[]types.String"
 			}
 
-			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.NestedAttribute)
+			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.ObjectOf)
 
 		default:
 			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
 
-			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.NestedAttribute)
+			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.ObjectOf)
 
 		}
 
@@ -201,7 +201,7 @@ func generateRead(read *[]attributeRead, attributes []AttributeRaw, parent *attr
 				nextAttributeRead.AttributeType = "ArrayObject"
 
 				var nestedRead []attributeRead
-				generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
+				generateRead(&nestedRead, attr.ObjectOf, &nextAttributeRead)
 
 				nextAttributeRead.NestedRead = nestedRead
 			}
@@ -209,7 +209,7 @@ func generateRead(read *[]attributeRead, attributes []AttributeRaw, parent *attr
 			nextAttributeRead.AttributeType = "Object"
 
 			var nestedRead []attributeRead
-			generateRead(&nestedRead, attr.NestedAttribute, &nextAttributeRead)
+			generateRead(&nestedRead, attr.ObjectOf, &nextAttributeRead)
 
 			nextAttributeRead.NestedRead = nestedRead
 		}
