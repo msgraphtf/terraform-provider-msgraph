@@ -61,19 +61,19 @@ type attributeRead struct {
 var dataSourceName string
 var packageName string
 
-func generateSchema(schema *[]attributeSchema, attributes []OpenAPISchemaProperty) {
+func generateSchema(schema *[]attributeSchema, properties []OpenAPISchemaProperty) {
 
 	//TODO: Does not account for optional attributes
 
-	for _, attr := range attributes {
+	for _, property := range properties {
 
 		// Create new attribute schema and model for array
 		nextAttributeSchema := new(attributeSchema)
 
-		nextAttributeSchema.AttributeName = strcase.ToSnake(attr.Name)
+		nextAttributeSchema.AttributeName = strcase.ToSnake(property.Name)
 
 		// Convert types from MS Graph docs to Go and terraform types
-		switch attr.Type {
+		switch property.Type {
 		case "string":
 			nextAttributeSchema.AttributeType = "String"
 		case "integer":
@@ -81,44 +81,44 @@ func generateSchema(schema *[]attributeSchema, attributes []OpenAPISchemaPropert
 		case "boolean":
 			nextAttributeSchema.AttributeType = "Bool"
 		case "array":
-			switch attr.ArrayOf {
+			switch property.ArrayOf {
 			case "string":
 				nextAttributeSchema.AttributeType = "List"
 				nextAttributeSchema.ElementType = "types.StringType"
 			case "object":
 				nextAttributeSchema.AttributeType = "ArrayObject"
 				var nestedAttributes []attributeSchema
-				generateSchema(&nestedAttributes, attr.ObjectOf)
+				generateSchema(&nestedAttributes, property.ObjectOf)
 				nextAttributeSchema.NestedObject = nestedAttributes
 			}
 		default:
 			nextAttributeSchema.AttributeType = "Object"
 			var nestedAttributes []attributeSchema
-			generateSchema(&nestedAttributes, attr.ObjectOf)
+			generateSchema(&nestedAttributes, property.ObjectOf)
 			nextAttributeSchema.Attributes = nestedAttributes
 		}
 
 		nextAttributeSchema.Computed = true
-		nextAttributeSchema.Description = attr.Description
+		nextAttributeSchema.Description = property.Description
 
 		*schema = append(*schema, *nextAttributeSchema)
 	}
 }
 
-func generateModel(modelName string, model *[]attributeModel, attributes []OpenAPISchemaProperty) {
+func generateModel(modelName string, model *[]attributeModel, properties []OpenAPISchemaProperty) {
 
 	newModel := attributeModel{
 		ModelName: modelName,
 	}
 	var nestedModels []attributeModel
 
-	for _, attr := range attributes {
+	for _, property := range properties {
 
 		nextModelField := new(attributeModelField)
-		nextModelField.FieldName = strcase.ToCamel(attr.Name)
-		nextModelField.AttributeName = strcase.ToSnake(attr.Name)
+		nextModelField.FieldName = strcase.ToCamel(property.Name)
+		nextModelField.AttributeName = strcase.ToSnake(property.Name)
 
-		switch attr.Type {
+		switch property.Type {
 		case "string":
 			nextModelField.FieldType = "types.String"
 		case "integer":
@@ -126,19 +126,19 @@ func generateModel(modelName string, model *[]attributeModel, attributes []OpenA
 		case "boolean":
 			nextModelField.FieldType = "types.Bool"
 		case "array":
-			switch attr.ArrayOf {
+			switch property.ArrayOf {
 			case "object":
-				nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
+				nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 			case "string":
 				nextModelField.FieldType = "[]types.String"
 			}
 
-			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.ObjectOf)
+			generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
 
 		default:
-			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
+			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 
-			generateModel(dataSourceName+strcase.ToCamel(attr.Name)+"DataSourceModel", &nestedModels, attr.ObjectOf)
+			generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
 
 		}
 
@@ -153,34 +153,34 @@ func generateModel(modelName string, model *[]attributeModel, attributes []OpenA
 
 }
 
-func generateRead(read *[]attributeRead, attributes []OpenAPISchemaProperty, parent *attributeRead) {
+func generateRead(read *[]attributeRead, properties []OpenAPISchemaProperty, parent *attributeRead) {
 
-	for _, attr := range attributes {
+	for _, property := range properties {
 
 		nextAttributeRead := attributeRead{
-			ModelVarName:   strcase.ToLowerCamel(attr.Name),
+			ModelVarName:   strcase.ToLowerCamel(property.Name),
 			DataSourceName: dataSourceName,
 			ResultVarName:  "result",
 		}
 		if parent != nil && parent.AttributeType == "Object" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = parent.GetMethod + ".Get" + strcase.ToCamel(attr.Name) + "()"
-			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(attr.Name)
-			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
+			nextAttributeRead.GetMethod = parent.GetMethod + ".Get" + strcase.ToCamel(property.Name) + "()"
+			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(property.Name)
+			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 		} else if parent != nil && parent.AttributeType == "ArrayObject" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(attr.Name) + "()"
-			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(attr.Name)
+			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(property.Name) + "()"
+			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
 			nextAttributeRead.ResultVarName = "value"
 		} else {
-			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(attr.Name) + "()"
-			nextAttributeRead.StateAttributeName = "state." + strcase.ToCamel(attr.Name)
-			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(attr.Name) + "DataSourceModel"
+			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(property.Name) + "()"
+			nextAttributeRead.StateAttributeName = "state." + strcase.ToCamel(property.Name)
+			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 		}
 
-		switch attr.Type {
+		switch property.Type {
 		case "string":
-			if attr.Format == "" {
+			if property.Format == "" {
 				nextAttributeRead.AttributeType = "String"
 			} else {
 				nextAttributeRead.AttributeType = "StringFormatted"
@@ -190,9 +190,9 @@ func generateRead(read *[]attributeRead, attributes []OpenAPISchemaProperty, par
 		case "boolean":
 			nextAttributeRead.AttributeType = "Boolean"
 		case "array":
-			switch attr.ArrayOf {
+			switch property.ArrayOf {
 			case "string":
-				if attr.Format == "" {
+				if property.Format == "" {
 					nextAttributeRead.AttributeType = "ArrayString"
 				} else {
 					nextAttributeRead.AttributeType = "ArrayStringFormatted"
@@ -201,7 +201,7 @@ func generateRead(read *[]attributeRead, attributes []OpenAPISchemaProperty, par
 				nextAttributeRead.AttributeType = "ArrayObject"
 
 				var nestedRead []attributeRead
-				generateRead(&nestedRead, attr.ObjectOf, &nextAttributeRead)
+				generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
 
 				nextAttributeRead.NestedRead = nestedRead
 			}
@@ -209,7 +209,7 @@ func generateRead(read *[]attributeRead, attributes []OpenAPISchemaProperty, par
 			nextAttributeRead.AttributeType = "Object"
 
 			var nestedRead []attributeRead
-			generateRead(&nestedRead, attr.ObjectOf, &nextAttributeRead)
+			generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
 
 			nextAttributeRead.NestedRead = nestedRead
 		}
@@ -221,7 +221,7 @@ func generateRead(read *[]attributeRead, attributes []OpenAPISchemaProperty, par
 
 func main() {
 
-	attributes := RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
+	properties := RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
 
 	// Get template
 	templateDataSource := template.New("dataSource")
@@ -237,15 +237,15 @@ func main() {
 
 	// Generate schema values from OpenAPI attributes
 	var schema []attributeSchema
-	generateSchema(&schema, attributes)
+	generateSchema(&schema, properties)
 
 	// Generate model values from OpenAPI attributes
 	var model []attributeModel
-	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, attributes)
+	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, properties)
 
 	// Generate schema values from OpenAPI attributes
 	var read []attributeRead
-	generateRead(&read, attributes, nil)
+	generateRead(&read, properties, nil)
 	preRead, err := os.ReadFile("template/input/" + packageName + "/pre_read.go")
 
 	// Set input values to top level template
