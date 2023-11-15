@@ -26,7 +26,7 @@ type OpenAPISchemaProperty struct {
 	ObjectOf    OpenAPISchemaObject
 }
 
-func RecurseSchema(schema string, filepath string) []OpenAPISchemaProperty {
+func RecurseSchema(schemaName string, filepath string) OpenAPISchemaObject {
 
 	fmt.Println("Loading")
 	doc, err = openapi3.NewLoader().LoadFromFile(filepath)
@@ -34,10 +34,15 @@ func RecurseSchema(schema string, filepath string) []OpenAPISchemaProperty {
 		panic(err)
 	}
 	fmt.Println("Loaded")
+	schema := doc.Components.Schemas[schemaName].Value
 
-	properties := recurseSchemaUp(doc.Components.Schemas[schema].Value)
+	var schemaObject OpenAPISchemaObject
+	schemaObject.Title = schema.AllOf[1].Value.Title // TODO: Make a function to handle this properly
+	schemaObject.Type  = schema.AllOf[1].Value.Type
 
-	return properties
+	schemaObject.Properties = recurseSchemaUp(schema)
+
+	return schemaObject
 
 }
 
@@ -105,4 +110,10 @@ func recurseSchemaDown(schema *openapi3.Schema) []OpenAPISchemaProperty {
 	}
 
 	return properties
+}
+
+func main() {
+
+	RecurseSchema("microsoft.graph.user", "./msgraph-metadata/openapi/v1.0/openapi.yaml")
+
 }
