@@ -36,11 +36,25 @@ func RecurseSchema(schemaName string, filepath string) OpenAPISchemaObject {
 	fmt.Println("Loaded")
 	schema := doc.Components.Schemas[schemaName].Value
 
-	var schemaObject OpenAPISchemaObject
-	schemaObject.Title = schema.AllOf[1].Value.Title // TODO: Make a function to handle this properly
-	schemaObject.Type  = schema.AllOf[1].Value.Type
+	schemaObject := getSchemaObject(schema)
 
-	schemaObject.Properties = recurseUpSchemaObject(schema)
+	return schemaObject
+
+}
+
+func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
+
+	var schemaObject OpenAPISchemaObject
+
+	if schema.Title != "" {
+		schemaObject.Title = schema.Title
+		schemaObject.Type = schema.Type
+		schemaObject.Properties = recurseDownSchemaProperties(schema)
+	} else {
+		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
+		schemaObject.Properties = append(schemaObject.Properties, recurseUpSchemaObject(doc.Components.Schemas[parentSchema].Value)...)
+		schemaObject.Properties = append(schemaObject.Properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
+	}
 
 	return schemaObject
 
@@ -51,18 +65,18 @@ func recurseUpSchemaObject(schema *openapi3.Schema) []OpenAPISchemaProperty {
 	var properties []OpenAPISchemaProperty
 
 	if schema.Title != "" {
-		properties = append(properties, recurseSchemaDown(schema)...)
+		properties = append(properties, recurseDownSchemaProperties(schema)...)
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
 		properties = append(properties, recurseUpSchemaObject(doc.Components.Schemas[parentSchema].Value)...)
-		properties = append(properties, recurseSchemaDown(schema.AllOf[1].Value)...)
+		properties = append(properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
 	}
 
 	return properties
 
 }
 
-func recurseSchemaDown(schema *openapi3.Schema) []OpenAPISchemaProperty {
+func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
 	keys := make([]string, 0)
 	for k := range schema.Properties {
@@ -89,11 +103,11 @@ func recurseSchemaDown(schema *openapi3.Schema) []OpenAPISchemaProperty {
 			if schema.Properties[k].Value.Items.Value.Type == "object" { // Array of objects
 				newProperty.ArrayOf = "object"
 				//arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
-				//newProperty.ObjectOf = recurseSchemaDown(doc.Components.Schemas[arraySchema].Value)
+				//newProperty.ObjectOf = recurseDownSchemaProperties(doc.Components.Schemas[arraySchema].Value)
 			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
 				newProperty.ArrayOf = "object"
 				//arraySchema := strings.Split(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref, "/")[3]
-				//newProperty.ObjectOf = recurseSchemaDown(doc.Components.Schemas[arraySchema].Value)
+				//newProperty.ObjectOf = recurseDownSchemaProperties(doc.Components.Schemas[arraySchema].Value)
 			} else { // Array of primitive type
 				newProperty.Format = schema.Properties[k].Value.Items.Value.Format
 				newProperty.ArrayOf = schema.Properties[k].Value.Items.Value.Type
@@ -103,7 +117,7 @@ func recurseSchemaDown(schema *openapi3.Schema) []OpenAPISchemaProperty {
 		} else if schema.Properties[k].Value.AnyOf != nil { // Object
 			newProperty.Type = "object"
 			//nestedSchema := strings.Split(schema.Properties[k].Value.AnyOf[0].Ref, "/")[3]
-			//newProperty.ObjectOf = recurseSchemaDown(doc.Components.Schemas[nestedSchema].Value)
+			//newProperty.ObjectOf = recurseDownSchemaProperties(doc.Components.Schemas[nestedSchema].Value)
 		}
 
 		properties = append(properties, newProperty)
