@@ -11,13 +11,19 @@ import (
 var doc *openapi3.T
 var err error
 
+type OpenAPISchemaObject struct {
+	Title      string
+	Type       string
+	Properties []OpenAPISchemaProperty
+}
+
 type OpenAPISchemaProperty struct {
-	Name            string
-	Type            string
-	Description     string
-	Format          string
-	ArrayOf         string
-	ObjectOf []OpenAPISchemaProperty
+	Name        string
+	Type        string
+	Description string
+	Format      string
+	ArrayOf     string
+	ObjectOf    OpenAPISchemaObject
 }
 
 func RecurseSchema(schema string, filepath string) []OpenAPISchemaProperty {
