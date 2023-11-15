@@ -96,33 +96,35 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 
 	for _, k := range keys {
 
-		var newProperty OpenAPISchemaProperty
 		if k == "@odata.type" || schema.Properties[k].Value.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}
 
+		property := schema.Properties[k].Value
+		var newProperty OpenAPISchemaProperty
+
 		newProperty.Name = k
-		newProperty.Description = schema.Properties[k].Value.Description
-		newProperty.Type = schema.Properties[k].Value.Type
+		newProperty.Description = property.Description
+		newProperty.Type = property.Type
 
 		// Determines what type of data the OpenAPI schema object is
 		// FIXME: Not recursing with arrays of objects
-		if schema.Properties[k].Value.Type == "array" { // Array
-			if schema.Properties[k].Value.Items.Value.Type == "object" { // Array of objects
+		if property.Type == "array" { // Array
+			if property.Items.Value.Type == "object" { // Array of objects
 				newProperty.ArrayOf = "object"
-				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(schema.Properties[k].Value.Items.Ref))
-			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
+				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Ref))
+			} else if property.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
 				newProperty.ArrayOf = "object"
-				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref))
+				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Value.AnyOf[0].Ref))
 			} else { // Array of primitive type
-				newProperty.Format = schema.Properties[k].Value.Items.Value.Format
-				newProperty.ArrayOf = schema.Properties[k].Value.Items.Value.Type
+				newProperty.Format = property.Items.Value.Format
+				newProperty.ArrayOf = property.Items.Value.Type
 			}
-		} else if schema.Properties[k].Value.Type != "" { // Primitive type
-			newProperty.Format = schema.Properties[k].Value.Format
-		} else if schema.Properties[k].Value.AnyOf != nil { // Object
+		} else if property.Type != "" { // Primitive type
+			newProperty.Format = property.Format
+		} else if property.AnyOf != nil { // Object
 			newProperty.Type = "object"
-			newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(schema.Properties[k].Value.AnyOf[0].Ref))
+			newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.AnyOf[0].Ref))
 		}
 
 		properties = append(properties, newProperty)
