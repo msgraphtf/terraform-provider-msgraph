@@ -76,6 +76,13 @@ func recurseUpSchemaObject(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
 }
 
+func getSchemaFromRef(ref string) *openapi3.Schema {
+
+	schemaName := strings.Split(ref, "/")[3]
+	return doc.Components.Schemas[schemaName].Value
+
+}
+
 func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
 	keys := make([]string, 0)
@@ -103,12 +110,10 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 		if schema.Properties[k].Value.Type == "array" { // Array
 			if schema.Properties[k].Value.Items.Value.Type == "object" { // Array of objects
 				newProperty.ArrayOf = "object"
-				arraySchema := strings.Split(schema.Properties[k].Value.Items.Ref, "/")[3]
-				newProperty.ObjectOf = getSchemaObject(doc.Components.Schemas[arraySchema].Value)
+				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(schema.Properties[k].Value.Items.Ref))
 			} else if schema.Properties[k].Value.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
 				newProperty.ArrayOf = "object"
-				arraySchema := strings.Split(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref, "/")[3]
-				newProperty.ObjectOf = getSchemaObject(doc.Components.Schemas[arraySchema].Value)
+				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(schema.Properties[k].Value.Items.Value.AnyOf[0].Ref))
 			} else { // Array of primitive type
 				newProperty.Format = schema.Properties[k].Value.Items.Value.Format
 				newProperty.ArrayOf = schema.Properties[k].Value.Items.Value.Type
@@ -117,8 +122,7 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 			newProperty.Format = schema.Properties[k].Value.Format
 		} else if schema.Properties[k].Value.AnyOf != nil { // Object
 			newProperty.Type = "object"
-			nestedSchema := strings.Split(schema.Properties[k].Value.AnyOf[0].Ref, "/")[3]
-			newProperty.ObjectOf = getSchemaObject(doc.Components.Schemas[nestedSchema].Value)
+			newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(schema.Properties[k].Value.AnyOf[0].Ref))
 		}
 
 		properties = append(properties, newProperty)
@@ -127,8 +131,3 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 	return properties
 }
 
-func main() {
-
-	RecurseSchema("microsoft.graph.user", "./msgraph-metadata/openapi/v1.0/openapi.yaml")
-
-}
