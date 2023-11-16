@@ -61,11 +61,11 @@ type attributeRead struct {
 var dataSourceName string
 var packageName string
 
-func generateSchema(schema *[]attributeSchema, properties []OpenAPISchemaProperty) {
+func generateSchema(schema *[]attributeSchema, schemaObject OpenAPISchemaObject) {
 
 	//TODO: Does not account for optional attributes
 
-	for _, property := range properties {
+	for _, property := range schemaObject.Properties {
 
 		// Create new attribute schema and model for array
 		nextAttributeSchema := new(attributeSchema)
@@ -105,14 +105,14 @@ func generateSchema(schema *[]attributeSchema, properties []OpenAPISchemaPropert
 	}
 }
 
-func generateModel(modelName string, model *[]attributeModel, properties []OpenAPISchemaProperty) {
+func generateModel(modelName string, model *[]attributeModel, schemaObject OpenAPISchemaObject) {
 
 	newModel := attributeModel{
 		ModelName: modelName,
 	}
 	var nestedModels []attributeModel
 
-	for _, property := range properties {
+	for _, property := range schemaObject.Properties {
 
 		nextModelField := new(attributeModelField)
 		nextModelField.FieldName = strcase.ToCamel(property.Name)
@@ -153,9 +153,9 @@ func generateModel(modelName string, model *[]attributeModel, properties []OpenA
 
 }
 
-func generateRead(read *[]attributeRead, properties []OpenAPISchemaProperty, parent *attributeRead) {
+func generateRead(read *[]attributeRead, schemaObject OpenAPISchemaObject, parent *attributeRead) {
 
-	for _, property := range properties {
+	for _, property := range schemaObject.Properties {
 
 		nextAttributeRead := attributeRead{
 			ModelVarName:   strcase.ToLowerCamel(property.Name),
@@ -221,7 +221,7 @@ func generateRead(read *[]attributeRead, properties []OpenAPISchemaProperty, par
 
 func main() {
 
-	properties := RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
+	schemaObject := RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
 
 	// Get template
 	templateDataSource := template.New("dataSource")
@@ -237,15 +237,15 @@ func main() {
 
 	// Generate schema values from OpenAPI attributes
 	var schema []attributeSchema
-	generateSchema(&schema, properties)
+	generateSchema(&schema, schemaObject)
 
 	// Generate model values from OpenAPI attributes
 	var model []attributeModel
-	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, properties)
+	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, schemaObject)
 
 	// Generate schema values from OpenAPI attributes
 	var read []attributeRead
-	generateRead(&read, properties, nil)
+	generateRead(&read, schemaObject, nil)
 	preRead, err := os.ReadFile("template/input/" + packageName + "/pre_read.go")
 
 	// Set input values to top level template
