@@ -150,17 +150,17 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- /* Generate our Attributes from our defined templates above */}}
 			{{- block "generate_schema" .Schema}}
 			{{- range .}}
-			{{- if eq .AttributeType "String" }}
+			{{- if eq .AttributeType "StringAttribute" }}
 			{{- template "StringAttribute" .}}
-			{{- else if eq .AttributeType "Integer" }}
+			{{- else if eq .AttributeType "Int64Attribute" }}
 			{{- template "Int64Attribute" .}}
-			{{- else if eq .AttributeType "Bool" }}
+			{{- else if eq .AttributeType "BoolAttribute" }}
 			{{- template "BoolAttribute" .}}
-			{{- else if eq .AttributeType "List" }}
+			{{- else if eq .AttributeType "ListAttribute" }}
 			{{- template "ListAttribute" .}}
 			{{- else if eq .AttributeType "Object" }}
 			{{- template "SingleNestedAttribute" .}}
-			{{- else if eq .AttributeType "ArrayObject" }}
+			{{- else if eq .AttributeType "ListNestedAttribute" }}
 			{{- template "ListNestedAttribute" .}}
 			{{- end }}
 			{{- end}}

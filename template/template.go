@@ -72,30 +72,30 @@ func generateSchema(schema *[]attributeSchema, schemaObject OpenAPISchemaObject)
 
 		nextAttributeSchema.AttributeName = strcase.ToSnake(property.Name)
 
-		// Convert types from MS Graph docs to Go and terraform types
+		// Convert types from OpenAPI schema types to Terraform attributes
 		switch property.Type {
 		case "string":
-			nextAttributeSchema.AttributeType = "String"
+			nextAttributeSchema.AttributeType = "StringAttribute"
 		case "integer":
-			nextAttributeSchema.AttributeType = "Integer"
+			nextAttributeSchema.AttributeType = "Int64Attribute"
 		case "boolean":
-			nextAttributeSchema.AttributeType = "Bool"
+			nextAttributeSchema.AttributeType = "BoolAttribute"
+		case "object":
+			nextAttributeSchema.AttributeType = "SingleNestedAttribute"
+			var nestedAttributes []attributeSchema
+			generateSchema(&nestedAttributes, property.ObjectOf)
+			nextAttributeSchema.Attributes = nestedAttributes
 		case "array":
 			switch property.ArrayOf {
 			case "string":
-				nextAttributeSchema.AttributeType = "List"
+				nextAttributeSchema.AttributeType = "ListAttribute"
 				nextAttributeSchema.ElementType = "types.StringType"
 			case "object":
-				nextAttributeSchema.AttributeType = "ArrayObject"
+				nextAttributeSchema.AttributeType = "ListNestedAttribute"
 				var nestedAttributes []attributeSchema
 				generateSchema(&nestedAttributes, property.ObjectOf)
 				nextAttributeSchema.NestedObject = nestedAttributes
 			}
-		default:
-			nextAttributeSchema.AttributeType = "Object"
-			var nestedAttributes []attributeSchema
-			generateSchema(&nestedAttributes, property.ObjectOf)
-			nextAttributeSchema.Attributes = nestedAttributes
 		}
 
 		nextAttributeSchema.Computed = true
