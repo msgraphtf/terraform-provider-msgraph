@@ -125,6 +125,9 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject OpenA
 			nextModelField.FieldType = "types.Int64"
 		case "boolean":
 			nextModelField.FieldType = "types.Bool"
+		case "object":
+			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
+			generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
 		case "array":
 			switch property.ArrayOf {
 			case "object":
@@ -132,12 +135,6 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject OpenA
 			case "string":
 				nextModelField.FieldType = "[]types.String"
 			}
-
-			generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
-
-		default:
-			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
-
 			generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
 
 		}
