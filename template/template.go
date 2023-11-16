@@ -159,12 +159,12 @@ func generateRead(read *[]attributeRead, schemaObject OpenAPISchemaObject, paren
 			DataSourceName: dataSourceName,
 			ResultVarName:  "result",
 		}
-		if parent != nil && parent.AttributeType == "Object" {
+		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			nextAttributeRead.ParentRead = parent
 			nextAttributeRead.GetMethod = parent.GetMethod + ".Get" + strcase.ToCamel(property.Name) + "()"
 			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(property.Name)
 			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
-		} else if parent != nil && parent.AttributeType == "ArrayObject" {
+		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
 			nextAttributeRead.ParentRead = parent
 			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(property.Name) + "()"
 			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
@@ -175,40 +175,37 @@ func generateRead(read *[]attributeRead, schemaObject OpenAPISchemaObject, paren
 			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 		}
 
+		// Convert types from OpenAPI schema types to Terraform attributes
 		switch property.Type {
 		case "string":
 			if property.Format == "" {
-				nextAttributeRead.AttributeType = "String"
+				nextAttributeRead.AttributeType = "ReadStringAttribute"
 			} else {
-				nextAttributeRead.AttributeType = "StringFormatted"
+				nextAttributeRead.AttributeType = "ReadStringFormattedAttribute"
 			}
 		case "integer":
-			nextAttributeRead.AttributeType = "Integer"
+			nextAttributeRead.AttributeType = "ReadIntegerAttribute"
 		case "boolean":
-			nextAttributeRead.AttributeType = "Boolean"
+			nextAttributeRead.AttributeType = "ReadBoolAttribute"
+		case "object":
+			nextAttributeRead.AttributeType = "ReadSingleNestedAttribute"
+			var nestedRead []attributeRead
+			generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
+			nextAttributeRead.NestedRead = nestedRead
 		case "array":
 			switch property.ArrayOf {
 			case "string":
 				if property.Format == "" {
-					nextAttributeRead.AttributeType = "ArrayString"
+					nextAttributeRead.AttributeType = "ReadListStringAttribute"
 				} else {
-					nextAttributeRead.AttributeType = "ArrayStringFormatted"
+					nextAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
 				}
 			case "object":
-				nextAttributeRead.AttributeType = "ArrayObject"
-
+				nextAttributeRead.AttributeType = "ReadListNestedAttribute"
 				var nestedRead []attributeRead
 				generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
-
 				nextAttributeRead.NestedRead = nestedRead
 			}
-		case "object":
-			nextAttributeRead.AttributeType = "Object"
-
-			var nestedRead []attributeRead
-			generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
-
-			nextAttributeRead.NestedRead = nestedRead
 		}
 
 		*read = append(*read, nextAttributeRead)
