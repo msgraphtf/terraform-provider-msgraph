@@ -108,7 +108,6 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 		newProperty.Type = property.Type
 
 		// Determines what type of data the OpenAPI schema object is
-		// FIXME: Not recursing with arrays of objects
 		if property.Type == "array" { // Array
 			if property.Items.Value.Type == "object" { // Array of objects
 				newProperty.ArrayOf = "object"

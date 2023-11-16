@@ -13,7 +13,7 @@ func ReadAttributes(schemaObject OpenAPISchemaObject, indent int) {
 			fmt.Print("\t")
 		}
 		fmt.Printf("%s: %s: %s: %s\n", property.Name, property.Type, property.Format, property.ArrayOf)
-		if property.Type == "object" {
+		if property.Type == "object" || property.ArrayOf == "object" {
 			ReadAttributes(property.ObjectOf, indent+1)
 		}
 	}
