@@ -158,7 +158,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- template "BoolAttribute" .}}
 			{{- else if eq .AttributeType "ListAttribute" }}
 			{{- template "ListAttribute" .}}
-			{{- else if eq .AttributeType "Object" }}
+			{{- else if eq .AttributeType "SingleNestedAttribute" }}
 			{{- template "SingleNestedAttribute" .}}
 			{{- else if eq .AttributeType "ListNestedAttribute" }}
 			{{- template "ListNestedAttribute" .}}
