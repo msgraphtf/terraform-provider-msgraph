@@ -5,16 +5,16 @@ import (
 	"fmt"
 )
 
-func ReadAttributes(attributes []OpenAPISchemaProperty, indent int) {
+func ReadAttributes(schemaObject OpenAPISchemaObject, indent int) {
 
-	for _, attribute := range attributes {
+	for _, property := range schemaObject.Properties {
 
 		for i := 0; i < indent; i++ {
 			fmt.Print("\t")
 		}
-		fmt.Printf("%s: %s: %s: %s\n", attribute.Name, attribute.Type, attribute.Format, attribute.ArrayOf)
-		if attribute.ObjectOf != nil {
-			ReadAttributes(attribute.ObjectOf, indent+1)
+		fmt.Printf("%s: %s: %s: %s\n", property.Name, property.Type, property.Format, property.ArrayOf)
+		if property.Type == "object" || property.ArrayOf == "object" {
+			ReadAttributes(property.ObjectOf, indent+1)
 		}
 	}
 

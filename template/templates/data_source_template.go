@@ -150,17 +150,17 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ da
 			{{- /* Generate our Attributes from our defined templates above */}}
 			{{- block "generate_schema" .Schema}}
 			{{- range .}}
-			{{- if eq .AttributeType "String" }}
+			{{- if eq .AttributeType "StringAttribute" }}
 			{{- template "StringAttribute" .}}
-			{{- else if eq .AttributeType "Integer" }}
+			{{- else if eq .AttributeType "Int64Attribute" }}
 			{{- template "Int64Attribute" .}}
-			{{- else if eq .AttributeType "Bool" }}
+			{{- else if eq .AttributeType "BoolAttribute" }}
 			{{- template "BoolAttribute" .}}
-			{{- else if eq .AttributeType "List" }}
+			{{- else if eq .AttributeType "ListAttribute" }}
 			{{- template "ListAttribute" .}}
 			{{- else if eq .AttributeType "Object" }}
 			{{- template "SingleNestedAttribute" .}}
-			{{- else if eq .AttributeType "ArrayObject" }}
+			{{- else if eq .AttributeType "ListNestedAttribute" }}
 			{{- template "ListNestedAttribute" .}}
 			{{- end }}
 			{{- end}}
@@ -193,7 +193,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue(*{{.ResultVarName}}.{{.GetMethod}})}
 	{{- end}}
 
-	{{- define "ReadStringFormatted" }}
+	{{- define "ReadStringFormattedAttribute" }}
 	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue({{.ResultVarName}}.{{.GetMethod}}.String())}
 	{{- end}}
 
@@ -201,20 +201,8 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.Int64Value(int64(*{{.ResultVarName}}.{{.GetMethod}}))}
 	{{- end}}
 
-	{{- define "ReadBooleanAttribute" }}
+	{{- define "ReadBoolAttribute" }}
 	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.BoolValue(*{{.ResultVarName}}.{{.GetMethod}})}
-	{{- end}}
-
-	{{- define "ReadArrayString" }}
-	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
-		{{.StateAttributeName}}= append({{.StateAttributeName}}, types.StringValue(value))
-	}
-	{{- end}}
-
-	{{- define "ReadArrayStringFormatted" }}
-	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
-		{{.StateAttributeName}} = append({{.StateAttributeName}}, types.StringValue(value.String()))
-	}
 	{{- end}}
 
 	{{- define "ReadSingleNestedAttribute" }}
@@ -223,6 +211,18 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 		{{template "generate_read" .NestedRead}}
 	}
 	{{.StateAttributeName}} = {{.ModelVarName}}
+	{{- end}}
+
+	{{- define "ReadListStringAttribute" }}
+	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
+		{{.StateAttributeName}}= append({{.StateAttributeName}}, types.StringValue(value))
+	}
+	{{- end}}
+
+	{{- define "ReadListStringFormattedAttribute" }}
+	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
+		{{.StateAttributeName}} = append({{.StateAttributeName}}, types.StringValue(value.String()))
+	}
 	{{- end}}
 
 	{{- define "ReadListNestedAttribute" }}
@@ -237,21 +237,21 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	{{/* Generate statements to map response to state */}}
 	{{- block "generate_read" .Read}}
 	{{- range .}}
-	{{- if eq .AttributeType "String"}}
+	{{- if eq .AttributeType "ReadStringAttribute"}}
 	{{- template "ReadStringAttribute" .}}
-	{{- else if eq .AttributeType "StringFormatted"}}
-	{{- template "ReadStringFormatted" .}}
-	{{- else if eq .AttributeType "Integer"}}
+	{{- else if eq .AttributeType "ReadStringFormattedAttribute"}}
+	{{- template "ReadStringFormattedAttribute" .}}
+	{{- else if eq .AttributeType "ReadInt64Attribute"}}
 	{{- template "ReadInt64Attribute" .}}
-	{{- else if eq .AttributeType "Boolean"}}
-	{{- template "ReadBooleanAttribute" .}}
-	{{- else if eq .AttributeType "ArrayString"}}
-	{{- template "ReadArrayString" .}}
-	{{- else if eq .AttributeType "ArrayStringFormatted"}}
-	{{- template "ReadArrayStringFormatted" .}}
-	{{- else if eq .AttributeType "Object"}}
+	{{- else if eq .AttributeType "ReadBoolAttribute"}}
+	{{- template "ReadBoolAttribute" .}}
+	{{- else if eq .AttributeType "ReadListStringAttribute"}}
+	{{- template "ReadListStringAttribute" .}}
+	{{- else if eq .AttributeType "ReadListStringFormattedAttribute"}}
+	{{- template "ReadListStringFormattedAttribute" .}}
+	{{- else if eq .AttributeType "ReadSingleNestedAttribute"}}
 	{{- template "ReadSingleNestedAttribute" .}}
-	{{- else if eq .AttributeType "ArrayObject"}}
+	{{- else if eq .AttributeType "ReadListNestedAttribute"}}
 	{{- template "ReadListNestedAttribute" .}}
 	{{- end}}
 	{{- end}}
