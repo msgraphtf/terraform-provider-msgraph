@@ -81,7 +81,12 @@ func generateSchema(schema *[]attributeSchema, schemaObject OpenAPISchemaObject)
 		case "boolean":
 			nextAttributeSchema.AttributeType = "BoolAttribute"
 		case "object":
-			nextAttributeSchema.AttributeType = "SingleNestedAttribute"
+			if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
+				fmt.Println(property.ObjectOf.Title)
+				nextAttributeSchema.AttributeType = "StringAttribute"
+			} else {
+				nextAttributeSchema.AttributeType = "SingleNestedAttribute"
+			}
 			var nestedAttributes []attributeSchema
 			generateSchema(&nestedAttributes, property.ObjectOf)
 			nextAttributeSchema.Attributes = nestedAttributes
@@ -91,7 +96,12 @@ func generateSchema(schema *[]attributeSchema, schemaObject OpenAPISchemaObject)
 				nextAttributeSchema.AttributeType = "ListAttribute"
 				nextAttributeSchema.ElementType = "types.StringType"
 			case "object":
-				nextAttributeSchema.AttributeType = "ListNestedAttribute"
+				if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
+					nextAttributeSchema.AttributeType = "ListAttribute"
+					nextAttributeSchema.ElementType = "types.StringType"
+				} else {
+					nextAttributeSchema.AttributeType = "ListNestedAttribute"
+				}
 				var nestedAttributes []attributeSchema
 				generateSchema(&nestedAttributes, property.ObjectOf)
 				nextAttributeSchema.NestedObject = nestedAttributes

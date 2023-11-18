@@ -10,4 +10,5 @@
 | object                     | SingleNestedAttribute |
 | array (of primitive types) | ListAttribute         |
 | array (of objects)         | ListNestedAttribute   |
+| string (enum)              | StringAttribute (with validation, can only be one of a set of values |
 
