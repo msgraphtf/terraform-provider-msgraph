@@ -205,10 +205,14 @@ func generateRead(read *[]attributeRead, schemaObject OpenAPISchemaObject, paren
 		case "boolean":
 			nextAttributeRead.AttributeType = "ReadBoolAttribute"
 		case "object":
-			nextAttributeRead.AttributeType = "ReadSingleNestedAttribute"
-			var nestedRead []attributeRead
-			generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
-			nextAttributeRead.NestedRead = nestedRead
+			if property.ObjectOf.Type == "string" {
+				nextAttributeRead.AttributeType = "ReadStringFormattedAttribute"
+			} else {
+				nextAttributeRead.AttributeType = "ReadSingleNestedAttribute"
+				var nestedRead []attributeRead
+				generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
+				nextAttributeRead.NestedRead = nestedRead
+			}
 		case "array":
 			switch property.ArrayOf {
 			case "string":
@@ -218,10 +222,14 @@ func generateRead(read *[]attributeRead, schemaObject OpenAPISchemaObject, paren
 					nextAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
 				}
 			case "object":
-				nextAttributeRead.AttributeType = "ReadListNestedAttribute"
-				var nestedRead []attributeRead
-				generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
-				nextAttributeRead.NestedRead = nestedRead
+				if property.ObjectOf.Type == "string" {
+					nextAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
+				} else {
+					nextAttributeRead.AttributeType = "ReadListNestedAttribute"
+					var nestedRead []attributeRead
+					generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
+					nextAttributeRead.NestedRead = nestedRead
+				}
 			}
 		}
 
