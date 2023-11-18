@@ -82,7 +82,6 @@ func generateSchema(schema *[]attributeSchema, schemaObject OpenAPISchemaObject)
 			nextAttributeSchema.AttributeType = "BoolAttribute"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
-				fmt.Println(property.ObjectOf.Title)
 				nextAttributeSchema.AttributeType = "StringAttribute"
 			} else {
 				nextAttributeSchema.AttributeType = "SingleNestedAttribute"
@@ -136,16 +135,24 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject OpenA
 		case "boolean":
 			nextModelField.FieldType = "types.Bool"
 		case "object":
-			nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
-			generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
+			if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
+				nextModelField.FieldType = "types.String"
+			} else {
+				nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
+				generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
+			}
 		case "array":
 			switch property.ArrayOf {
 			case "object":
-				nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
+				if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
+					nextModelField.FieldType = "[]types.String"
+				} else {
+					nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
+					generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
+				}
 			case "string":
 				nextModelField.FieldType = "[]types.String"
 			}
-			generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
 
 		}
 
