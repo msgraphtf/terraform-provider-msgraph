@@ -15,6 +15,7 @@ type OpenAPISchemaObject struct {
 	Title      string
 	Type       string
 	Properties []OpenAPISchemaProperty
+	Enum       []string
 }
 
 type OpenAPISchemaProperty struct {
@@ -50,6 +51,9 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 		schemaObject.Title = schema.Title
 		schemaObject.Type = schema.Type
 		schemaObject.Properties = recurseDownSchemaProperties(schema)
+		for _, e := range schema.Enum {
+			schemaObject.Enum = append(schemaObject.Enum, e.(string))
+		}
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
 		schemaObject.Properties = append(schemaObject.Properties, recurseUpSchemaObject(doc.Components.Schemas[parentSchema].Value)...)
