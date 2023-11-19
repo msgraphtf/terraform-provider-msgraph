@@ -171,7 +171,7 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			Select: []string{"accountEnabled, displayName, mailNickname, passwordProfile, userPrincipalName, Id"},
 		},
 	}
-	result, err := r.client.UsersById(state.Id.ValueString()).Get(context.Background(), &qparams)
+	result, err := r.client.Users().ByUserId(state.Id.ValueString()).Get(context.Background(), &qparams)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error getting user",
@@ -244,7 +244,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	userPrincipalName := plan.UserPrincipalName.ValueString()
 	requestBody.SetUserPrincipalName(&userPrincipalName)
 
-	_, err := r.client.UsersById(state.Id.ValueString()).Patch(context.Background(), requestBody, nil)
+	_, err := r.client.Users().ByUserId(state.Id.ValueString()).Patch(context.Background(), requestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error updating user: "+plan.Id.ValueString(),
@@ -273,7 +273,7 @@ func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	}
 
 	// Delete user
-	err := r.client.UsersById(state.Id.ValueString()).Delete(context.Background(), nil)
+	err := r.client.Users().ByUserId(state.Id.ValueString()).Delete(context.Background(), nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error deleting user: "+state.Id.ValueString(),
@@ -292,7 +292,7 @@ func printOdataError(err error) string {
 	switch err.(type) {
 	case *odataerrors.ODataError:
 		typed := err.(*odataerrors.ODataError)
-		if terr := typed.GetError(); terr != nil {
+		if terr := typed.GetErrorEscaped(); terr != nil {
 			return fmt.Sprintf("error: %s\ncode: %s\nmsg: %s", typed.Error(), *terr.GetCode(), *terr.GetMessage())
 		} else {
 			return fmt.Sprintf("error: %s", typed.Error())

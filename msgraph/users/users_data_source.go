@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -79,20 +80,13 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	pageIterator, err := msgraphcore.NewPageIterator(users, d.client.GetAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
+	pageIterator, err := msgraphcore.NewPageIterator[models.Userable](users, d.client.GetAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
 
-	err = pageIterator.Iterate(context.Background(), func(pageItem interface{}) bool {
-		user := pageItem.(models.Userable)
-
-		userState := usersModel{
-			DisplayName: types.StringValue(*user.GetDisplayName()),
-		}
-
-		state.Users = append(state.Users, userState)
-
-		// Return true to continue the iteration
-		return true
-	})
+	err = pageIterator.Iterate(context.Background(), func(user models.Userable) bool {
+    fmt.Printf("%s\n", *user.GetDisplayName())
+    // Return true to continue the iteration
+    return true
+})
 
 	diags := resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
