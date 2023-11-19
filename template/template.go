@@ -7,6 +7,8 @@ import (
 
 	"github.com/iancoleman/strcase"
 
+	"terraform-provider-msgraph/template/openapi"
+
 )
 
 type templateInput struct {
@@ -61,7 +63,7 @@ type attributeRead struct {
 var dataSourceName string
 var packageName string
 
-func generateSchema(schema *[]attributeSchema, schemaObject OpenAPISchemaObject) {
+func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchemaObject) {
 
 	//TODO: Does not account for optional attributes
 
@@ -114,7 +116,7 @@ func generateSchema(schema *[]attributeSchema, schemaObject OpenAPISchemaObject)
 	}
 }
 
-func generateModel(modelName string, model *[]attributeModel, schemaObject OpenAPISchemaObject) {
+func generateModel(modelName string, model *[]attributeModel, schemaObject openapi.OpenAPISchemaObject) {
 
 	newModel := attributeModel{
 		ModelName: modelName,
@@ -167,7 +169,7 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject OpenA
 
 }
 
-func generateRead(read *[]attributeRead, schemaObject OpenAPISchemaObject, parent *attributeRead) {
+func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObject, parent *attributeRead) {
 
 	for _, property := range schemaObject.Properties {
 
@@ -240,7 +242,7 @@ func generateRead(read *[]attributeRead, schemaObject OpenAPISchemaObject, paren
 
 func main() {
 
-	schemaObject := RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
+	schemaObject := openapi.RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
 
 	// Get template
 	templateDataSource := template.New("dataSource")
