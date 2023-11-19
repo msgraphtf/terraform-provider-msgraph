@@ -100,11 +100,12 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 
 	for _, k := range keys {
 
-		if k == "@odata.type" || schema.Properties[k].Value.Extensions["x-ms-navigationProperty"] == true {
+		property := schema.Properties[k].Value
+
+		if k == "@odata.type" || property.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}
 
-		property := schema.Properties[k].Value
 		var newProperty OpenAPISchemaProperty
 
 		newProperty.Name = k
