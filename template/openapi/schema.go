@@ -1,5 +1,7 @@
 package openapi
 
+// schema.go handles everything related to OpenAPI schema objects
+
 import (
 	"fmt"
 	"sort"
@@ -27,7 +29,11 @@ type OpenAPISchemaProperty struct {
 	ObjectOf    OpenAPISchemaObject
 }
 
+// RecurseSchema will read an OpenAPI schema, and return a simplified and distilled representation of that schema.
+// The returned data type contains all the information necessary for the template package, to generate a Terraform provider for the Microsoft Graph API
 func RecurseSchema(schemaName string, filepath string) OpenAPISchemaObject {
+	// TODO: Change this so that the file location doesn't need to be specified.
+	// We do this now for the test, as it runs from a different directory
 
 	fmt.Println("Loading")
 	doc, err = openapi3.NewLoader().LoadFromFile(filepath)
