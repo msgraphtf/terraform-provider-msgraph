@@ -206,11 +206,10 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req 
 	{{- end}}
 
 	{{- define "ReadSingleNestedAttribute" }}
-	{{.ModelVarName}} := new({{.ModelName}})
 	if {{.ResultVarName}}.{{.GetMethod}} != nil {
+		{{.StateAttributeName}} = new({{.ModelName}})
 		{{template "generate_read" .NestedRead}}
 	}
-	{{.StateAttributeName}} = {{.ModelVarName}}
 	{{- end}}
 
 	{{- define "ReadListStringAttribute" }}

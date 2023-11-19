@@ -1037,14 +1037,13 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 		state.AssignedPlans = append(state.AssignedPlans, *assignedPlans)
 	}
-	authorizationInfo := new(userAuthorizationInfoDataSourceModel)
 	if result.GetAuthorizationInfo() != nil {
+		state.AuthorizationInfo = new(userAuthorizationInfoDataSourceModel)
 
 		for _, value := range result.GetAuthorizationInfo().GetCertificateUserIds() {
 			state.AuthorizationInfo.CertificateUserIds = append(state.AuthorizationInfo.CertificateUserIds, types.StringValue(value))
 		}
 	}
-	state.AuthorizationInfo = authorizationInfo
 	if result.GetBirthday() != nil {
 		state.Birthday = types.StringValue(result.GetBirthday().String())
 	}
@@ -1069,11 +1068,10 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetCreationType() != nil {
 		state.CreationType = types.StringValue(*result.GetCreationType())
 	}
-	customSecurityAttributes := new(userCustomSecurityAttributesDataSourceModel)
 	if result.GetCustomSecurityAttributes() != nil {
+		state.CustomSecurityAttributes = new(userCustomSecurityAttributesDataSourceModel)
 
 	}
-	state.CustomSecurityAttributes = customSecurityAttributes
 	if result.GetDepartment() != nil {
 		state.Department = types.StringValue(*result.GetDepartment())
 	}
@@ -1089,8 +1087,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetEmployeeLeaveDateTime() != nil {
 		state.EmployeeLeaveDateTime = types.StringValue(result.GetEmployeeLeaveDateTime().String())
 	}
-	employeeOrgData := new(userEmployeeOrgDataDataSourceModel)
 	if result.GetEmployeeOrgData() != nil {
+		state.EmployeeOrgData = new(userEmployeeOrgDataDataSourceModel)
 
 		if result.GetEmployeeOrgData().GetCostCenter() != nil {
 			state.EmployeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())
@@ -1099,7 +1097,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			state.EmployeeOrgData.Division = types.StringValue(*result.GetEmployeeOrgData().GetDivision())
 		}
 	}
-	state.EmployeeOrgData = employeeOrgData
 	if result.GetEmployeeType() != nil {
 		state.EmployeeType = types.StringValue(*result.GetEmployeeType())
 	}
@@ -1179,14 +1176,14 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetMailNickname() != nil {
 		state.MailNickname = types.StringValue(*result.GetMailNickname())
 	}
-	mailboxSettings := new(userMailboxSettingsDataSourceModel)
 	if result.GetMailboxSettings() != nil {
+		state.MailboxSettings = new(userMailboxSettingsDataSourceModel)
 
 		if result.GetMailboxSettings().GetArchiveFolder() != nil {
 			state.MailboxSettings.ArchiveFolder = types.StringValue(*result.GetMailboxSettings().GetArchiveFolder())
 		}
-		automaticRepliesSetting := new(userAutomaticRepliesSettingDataSourceModel)
 		if result.GetMailboxSettings().GetAutomaticRepliesSetting() != nil {
+			state.MailboxSettings.AutomaticRepliesSetting = new(userAutomaticRepliesSettingDataSourceModel)
 
 			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetExternalAudience() != nil {
 				state.MailboxSettings.AutomaticRepliesSetting.ExternalAudience = types.StringValue(result.GetMailboxSettings().GetAutomaticRepliesSetting().GetExternalAudience().String())
@@ -1197,8 +1194,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetInternalReplyMessage() != nil {
 				state.MailboxSettings.AutomaticRepliesSetting.InternalReplyMessage = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetInternalReplyMessage())
 			}
-			scheduledEndDateTime := new(userScheduledEndDateTimeDataSourceModel)
 			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime() != nil {
+				state.MailboxSettings.AutomaticRepliesSetting.ScheduledEndDateTime = new(userScheduledEndDateTimeDataSourceModel)
 
 				if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime().GetDateTime() != nil {
 					state.MailboxSettings.AutomaticRepliesSetting.ScheduledEndDateTime.DateTime = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime().GetDateTime())
@@ -1207,9 +1204,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 					state.MailboxSettings.AutomaticRepliesSetting.ScheduledEndDateTime.TimeZone = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime().GetTimeZone())
 				}
 			}
-			state.MailboxSettings.AutomaticRepliesSetting.ScheduledEndDateTime = scheduledEndDateTime
-			scheduledStartDateTime := new(userScheduledStartDateTimeDataSourceModel)
 			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime() != nil {
+				state.MailboxSettings.AutomaticRepliesSetting.ScheduledStartDateTime = new(userScheduledStartDateTimeDataSourceModel)
 
 				if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime().GetDateTime() != nil {
 					state.MailboxSettings.AutomaticRepliesSetting.ScheduledStartDateTime.DateTime = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime().GetDateTime())
@@ -1218,20 +1214,18 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 					state.MailboxSettings.AutomaticRepliesSetting.ScheduledStartDateTime.TimeZone = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime().GetTimeZone())
 				}
 			}
-			state.MailboxSettings.AutomaticRepliesSetting.ScheduledStartDateTime = scheduledStartDateTime
 			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetStatus() != nil {
 				state.MailboxSettings.AutomaticRepliesSetting.Status = types.StringValue(result.GetMailboxSettings().GetAutomaticRepliesSetting().GetStatus().String())
 			}
 		}
-		state.MailboxSettings.AutomaticRepliesSetting = automaticRepliesSetting
 		if result.GetMailboxSettings().GetDateFormat() != nil {
 			state.MailboxSettings.DateFormat = types.StringValue(*result.GetMailboxSettings().GetDateFormat())
 		}
 		if result.GetMailboxSettings().GetDelegateMeetingMessageDeliveryOptions() != nil {
 			state.MailboxSettings.DelegateMeetingMessageDeliveryOptions = types.StringValue(result.GetMailboxSettings().GetDelegateMeetingMessageDeliveryOptions().String())
 		}
-		language := new(userLanguageDataSourceModel)
 		if result.GetMailboxSettings().GetLanguage() != nil {
+			state.MailboxSettings.Language = new(userLanguageDataSourceModel)
 
 			if result.GetMailboxSettings().GetLanguage().GetDisplayName() != nil {
 				state.MailboxSettings.Language.DisplayName = types.StringValue(*result.GetMailboxSettings().GetLanguage().GetDisplayName())
@@ -1240,7 +1234,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				state.MailboxSettings.Language.Locale = types.StringValue(*result.GetMailboxSettings().GetLanguage().GetLocale())
 			}
 		}
-		state.MailboxSettings.Language = language
 		if result.GetMailboxSettings().GetTimeFormat() != nil {
 			state.MailboxSettings.TimeFormat = types.StringValue(*result.GetMailboxSettings().GetTimeFormat())
 		}
@@ -1250,8 +1243,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if result.GetMailboxSettings().GetUserPurpose() != nil {
 			state.MailboxSettings.UserPurpose = types.StringValue(result.GetMailboxSettings().GetUserPurpose().String())
 		}
-		workingHours := new(userWorkingHoursDataSourceModel)
 		if result.GetMailboxSettings().GetWorkingHours() != nil {
+			state.MailboxSettings.WorkingHours = new(userWorkingHoursDataSourceModel)
 
 			for _, value := range result.GetMailboxSettings().GetWorkingHours().GetDaysOfWeek() {
 				state.MailboxSettings.WorkingHours.DaysOfWeek = append(state.MailboxSettings.WorkingHours.DaysOfWeek, types.StringValue(value.String()))
@@ -1262,18 +1255,15 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			if result.GetMailboxSettings().GetWorkingHours().GetStartTime() != nil {
 				state.MailboxSettings.WorkingHours.StartTime = types.StringValue(result.GetMailboxSettings().GetWorkingHours().GetStartTime().String())
 			}
-			timeZone := new(userTimeZoneDataSourceModel)
 			if result.GetMailboxSettings().GetWorkingHours().GetTimeZone() != nil {
+				state.MailboxSettings.WorkingHours.TimeZone = new(userTimeZoneDataSourceModel)
 
 				if result.GetMailboxSettings().GetWorkingHours().GetTimeZone().GetName() != nil {
 					state.MailboxSettings.WorkingHours.TimeZone.Name = types.StringValue(*result.GetMailboxSettings().GetWorkingHours().GetTimeZone().GetName())
 				}
 			}
-			state.MailboxSettings.WorkingHours.TimeZone = timeZone
 		}
-		state.MailboxSettings.WorkingHours = workingHours
 	}
-	state.MailboxSettings = mailboxSettings
 	if result.GetMobilePhone() != nil {
 		state.MobilePhone = types.StringValue(*result.GetMobilePhone())
 	}
@@ -1289,8 +1279,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetOnPremisesDomainName() != nil {
 		state.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())
 	}
-	onPremisesExtensionAttributes := new(userOnPremisesExtensionAttributesDataSourceModel)
 	if result.GetOnPremisesExtensionAttributes() != nil {
+		state.OnPremisesExtensionAttributes = new(userOnPremisesExtensionAttributesDataSourceModel)
 
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1() != nil {
 			state.OnPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
@@ -1338,7 +1328,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			state.OnPremisesExtensionAttributes.ExtensionAttribute9 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9())
 		}
 	}
-	state.OnPremisesExtensionAttributes = onPremisesExtensionAttributes
 	if result.GetOnPremisesImmutableId() != nil {
 		state.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())
 	}
@@ -1380,8 +1369,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetPasswordPolicies() != nil {
 		state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())
 	}
-	state.PasswordProfile = new(userPasswordProfileDataSourceModel)
 	if result.GetPasswordProfile() != nil {
+		state.PasswordProfile = new(userPasswordProfileDataSourceModel)
 
 		if result.GetPasswordProfile().GetForceChangePasswordNextSignIn() != nil {
 			state.PasswordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
@@ -1408,11 +1397,10 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetPreferredName() != nil {
 		state.PreferredName = types.StringValue(*result.GetPreferredName())
 	}
-	print := new(userPrintDataSourceModel)
 	if result.GetPrint() != nil {
+		state.Print = new(userPrintDataSourceModel)
 
 	}
-	state.Print = print
 	for _, value := range result.GetProvisionedPlans() {
 		provisionedPlans := new(userProvisionedPlansDataSourceModel)
 
@@ -1456,8 +1444,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetShowInAddressList() != nil {
 		state.ShowInAddressList = types.BoolValue(*result.GetShowInAddressList())
 	}
-	signInActivity := new(userSignInActivityDataSourceModel)
 	if result.GetSignInActivity() != nil {
+		state.SignInActivity = new(userSignInActivityDataSourceModel)
 
 		if result.GetSignInActivity().GetLastNonInteractiveSignInDateTime() != nil {
 			state.SignInActivity.LastNonInteractiveSignInDateTime = types.StringValue(result.GetSignInActivity().GetLastNonInteractiveSignInDateTime().String())
@@ -1472,7 +1460,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			state.SignInActivity.LastSignInRequestId = types.StringValue(*result.GetSignInActivity().GetLastSignInRequestId())
 		}
 	}
-	state.SignInActivity = signInActivity
 	if result.GetSignInSessionsValidFromDateTime() != nil {
 		state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())
 	}
