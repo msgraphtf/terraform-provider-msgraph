@@ -242,7 +242,7 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 
 func main() {
 
-	schemaObject := openapi.RecurseSchema("microsoft.graph.user", "msgraph-metadata/openapi/v1.0/openapi.yaml")
+	schemaObject := openapi.RecurseSchema("microsoft.graph.user")
 
 	// Get template
 	templateDataSource := template.New("dataSource")
