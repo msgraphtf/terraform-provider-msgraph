@@ -2,8 +2,6 @@ package openapi
 
 import (
 	"fmt"
-
-	"github.com/getkin/kin-openapi/openapi3"
 )
 
 type OpenAPIPathObject struct {
@@ -13,18 +11,13 @@ type OpenAPIPathObject struct {
 }
 
 type OpenAPIPathGetObject struct {
-	Summary     string
-	Description string
+	Summary          string
+	Description      string
 	SelectParameters []string
+	Response         OpenAPISchemaObject
 }
 
 func GetPath(pathname string, filepath string) OpenAPIPathObject {
-	fmt.Println("Loading")
-	doc, err = openapi3.NewLoader().LoadFromFile(filepath)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Loaded")
 
 	var pathObject OpenAPIPathObject
 
