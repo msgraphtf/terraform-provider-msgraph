@@ -242,7 +242,7 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 
 func main() {
 
-	schemaObject := openapi.RecurseSchema("microsoft.graph.user")
+	schemaObject := openapi.GetSchemaObjectByName("microsoft.graph.user")
 
 	// Get template
 	templateDataSource := template.New("dataSource")

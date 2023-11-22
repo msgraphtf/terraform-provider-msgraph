@@ -25,16 +25,18 @@ type OpenAPISchemaProperty struct {
 	ObjectOf    OpenAPISchemaObject
 }
 
-// RecurseSchema will read an OpenAPI schema, and return a simplified and distilled representation of that schema.
+// GetSchemaObjectByName will read an OpenAPI schema, and return a simplified and distilled representation of that schema.
 // The returned data type contains all the information necessary for the template package, to generate a Terraform provider for the Microsoft Graph API
-func RecurseSchema(schemaName string) OpenAPISchemaObject {
-
+func GetSchemaObjectByName(schemaName string) OpenAPISchemaObject {
 	schema := doc.Components.Schemas[schemaName].Value
-
 	schemaObject := getSchemaObject(schema)
-
 	return schemaObject
+}
 
+func GetSchemaObjectByRef(ref string) OpenAPISchemaObject {
+	schema := getSchemaFromRef(ref)
+	schemaObject := getSchemaObject(schema)
+	return schemaObject
 }
 
 func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
@@ -50,7 +52,7 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 		}
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		schemaObject.Properties = append(schemaObject.Properties, recurseUpSchemaObject(doc.Components.Schemas[parentSchema].Value)...)
+		schemaObject.Properties = append(schemaObject.Properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
 		schemaObject.Properties = append(schemaObject.Properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
 	}
 
@@ -58,7 +60,7 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 
 }
 
-func recurseUpSchemaObject(schema *openapi3.Schema) []OpenAPISchemaProperty {
+func recurseUpSchema(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
 	var properties []OpenAPISchemaProperty
 
@@ -66,7 +68,7 @@ func recurseUpSchemaObject(schema *openapi3.Schema) []OpenAPISchemaProperty {
 		properties = append(properties, recurseDownSchemaProperties(schema)...)
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		properties = append(properties, recurseUpSchemaObject(doc.Components.Schemas[parentSchema].Value)...)
+		properties = append(properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
 		properties = append(properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
 	}
 
