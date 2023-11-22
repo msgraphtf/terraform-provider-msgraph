@@ -6,6 +6,6 @@ import (
 
 func TestGetPath(t *testing.T) {
 
-	GetPath("/users/{user-id}", "../../msgraph-metadata/openapi/v1.0/openapi.yaml")
+	GetPath("/users/{user-id}")
 
 }

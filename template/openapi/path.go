@@ -1,9 +1,5 @@
 package openapi
 
-import (
-	"fmt"
-)
-
 type OpenAPIPathObject struct {
 	Path        string
 	Description string
@@ -17,7 +13,7 @@ type OpenAPIPathGetObject struct {
 	Response         OpenAPISchemaObject
 }
 
-func GetPath(pathname string, filepath string) OpenAPIPathObject {
+func GetPath(pathname string) OpenAPIPathObject {
 
 	var pathObject OpenAPIPathObject
 
@@ -30,8 +26,7 @@ func GetPath(pathname string, filepath string) OpenAPIPathObject {
 	for _, param := range path.Get.Parameters.GetByInAndName("query", "$select").Schema.Value.Items.Value.Enum {
 		pathObject.Get.SelectParameters = append(pathObject.Get.SelectParameters, param.(string))
 	}
-
-	fmt.Printf("%+v\n", pathObject)
+	pathObject.Get.Response = GetSchemaObjectByRef(path.Get.Responses.Get(200).Value.Content.Get("application/json").Schema.Ref)
 
 	return pathObject
 }
