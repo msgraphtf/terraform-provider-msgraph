@@ -132,7 +132,7 @@ func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchem
 func generateModel(modelName string, model *[]attributeModel, schemaObject openapi.OpenAPISchemaObject) {
 
 	newModel := attributeModel{
-		ModelName: modelName,
+		ModelName: dataSourceName + modelName + "DataSourceModel",
 	}
 	var nestedModels []attributeModel
 
@@ -154,7 +154,7 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 				nextModelField.FieldType = "types.String"
 			} else {
 				nextModelField.FieldType = "*" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
-				generateModel(dataSourceName + nextModelField.FieldName + "DataSourceModel", &nestedModels, property.ObjectOf)
+				generateModel(nextModelField.FieldName, &nestedModels, property.ObjectOf)
 			}
 		case "array":
 			switch property.ArrayOf {
@@ -163,7 +163,7 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 					nextModelField.FieldType = "[]types.String"
 				} else {
 					nextModelField.FieldType = "[]" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
-					generateModel(dataSourceName + nextModelField.FieldName + "DataSourceModel", &nestedModels, property.ObjectOf)
+					generateModel(nextModelField.FieldName, &nestedModels, property.ObjectOf)
 				}
 			case "string":
 				nextModelField.FieldType = "[]types.String"
@@ -273,7 +273,7 @@ func main() {
 
 	// Generate model values from OpenAPI attributes
 	var model []attributeModel
-	generateModel(strcase.ToLowerCamel(dataSourceName)+"DataSourceModel", &model, schemaObject)
+	generateModel("", &model, schemaObject)
 
 	// Generate schema values from OpenAPI attributes
 	var read []attributeRead
