@@ -150,7 +150,7 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 		case "boolean":
 			nextModelField.FieldType = "types.Bool"
 		case "object":
-			if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
+			if property.ObjectOf.Type == "string" { // This is a string enum.
 				nextModelField.FieldType = "types.String"
 			} else {
 				nextModelField.FieldType = "*" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
@@ -159,7 +159,7 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 		case "array":
 			switch property.ArrayOf {
 			case "object":
-				if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
+				if property.ObjectOf.Type == "string" { // This is a string enum.
 					nextModelField.FieldType = "[]types.String"
 				} else {
 					nextModelField.FieldType = "[]" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
@@ -218,7 +218,7 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 		case "boolean":
 			nextAttributeRead.AttributeType = "ReadBoolAttribute"
 		case "object":
-			if property.ObjectOf.Type == "string" {
+			if property.ObjectOf.Type == "string" { // This is a string enum.
 				nextAttributeRead.AttributeType = "ReadStringFormattedAttribute"
 			} else {
 				nextAttributeRead.AttributeType = "ReadSingleNestedAttribute"
@@ -235,7 +235,7 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 					nextAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
 				}
 			case "object":
-				if property.ObjectOf.Type == "string" {
+				if property.ObjectOf.Type == "string" { // This is a string enum.
 					nextAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
 				} else {
 					nextAttributeRead.AttributeType = "ReadListNestedAttribute"
