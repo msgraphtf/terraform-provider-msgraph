@@ -267,15 +267,15 @@ func main() {
 	}
 	templateDataSource, err = templateDataSource.Parse(string(templateFile))
 
-	// Generate schema values from OpenAPI attributes
+	// Generate Terraform Schema from OpenAPI Schama properties
 	var schema []attributeSchema
 	generateSchema(&schema, schemaObject)
 
-	// Generate model values from OpenAPI attributes
+	// Generate Terraform model from OpenAPI attributes
 	var model []attributeModel
 	generateModel("", &model, schemaObject)
 
-	// Generate schema values from OpenAPI attributes
+	// Generate Read Go code from OpenAPI attributes
 	var read []attributeRead
 	generateRead(&read, schemaObject, nil)
 	preRead, err := os.ReadFile("template/input/" + packageName + "/pre_read.go")
