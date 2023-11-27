@@ -23,10 +23,13 @@ func (t templateName) UpperCamel() string {
 	return strcase.ToCamel(t.string)
 }
 
+func (t templateName) Snake() string {
+	return strcase.ToSnake(t.string)
+}
+
 type templateInput struct {
 	PackageName              string
 	DataSourceName           templateName
-	DataSourceAttributeName  string
 	Schema                   []attributeSchema
 	Model                    []attributeModel
 	PreRead                  string
@@ -281,7 +284,6 @@ func main() {
 	inputValues := templateInput{
 		PackageName:              packageName,
 		DataSourceName:           templateName{dataSourceName},
-		DataSourceAttributeName:  strcase.ToSnake(dataSourceName),
 		Schema:                   schema,
 		Model:                    model,
 		PreRead:                  string(preRead),

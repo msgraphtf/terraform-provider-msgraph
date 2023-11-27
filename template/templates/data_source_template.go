@@ -30,7 +30,7 @@ type {{.DataSourceName.LowerCamel}}DataSource struct{
 
 // Metadata returns the data source type name.
 func (d *{{.DataSourceName.LowerCamel}}DataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-    resp.TypeName = req.ProviderTypeName + "_{{.DataSourceAttributeName}}"
+    resp.TypeName = req.ProviderTypeName + "_{{.DataSourceName.Snake}}"
 }
 
 // Configure adds the provider configured client to the data source.
