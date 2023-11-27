@@ -253,6 +253,10 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 
 func main() {
 
+	// Get inputs
+	// TODO: Don't actually hard code it
+	packageName = "users"
+	dataSourceName = "user"
 	schemaObject := openapi.GetSchemaObjectByName("microsoft.graph.user")
 
 	// Get template
@@ -262,10 +266,6 @@ func main() {
 		fmt.Print(err)
 	}
 	templateDataSource, err = templateDataSource.Parse(string(templateFile))
-
-	// Get inputs
-	packageName = os.Args[1]
-	dataSourceName = os.Args[2]
 
 	// Generate schema values from OpenAPI attributes
 	var schema []attributeSchema
