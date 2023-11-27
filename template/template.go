@@ -184,26 +184,23 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 	for _, property := range schemaObject.Properties {
 
 		nextAttributeRead := attributeRead{
+			GetMethod:      "Get" + strcase.ToCamel(property.Name) + "()",
+			ModelName:      dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel",
 			ModelVarName:   strcase.ToLowerCamel(property.Name),
 			DataSourceName: dataSourceName,
 			ResultVarName:  "result",
 		}
 
-		getMethod := "Get" + strcase.ToCamel(property.Name) + "()"
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = parent.GetMethod + "." + getMethod
+			nextAttributeRead.GetMethod = parent.GetMethod + "." + nextAttributeRead.GetMethod
 			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(property.Name)
-			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = getMethod
 			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
 			nextAttributeRead.ResultVarName = "value"
 		} else {
-			nextAttributeRead.GetMethod = getMethod
 			nextAttributeRead.StateAttributeName = "state." + strcase.ToCamel(property.Name)
-			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
