@@ -70,7 +70,6 @@ type attributeRead struct {
 	DataSourceName     string
 	NestedRead         []attributeRead
 	ParentRead         *attributeRead
-	ResultVarName      string
 }
 
 var dataSourceName string
@@ -191,17 +190,18 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 			ModelName:      dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel",
 			ModelVarName:   strcase.ToLowerCamel(property.Name),
 			DataSourceName: dataSourceName,
-			ResultVarName:  "result",
 			ParentRead:     parent,
 		}
+
 
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			nextAttributeRead.GetMethod = parent.GetMethod + "." + nextAttributeRead.GetMethod
 			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
+			nextAttributeRead.GetMethod = "value." + nextAttributeRead.GetMethod
 			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
-			nextAttributeRead.ResultVarName = "value"
 		} else {
+			nextAttributeRead.GetMethod = "result." + nextAttributeRead.GetMethod
 			nextAttributeRead.StateAttributeName = "state." + strcase.ToCamel(property.Name)
 		}
 

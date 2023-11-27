@@ -190,42 +190,42 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 
 	{{- /* Define templates for mapping each response type to state */}}
 	{{- define "ReadStringAttribute" }}
-	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue(*{{.ResultVarName}}.{{.GetMethod}})}
+	if {{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue(*{{.GetMethod}})}
 	{{- end}}
 
 	{{- define "ReadStringFormattedAttribute" }}
-	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue({{.ResultVarName}}.{{.GetMethod}}.String())}
+	if {{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue({{.GetMethod}}.String())}
 	{{- end}}
 
 	{{- define "ReadInt64Attribute" }}
-	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.Int64Value(int64(*{{.ResultVarName}}.{{.GetMethod}}))}
+	if {{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.Int64Value(int64(*{{.GetMethod}}))}
 	{{- end}}
 
 	{{- define "ReadBoolAttribute" }}
-	if {{.ResultVarName}}.{{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.BoolValue(*{{.ResultVarName}}.{{.GetMethod}})}
+	if {{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.BoolValue(*{{.GetMethod}})}
 	{{- end}}
 
 	{{- define "ReadSingleNestedAttribute" }}
-	if {{.ResultVarName}}.{{.GetMethod}} != nil {
+	if {{.GetMethod}} != nil {
 		{{.StateAttributeName}} = new({{.ModelName}})
 		{{template "generate_read" .NestedRead}}
 	}
 	{{- end}}
 
 	{{- define "ReadListStringAttribute" }}
-	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
+	for _, value := range {{.GetMethod}} {
 		{{.StateAttributeName}}= append({{.StateAttributeName}}, types.StringValue(value))
 	}
 	{{- end}}
 
 	{{- define "ReadListStringFormattedAttribute" }}
-	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
+	for _, value := range {{.GetMethod}} {
 		{{.StateAttributeName}} = append({{.StateAttributeName}}, types.StringValue(value.String()))
 	}
 	{{- end}}
 
 	{{- define "ReadListNestedAttribute" }}
-	for _, value := range {{.ResultVarName}}.{{.GetMethod}} {
+	for _, value := range {{.GetMethod}} {
 		{{.ModelVarName}} := new({{.ModelName}})
 			{{template "generate_read" .NestedRead}}
 		{{.StateAttributeName}} = append({{.StateAttributeName}}, *{{.ModelVarName}})
