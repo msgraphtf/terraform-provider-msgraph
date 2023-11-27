@@ -188,18 +188,20 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 			DataSourceName: dataSourceName,
 			ResultVarName:  "result",
 		}
+
+		getMethod := "Get" + strcase.ToCamel(property.Name) + "()"
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = parent.GetMethod + ".Get" + strcase.ToCamel(property.Name) + "()"
+			nextAttributeRead.GetMethod = parent.GetMethod + "." + getMethod
 			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(property.Name)
 			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
 			nextAttributeRead.ParentRead = parent
-			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(property.Name) + "()"
+			nextAttributeRead.GetMethod = getMethod
 			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
 			nextAttributeRead.ResultVarName = "value"
 		} else {
-			nextAttributeRead.GetMethod = "Get" + strcase.ToCamel(property.Name) + "()"
+			nextAttributeRead.GetMethod = getMethod
 			nextAttributeRead.StateAttributeName = "state." + strcase.ToCamel(property.Name)
 			nextAttributeRead.ModelName = dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
 		}
