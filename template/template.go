@@ -11,22 +11,26 @@ import (
 
 )
 
+type templateName struct {
+	string
+}
+
+func (t templateName) LowerCamel() string {
+	return strcase.ToLowerCamel(t.string)
+}
+
+func (t templateName) UpperCamel() string {
+	return strcase.ToCamel(t.string)
+}
+
 type templateInput struct {
 	PackageName              string
-	DataSourceName           string
+	DataSourceName           templateName
 	DataSourceAttributeName  string
 	Schema                   []attributeSchema
 	Model                    []attributeModel
 	PreRead                  string
 	Read                     []attributeRead
-}
-
-func (t templateInput) DataSourceNameLowerCamel() string {
-	return strcase.ToLowerCamel(t.DataSourceName)
-}
-
-func (t templateInput) DataSourceNameUpperCamel() string {
-	return strcase.ToCamel(t.DataSourceName)
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
@@ -278,7 +282,7 @@ func main() {
 	// Set input values to top level template
 	inputValues := templateInput{
 		PackageName:              packageName,
-		DataSourceName:           dataSourceName,
+		DataSourceName:           templateName{dataSourceName},
 		DataSourceAttributeName:  strcase.ToSnake(dataSourceName),
 		Schema:                   schema,
 		Model:                    model,

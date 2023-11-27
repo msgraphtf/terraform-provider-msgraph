@@ -14,27 +14,27 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-    _ datasource.DataSource = &{{.DataSourceNameLowerCamel}}DataSource{}
-    _ datasource.DataSourceWithConfigure = &{{.DataSourceNameLowerCamel}}DataSource{}
+    _ datasource.DataSource = &{{.DataSourceName.LowerCamel}}DataSource{}
+    _ datasource.DataSourceWithConfigure = &{{.DataSourceName.LowerCamel}}DataSource{}
 )
 
-// New{{.DataSourceNameUpperCamel}}DataSource is a helper function to simplify the provider implementation.
-func New{{.DataSourceNameUpperCamel}}DataSource() datasource.DataSource {
-    return &{{.DataSourceNameLowerCamel}}DataSource{}
+// New{{.DataSourceName.UpperCamel}}DataSource is a helper function to simplify the provider implementation.
+func New{{.DataSourceName.UpperCamel}}DataSource() datasource.DataSource {
+    return &{{.DataSourceName.LowerCamel}}DataSource{}
 }
 
-// {{.DataSourceNameUpperCamel}}DataSource is the data source implementation.
-type {{.DataSourceName}}DataSource struct{
+// {{.DataSourceName.LowerCamel}}DataSource is the data source implementation.
+type {{.DataSourceName.LowerCamel}}DataSource struct{
 	client *msgraphsdk.GraphServiceClient
 }
 
 // Metadata returns the data source type name.
-func (d *{{.DataSourceNameLowerCamel}}DataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *{{.DataSourceName.LowerCamel}}DataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
     resp.TypeName = req.ProviderTypeName + "_{{.DataSourceAttributeName}}"
 }
 
 // Configure adds the provider configured client to the data source.
-func (d *{{.DataSourceNameLowerCamel}}DataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+func (d *{{.DataSourceName.LowerCamel}}DataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -43,7 +43,7 @@ func (d *{{.DataSourceNameLowerCamel}}DataSource) Configure(_ context.Context, r
 }
 
 // Schema defines the schema for the data source.
-func (d *{{.DataSourceNameLowerCamel}}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *{{.DataSourceName.LowerCamel}}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
     resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 
@@ -179,8 +179,8 @@ type {{.ModelName}} struct {
 {{end}}
 
 // Read refreshes the Terraform state with the latest data.
-func (d *{{.DataSourceNameLowerCamel}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state {{.DataSourceNameLowerCamel}}DataSourceModel
+func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state {{.DataSourceName.LowerCamel}}DataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
