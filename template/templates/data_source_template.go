@@ -190,37 +190,37 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 
 	{{- /* Define templates for mapping each response type to state */}}
 	{{- define "ReadStringAttribute" }}
-	if {{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue(*{{.GetMethod}})}
+	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue(*{{.GetMethod}})}
 	{{- end}}
 
 	{{- define "ReadStringFormattedAttribute" }}
-	if {{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.StringValue({{.GetMethod}}.String())}
+	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue({{.GetMethod}}.String())}
 	{{- end}}
 
 	{{- define "ReadInt64Attribute" }}
-	if {{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.Int64Value(int64(*{{.GetMethod}}))}
+	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.Int64Value(int64(*{{.GetMethod}}))}
 	{{- end}}
 
 	{{- define "ReadBoolAttribute" }}
-	if {{.GetMethod}}  != nil { {{- .StateAttributeName}} = types.BoolValue(*{{.GetMethod}})}
+	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.BoolValue(*{{.GetMethod}})}
 	{{- end}}
 
 	{{- define "ReadSingleNestedAttribute" }}
 	if {{.GetMethod}} != nil {
-		{{.StateAttributeName}} = new({{.ModelName}})
+		{{.StateVarName}} = new({{.ModelName}})
 		{{template "generate_read" .NestedRead}}
 	}
 	{{- end}}
 
 	{{- define "ReadListStringAttribute" }}
 	for _, value := range {{.GetMethod}} {
-		{{.StateAttributeName}}= append({{.StateAttributeName}}, types.StringValue(value))
+		{{.StateVarName}} = append({{.StateVarName}}, types.StringValue(value))
 	}
 	{{- end}}
 
 	{{- define "ReadListStringFormattedAttribute" }}
 	for _, value := range {{.GetMethod}} {
-		{{.StateAttributeName}} = append({{.StateAttributeName}}, types.StringValue(value.String()))
+		{{.StateVarName}} = append({{.StateVarName}}, types.StringValue(value.String()))
 	}
 	{{- end}}
 
@@ -228,7 +228,7 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	for _, value := range {{.GetMethod}} {
 		{{.ModelVarName}} := new({{.ModelName}})
 			{{template "generate_read" .NestedRead}}
-		{{.StateAttributeName}} = append({{.StateAttributeName}}, *{{.ModelVarName}})
+		{{.StateVarName}} = append({{.StateVarName}}, *{{.ModelVarName}})
 	}
 	{{- end}}
 

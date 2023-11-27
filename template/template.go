@@ -63,7 +63,7 @@ type attributeModelField struct {
 
 type attributeRead struct {
 	GetMethod          string
-	StateAttributeName string
+	StateVarName string
 	ModelVarName       string
 	ModelName          string
 	AttributeType      string
@@ -196,13 +196,13 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			nextAttributeRead.GetMethod = parent.GetMethod + "." + nextAttributeRead.GetMethod
-			nextAttributeRead.StateAttributeName = parent.StateAttributeName + "." + strcase.ToCamel(property.Name)
+			nextAttributeRead.StateVarName = parent.StateVarName + "." + strcase.ToCamel(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
 			nextAttributeRead.GetMethod = "value." + nextAttributeRead.GetMethod
-			nextAttributeRead.StateAttributeName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
+			nextAttributeRead.StateVarName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
 		} else {
 			nextAttributeRead.GetMethod = "result." + nextAttributeRead.GetMethod
-			nextAttributeRead.StateAttributeName = "state." + strcase.ToCamel(property.Name)
+			nextAttributeRead.StateVarName = "state." + strcase.ToCamel(property.Name)
 		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
