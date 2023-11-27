@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.30.0
 	github.com/iancoleman/strcase v0.3.0
 	github.com/microsoftgraph/msgraph-sdk-go v1.25.0
-	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.0
+	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.1
 )
 
 require (
@@ -32,7 +32,7 @@ require (
 	github.com/cloudflare/circl v1.3.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.14.1 // indirect
-	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/swag v0.22.4 // indirect
@@ -65,9 +65,9 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
-	github.com/microsoft/kiota-abstractions-go v1.4.0 // indirect
-	github.com/microsoft/kiota-authentication-azure-go v1.0.0 // indirect
-	github.com/microsoft/kiota-http-go v1.1.0 // indirect
+	github.com/microsoft/kiota-abstractions-go v1.5.2 // indirect
+	github.com/microsoft/kiota-authentication-azure-go v1.0.1 // indirect
+	github.com/microsoft/kiota-http-go v1.1.1 // indirect
 	github.com/microsoft/kiota-serialization-form-go v1.0.0 // indirect
 	github.com/microsoft/kiota-serialization-json-go v1.0.4 // indirect
 	github.com/microsoft/kiota-serialization-multipart-go v1.0.0 // indirect
@@ -87,15 +87,15 @@ require (
 	github.com/russross/blackfriday v1.6.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
-	github.com/std-uritemplate/std-uritemplate/go v0.0.46 // indirect
+	github.com/std-uritemplate/std-uritemplate/go v0.0.47 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/zclconf/go-cty v1.14.1 // indirect
-	go.opentelemetry.io/otel v1.19.0 // indirect
-	go.opentelemetry.io/otel/metric v1.19.0 // indirect
-	go.opentelemetry.io/otel/trace v1.19.0 // indirect
+	go.opentelemetry.io/otel v1.21.0 // indirect
+	go.opentelemetry.io/otel/metric v1.21.0 // indirect
+	go.opentelemetry.io/otel/trace v1.21.0 // indirect
 	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df // indirect
 	golang.org/x/mod v0.13.0 // indirect
