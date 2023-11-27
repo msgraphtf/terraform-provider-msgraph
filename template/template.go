@@ -150,8 +150,8 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 			if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
 				nextModelField.FieldType = "types.String"
 			} else {
-				nextModelField.FieldType = "*" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
-				generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
+				nextModelField.FieldType = "*" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
+				generateModel(dataSourceName + nextModelField.FieldName + "DataSourceModel", &nestedModels, property.ObjectOf)
 			}
 		case "array":
 			switch property.ArrayOf {
@@ -159,8 +159,8 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 				if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
 					nextModelField.FieldType = "[]types.String"
 				} else {
-					nextModelField.FieldType = "[]" + dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel"
-					generateModel(dataSourceName+strcase.ToCamel(property.Name)+"DataSourceModel", &nestedModels, property.ObjectOf)
+					nextModelField.FieldType = "[]" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
+					generateModel(dataSourceName + nextModelField.FieldName + "DataSourceModel", &nestedModels, property.ObjectOf)
 				}
 			case "string":
 				nextModelField.FieldType = "[]types.String"
