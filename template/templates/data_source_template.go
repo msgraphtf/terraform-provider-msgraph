@@ -186,6 +186,17 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 		return
 	}
 
+
+	qparams := {{.PackageName}}.{{.DataSourceName.UpperCamel}}ItemRequestBuilderGetRequestConfiguration{
+		QueryParameters: &{{.PackageName}}.{{.DataSourceName.UpperCamel}}ItemRequestBuilderGetQueryParameters{
+			Select: []string {
+				{{- range .QueryParameters}}
+				"{{.}}",
+				{{- end }}
+			},
+		},
+	}
+
 	{{.PreRead}}
 
 	{{- /* Define templates for mapping each response type to state */}}

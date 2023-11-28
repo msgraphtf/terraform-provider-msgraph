@@ -1,9 +1,3 @@
-qparams := users.UserItemRequestBuilderGetRequestConfiguration{
-	QueryParameters: &users.UserItemRequestBuilderGetQueryParameters{
-		Select: UserProperties[:],
-	},
-}
-
 var result models.Userable
 var err error
 if !state.Id.IsNull() {

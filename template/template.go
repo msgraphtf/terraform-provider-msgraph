@@ -32,6 +32,7 @@ type templateInput struct {
 	DataSourceName           templateName
 	Schema                   []attributeSchema
 	Model                    []attributeModel
+	QueryParameters          []string
 	PreRead                  string
 	Read                     []attributeRead
 }
@@ -257,7 +258,8 @@ func main() {
 	// TODO: Don't actually hard code it
 	packageName = "users"
 	dataSourceName = "user"
-	schemaObject := openapi.GetSchemaObjectByName("microsoft.graph.user")
+	pathObject   := openapi.GetPath("/users/{user-id}")
+	schemaObject := pathObject.Get.Response
 
 	// Get template
 	templateDataSource := template.New("dataSource")
@@ -286,6 +288,7 @@ func main() {
 		DataSourceName:           templateName{dataSourceName},
 		Schema:                   schema,
 		Model:                    model,
+		QueryParameters:          pathObject.Get.SelectParameters,
 		PreRead:                  string(preRead),
 		Read:                     read,
 	}
