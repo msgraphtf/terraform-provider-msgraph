@@ -75,6 +75,8 @@ type attributeRead struct {
 
 var dataSourceName string
 var packageName string
+var pathObject openapi.OpenAPIPathObject
+var schemaObject openapi.OpenAPISchemaObject
 
 func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchemaObject) {
 
@@ -256,10 +258,10 @@ func main() {
 
 	// Get inputs
 	// TODO: Don't actually hard code it
-	packageName = "users"
+	packageName    = "users"
 	dataSourceName = "user"
-	pathObject   := openapi.GetPath("/users/{user-id}")
-	schemaObject := pathObject.Get.Response
+	pathObject     = openapi.GetPath("/users/{user-id}")
+	schemaObject   = pathObject.Get.Response
 
 	// Get template
 	templateDataSource := template.New("dataSource")
