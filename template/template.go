@@ -65,7 +65,7 @@ type attributeModelField struct {
 
 type attributeRead struct {
 	GetMethod          string
-	StateVarName string
+	StateVarName       string
 	ModelVarName       string
 	ModelName          string
 	AttributeType      string
@@ -89,7 +89,7 @@ func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchem
 		nextAttributeSchema.AttributeName = strcase.ToSnake(property.Name)
 		nextAttributeSchema.Computed      = true
 		nextAttributeSchema.Description   = property.Description
-		if slices.Contains(pathObject.Parameters, dataSourceName + "-" + nextAttributeSchema.AttributeName) {
+		if slices.Contains(pathObject.Parameters, schemaObject.Title + "-" + nextAttributeSchema.AttributeName) {
 			nextAttributeSchema.Optional = true
 		}
 
