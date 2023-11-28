@@ -4,6 +4,7 @@ type OpenAPIPathObject struct {
 	Path        string
 	Description string
 	Get         OpenAPIPathGetObject
+	Parameters  []string
 }
 
 type OpenAPIPathGetObject struct {
@@ -21,6 +22,9 @@ func GetPath(pathname string) OpenAPIPathObject {
 
 	pathObject.Path = pathname
 	pathObject.Description = path.Description
+	for _, param := range path.Parameters {
+		pathObject.Parameters = append(pathObject.Parameters, param.Value.Name)
+	}
 	pathObject.Get.Summary = path.Get.Summary
 	pathObject.Get.Description = path.Get.Description
 	for _, param := range path.Get.Parameters.GetByInAndName("query", "$select").Schema.Value.Items.Value.Enum {
