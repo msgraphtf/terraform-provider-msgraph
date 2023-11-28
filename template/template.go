@@ -33,7 +33,7 @@ type templateInput struct {
 	DataSourceName           templateName
 	Schema                   []attributeSchema
 	Model                    []attributeModel
-	QueryParameters          []string
+	QuerySelectParameters    []string
 	PreRead                  string
 	Read                     []attributeRead
 }
@@ -291,7 +291,7 @@ func main() {
 		DataSourceName:           templateName{dataSourceName},
 		Schema:                   schema,
 		Model:                    model,
-		QueryParameters:          pathObject.Get.SelectParameters,
+		QuerySelectParameters:    pathObject.Get.SelectParameters,
 		PreRead:                  string(preRead),
 		Read:                     read,
 	}
