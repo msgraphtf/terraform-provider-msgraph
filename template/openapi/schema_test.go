@@ -7,6 +7,8 @@ import (
 
 func ReadAttributes(schemaObject OpenAPISchemaObject, indent int) {
 
+	fmt.Printf("%s: %s\n", schemaObject.Title, schemaObject.Type)
+
 	for _, property := range schemaObject.Properties {
 
 		for i := 0; i < indent; i++ {
