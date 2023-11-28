@@ -2,10 +2,14 @@ package openapi
 
 import (
 	"testing"
+	"fmt"
 )
 
 func TestGetPath(t *testing.T) {
 
-	GetPath("/users/{user-id}")
+	path := GetPath("/users/{user-id}")
+	fmt.Printf("PATH:        %s\n", path.Path)
+	fmt.Printf("DESCRIPTION: %s\n", path.Description)
+	fmt.Printf("GET RETURNS: %s\n", path.Get.Response.Title)
 
 }
