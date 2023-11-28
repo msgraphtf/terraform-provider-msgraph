@@ -48,8 +48,8 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The unique identifier for an entity. Read-only.",
-				Computed:    true,
 				Optional:    true,
+				Computed:    true,
 			},
 			"deleted_date_time": schema.StringAttribute{
 				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",

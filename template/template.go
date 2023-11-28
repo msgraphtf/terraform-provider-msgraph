@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"text/template"
+	"slices"
 
 	"github.com/iancoleman/strcase"
 
@@ -80,14 +81,17 @@ var schemaObject openapi.OpenAPISchemaObject
 
 func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchemaObject) {
 
-	//TODO: Does not account for optional attributes
-
 	for _, property := range schemaObject.Properties {
 
 		// Create new attribute schema and model for array
 		nextAttributeSchema := new(attributeSchema)
 
 		nextAttributeSchema.AttributeName = strcase.ToSnake(property.Name)
+		nextAttributeSchema.Computed      = true
+		nextAttributeSchema.Description   = property.Description
+		if slices.Contains(pathObject.Parameters, dataSourceName + "-" + nextAttributeSchema.AttributeName) {
+			nextAttributeSchema.Optional = true
+		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
 		switch property.Type {
@@ -123,9 +127,6 @@ func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchem
 				nextAttributeSchema.NestedObject = nestedAttributes
 			}
 		}
-
-		nextAttributeSchema.Computed = true
-		nextAttributeSchema.Description = property.Description
 
 		*schema = append(*schema, *nextAttributeSchema)
 	}
