@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"text/template"
 	"slices"
+	"text/template"
 
 	"github.com/iancoleman/strcase"
 
 	"terraform-provider-msgraph/template/openapi"
-
 )
 
 type templateName struct {
@@ -29,13 +28,13 @@ func (t templateName) Snake() string {
 }
 
 type templateInput struct {
-	PackageName              string
-	DataSourceName           templateName
-	Schema                   []attributeSchema
-	Model                    []attributeModel
-	QuerySelectParameters    []string
-	PreRead                  string
-	Read                     []attributeRead
+	PackageName           string
+	DataSourceName        templateName
+	Schema                []attributeSchema
+	Model                 []attributeModel
+	QuerySelectParameters []string
+	PreRead               string
+	Read                  []attributeRead
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
@@ -64,14 +63,14 @@ type attributeModelField struct {
 }
 
 type attributeRead struct {
-	GetMethod          string
-	StateVarName       string
-	ModelVarName       string
-	ModelName          string
-	AttributeType      string
-	DataSourceName     string
-	NestedRead         []attributeRead
-	ParentRead         *attributeRead
+	GetMethod      string
+	StateVarName   string
+	ModelVarName   string
+	ModelName      string
+	AttributeType  string
+	DataSourceName string
+	NestedRead     []attributeRead
+	ParentRead     *attributeRead
 }
 
 var dataSourceName string
@@ -87,9 +86,9 @@ func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchem
 		nextAttributeSchema := new(attributeSchema)
 
 		nextAttributeSchema.AttributeName = strcase.ToSnake(property.Name)
-		nextAttributeSchema.Computed      = true
-		nextAttributeSchema.Description   = property.Description
-		if slices.Contains(pathObject.Parameters, schemaObject.Title + "-" + nextAttributeSchema.AttributeName) {
+		nextAttributeSchema.Computed = true
+		nextAttributeSchema.Description = property.Description
+		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+nextAttributeSchema.AttributeName) {
 			nextAttributeSchema.Optional = true
 		}
 
@@ -197,7 +196,6 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 			ParentRead:     parent,
 		}
 
-
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			nextAttributeRead.GetMethod = parent.GetMethod + "." + nextAttributeRead.GetMethod
 			nextAttributeRead.StateVarName = parent.StateVarName + "." + strcase.ToCamel(property.Name)
@@ -259,10 +257,10 @@ func main() {
 
 	// Get inputs
 	// TODO: Don't actually hard code it
-	packageName    = "users"
+	packageName = "users"
 	dataSourceName = "user"
-	pathObject     = openapi.GetPath("/users/{user-id}")
-	schemaObject   = pathObject.Get.Response
+	pathObject = openapi.GetPath("/users/{user-id}")
+	schemaObject = pathObject.Get.Response
 
 	// Get template
 	templateDataSource := template.New("dataSource")
@@ -287,13 +285,13 @@ func main() {
 
 	// Set input values to top level template
 	inputValues := templateInput{
-		PackageName:              packageName,
-		DataSourceName:           templateName{dataSourceName},
-		Schema:                   schema,
-		Model:                    model,
-		QuerySelectParameters:    pathObject.Get.SelectParameters,
-		PreRead:                  string(preRead),
-		Read:                     read,
+		PackageName:           packageName,
+		DataSourceName:        templateName{dataSourceName},
+		Schema:                schema,
+		Model:                 model,
+		QuerySelectParameters: pathObject.Get.SelectParameters,
+		PreRead:               string(preRead),
+		Read:                  read,
 	}
 
 	os.MkdirAll("template/out/", os.ModePerm)

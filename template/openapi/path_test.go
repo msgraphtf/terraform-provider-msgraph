@@ -1,8 +1,8 @@
 package openapi
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestGetPath(t *testing.T) {

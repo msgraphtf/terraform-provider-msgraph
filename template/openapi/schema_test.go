@@ -1,8 +1,8 @@
 package openapi
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func ReadAttributes(schemaObject OpenAPISchemaObject, indent int) {

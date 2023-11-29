@@ -52,8 +52,8 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 		}
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		schemaObject.Title      = schema.AllOf[1].Value.Title
-		schemaObject.Type       = schema.AllOf[1].Value.Type
+		schemaObject.Title = schema.AllOf[1].Value.Title
+		schemaObject.Type = schema.AllOf[1].Value.Type
 		schemaObject.Properties = append(schemaObject.Properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
 		schemaObject.Properties = append(schemaObject.Properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
 	}
@@ -134,4 +134,3 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 
 	return properties
 }
-
