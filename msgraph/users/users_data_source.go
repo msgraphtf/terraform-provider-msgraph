@@ -83,10 +83,10 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	pageIterator, err := msgraphcore.NewPageIterator[models.Userable](users, d.client.GetAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
 
 	err = pageIterator.Iterate(context.Background(), func(user models.Userable) bool {
-    fmt.Printf("%s\n", *user.GetDisplayName())
-    // Return true to continue the iteration
-    return true
-})
+		fmt.Printf("%s\n", *user.GetDisplayName())
+		// Return true to continue the iteration
+		return true
+	})
 
 	diags := resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
