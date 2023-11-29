@@ -38,5 +38,3 @@ Required:
 Optional:
 
 - `password` (String, Sensitive)
-
-

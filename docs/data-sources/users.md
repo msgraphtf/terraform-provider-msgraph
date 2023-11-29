@@ -25,5 +25,3 @@ description: |-
 Read-Only:
 
 - `display_name` (String)
-
-
