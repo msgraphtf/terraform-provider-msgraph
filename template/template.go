@@ -112,8 +112,7 @@ func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchema
 			} else {
 				nextAttributeSchema.AttributeType = "SingleNestedAttribute"
 			}
-			var nestedAttributes []attributeSchema
-			nestedAttributes = generateSchema(nestedAttributes, property.ObjectOf)
+			nestedAttributes := generateSchema(nil, property.ObjectOf)
 			nextAttributeSchema.Attributes = nestedAttributes
 		case "array":
 			switch property.ArrayOf {
@@ -127,8 +126,7 @@ func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchema
 				} else {
 					nextAttributeSchema.AttributeType = "ListNestedAttribute"
 				}
-				var nestedAttributes []attributeSchema
-				nestedAttributes = generateSchema(nestedAttributes, property.ObjectOf)
+				nestedAttributes := generateSchema(nil, property.ObjectOf)
 				nextAttributeSchema.NestedObject = nestedAttributes
 			}
 		}
@@ -195,7 +193,7 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 
 }
 
-func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObject, parent *attributeRead) {
+func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject, parent *attributeRead) []attributeRead {
 
 	for _, property := range schemaObject.Properties {
 
@@ -235,8 +233,7 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 				nextAttributeRead.AttributeType = "ReadStringFormattedAttribute"
 			} else {
 				nextAttributeRead.AttributeType = "ReadSingleNestedAttribute"
-				var nestedRead []attributeRead
-				generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
+				nestedRead := generateRead(nil, property.ObjectOf, &nextAttributeRead)
 				nextAttributeRead.NestedRead = nestedRead
 			}
 		case "array":
@@ -252,15 +249,16 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 					nextAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
 				} else {
 					nextAttributeRead.AttributeType = "ReadListNestedAttribute"
-					var nestedRead []attributeRead
-					generateRead(&nestedRead, property.ObjectOf, &nextAttributeRead)
+					nestedRead := generateRead(nil, property.ObjectOf, &nextAttributeRead)
 					nextAttributeRead.NestedRead = nestedRead
 				}
 			}
 		}
 
-		*read = append(*read, nextAttributeRead)
+		read = append(read, nextAttributeRead)
 	}
+
+	return read
 
 }
 
@@ -307,10 +305,6 @@ func main() {
 	}
 	templateDataSource, err = templateDataSource.Parse(string(templateFile))
 
-	// Generate Read Go code from OpenAPI attributes
-	var read []attributeRead
-	generateRead(&read, schemaObject, nil)
-
 	// Set input values to top level template
 	inputValues := templateInput{
 		PackageName:               packageName,
@@ -319,7 +313,7 @@ func main() {
 		Model:                     generateModel("", nil, schemaObject), // Generate Terraform model from OpenAPI attributes
 		ReadQuerySelectParameters: pathObject.Get.SelectParameters,
 		ReadQueryGetMethod:        generateQueryMethod(pathObject),
-		Read:                      read,
+		Read:                      generateRead(nil, schemaObject, nil), // Generate Read Go code from OpenAPI attributes
 	}
 
 	os.MkdirAll("template/out/", os.ModePerm)
