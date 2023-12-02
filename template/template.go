@@ -84,7 +84,7 @@ var packageName string
 var pathObject openapi.OpenAPIPathObject
 var schemaObject openapi.OpenAPISchemaObject
 
-func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchemaObject) {
+func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchemaObject) []attributeSchema {
 
 	for _, property := range schemaObject.Properties {
 
@@ -113,7 +113,7 @@ func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchem
 				nextAttributeSchema.AttributeType = "SingleNestedAttribute"
 			}
 			var nestedAttributes []attributeSchema
-			generateSchema(&nestedAttributes, property.ObjectOf)
+			nestedAttributes = generateSchema(nestedAttributes, property.ObjectOf)
 			nextAttributeSchema.Attributes = nestedAttributes
 		case "array":
 			switch property.ArrayOf {
@@ -128,13 +128,16 @@ func generateSchema(schema *[]attributeSchema, schemaObject openapi.OpenAPISchem
 					nextAttributeSchema.AttributeType = "ListNestedAttribute"
 				}
 				var nestedAttributes []attributeSchema
-				generateSchema(&nestedAttributes, property.ObjectOf)
+				nestedAttributes = generateSchema(nestedAttributes, property.ObjectOf)
 				nextAttributeSchema.NestedObject = nestedAttributes
 			}
 		}
 
-		*schema = append(*schema, *nextAttributeSchema)
+		schema = append(schema, *nextAttributeSchema)
 	}
+
+	return schema
+
 }
 
 func generateModel(modelName string, model *[]attributeModel, schemaObject openapi.OpenAPISchemaObject) {
@@ -302,10 +305,6 @@ func main() {
 	}
 	templateDataSource, err = templateDataSource.Parse(string(templateFile))
 
-	// Generate Terraform Schema from OpenAPI Schama properties
-	var schema []attributeSchema
-	generateSchema(&schema, schemaObject)
-
 	// Generate Terraform model from OpenAPI attributes
 	var model []attributeModel
 	generateModel("", &model, schemaObject)
@@ -318,7 +317,7 @@ func main() {
 	inputValues := templateInput{
 		PackageName:               packageName,
 		DataSourceName:            templateName{dataSourceName},
-		Schema:                    schema,
+		Schema:                    generateSchema(nil, schemaObject), // Generate Terraform Schema from OpenAPI Schama properties
 		Model:                     model,
 		ReadQuerySelectParameters: pathObject.Get.SelectParameters,
 		ReadQueryGetMethod:        generateQueryMethod(pathObject),
