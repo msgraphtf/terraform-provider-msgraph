@@ -34,13 +34,13 @@ type templateMethod struct {
 }
 
 type templateInput struct {
-	PackageName           string
-	DataSourceName        templateName
-	Schema                []attributeSchema
-	Model                 []attributeModel
-	QuerySelectParameters []string
-	QueryGetMethod        []templateMethod
-	Read                  []attributeRead
+	PackageName               string
+	DataSourceName            templateName
+	Schema                    []attributeSchema
+	Model                     []attributeModel
+	ReadQuerySelectParameters []string
+	ReadQueryGetMethod        []templateMethod
+	Read                      []attributeRead
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
@@ -316,13 +316,13 @@ func main() {
 
 	// Set input values to top level template
 	inputValues := templateInput{
-		PackageName:           packageName,
-		DataSourceName:        templateName{dataSourceName},
-		Schema:                schema,
-		Model:                 model,
-		QuerySelectParameters: pathObject.Get.SelectParameters,
-		QueryGetMethod:        generateQueryMethod(pathObject),
-		Read:                  read,
+		PackageName:               packageName,
+		DataSourceName:            templateName{dataSourceName},
+		Schema:                    schema,
+		Model:                     model,
+		ReadQuerySelectParameters: pathObject.Get.SelectParameters,
+		ReadQueryGetMethod:        generateQueryMethod(pathObject),
+		Read:                      read,
 	}
 
 	os.MkdirAll("template/out/", os.ModePerm)

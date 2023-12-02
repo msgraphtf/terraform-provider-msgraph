@@ -190,7 +190,7 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	qparams := {{.PackageName}}.{{.DataSourceName.UpperCamel}}ItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &{{.PackageName}}.{{.DataSourceName.UpperCamel}}ItemRequestBuilderGetQueryParameters{
 			Select: []string {
-				{{- range .QuerySelectParameters}}
+				{{- range .ReadQuerySelectParameters}}
 				"{{.}}",
 				{{- end }}
 			},
@@ -201,7 +201,7 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	var err error
 
 	if !state.Id.IsNull() {
-		result, err = d.client.{{range .QueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+		result, err = d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 	} else if !state.UserPrincipalName.IsNull() {
 		result, err = d.client.Users().ByUserId(state.UserPrincipalName.ValueString()).Get(context.Background(), &qparams)
 	} else {
