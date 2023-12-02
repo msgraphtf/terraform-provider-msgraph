@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"strings"
 	"text/template"
 
 	"github.com/iancoleman/strcase"
@@ -27,13 +28,18 @@ func (t templateName) Snake() string {
 	return strcase.ToSnake(t.string)
 }
 
+type templateMethod struct {
+	MethodName string
+	Parameter  string
+}
+
 type templateInput struct {
 	PackageName           string
 	DataSourceName        templateName
 	Schema                []attributeSchema
 	Model                 []attributeModel
 	QuerySelectParameters []string
-	PreRead               string
+	QueryGetMethod        []templateMethod
 	Read                  []attributeRead
 }
 
@@ -253,6 +259,32 @@ func generateRead(read *[]attributeRead, schemaObject openapi.OpenAPISchemaObjec
 
 }
 
+func generateQueryMethod(path openapi.OpenAPIPathObject) []templateMethod {
+
+	var getMethod []templateMethod
+
+	pathFields := strings.Split(path.Path, "/")
+	pathFields = pathFields[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+
+	for _, p := range pathFields {
+		newMethod := new(templateMethod)
+		if strings.HasPrefix(p, "{") {
+			p = strings.TrimLeft(p, "{")
+			p = strings.TrimRight(p, "}")
+			pLeft, pRight, _ := strings.Cut(p, "-")
+			pLeft = strcase.ToCamel(pLeft)
+			pRight = strcase.ToCamel(pRight)
+			newMethod.MethodName = "By" + pLeft + pRight
+			newMethod.Parameter = "state." + pRight + ".ValueString()"
+		} else {
+			newMethod.MethodName = strcase.ToCamel(p)
+		}
+		getMethod = append(getMethod, *newMethod)
+	}
+
+	return getMethod
+}
+
 func main() {
 
 	// Get inputs
@@ -281,7 +313,6 @@ func main() {
 	// Generate Read Go code from OpenAPI attributes
 	var read []attributeRead
 	generateRead(&read, schemaObject, nil)
-	preRead, err := os.ReadFile("template/input/" + packageName + "/pre_read.go")
 
 	// Set input values to top level template
 	inputValues := templateInput{
@@ -290,7 +321,7 @@ func main() {
 		Schema:                schema,
 		Model:                 model,
 		QuerySelectParameters: pathObject.Get.SelectParameters,
-		PreRead:               string(preRead),
+		QueryGetMethod:        generateQueryMethod(pathObject),
 		Read:                  read,
 	}
 

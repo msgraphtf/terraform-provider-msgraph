@@ -200,7 +200,24 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	var result models.{{.DataSourceName.UpperCamel}}able
 	var err error
 
-	{{.PreRead}}
+	if !state.Id.IsNull() {
+		result, err = d.client.{{range .QueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+	} else if !state.UserPrincipalName.IsNull() {
+		result, err = d.client.Users().ByUserId(state.UserPrincipalName.ValueString()).Get(context.Background(), &qparams)
+	} else {
+		resp.Diagnostics.AddError(
+			"Missing argument",
+			"Either `id` or `user_principal_name` must be supplied.",
+		)
+		return
+	}
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error getting {{.DataSourceName.Snake}}",
+			err.Error(),
+		)
+		return
+	}
 
 	{{- /* Define templates for mapping each response type to state */}}
 	{{- define "ReadStringAttribute" }}
