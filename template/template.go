@@ -140,7 +140,7 @@ func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchema
 
 }
 
-func generateModel(modelName string, model *[]attributeModel, schemaObject openapi.OpenAPISchemaObject) {
+func generateModel(modelName string, model []attributeModel, schemaObject openapi.OpenAPISchemaObject) []attributeModel {
 
 	newModel := attributeModel{
 		ModelName: dataSourceName + modelName + "DataSourceModel",
@@ -165,7 +165,7 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 				nextModelField.FieldType = "types.String"
 			} else {
 				nextModelField.FieldType = "*" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
-				generateModel(nextModelField.FieldName, &nestedModels, property.ObjectOf)
+				nestedModels = generateModel(nextModelField.FieldName, nestedModels, property.ObjectOf)
 			}
 		case "array":
 			switch property.ArrayOf {
@@ -174,7 +174,7 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 					nextModelField.FieldType = "[]types.String"
 				} else {
 					nextModelField.FieldType = "[]" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
-					generateModel(nextModelField.FieldName, &nestedModels, property.ObjectOf)
+					nestedModels = generateModel(nextModelField.FieldName, nestedModels, property.ObjectOf)
 				}
 			case "string":
 				nextModelField.FieldType = "[]types.String"
@@ -186,10 +186,12 @@ func generateModel(modelName string, model *[]attributeModel, schemaObject opena
 
 	}
 
-	*model = append(*model, newModel)
+	model = append(model, newModel)
 	if len(nestedModels) != 0 {
-		*model = append(*model, nestedModels...)
+		model = append(model, nestedModels...)
 	}
+
+	return model
 
 }
 
@@ -305,10 +307,6 @@ func main() {
 	}
 	templateDataSource, err = templateDataSource.Parse(string(templateFile))
 
-	// Generate Terraform model from OpenAPI attributes
-	var model []attributeModel
-	generateModel("", &model, schemaObject)
-
 	// Generate Read Go code from OpenAPI attributes
 	var read []attributeRead
 	generateRead(&read, schemaObject, nil)
@@ -318,7 +316,7 @@ func main() {
 		PackageName:               packageName,
 		DataSourceName:            templateName{dataSourceName},
 		Schema:                    generateSchema(nil, schemaObject), // Generate Terraform Schema from OpenAPI Schama properties
-		Model:                     model,
+		Model:                     generateModel("", nil, schemaObject), // Generate Terraform model from OpenAPI attributes
 		ReadQuerySelectParameters: pathObject.Get.SelectParameters,
 		ReadQueryGetMethod:        generateQueryMethod(pathObject),
 		Read:                      read,
