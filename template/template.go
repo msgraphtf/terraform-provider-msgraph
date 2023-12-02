@@ -326,7 +326,7 @@ func main() {
 	}
 
 	os.MkdirAll("template/out/", os.ModePerm)
-	outfile, err := os.Create("template/out/" + dataSourceName + "_data_source.go")
+	outfile, err := os.Create("msgraph/" + packageName + "/" + dataSourceName + "_data_source.go")
 	if err != nil {
 		fmt.Print(err)
 	}

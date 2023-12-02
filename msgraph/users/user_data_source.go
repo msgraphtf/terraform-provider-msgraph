@@ -1102,6 +1102,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	var result models.Userable
 	var err error
+
 	if !state.Id.IsNull() {
 		result, err = d.client.Users().ByUserId(state.Id.ValueString()).Get(context.Background(), &qparams)
 	} else if !state.UserPrincipalName.IsNull() {
