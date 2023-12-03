@@ -324,7 +324,6 @@ func main() {
 		Read:                      generateRead(nil, schemaObject, nil), // Generate Read Go code from OpenAPI attributes
 	}
 
-	os.MkdirAll("template/out/", os.ModePerm)
 	outfile, err := os.Create("msgraph/" + packageName + "/" + dataSourceName + "_data_source.go")
 	if err != nil {
 		fmt.Print(err)
