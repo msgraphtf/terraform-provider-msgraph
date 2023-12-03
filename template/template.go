@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/iancoleman/strcase"
+	"gopkg.in/yaml.v3"
 
 	"terraform-provider-msgraph/template/openapi"
 )
@@ -31,6 +32,10 @@ func (t templateName) Snake() string {
 type templateMethod struct {
 	MethodName string
 	Parameter  string
+}
+
+type templateAugment struct {
+	ExtraOptionals  []string `yaml:"extraOptionals"`
 }
 
 type templateInput struct {
@@ -83,6 +88,7 @@ var dataSourceName string
 var packageName string
 var pathObject openapi.OpenAPIPathObject
 var schemaObject openapi.OpenAPISchemaObject
+var augment templateAugment
 
 func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchemaObject) []attributeSchema {
 
@@ -95,6 +101,8 @@ func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchema
 		nextAttributeSchema.Computed = true
 		nextAttributeSchema.Description = property.Description
 		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+nextAttributeSchema.AttributeName) {
+			nextAttributeSchema.Optional = true
+		} else if slices.Contains(augment.ExtraOptionals, nextAttributeSchema.AttributeName) {
 			nextAttributeSchema.Optional = true
 		}
 
@@ -297,13 +305,13 @@ func main() {
 	pathObject = openapi.GetPath("/users/{user-id}")
 	schemaObject = pathObject.Get.Response
 
+	augmentFile, _ := os.ReadFile("template/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
+	yaml.Unmarshal(augmentFile, &augment)
+
 	// Get template
 	templateDataSource := template.New("dataSource")
-	templateFile, err := os.ReadFile("template/templates/data_source_template.go")
-	if err != nil {
-		fmt.Print(err)
-	}
-	templateDataSource, err = templateDataSource.Parse(string(templateFile))
+	templateFile, _ := os.ReadFile("template/templates/data_source_template.go")
+	templateDataSource, _ = templateDataSource.Parse(string(templateFile))
 
 	// Set input values to top level template
 	inputValues := templateInput{
