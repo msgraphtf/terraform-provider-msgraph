@@ -201,6 +201,32 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 
 }
 
+func generateReadQueryMethod(path openapi.OpenAPIPathObject) []templateMethod {
+
+	var getMethod []templateMethod
+
+	pathFields := strings.Split(path.Path, "/")
+	pathFields = pathFields[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+
+	for _, p := range pathFields {
+		newMethod := new(templateMethod)
+		if strings.HasPrefix(p, "{") {
+			p = strings.TrimLeft(p, "{")
+			p = strings.TrimRight(p, "}")
+			pLeft, pRight, _ := strings.Cut(p, "-")
+			pLeft = strcase.ToCamel(pLeft)
+			pRight = strcase.ToCamel(pRight)
+			newMethod.MethodName = "By" + pLeft + pRight
+			newMethod.Parameter = "state." + pRight + ".ValueString()"
+		} else {
+			newMethod.MethodName = strcase.ToCamel(p)
+		}
+		getMethod = append(getMethod, *newMethod)
+	}
+
+	return getMethod
+}
+
 func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject, parent *attributeRead) []attributeRead {
 
 	for _, property := range schemaObject.Properties {
@@ -270,32 +296,6 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 
 }
 
-func generateQueryMethod(path openapi.OpenAPIPathObject) []templateMethod {
-
-	var getMethod []templateMethod
-
-	pathFields := strings.Split(path.Path, "/")
-	pathFields = pathFields[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-
-	for _, p := range pathFields {
-		newMethod := new(templateMethod)
-		if strings.HasPrefix(p, "{") {
-			p = strings.TrimLeft(p, "{")
-			p = strings.TrimRight(p, "}")
-			pLeft, pRight, _ := strings.Cut(p, "-")
-			pLeft = strcase.ToCamel(pLeft)
-			pRight = strcase.ToCamel(pRight)
-			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "state." + pRight + ".ValueString()"
-		} else {
-			newMethod.MethodName = strcase.ToCamel(p)
-		}
-		getMethod = append(getMethod, *newMethod)
-	}
-
-	return getMethod
-}
-
 func main() {
 
 	// Get inputs
@@ -320,7 +320,7 @@ func main() {
 		Schema:                    generateSchema(nil, schemaObject), // Generate Terraform Schema from OpenAPI Schama properties
 		Model:                     generateModel("", nil, schemaObject), // Generate Terraform model from OpenAPI attributes
 		ReadQuerySelectParameters: pathObject.Get.SelectParameters,
-		ReadQueryGetMethod:        generateQueryMethod(pathObject),
+		ReadQueryGetMethod:        generateReadQueryMethod(pathObject),
 		Read:                      generateRead(nil, schemaObject, nil), // Generate Read Go code from OpenAPI attributes
 	}
 
