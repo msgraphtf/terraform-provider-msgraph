@@ -95,51 +95,51 @@ func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchema
 	for _, property := range schemaObject.Properties {
 
 		// Create new attribute schema and model for array
-		nextAttributeSchema := new(attributeSchema)
+		newAttributeSchema := new(attributeSchema)
 
-		nextAttributeSchema.AttributeName = strcase.ToSnake(property.Name)
-		nextAttributeSchema.Computed = true
-		nextAttributeSchema.Description = property.Description
-		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+nextAttributeSchema.AttributeName) {
-			nextAttributeSchema.Optional = true
-		} else if slices.Contains(augment.ExtraOptionals, nextAttributeSchema.AttributeName) {
-			nextAttributeSchema.Optional = true
+		newAttributeSchema.AttributeName = strcase.ToSnake(property.Name)
+		newAttributeSchema.Computed = true
+		newAttributeSchema.Description = property.Description
+		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newAttributeSchema.AttributeName) {
+			newAttributeSchema.Optional = true
+		} else if slices.Contains(augment.ExtraOptionals, newAttributeSchema.AttributeName) {
+			newAttributeSchema.Optional = true
 		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
 		switch property.Type {
 		case "string":
-			nextAttributeSchema.AttributeType = "StringAttribute"
+			newAttributeSchema.AttributeType = "StringAttribute"
 		case "integer":
-			nextAttributeSchema.AttributeType = "Int64Attribute"
+			newAttributeSchema.AttributeType = "Int64Attribute"
 		case "boolean":
-			nextAttributeSchema.AttributeType = "BoolAttribute"
+			newAttributeSchema.AttributeType = "BoolAttribute"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
-				nextAttributeSchema.AttributeType = "StringAttribute"
+				newAttributeSchema.AttributeType = "StringAttribute"
 			} else {
-				nextAttributeSchema.AttributeType = "SingleNestedAttribute"
+				newAttributeSchema.AttributeType = "SingleNestedAttribute"
 			}
 			nestedAttributes := generateSchema(nil, property.ObjectOf)
-			nextAttributeSchema.Attributes = nestedAttributes
+			newAttributeSchema.Attributes = nestedAttributes
 		case "array":
 			switch property.ArrayOf {
 			case "string":
-				nextAttributeSchema.AttributeType = "ListAttribute"
-				nextAttributeSchema.ElementType = "types.StringType"
+				newAttributeSchema.AttributeType = "ListAttribute"
+				newAttributeSchema.ElementType = "types.StringType"
 			case "object":
 				if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
-					nextAttributeSchema.AttributeType = "ListAttribute"
-					nextAttributeSchema.ElementType = "types.StringType"
+					newAttributeSchema.AttributeType = "ListAttribute"
+					newAttributeSchema.ElementType = "types.StringType"
 				} else {
-					nextAttributeSchema.AttributeType = "ListNestedAttribute"
+					newAttributeSchema.AttributeType = "ListNestedAttribute"
 				}
 				nestedAttributes := generateSchema(nil, property.ObjectOf)
-				nextAttributeSchema.NestedObject = nestedAttributes
+				newAttributeSchema.NestedObject = nestedAttributes
 			}
 		}
 
-		schema = append(schema, *nextAttributeSchema)
+		schema = append(schema, *newAttributeSchema)
 	}
 
 	return schema
@@ -155,40 +155,40 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 
 	for _, property := range schemaObject.Properties {
 
-		nextModelField := new(attributeModelField)
-		nextModelField.FieldName = strcase.ToCamel(property.Name)
-		nextModelField.AttributeName = strcase.ToSnake(property.Name)
+		newModelField := new(attributeModelField)
+		newModelField.FieldName = strcase.ToCamel(property.Name)
+		newModelField.AttributeName = strcase.ToSnake(property.Name)
 
 		switch property.Type {
 		case "string":
-			nextModelField.FieldType = "types.String"
+			newModelField.FieldType = "types.String"
 		case "integer":
-			nextModelField.FieldType = "types.Int64"
+			newModelField.FieldType = "types.Int64"
 		case "boolean":
-			nextModelField.FieldType = "types.Bool"
+			newModelField.FieldType = "types.Bool"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum.
-				nextModelField.FieldType = "types.String"
+				newModelField.FieldType = "types.String"
 			} else {
-				nextModelField.FieldType = "*" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
-				nestedModels = generateModel(nextModelField.FieldName, nestedModels, property.ObjectOf)
+				newModelField.FieldType = "*" + dataSourceName + newModelField.FieldName + "DataSourceModel"
+				nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 			}
 		case "array":
 			switch property.ArrayOf {
 			case "object":
 				if property.ObjectOf.Type == "string" { // This is a string enum.
-					nextModelField.FieldType = "[]types.String"
+					newModelField.FieldType = "[]types.String"
 				} else {
-					nextModelField.FieldType = "[]" + dataSourceName + nextModelField.FieldName + "DataSourceModel"
-					nestedModels = generateModel(nextModelField.FieldName, nestedModels, property.ObjectOf)
+					newModelField.FieldType = "[]" + dataSourceName + newModelField.FieldName + "DataSourceModel"
+					nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 				}
 			case "string":
-				nextModelField.FieldType = "[]types.String"
+				newModelField.FieldType = "[]types.String"
 			}
 
 		}
 
-		newModel.Fields = append(newModel.Fields, *nextModelField)
+		newModel.Fields = append(newModel.Fields, *newModelField)
 
 	}
 
@@ -205,7 +205,7 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 
 	for _, property := range schemaObject.Properties {
 
-		nextAttributeRead := attributeRead{
+		newAttributeRead := attributeRead{
 			GetMethod:      "Get" + strcase.ToCamel(property.Name) + "()",
 			ModelName:      dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel",
 			ModelVarName:   strcase.ToLowerCamel(property.Name),
@@ -214,56 +214,56 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 		}
 
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
-			nextAttributeRead.GetMethod = parent.GetMethod + "." + nextAttributeRead.GetMethod
-			nextAttributeRead.StateVarName = parent.StateVarName + "." + strcase.ToCamel(property.Name)
+			newAttributeRead.GetMethod = parent.GetMethod + "." + newAttributeRead.GetMethod
+			newAttributeRead.StateVarName = parent.StateVarName + "." + strcase.ToCamel(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
-			nextAttributeRead.GetMethod = "value." + nextAttributeRead.GetMethod
-			nextAttributeRead.StateVarName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
+			newAttributeRead.GetMethod = "value." + newAttributeRead.GetMethod
+			newAttributeRead.StateVarName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
 		} else {
-			nextAttributeRead.GetMethod = "result." + nextAttributeRead.GetMethod
-			nextAttributeRead.StateVarName = "state." + strcase.ToCamel(property.Name)
+			newAttributeRead.GetMethod = "result." + newAttributeRead.GetMethod
+			newAttributeRead.StateVarName = "state." + strcase.ToCamel(property.Name)
 		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
 		switch property.Type {
 		case "string":
 			if property.Format == "" {
-				nextAttributeRead.AttributeType = "ReadStringAttribute"
+				newAttributeRead.AttributeType = "ReadStringAttribute"
 			} else {
-				nextAttributeRead.AttributeType = "ReadStringFormattedAttribute"
+				newAttributeRead.AttributeType = "ReadStringFormattedAttribute"
 			}
 		case "integer":
-			nextAttributeRead.AttributeType = "ReadIntegerAttribute"
+			newAttributeRead.AttributeType = "ReadIntegerAttribute"
 		case "boolean":
-			nextAttributeRead.AttributeType = "ReadBoolAttribute"
+			newAttributeRead.AttributeType = "ReadBoolAttribute"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum.
-				nextAttributeRead.AttributeType = "ReadStringFormattedAttribute"
+				newAttributeRead.AttributeType = "ReadStringFormattedAttribute"
 			} else {
-				nextAttributeRead.AttributeType = "ReadSingleNestedAttribute"
-				nestedRead := generateRead(nil, property.ObjectOf, &nextAttributeRead)
-				nextAttributeRead.NestedRead = nestedRead
+				newAttributeRead.AttributeType = "ReadSingleNestedAttribute"
+				nestedRead := generateRead(nil, property.ObjectOf, &newAttributeRead)
+				newAttributeRead.NestedRead = nestedRead
 			}
 		case "array":
 			switch property.ArrayOf {
 			case "string":
 				if property.Format == "" {
-					nextAttributeRead.AttributeType = "ReadListStringAttribute"
+					newAttributeRead.AttributeType = "ReadListStringAttribute"
 				} else {
-					nextAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
+					newAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
 				}
 			case "object":
 				if property.ObjectOf.Type == "string" { // This is a string enum.
-					nextAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
+					newAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
 				} else {
-					nextAttributeRead.AttributeType = "ReadListNestedAttribute"
-					nestedRead := generateRead(nil, property.ObjectOf, &nextAttributeRead)
-					nextAttributeRead.NestedRead = nestedRead
+					newAttributeRead.AttributeType = "ReadListNestedAttribute"
+					nestedRead := generateRead(nil, property.ObjectOf, &newAttributeRead)
+					newAttributeRead.NestedRead = nestedRead
 				}
 			}
 		}
 
-		read = append(read, nextAttributeRead)
+		read = append(read, newAttributeRead)
 	}
 
 	return read
