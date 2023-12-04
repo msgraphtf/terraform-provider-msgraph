@@ -36,6 +36,7 @@ type templateMethod struct {
 
 type templateAugment struct {
 	ExtraOptionals  []string `yaml:"extraOptionals"`
+	AltMethods      []map[string]string `yaml:"altMethods"`
 }
 
 type templateInput struct {
@@ -45,6 +46,7 @@ type templateInput struct {
 	Model                     []attributeModel
 	ReadQuerySelectParameters []string
 	ReadQueryGetMethod        []templateMethod
+	ReadQueryAltGetMethod     []map[string]string
 	Read                      []attributeRead
 }
 
@@ -307,6 +309,7 @@ func main() {
 
 	augmentFile, _ := os.ReadFile("template/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
 	yaml.Unmarshal(augmentFile, &augment)
+	fmt.Printf("%s\n", augment)
 
 	// Get template
 	templateDataSource := template.New("dataSource")
@@ -321,6 +324,7 @@ func main() {
 		Model:                     generateModel("", nil, schemaObject), // Generate Terraform model from OpenAPI attributes
 		ReadQuerySelectParameters: pathObject.Get.SelectParameters,
 		ReadQueryGetMethod:        generateReadQueryMethod(pathObject),
+		ReadQueryAltGetMethod:     augment.AltMethods,
 		Read:                      generateRead(nil, schemaObject, nil), // Generate Read Go code from OpenAPI attributes
 	}
 

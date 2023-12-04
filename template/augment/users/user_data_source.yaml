@@ -1,2 +1,5 @@
 extraOptionals:
   - user_principal_name
+altMethods:
+  - if: UserPrincipalName
+    method: "Users().ByUserId(state.UserPrincipalName.ValueString())"

@@ -202,9 +202,9 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 
 	if !state.Id.IsNull() {
 		result, err = d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
-	} else if !state.UserPrincipalName.IsNull() {
-		result, err = d.client.Users().ByUserId(state.UserPrincipalName.ValueString()).Get(context.Background(), &qparams)
-	} else {
+	} {{range .ReadQueryAltGetMethod}} else if !state.{{.if}}.IsNull() {
+		result, err = d.client.{{.method}}.Get(context.Background(), &qparams)
+	} {{end}}else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
 			"Either `id` or `user_principal_name` must be supplied.",
