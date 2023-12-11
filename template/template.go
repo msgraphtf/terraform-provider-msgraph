@@ -307,9 +307,29 @@ func main() {
 
 	// Get inputs
 	// TODO: Don't actually hard code it
-	packageName = "users"
-	dataSourceName = "user"
 	pathObject = openapi.GetPath("/users/{user-id}")
+
+	pathFields := strings.Split("/users/{user-id}", "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+	packageName = pathFields[0]
+
+	dataSourceName = ""
+
+	if len(pathFields) > 1 {
+		for _, p := range pathFields[1:] {
+			if strings.HasPrefix(p, "{") {
+				p = strings.TrimLeft(p, "{")
+				p = strings.TrimRight(p, "}")
+				pLeft, _, _ := strings.Cut(p, "-")
+				pLeft = strcase.ToSnake(pLeft)
+				dataSourceName = dataSourceName + pLeft
+			} else {
+				dataSourceName = dataSourceName + p
+			}
+		}
+	} else {
+		dataSourceName = pathFields[0]
+	}
+
 	schemaObject = pathObject.Get.Response
 
 	augmentFile, _ := os.ReadFile("template/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
