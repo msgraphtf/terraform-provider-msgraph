@@ -40,14 +40,16 @@ type templateAugment struct {
 }
 
 type templateInput struct {
-	PackageName               string
-	DataSourceName            templateName
-	Schema                    []attributeSchema
-	Model                     []attributeModel
-	ReadQuerySelectParameters []string
-	ReadQueryGetMethod        []templateMethod
-	ReadQueryAltGetMethod     []map[string]string
-	Read                      []attributeRead
+	PackageName                    string
+	DataSourceName                 templateName
+	Schema                         []attributeSchema
+	Model                          []attributeModel
+	ReadQuerySelectParameters      []string
+	ReadQueryGetMethod             []templateMethod
+	ReadQueryAltGetMethod          []map[string]string
+	ReadQueryErrorAttribute        string
+	ReadQueryErrorExtraAttributes  []string
+	Read                           []attributeRead
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
@@ -91,6 +93,7 @@ var packageName string
 var pathObject openapi.OpenAPIPathObject
 var schemaObject openapi.OpenAPISchemaObject
 var augment templateAugment
+var input templateInput
 
 func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchemaObject) []attributeSchema {
 
@@ -104,8 +107,10 @@ func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchema
 		newAttributeSchema.Description = property.Description
 		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newAttributeSchema.AttributeName) {
 			newAttributeSchema.Optional = true
+			input.ReadQueryErrorAttribute = newAttributeSchema.AttributeName
 		} else if slices.Contains(augment.ExtraOptionals, newAttributeSchema.AttributeName) {
 			newAttributeSchema.Optional = true
+			input.ReadQueryErrorExtraAttributes = append(input.ReadQueryErrorExtraAttributes, newAttributeSchema.AttributeName)
 		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
@@ -309,7 +314,6 @@ func main() {
 
 	augmentFile, _ := os.ReadFile("template/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
 	yaml.Unmarshal(augmentFile, &augment)
-	fmt.Printf("%s\n", augment)
 
 	// Get template
 	templateDataSource := template.New("dataSource")
@@ -317,21 +321,19 @@ func main() {
 	templateDataSource, _ = templateDataSource.Parse(string(templateFile))
 
 	// Set input values to top level template
-	inputValues := templateInput{
-		PackageName:               packageName,
-		DataSourceName:            templateName{dataSourceName},
-		Schema:                    generateSchema(nil, schemaObject), // Generate Terraform Schema from OpenAPI Schama properties
-		Model:                     generateModel("", nil, schemaObject), // Generate Terraform model from OpenAPI attributes
-		ReadQuerySelectParameters: pathObject.Get.SelectParameters,
-		ReadQueryGetMethod:        generateReadQueryMethod(pathObject),
-		ReadQueryAltGetMethod:     augment.AltMethods,
-		Read:                      generateRead(nil, schemaObject, nil), // Generate Read Go code from OpenAPI attributes
-	}
+	input.PackageName               = packageName
+	input.DataSourceName            = templateName{dataSourceName}
+	input.Schema                    = generateSchema(nil, schemaObject) // Generate Terraform Schema from OpenAPI Schama properties
+	input.Model                     = generateModel("", nil, schemaObject) // Generate Terraform model from OpenAPI attributes
+	input.ReadQuerySelectParameters = pathObject.Get.SelectParameters
+	input.ReadQueryGetMethod        = generateReadQueryMethod(pathObject)
+	input.ReadQueryAltGetMethod     = augment.AltMethods
+	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI attributes
 
 	outfile, err := os.Create("msgraph/" + packageName + "/" + dataSourceName + "_data_source.go")
 	if err != nil {
 		fmt.Print(err)
 	}
-	templateDataSource.Execute(outfile, inputValues)
+	templateDataSource.Execute(outfile, input)
 
 }

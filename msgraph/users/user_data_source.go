@@ -1111,7 +1111,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
-			"Either `id` or `user_principal_name` must be supplied.",
+			"`id` or `user_principal_name` must be supplied.",
 		)
 		return
 	}
