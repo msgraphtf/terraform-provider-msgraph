@@ -207,7 +207,7 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	} {{end}}else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
-			"`{{.ReadQueryErrorAttribute}}`{{range .ReadQueryErrorExtraAttributes}}or `{{.}}`{{end}} must be supplied.",
+			"`{{.ReadQueryErrorAttribute}}` {{range .ReadQueryErrorExtraAttributes}}or `{{.}}` {{end}}must be supplied.",
 		)
 		return
 	}
