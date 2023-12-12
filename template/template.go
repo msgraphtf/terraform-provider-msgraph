@@ -307,9 +307,9 @@ func main() {
 
 	// Get inputs
 	// TODO: Don't actually hard code it
-	pathObject = openapi.GetPath("/users/{user-id}")
+	pathObject = openapi.GetPath(os.Args[1])
 
-	pathFields := strings.Split("/users/{user-id}", "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+	pathFields := strings.Split(os.Args[1], "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName = pathFields[0]
 
 	dataSourceName = ""
