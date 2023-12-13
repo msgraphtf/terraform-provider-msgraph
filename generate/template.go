@@ -10,7 +10,7 @@ import (
 	"github.com/iancoleman/strcase"
 	"gopkg.in/yaml.v3"
 
-	"terraform-provider-msgraph/template/openapi"
+	"terraform-provider-msgraph/generate/openapi"
 )
 
 type templateName struct {
@@ -332,12 +332,12 @@ func main() {
 
 	schemaObject = pathObject.Get.Response
 
-	augmentFile, _ := os.ReadFile("template/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
+	augmentFile, _ := os.ReadFile("generate/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
 	yaml.Unmarshal(augmentFile, &augment)
 
 	// Get template
 	templateDataSource := template.New("dataSource")
-	templateFile, _ := os.ReadFile("template/templates/data_source_template.go")
+	templateFile, _ := os.ReadFile("generate/templates/data_source_template.go")
 	templateDataSource, _ = templateDataSource.Parse(string(templateFile))
 
 	// Set input values to top level template

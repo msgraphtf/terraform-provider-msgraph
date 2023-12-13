@@ -24,7 +24,7 @@ func ReadAttributes(schemaObject OpenAPISchemaObject, indent int) {
 
 func TestRecurseSchema(t *testing.T) {
 
-	attributes := GetSchemaObjectByName("microsoft.graph.user")
+	attributes := GetSchemaObjectByName("microsoft.graph.userCollectionResponse")
 	ReadAttributes(attributes, 0)
 
 }
