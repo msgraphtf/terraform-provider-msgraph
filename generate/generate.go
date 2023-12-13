@@ -1,13 +1,22 @@
 package main
 
-func main() {
-	knownGoodPaths := [...]string {
-		"/users/{user-id}",
-		"/groups/{group-id}",
-	}
+import "os"
 
-	for _, path := range knownGoodPaths {
-		generateDataSource(path)
+func main() {
+
+	if len(os.Args) > 1 {
+		generateDataSource(os.Args[1])
+	} else {
+
+		knownGoodPaths := [...]string{
+			"/users/{user-id}",
+			"/groups/{group-id}",
+		}
+
+		for _, path := range knownGoodPaths {
+			generateDataSource(path)
+		}
+
 	}
 
 }
