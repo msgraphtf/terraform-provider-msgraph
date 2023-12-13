@@ -303,13 +303,13 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 
 }
 
-func main() {
+func generateDataSource(pathname string) {
 
 	// Get inputs
 	// TODO: Don't actually hard code it
-	pathObject = openapi.GetPath(os.Args[1])
+	pathObject = openapi.GetPath(pathname)
 
-	pathFields := strings.Split(os.Args[1], "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName = pathFields[0]
 
 	dataSourceName = ""
