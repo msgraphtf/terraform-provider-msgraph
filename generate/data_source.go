@@ -332,8 +332,13 @@ func generateDataSource(pathname string) {
 
 	schemaObject = pathObject.Get.Response
 
-	augmentFile, _ := os.ReadFile("generate/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
-	yaml.Unmarshal(augmentFile, &augment)
+	// Open augment file if available
+	var err error = nil
+	augment = templateAugment{}
+	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
+	if err == nil {
+		yaml.Unmarshal(augmentFile, &augment)
+	}
 
 	// Get template
 	templateDataSource := template.New("dataSource")
