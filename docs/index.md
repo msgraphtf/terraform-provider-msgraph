@@ -30,11 +30,7 @@ data "msgraph_user" "user" {
 	//user_principal_name = "AdeleV@msgraphtf.onmicrosoft.com"
 }
 
-data "msgraph_group" "group" {
-	id = "2d801c97-9509-4878-acce-7bd8fa437e02"
-}
-
-output "my_data" {
+output "my_user" {
 	value = data.msgraph_user.user
 }
 ```
