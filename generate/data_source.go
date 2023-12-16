@@ -355,6 +355,7 @@ func generateDataSource(pathname string) {
 	input.ReadQueryAltGetMethod     = augment.AltMethods
 	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI attributes
 
+	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, err := os.Create("msgraph/" + packageName + "/" + dataSourceName + "_data_source.go")
 	if err != nil {
 		fmt.Print(err)
