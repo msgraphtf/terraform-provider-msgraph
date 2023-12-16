@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"terraform-provider-msgraph/msgraph/groups"
 	"terraform-provider-msgraph/msgraph/users"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
@@ -102,6 +103,7 @@ func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.D
 		// Provider specific implementation
 		users.NewUserDataSource,
 		users.NewUsersDataSource,
+		groups.NewGroupDataSource,
 	}
 }
 
