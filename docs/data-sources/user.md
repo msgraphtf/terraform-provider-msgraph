@@ -39,7 +39,6 @@ description: |-
 - `custom_security_attributes` (Attributes) An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). Filter value is case sensitive. (see [below for nested schema](#nestedatt--custom_security_attributes))
 - `deleted_date_time` (String) Date and time when this object was deleted. Always null when the object hasn't been deleted.
 - `department` (String) The name for the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).
-- `device_enrollment_limit` (Number) The limit on the maximum number of devices that the user is permitted to enroll. Allowed values are 5 or 1000.
 - `display_name` (String) The name displayed in the address book for the user. This is usually the combination of the user's first name, middle initial and last name. This property is required when a user is created and it cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values), $orderby, and $search.
 - `employee_hire_date` (String) The date and time when the user was hired or will start work in case of a future hire. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).
 - `employee_id` (String) The employee identifier assigned to the user by the organization. The maximum length is 16 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).
@@ -61,7 +60,6 @@ description: |-
 - `license_assignment_states` (Attributes List) State of license assignments for this user. Also indicates licenses that are directly assigned or the user has inherited through group memberships. Read-only. Returned only on $select. (see [below for nested schema](#nestedatt--license_assignment_states))
 - `mail` (String) The SMTP address for the user, for example, jeff@contoso.onmicrosoft.com. Changes to this property will also update the user's proxyAddresses collection to include the value as an SMTP address. This property can't contain accent characters.  NOTE: We don't recommend updating this property for Azure AD B2C user profiles. Use the otherMails property instead. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).
 - `mail_nickname` (String) The mail alias for the user. This property must be specified when a user is created. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).
-- `mailbox_settings` (Attributes) Settings for the primary mailbox of the signed-in user. You can get or update settings for sending automatic replies to incoming messages, locale and time zone. Returned only on $select. (see [below for nested schema](#nestedatt--mailbox_settings))
 - `mobile_phone` (String) The primary cellular telephone number for the user. Read-only for users synced from on-premises directory. Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values) and $search.
 - `my_site` (String) The URL for the user's personal site. Returned only on $select.
 - `office_location` (String) The office location in the user's place of business. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).
@@ -83,7 +81,6 @@ description: |-
 - `preferred_data_location` (String) The preferred data location for the user. For more information, see OneDrive Online Multi-Geo.
 - `preferred_language` (String) The preferred language for the user. The preferred language format is based on RFC 4646. The name is a combination of an ISO 639 two-letter lowercase culture code associated with the language, and an ISO 3166 two-letter uppercase subculture code associated with the country or region. Example: 'en-US', or 'es-ES'. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values)
 - `preferred_name` (String) The preferred name for the user. Not Supported. This attribute returns an empty string.Returned only on $select.
-- `print` (Attributes) (see [below for nested schema](#nestedatt--print))
 - `provisioned_plans` (Attributes List) The plans that are provisioned for the user. Read-only. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le). (see [below for nested schema](#nestedatt--provisioned_plans))
 - `proxy_addresses` (List of String) For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. Changes to the mail property will also update this collection to include the value as an SMTP address. For more information, see mail and proxyAddresses properties. The proxy address prefixed with SMTP (capitalized) is the primary proxy address while those prefixed with smtp are the secondary proxy addresses. For Azure AD B2C accounts, this property has a limit of 10 unique addresses. Read-only in Microsoft Graph; you can update this property only through the Microsoft 365 admin center. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith, endsWith, /$count eq 0, /$count ne 0).
 - `responsibilities` (List of String) A list for the user to enumerate their responsibilities. Returned only on $select.
@@ -164,81 +161,6 @@ Read-Only:
 - `state` (String)
 
 
-<a id="nestedatt--mailbox_settings"></a>
-### Nested Schema for `mailbox_settings`
-
-Read-Only:
-
-- `archive_folder` (String) Folder ID of an archive folder for the user.
-- `automatic_replies_setting` (Attributes) Configuration settings to automatically notify the sender of an incoming email with a message from the signed-in user. (see [below for nested schema](#nestedatt--mailbox_settings--automatic_replies_setting))
-- `date_format` (String) The date format for the user's mailbox.
-- `delegate_meeting_message_delivery_options` (String) If the user has a calendar delegate, this specifies whether the delegate, mailbox owner, or both receive meeting messages and meeting responses. Possible values are: sendToDelegateAndInformationToPrincipal, sendToDelegateAndPrincipal, sendToDelegateOnly.
-- `language` (Attributes) The locale information for the user, including the preferred language and country/region. (see [below for nested schema](#nestedatt--mailbox_settings--language))
-- `time_format` (String) The time format for the user's mailbox.
-- `time_zone` (String) The default time zone for the user's mailbox.
-- `user_purpose` (String) The purpose of the mailbox. Differentiates a mailbox for a single user from a shared mailbox and equipment mailbox in Exchange Online. Possible values are: user, linked, shared, room, equipment, others, unknownFutureValue. Read-only.
-- `working_hours` (Attributes) The days of the week and hours in a specific time zone that the user works. (see [below for nested schema](#nestedatt--mailbox_settings--working_hours))
-
-<a id="nestedatt--mailbox_settings--automatic_replies_setting"></a>
-### Nested Schema for `mailbox_settings.automatic_replies_setting`
-
-Read-Only:
-
-- `external_audience` (String) The set of audience external to the signed-in user's organization who will receive the ExternalReplyMessage, if Status is AlwaysEnabled or Scheduled. The possible values are: none, contactsOnly, all.
-- `external_reply_message` (String) The automatic reply to send to the specified external audience, if Status is AlwaysEnabled or Scheduled.
-- `internal_reply_message` (String) The automatic reply to send to the audience internal to the signed-in user's organization, if Status is AlwaysEnabled or Scheduled.
-- `scheduled_end_date_time` (Attributes) The date and time that automatic replies are set to end, if Status is set to Scheduled. (see [below for nested schema](#nestedatt--mailbox_settings--automatic_replies_setting--scheduled_end_date_time))
-- `scheduled_start_date_time` (Attributes) The date and time that automatic replies are set to begin, if Status is set to Scheduled. (see [below for nested schema](#nestedatt--mailbox_settings--automatic_replies_setting--scheduled_start_date_time))
-- `status` (String) Configurations status for automatic replies. The possible values are: disabled, alwaysEnabled, scheduled.
-
-<a id="nestedatt--mailbox_settings--automatic_replies_setting--scheduled_end_date_time"></a>
-### Nested Schema for `mailbox_settings.automatic_replies_setting.scheduled_end_date_time`
-
-Read-Only:
-
-- `date_time` (String) A single point of time in a combined date and time representation ({date}T{time}; for example, 2017-08-29T04:00:00.0000000).
-- `time_zone` (String) Represents a time zone, for example, 'Pacific Standard Time'. See below for more possible values.
-
-
-<a id="nestedatt--mailbox_settings--automatic_replies_setting--scheduled_start_date_time"></a>
-### Nested Schema for `mailbox_settings.automatic_replies_setting.scheduled_start_date_time`
-
-Read-Only:
-
-- `date_time` (String) A single point of time in a combined date and time representation ({date}T{time}; for example, 2017-08-29T04:00:00.0000000).
-- `time_zone` (String) Represents a time zone, for example, 'Pacific Standard Time'. See below for more possible values.
-
-
-
-<a id="nestedatt--mailbox_settings--language"></a>
-### Nested Schema for `mailbox_settings.language`
-
-Read-Only:
-
-- `display_name` (String) A name representing the user's locale in natural language, for example, 'English (United States)'.
-- `locale` (String) A locale representation for the user, which includes the user's preferred language and country/region. For example, 'en-us'. The language component follows 2-letter codes as defined in ISO 639-1, and the country component follows 2-letter codes as defined in ISO 3166-1 alpha-2.
-
-
-<a id="nestedatt--mailbox_settings--working_hours"></a>
-### Nested Schema for `mailbox_settings.working_hours`
-
-Read-Only:
-
-- `days_of_week` (List of String) The days of the week on which the user works.
-- `end_time` (String) The time of the day that the user stops working.
-- `start_time` (String) The time of the day that the user starts working.
-- `time_zone` (Attributes) The time zone to which the working hours apply. (see [below for nested schema](#nestedatt--mailbox_settings--working_hours--time_zone))
-
-<a id="nestedatt--mailbox_settings--working_hours--time_zone"></a>
-### Nested Schema for `mailbox_settings.working_hours.time_zone`
-
-Read-Only:
-
-- `name` (String) The name of a time zone. It can be a standard time zone name such as 'Hawaii-Aleutian Standard Time', or 'Customized Time Zone' for a custom time zone.
-
-
-
-
 <a id="nestedatt--on_premises_extension_attributes"></a>
 ### Nested Schema for `on_premises_extension_attributes`
 
@@ -280,10 +202,6 @@ Read-Only:
 - `force_change_password_next_sign_in` (Boolean) true if the user must change her password on the next login; otherwise false.
 - `force_change_password_next_sign_in_with_mfa` (Boolean) If true, at next sign-in, the user must perform a multi-factor authentication (MFA) before being forced to change their password. The behavior is identical to forceChangePasswordNextSignIn except that the user is required to first perform a multi-factor authentication before password change. After a password change, this property will be automatically reset to false. If not set, default is false.
 - `password` (String) The password for the user. This property is required when a user is created. It can be updated, but the user will be required to change the password on the next login. The password must satisfy minimum requirements as specified by the user's passwordPolicies property. By default, a strong password is required.
-
-
-<a id="nestedatt--print"></a>
-### Nested Schema for `print`
 
 
 <a id="nestedatt--provisioned_plans"></a>
