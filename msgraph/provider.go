@@ -6,7 +6,7 @@ import (
 
 	"terraform-provider-msgraph/msgraph/users"
 
-	azidentity "github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -66,8 +66,8 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 	cred, err := azidentity.NewDefaultAzureCredential(nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting credendial",
-			"Error getting credendial",
+			"Error getting credential",
+			"Error getting credential",
 		)
 	}
 
