@@ -337,7 +337,7 @@ func generateDataSource(pathname string) {
 	pathObject = openapi.GetPath(pathname)
 
 	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-	packageName = pathFields[0]
+	packageName = strings.ToLower(pathFields[0])
 
 	dataSourceName = ""
 
@@ -383,7 +383,7 @@ func generateDataSource(pathname string) {
 	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI attributes
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
-	outfile, err := os.Create("msgraph/" + packageName + "/" + dataSourceName + "_data_source.go")
+	outfile, err := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
 	if err != nil {
 		fmt.Print(err)
 	}
