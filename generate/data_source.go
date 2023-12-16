@@ -89,6 +89,10 @@ type attributeRead struct {
 	ParentRead     *attributeRead
 }
 
+func upperFirst(s string) string {
+	return strings.ToUpper(s[0:1]) + s[1:]
+}
+
 var dataSourceName string
 var packageName string
 var pathObject openapi.OpenAPIPathObject
@@ -172,7 +176,7 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 		}
 
 		newModelField := new(attributeModelField)
-		newModelField.FieldName = strcase.ToCamel(property.Name)
+		newModelField.FieldName = upperFirst(property.Name)
 		newModelField.AttributeName = strcase.ToSnake(property.Name)
 
 		switch property.Type {
@@ -266,8 +270,8 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 		}
 
 		newAttributeRead := attributeRead{
-			GetMethod:      "Get" + strcase.ToCamel(property.Name) + "()",
-			ModelName:      dataSourceName + strcase.ToCamel(property.Name) + "DataSourceModel",
+			GetMethod:      "Get" + upperFirst(property.Name) + "()",
+			ModelName:      dataSourceName + upperFirst(property.Name) + "DataSourceModel",
 			ModelVarName:   strcase.ToLowerCamel(property.Name),
 			DataSourceName: dataSourceName,
 			ParentRead:     parent,
@@ -275,13 +279,13 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			newAttributeRead.GetMethod = parent.GetMethod + "." + newAttributeRead.GetMethod
-			newAttributeRead.StateVarName = parent.StateVarName + "." + strcase.ToCamel(property.Name)
+			newAttributeRead.StateVarName = parent.StateVarName + "." + upperFirst(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
 			newAttributeRead.GetMethod = "value." + newAttributeRead.GetMethod
-			newAttributeRead.StateVarName = parent.ModelVarName + "." + strcase.ToCamel(property.Name)
+			newAttributeRead.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
 		} else {
 			newAttributeRead.GetMethod = "result." + newAttributeRead.GetMethod
-			newAttributeRead.StateVarName = "state." + strcase.ToCamel(property.Name)
+			newAttributeRead.StateVarName = "state." + upperFirst(property.Name)
 		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
