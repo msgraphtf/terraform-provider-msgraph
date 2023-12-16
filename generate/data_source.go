@@ -35,8 +35,9 @@ type templateMethod struct {
 }
 
 type templateAugment struct {
-	ExtraOptionals  []string `yaml:"extraOptionals"`
-	AltMethods      []map[string]string `yaml:"altMethods"`
+	ExtraOptionals     []string            `yaml:"extraOptionals"`
+	AltMethods         []map[string]string `yaml:"altMethods"`
+	ExcludedProperties []string            `yaml:"excludedProperties"`
 }
 
 type templateInput struct {
@@ -98,6 +99,10 @@ var input templateInput
 func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchemaObject) []attributeSchema {
 
 	for _, property := range schemaObject.Properties {
+
+		if slices.Contains(augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		// Create new attribute schema and model for array
 		newAttributeSchema := new(attributeSchema)
@@ -162,6 +167,10 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 
 	for _, property := range schemaObject.Properties {
 
+		if slices.Contains(augment.ExcludedProperties, property.Name) {
+			continue
+		}
+
 		newModelField := new(attributeModelField)
 		newModelField.FieldName = strcase.ToCamel(property.Name)
 		newModelField.AttributeName = strcase.ToSnake(property.Name)
@@ -208,6 +217,20 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 
 }
 
+func generateReadSelectParameters(path openapi.OpenAPIPathObject) []string {
+
+	var selectParamenters []string
+
+	for _, parameter := range path.Get.SelectParameters {
+		if !slices.Contains(augment.ExcludedProperties, parameter) {
+			selectParamenters = append(selectParamenters, parameter)
+		}
+	}
+
+	return selectParamenters
+
+}
+
 func generateReadQueryMethod(path openapi.OpenAPIPathObject) []templateMethod {
 
 	var getMethod []templateMethod
@@ -237,6 +260,10 @@ func generateReadQueryMethod(path openapi.OpenAPIPathObject) []templateMethod {
 func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject, parent *attributeRead) []attributeRead {
 
 	for _, property := range schemaObject.Properties {
+
+		if slices.Contains(augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newAttributeRead := attributeRead{
 			GetMethod:      "Get" + strcase.ToCamel(property.Name) + "()",
@@ -350,7 +377,7 @@ func generateDataSource(pathname string) {
 	input.DataSourceName            = templateName{dataSourceName}
 	input.Schema                    = generateSchema(nil, schemaObject) // Generate Terraform Schema from OpenAPI Schama properties
 	input.Model                     = generateModel("", nil, schemaObject) // Generate Terraform model from OpenAPI attributes
-	input.ReadQuerySelectParameters = pathObject.Get.SelectParameters
+	input.ReadQuerySelectParameters = generateReadSelectParameters(pathObject)
 	input.ReadQueryGetMethod        = generateReadQueryMethod(pathObject)
 	input.ReadQueryAltGetMethod     = augment.AltMethods
 	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI attributes

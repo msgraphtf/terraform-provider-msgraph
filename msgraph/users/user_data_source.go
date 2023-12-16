@@ -161,10 +161,6 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "The name for the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).",
 				Computed:    true,
 			},
-			"device_enrollment_limit": schema.Int64Attribute{
-				Description: "The limit on the maximum number of devices that the user is permitted to enroll. Allowed values are 5 or 1000.",
-				Computed:    true,
-			},
 			"display_name": schema.StringAttribute{
 				Description: "The name displayed in the address book for the user. This is usually the combination of the user's first name, middle initial and last name. This property is required when a user is created and it cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values), $orderby, and $search.",
 				Computed:    true,
@@ -305,129 +301,6 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"mail_nickname": schema.StringAttribute{
 				Description: "The mail alias for the user. This property must be specified when a user is created. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Computed:    true,
-			},
-			"mailbox_settings": schema.SingleNestedAttribute{
-				Description: "Settings for the primary mailbox of the signed-in user. You can get or update settings for sending automatic replies to incoming messages, locale and time zone. Returned only on $select.",
-				Computed:    true,
-				Attributes: map[string]schema.Attribute{
-					"archive_folder": schema.StringAttribute{
-						Description: "Folder ID of an archive folder for the user.",
-						Computed:    true,
-					},
-					"automatic_replies_setting": schema.SingleNestedAttribute{
-						Description: "Configuration settings to automatically notify the sender of an incoming email with a message from the signed-in user.",
-						Computed:    true,
-						Attributes: map[string]schema.Attribute{
-							"external_audience": schema.StringAttribute{
-								Description: "The set of audience external to the signed-in user's organization who will receive the ExternalReplyMessage, if Status is AlwaysEnabled or Scheduled. The possible values are: none, contactsOnly, all.",
-								Computed:    true,
-							},
-							"external_reply_message": schema.StringAttribute{
-								Description: "The automatic reply to send to the specified external audience, if Status is AlwaysEnabled or Scheduled.",
-								Computed:    true,
-							},
-							"internal_reply_message": schema.StringAttribute{
-								Description: "The automatic reply to send to the audience internal to the signed-in user's organization, if Status is AlwaysEnabled or Scheduled.",
-								Computed:    true,
-							},
-							"scheduled_end_date_time": schema.SingleNestedAttribute{
-								Description: "The date and time that automatic replies are set to end, if Status is set to Scheduled.",
-								Computed:    true,
-								Attributes: map[string]schema.Attribute{
-									"date_time": schema.StringAttribute{
-										Description: "A single point of time in a combined date and time representation ({date}T{time}; for example, 2017-08-29T04:00:00.0000000).",
-										Computed:    true,
-									},
-									"time_zone": schema.StringAttribute{
-										Description: "Represents a time zone, for example, 'Pacific Standard Time'. See below for more possible values.",
-										Computed:    true,
-									},
-								},
-							},
-							"scheduled_start_date_time": schema.SingleNestedAttribute{
-								Description: "The date and time that automatic replies are set to begin, if Status is set to Scheduled.",
-								Computed:    true,
-								Attributes: map[string]schema.Attribute{
-									"date_time": schema.StringAttribute{
-										Description: "A single point of time in a combined date and time representation ({date}T{time}; for example, 2017-08-29T04:00:00.0000000).",
-										Computed:    true,
-									},
-									"time_zone": schema.StringAttribute{
-										Description: "Represents a time zone, for example, 'Pacific Standard Time'. See below for more possible values.",
-										Computed:    true,
-									},
-								},
-							},
-							"status": schema.StringAttribute{
-								Description: "Configurations status for automatic replies. The possible values are: disabled, alwaysEnabled, scheduled.",
-								Computed:    true,
-							},
-						},
-					},
-					"date_format": schema.StringAttribute{
-						Description: "The date format for the user's mailbox.",
-						Computed:    true,
-					},
-					"delegate_meeting_message_delivery_options": schema.StringAttribute{
-						Description: "If the user has a calendar delegate, this specifies whether the delegate, mailbox owner, or both receive meeting messages and meeting responses. Possible values are: sendToDelegateAndInformationToPrincipal, sendToDelegateAndPrincipal, sendToDelegateOnly.",
-						Computed:    true,
-					},
-					"language": schema.SingleNestedAttribute{
-						Description: "The locale information for the user, including the preferred language and country/region.",
-						Computed:    true,
-						Attributes: map[string]schema.Attribute{
-							"display_name": schema.StringAttribute{
-								Description: "A name representing the user's locale in natural language, for example, 'English (United States)'.",
-								Computed:    true,
-							},
-							"locale": schema.StringAttribute{
-								Description: "A locale representation for the user, which includes the user's preferred language and country/region. For example, 'en-us'. The language component follows 2-letter codes as defined in ISO 639-1, and the country component follows 2-letter codes as defined in ISO 3166-1 alpha-2.",
-								Computed:    true,
-							},
-						},
-					},
-					"time_format": schema.StringAttribute{
-						Description: "The time format for the user's mailbox.",
-						Computed:    true,
-					},
-					"time_zone": schema.StringAttribute{
-						Description: "The default time zone for the user's mailbox.",
-						Computed:    true,
-					},
-					"user_purpose": schema.StringAttribute{
-						Description: "The purpose of the mailbox. Differentiates a mailbox for a single user from a shared mailbox and equipment mailbox in Exchange Online. Possible values are: user, linked, shared, room, equipment, others, unknownFutureValue. Read-only.",
-						Computed:    true,
-					},
-					"working_hours": schema.SingleNestedAttribute{
-						Description: "The days of the week and hours in a specific time zone that the user works.",
-						Computed:    true,
-						Attributes: map[string]schema.Attribute{
-							"days_of_week": schema.ListAttribute{
-								Description: "The days of the week on which the user works.",
-								Computed:    true,
-								ElementType: types.StringType,
-							},
-							"end_time": schema.StringAttribute{
-								Description: "The time of the day that the user stops working.",
-								Computed:    true,
-							},
-							"start_time": schema.StringAttribute{
-								Description: "The time of the day that the user starts working.",
-								Computed:    true,
-							},
-							"time_zone": schema.SingleNestedAttribute{
-								Description: "The time zone to which the working hours apply.",
-								Computed:    true,
-								Attributes: map[string]schema.Attribute{
-									"name": schema.StringAttribute{
-										Description: "The name of a time zone. It can be a standard time zone name such as 'Hawaii-Aleutian Standard Time', or 'Customized Time Zone' for a custom time zone.",
-										Computed:    true,
-									},
-								},
-							},
-						},
-					},
-				},
 			},
 			"mobile_phone": schema.StringAttribute{
 				Description: "The primary cellular telephone number for the user. Read-only for users synced from on-premises directory. Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values) and $search.",
@@ -611,11 +484,6 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "The preferred name for the user. Not Supported. This attribute returns an empty string.Returned only on $select.",
 				Computed:    true,
 			},
-			"print": schema.SingleNestedAttribute{
-				Description: "",
-				Computed:    true,
-				Attributes:  map[string]schema.Attribute{},
-			},
 			"provisioned_plans": schema.ListNestedAttribute{
 				Description: "The plans that are provisioned for the user. Read-only. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le).",
 				Computed:    true,
@@ -758,7 +626,6 @@ type userDataSourceModel struct {
 	CreationType                    types.String                                      `tfsdk:"creation_type"`
 	CustomSecurityAttributes        *userCustomSecurityAttributesDataSourceModel      `tfsdk:"custom_security_attributes"`
 	Department                      types.String                                      `tfsdk:"department"`
-	DeviceEnrollmentLimit           types.Int64                                       `tfsdk:"device_enrollment_limit"`
 	DisplayName                     types.String                                      `tfsdk:"display_name"`
 	EmployeeHireDate                types.String                                      `tfsdk:"employee_hire_date"`
 	EmployeeId                      types.String                                      `tfsdk:"employee_id"`
@@ -780,7 +647,6 @@ type userDataSourceModel struct {
 	LicenseAssignmentStates         []userLicenseAssignmentStatesDataSourceModel      `tfsdk:"license_assignment_states"`
 	Mail                            types.String                                      `tfsdk:"mail"`
 	MailNickname                    types.String                                      `tfsdk:"mail_nickname"`
-	MailboxSettings                 *userMailboxSettingsDataSourceModel               `tfsdk:"mailbox_settings"`
 	MobilePhone                     types.String                                      `tfsdk:"mobile_phone"`
 	MySite                          types.String                                      `tfsdk:"my_site"`
 	OfficeLocation                  types.String                                      `tfsdk:"office_location"`
@@ -802,7 +668,6 @@ type userDataSourceModel struct {
 	PreferredDataLocation           types.String                                      `tfsdk:"preferred_data_location"`
 	PreferredLanguage               types.String                                      `tfsdk:"preferred_language"`
 	PreferredName                   types.String                                      `tfsdk:"preferred_name"`
-	Print                           *userPrintDataSourceModel                         `tfsdk:"print"`
 	ProvisionedPlans                []userProvisionedPlansDataSourceModel             `tfsdk:"provisioned_plans"`
 	ProxyAddresses                  []types.String                                    `tfsdk:"proxy_addresses"`
 	Responsibilities                []types.String                                    `tfsdk:"responsibilities"`
@@ -860,53 +725,6 @@ type userLicenseAssignmentStatesDataSourceModel struct {
 	State               types.String   `tfsdk:"state"`
 }
 
-type userMailboxSettingsDataSourceModel struct {
-	ArchiveFolder                         types.String                                `tfsdk:"archive_folder"`
-	AutomaticRepliesSetting               *userAutomaticRepliesSettingDataSourceModel `tfsdk:"automatic_replies_setting"`
-	DateFormat                            types.String                                `tfsdk:"date_format"`
-	DelegateMeetingMessageDeliveryOptions types.String                                `tfsdk:"delegate_meeting_message_delivery_options"`
-	Language                              *userLanguageDataSourceModel                `tfsdk:"language"`
-	TimeFormat                            types.String                                `tfsdk:"time_format"`
-	TimeZone                              types.String                                `tfsdk:"time_zone"`
-	UserPurpose                           types.String                                `tfsdk:"user_purpose"`
-	WorkingHours                          *userWorkingHoursDataSourceModel            `tfsdk:"working_hours"`
-}
-
-type userAutomaticRepliesSettingDataSourceModel struct {
-	ExternalAudience       types.String                               `tfsdk:"external_audience"`
-	ExternalReplyMessage   types.String                               `tfsdk:"external_reply_message"`
-	InternalReplyMessage   types.String                               `tfsdk:"internal_reply_message"`
-	ScheduledEndDateTime   *userScheduledEndDateTimeDataSourceModel   `tfsdk:"scheduled_end_date_time"`
-	ScheduledStartDateTime *userScheduledStartDateTimeDataSourceModel `tfsdk:"scheduled_start_date_time"`
-	Status                 types.String                               `tfsdk:"status"`
-}
-
-type userScheduledEndDateTimeDataSourceModel struct {
-	DateTime types.String `tfsdk:"date_time"`
-	TimeZone types.String `tfsdk:"time_zone"`
-}
-
-type userScheduledStartDateTimeDataSourceModel struct {
-	DateTime types.String `tfsdk:"date_time"`
-	TimeZone types.String `tfsdk:"time_zone"`
-}
-
-type userLanguageDataSourceModel struct {
-	DisplayName types.String `tfsdk:"display_name"`
-	Locale      types.String `tfsdk:"locale"`
-}
-
-type userWorkingHoursDataSourceModel struct {
-	DaysOfWeek []types.String               `tfsdk:"days_of_week"`
-	EndTime    types.String                 `tfsdk:"end_time"`
-	StartTime  types.String                 `tfsdk:"start_time"`
-	TimeZone   *userTimeZoneDataSourceModel `tfsdk:"time_zone"`
-}
-
-type userTimeZoneDataSourceModel struct {
-	Name types.String `tfsdk:"name"`
-}
-
 type userOnPremisesExtensionAttributesDataSourceModel struct {
 	ExtensionAttribute1  types.String `tfsdk:"extension_attribute_1"`
 	ExtensionAttribute10 types.String `tfsdk:"extension_attribute_10"`
@@ -936,9 +754,6 @@ type userPasswordProfileDataSourceModel struct {
 	ForceChangePasswordNextSignIn        types.Bool   `tfsdk:"force_change_password_next_sign_in"`
 	ForceChangePasswordNextSignInWithMfa types.Bool   `tfsdk:"force_change_password_next_sign_in_with_mfa"`
 	Password                             types.String `tfsdk:"password"`
-}
-
-type userPrintDataSourceModel struct {
 }
 
 type userProvisionedPlansDataSourceModel struct {
@@ -1037,9 +852,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				"usageLocation",
 				"userPrincipalName",
 				"userType",
-				"mailboxSettings",
-				"deviceEnrollmentLimit",
-				"print",
 				"aboutMe",
 				"birthday",
 				"hireDate",
@@ -1305,94 +1117,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetMailNickname() != nil {
 		state.MailNickname = types.StringValue(*result.GetMailNickname())
 	}
-	if result.GetMailboxSettings() != nil {
-		state.MailboxSettings = new(userMailboxSettingsDataSourceModel)
-
-		if result.GetMailboxSettings().GetArchiveFolder() != nil {
-			state.MailboxSettings.ArchiveFolder = types.StringValue(*result.GetMailboxSettings().GetArchiveFolder())
-		}
-		if result.GetMailboxSettings().GetAutomaticRepliesSetting() != nil {
-			state.MailboxSettings.AutomaticRepliesSetting = new(userAutomaticRepliesSettingDataSourceModel)
-
-			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetExternalAudience() != nil {
-				state.MailboxSettings.AutomaticRepliesSetting.ExternalAudience = types.StringValue(result.GetMailboxSettings().GetAutomaticRepliesSetting().GetExternalAudience().String())
-			}
-			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetExternalReplyMessage() != nil {
-				state.MailboxSettings.AutomaticRepliesSetting.ExternalReplyMessage = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetExternalReplyMessage())
-			}
-			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetInternalReplyMessage() != nil {
-				state.MailboxSettings.AutomaticRepliesSetting.InternalReplyMessage = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetInternalReplyMessage())
-			}
-			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime() != nil {
-				state.MailboxSettings.AutomaticRepliesSetting.ScheduledEndDateTime = new(userScheduledEndDateTimeDataSourceModel)
-
-				if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime().GetDateTime() != nil {
-					state.MailboxSettings.AutomaticRepliesSetting.ScheduledEndDateTime.DateTime = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime().GetDateTime())
-				}
-				if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime().GetTimeZone() != nil {
-					state.MailboxSettings.AutomaticRepliesSetting.ScheduledEndDateTime.TimeZone = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledEndDateTime().GetTimeZone())
-				}
-			}
-			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime() != nil {
-				state.MailboxSettings.AutomaticRepliesSetting.ScheduledStartDateTime = new(userScheduledStartDateTimeDataSourceModel)
-
-				if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime().GetDateTime() != nil {
-					state.MailboxSettings.AutomaticRepliesSetting.ScheduledStartDateTime.DateTime = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime().GetDateTime())
-				}
-				if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime().GetTimeZone() != nil {
-					state.MailboxSettings.AutomaticRepliesSetting.ScheduledStartDateTime.TimeZone = types.StringValue(*result.GetMailboxSettings().GetAutomaticRepliesSetting().GetScheduledStartDateTime().GetTimeZone())
-				}
-			}
-			if result.GetMailboxSettings().GetAutomaticRepliesSetting().GetStatus() != nil {
-				state.MailboxSettings.AutomaticRepliesSetting.Status = types.StringValue(result.GetMailboxSettings().GetAutomaticRepliesSetting().GetStatus().String())
-			}
-		}
-		if result.GetMailboxSettings().GetDateFormat() != nil {
-			state.MailboxSettings.DateFormat = types.StringValue(*result.GetMailboxSettings().GetDateFormat())
-		}
-		if result.GetMailboxSettings().GetDelegateMeetingMessageDeliveryOptions() != nil {
-			state.MailboxSettings.DelegateMeetingMessageDeliveryOptions = types.StringValue(result.GetMailboxSettings().GetDelegateMeetingMessageDeliveryOptions().String())
-		}
-		if result.GetMailboxSettings().GetLanguage() != nil {
-			state.MailboxSettings.Language = new(userLanguageDataSourceModel)
-
-			if result.GetMailboxSettings().GetLanguage().GetDisplayName() != nil {
-				state.MailboxSettings.Language.DisplayName = types.StringValue(*result.GetMailboxSettings().GetLanguage().GetDisplayName())
-			}
-			if result.GetMailboxSettings().GetLanguage().GetLocale() != nil {
-				state.MailboxSettings.Language.Locale = types.StringValue(*result.GetMailboxSettings().GetLanguage().GetLocale())
-			}
-		}
-		if result.GetMailboxSettings().GetTimeFormat() != nil {
-			state.MailboxSettings.TimeFormat = types.StringValue(*result.GetMailboxSettings().GetTimeFormat())
-		}
-		if result.GetMailboxSettings().GetTimeZone() != nil {
-			state.MailboxSettings.TimeZone = types.StringValue(*result.GetMailboxSettings().GetTimeZone())
-		}
-		if result.GetMailboxSettings().GetUserPurpose() != nil {
-			state.MailboxSettings.UserPurpose = types.StringValue(result.GetMailboxSettings().GetUserPurpose().String())
-		}
-		if result.GetMailboxSettings().GetWorkingHours() != nil {
-			state.MailboxSettings.WorkingHours = new(userWorkingHoursDataSourceModel)
-
-			for _, value := range result.GetMailboxSettings().GetWorkingHours().GetDaysOfWeek() {
-				state.MailboxSettings.WorkingHours.DaysOfWeek = append(state.MailboxSettings.WorkingHours.DaysOfWeek, types.StringValue(value.String()))
-			}
-			if result.GetMailboxSettings().GetWorkingHours().GetEndTime() != nil {
-				state.MailboxSettings.WorkingHours.EndTime = types.StringValue(result.GetMailboxSettings().GetWorkingHours().GetEndTime().String())
-			}
-			if result.GetMailboxSettings().GetWorkingHours().GetStartTime() != nil {
-				state.MailboxSettings.WorkingHours.StartTime = types.StringValue(result.GetMailboxSettings().GetWorkingHours().GetStartTime().String())
-			}
-			if result.GetMailboxSettings().GetWorkingHours().GetTimeZone() != nil {
-				state.MailboxSettings.WorkingHours.TimeZone = new(userTimeZoneDataSourceModel)
-
-				if result.GetMailboxSettings().GetWorkingHours().GetTimeZone().GetName() != nil {
-					state.MailboxSettings.WorkingHours.TimeZone.Name = types.StringValue(*result.GetMailboxSettings().GetWorkingHours().GetTimeZone().GetName())
-				}
-			}
-		}
-	}
 	if result.GetMobilePhone() != nil {
 		state.MobilePhone = types.StringValue(*result.GetMobilePhone())
 	}
@@ -1525,10 +1249,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 	if result.GetPreferredName() != nil {
 		state.PreferredName = types.StringValue(*result.GetPreferredName())
-	}
-	if result.GetPrint() != nil {
-		state.Print = new(userPrintDataSourceModel)
-
 	}
 	for _, value := range result.GetProvisionedPlans() {
 		provisionedPlans := new(userProvisionedPlansDataSourceModel)

@@ -3,3 +3,7 @@ extraOptionals:
 altMethods:
   - if: UserPrincipalName
     method: "Users().ByUserId(state.UserPrincipalName.ValueString())"
+excludedProperties:
+  - mailboxSettings # Only works for the signed in user
+  - deviceEnrollmentLimit # Seems to be bugged
+  - print # Seems to be bugged
