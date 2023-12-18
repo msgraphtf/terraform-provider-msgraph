@@ -6,6 +6,7 @@ import (
 
 	"terraform-provider-msgraph/msgraph/groups"
 	"terraform-provider-msgraph/msgraph/users"
+	"terraform-provider-msgraph/msgraph/sites"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
@@ -104,6 +105,7 @@ func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.D
 		users.NewUserDataSource,
 		users.NewUsersDataSource,
 		groups.NewGroupDataSource,
+		sites.NewSiteDataSource,
 	}
 }
 
