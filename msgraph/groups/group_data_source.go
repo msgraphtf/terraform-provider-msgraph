@@ -434,7 +434,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
-			"`id` or `user_principal_name` must be supplied.",
+			"`id` must be supplied.",
 		)
 		return
 	}
