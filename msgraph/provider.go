@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"terraform-provider-msgraph/msgraph/groups"
-	"terraform-provider-msgraph/msgraph/users"
 	"terraform-provider-msgraph/msgraph/sites"
+	"terraform-provider-msgraph/msgraph/users"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
