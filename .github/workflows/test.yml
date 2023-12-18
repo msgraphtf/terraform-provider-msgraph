@@ -50,7 +50,7 @@ jobs:
       - run: gofmt -w -s -l msgraph/
       - name: git diff
         run: |
-          git diff --exit-code || \
+          git diff --compact-summary --exit-code || \
             (echo; echo "Unexpected difference in directories after code generation. Run 'go run ./generate/; gofmt -w -s -l msgraph/' command and commit."; exit 1)
 
   generate-docs:
