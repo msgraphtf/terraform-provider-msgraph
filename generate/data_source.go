@@ -281,7 +281,7 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 		newAttributeRead := attributeRead{
 			GetMethod:      "Get" + upperFirst(property.Name) + "()",
 			ModelName:      dataSourceName + upperFirst(property.Name) + "DataSourceModel",
-			ModelVarName:   strcase.ToLowerCamel(property.Name),
+			ModelVarName:   property.Name,
 			DataSourceName: dataSourceName,
 			ParentRead:     parent,
 		}
