@@ -9,9 +9,10 @@ func main() {
 	} else {
 
 		knownGoodPaths := [...]string{
-			"/users/{user-id}",
 			"/groups/{group-id}",
 			"/sites/{site-id}",
+			"/teams/{team-id}",
+			"/users/{user-id}",
 		}
 
 		for _, path := range knownGoodPaths {
