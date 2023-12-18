@@ -25,13 +25,13 @@ provider "msgraph" {
   # example configuration here
 }
 
-data "msgraph_site" "site" {
-	id = "msgraphtf.sharepoint.com:/sites/DataSite"
+data "msgraph_user" "user" {
+	id = "0acc8010-50ea-4a54-bd71-ec485d425a74"
 	//user_principal_name = "AdeleV@msgraphtf.onmicrosoft.com"
 }
 
-output "my_data" {
-	value = data.msgraph_site.site
+output "my_user" {
+	value = data.msgraph_user.user
 }
 ```
 
