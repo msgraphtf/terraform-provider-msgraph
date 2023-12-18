@@ -99,6 +99,7 @@ var pathObject openapi.OpenAPIPathObject
 var schemaObject openapi.OpenAPISchemaObject
 var augment templateAugment
 var input templateInput
+var allModelNames []string
 
 func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchemaObject) []attributeSchema {
 
@@ -167,6 +168,14 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 	newModel := attributeModel{
 		ModelName: dataSourceName + modelName + "DataSourceModel",
 	}
+
+	// Skip duplicate models
+	if slices.Contains(allModelNames, newModel.ModelName) {
+		return model
+	} else {
+		allModelNames = append(allModelNames, newModel.ModelName)
+	}
+
 	var nestedModels []attributeModel
 
 	for _, property := range schemaObject.Properties {
