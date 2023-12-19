@@ -286,6 +286,10 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 			ParentRead:     parent,
 		}
 
+		if property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
+			newAttributeRead.GetMethod = "GetTypeEscaped()"
+		}
+
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			newAttributeRead.GetMethod = parent.GetMethod + "." + newAttributeRead.GetMethod
 			newAttributeRead.StateVarName = parent.StateVarName + "." + upperFirst(property.Name)

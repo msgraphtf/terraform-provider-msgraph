@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"terraform-provider-msgraph/msgraph/devices"
 	"terraform-provider-msgraph/msgraph/groups"
 	"terraform-provider-msgraph/msgraph/sites"
 	"terraform-provider-msgraph/msgraph/teams"
@@ -103,6 +104,7 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		// Provider specific implementation
+		devices.NewDeviceDataSource,
 		groups.NewGroupDataSource,
 		sites.NewSiteDataSource,
 		teams.NewTeamDataSource,

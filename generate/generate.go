@@ -9,6 +9,7 @@ func main() {
 	} else {
 
 		knownGoodPaths := [...]string{
+			"/devices/{device-id}",
 			"/groups/{group-id}",
 			"/sites/{site-id}",
 			"/teams/{team-id}",
