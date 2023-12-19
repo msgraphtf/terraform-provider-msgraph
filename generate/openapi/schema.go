@@ -122,6 +122,9 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 				newProperty.Format = property.Items.Value.Format
 				newProperty.ArrayOf = property.Items.Value.Type
 			}
+		} else if property.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
+			newProperty.Type = "object"
+			newProperty.ObjectOf = getSchemaObject(property)
 		} else if property.Type != "" { // Primitive type
 			newProperty.Format = property.Format
 		} else if property.AnyOf != nil { // Object
