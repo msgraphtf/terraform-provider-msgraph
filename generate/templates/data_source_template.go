@@ -273,8 +273,8 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	{{- range .}}
 	{{- if eq .AttributeType "ReadStringAttribute"}}
 	{{- template "ReadStringAttribute" .}}
-	{{- else if eq .AttributeType "ReadStringByteAttribute"}}
-	{{- template "ReadStringByteAttribute" .}}
+	{{- else if eq .AttributeType "ReadStringBase64Attribute"}}
+	{{- template "ReadStringBase64Attribute" .}}
 	{{- else if eq .AttributeType "ReadStringFormattedAttribute"}}
 	{{- template "ReadStringFormattedAttribute" .}}
 	{{- else if eq .AttributeType "ReadInt64Attribute"}}
