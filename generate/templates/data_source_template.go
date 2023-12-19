@@ -224,7 +224,7 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue(*{{.GetMethod}})}
 	{{- end}}
 
-	{{- define "ReadStringByteAttribute" }}
+	{{- define "ReadStringBase64Attribute" }}
 	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue(string({{.GetMethod}}[:]))}
 	{{- end}}
 
