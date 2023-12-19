@@ -224,6 +224,10 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue(*{{.GetMethod}})}
 	{{- end}}
 
+	{{- define "ReadStringByteAttribute" }}
+	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue(string({{.GetMethod}}[:]))}
+	{{- end}}
+
 	{{- define "ReadStringFormattedAttribute" }}
 	if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue({{.GetMethod}}.String())}
 	{{- end}}
@@ -269,6 +273,8 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	{{- range .}}
 	{{- if eq .AttributeType "ReadStringAttribute"}}
 	{{- template "ReadStringAttribute" .}}
+	{{- else if eq .AttributeType "ReadStringByteAttribute"}}
+	{{- template "ReadStringByteAttribute" .}}
 	{{- else if eq .AttributeType "ReadStringFormattedAttribute"}}
 	{{- template "ReadStringFormattedAttribute" .}}
 	{{- else if eq .AttributeType "ReadInt64Attribute"}}

@@ -302,6 +302,8 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 		case "string":
 			if property.Format == "" {
 				newAttributeRead.AttributeType = "ReadStringAttribute"
+			} else if strings.Contains(property.Format, "base64") {
+				newAttributeRead.AttributeType = "ReadStringByteAttribute"
 			} else {
 				newAttributeRead.AttributeType = "ReadStringFormattedAttribute"
 			}
