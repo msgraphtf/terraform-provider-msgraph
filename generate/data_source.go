@@ -308,7 +308,7 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 				newAttributeRead.AttributeType = "ReadStringFormattedAttribute"
 			}
 		case "integer":
-			newAttributeRead.AttributeType = "ReadIntegerAttribute"
+			newAttributeRead.AttributeType = "ReadInt64Attribute"
 		case "boolean":
 			newAttributeRead.AttributeType = "ReadBoolAttribute"
 		case "object":

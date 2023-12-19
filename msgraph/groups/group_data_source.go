@@ -602,6 +602,9 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if result.GetTheme() != nil {
 		state.Theme = types.StringValue(*result.GetTheme())
 	}
+	if result.GetUnseenCount() != nil {
+		state.UnseenCount = types.Int64Value(int64(*result.GetUnseenCount()))
+	}
 	if result.GetVisibility() != nil {
 		state.Visibility = types.StringValue(*result.GetVisibility())
 	}

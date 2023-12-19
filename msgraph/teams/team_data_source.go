@@ -417,6 +417,15 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetSummary() != nil {
 		state.Summary = new(teamSummaryDataSourceModel)
 
+		if result.GetSummary().GetGuestsCount() != nil {
+			state.Summary.GuestsCount = types.Int64Value(int64(*result.GetSummary().GetGuestsCount()))
+		}
+		if result.GetSummary().GetMembersCount() != nil {
+			state.Summary.MembersCount = types.Int64Value(int64(*result.GetSummary().GetMembersCount()))
+		}
+		if result.GetSummary().GetOwnersCount() != nil {
+			state.Summary.OwnersCount = types.Int64Value(int64(*result.GetSummary().GetOwnersCount()))
+		}
 	}
 	if result.GetTenantId() != nil {
 		state.TenantId = types.StringValue(*result.GetTenantId())
