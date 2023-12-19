@@ -187,8 +187,8 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	}
 
 
-	qparams := {{.PackageName}}.{{.DataSourceName.UpperCamel}}ItemRequestBuilderGetRequestConfiguration{
-		QueryParameters: &{{.PackageName}}.{{.DataSourceName.UpperCamel}}ItemRequestBuilderGetQueryParameters{
+	qparams := {{.PackageName}}.{{.ReadQueryConfiguration}}RequestBuilderGetRequestConfiguration{
+		QueryParameters: &{{.PackageName}}.{{.ReadQueryConfiguration}}RequestBuilderGetQueryParameters{
 			Select: []string {
 				{{- range .ReadQuerySelectParameters}}
 				"{{.}}",

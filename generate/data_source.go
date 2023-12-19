@@ -45,6 +45,7 @@ type templateInput struct {
 	DataSourceName                 templateName
 	Schema                         []attributeSchema
 	Model                          []attributeModel
+	ReadQueryConfiguration         string
 	ReadQuerySelectParameters      []string
 	ReadQueryGetMethod             []templateMethod
 	ReadQueryAltGetMethod          []map[string]string
@@ -91,6 +92,13 @@ type attributeRead struct {
 
 func upperFirst(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]
+}
+
+func pathFieldName(s string) string {
+	s = strings.TrimLeft(s, "{")
+	s = strings.TrimRight(s, "}")
+	pLeft, _, _ := strings.Cut(s, "-")
+	return pLeft
 }
 
 var dataSourceName string
@@ -349,6 +357,18 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 
 }
 
+func generateReadQueryConfiguration(pathFields []string) string {
+
+	if len(pathFields) == 1 {
+		return upperFirst(pathFields[0])
+	} else if len(pathFields) == 2 {
+		return upperFirst(pathFieldName(pathFields[1])) + "Item"
+	}
+
+	return "MISSING"
+
+}
+
 func generateDataSource(pathname string) {
 
 	input = templateInput{}
@@ -396,6 +416,7 @@ func generateDataSource(pathname string) {
 	input.DataSourceName            = templateName{dataSourceName}
 	input.Schema                    = generateSchema(nil, schemaObject) // Generate Terraform Schema from OpenAPI Schama properties
 	input.Model                     = generateModel("", nil, schemaObject) // Generate Terraform model from OpenAPI attributes
+	input.ReadQueryConfiguration    = generateReadQueryConfiguration(pathFields)
 	input.ReadQuerySelectParameters = generateReadSelectParameters(pathObject)
 	input.ReadQueryGetMethod        = generateReadQueryMethod(pathObject)
 	input.ReadQueryAltGetMethod     = augment.AltMethods
