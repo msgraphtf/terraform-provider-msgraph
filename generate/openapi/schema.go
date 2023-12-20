@@ -43,7 +43,7 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 
 	var schemaObject OpenAPISchemaObject
 
-	if schema.Title != "" {
+	if len(schema.AllOf) == 0 {
 		schemaObject.Title = schema.Title
 		schemaObject.Type = schema.Type
 		schemaObject.Properties = recurseDownSchemaProperties(schema)
@@ -100,7 +100,7 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 
 		property := schema.Properties[k].Value
 
-		if k == "@odata.type" || property.Extensions["x-ms-navigationProperty"] == true {
+		if strings.Contains(k, "@odata") || property.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}
 
@@ -112,7 +112,7 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 
 		// Determines what type of data the OpenAPI schema object is
 		if property.Type == "array" { // Array
-			if property.Items.Value.Type == "object" { // Array of objects
+			if property.Items.Value.Type == "object" || property.Items.Ref != "" { // Array of objects
 				newProperty.ArrayOf = "object"
 				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Ref))
 			} else if property.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
