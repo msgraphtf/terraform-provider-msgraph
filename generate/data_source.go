@@ -94,11 +94,11 @@ func upperFirst(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]
 }
 
-func pathFieldName(s string) string {
+func pathFieldName(s string) (string, string) {
 	s = strings.TrimLeft(s, "{")
 	s = strings.TrimRight(s, "}")
-	pLeft, _, _ := strings.Cut(s, "-")
-	return pLeft
+	pLeft, pRight, _ := strings.Cut(s, "-")
+	return pLeft, pRight
 }
 
 var dataSourceName string
@@ -262,9 +262,7 @@ func generateReadQueryMethod(path openapi.OpenAPIPathObject) []templateMethod {
 	for _, p := range pathFields {
 		newMethod := new(templateMethod)
 		if strings.HasPrefix(p, "{") {
-			p = strings.TrimLeft(p, "{")
-			p = strings.TrimRight(p, "}")
-			pLeft, pRight, _ := strings.Cut(p, "-")
+			pLeft, pRight := pathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight
@@ -362,7 +360,8 @@ func generateReadQueryConfiguration(pathFields []string) string {
 	if len(pathFields) == 1 {
 		return upperFirst(pathFields[0])
 	} else if len(pathFields) == 2 {
-		return upperFirst(pathFieldName(pathFields[1])) + "Item"
+		s, _ := pathFieldName(pathFields[1])
+		return upperFirst(s) + "Item"
 	}
 
 	return "MISSING"
@@ -383,9 +382,7 @@ func generateDataSource(pathname string) {
 	if len(pathFields) > 1 {
 		for _, p := range pathFields[1:] {
 			if strings.HasPrefix(p, "{") {
-				p = strings.TrimLeft(p, "{")
-				p = strings.TrimRight(p, "}")
-				pLeft, _, _ := strings.Cut(p, "-")
+				pLeft, _ := pathFieldName(p)
 				pLeft = strcase.ToSnake(pLeft)
 				dataSourceName = dataSourceName + pLeft
 			} else {
