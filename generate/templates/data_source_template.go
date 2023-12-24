@@ -8,7 +8,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	{{- if gt .ReadQueryGetMethodParametersCount 0 }}
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
+	{{- end}}
 	"github.com/microsoftgraph/msgraph-sdk-go/{{.PackageName}}"
 )
 
@@ -197,14 +199,14 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 		},
 	}
 
-	var result models.{{.DataSourceName.UpperCamel}}able
-	var err error
-
 	{{ define "ReadQueryZeroParameters" }}
-	result, err = d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+	result, err := d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 	{{- end}}
 
 	{{ define "ReadQueryNonZeroParameters" }}
+	var result models.{{.DataSourceName.UpperCamel}}able
+	var err error
+
 	if !state.Id.IsNull() {
 		result, err = d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 	} {{range .ReadQueryAltGetMethod}} else if !state.{{.if}}.IsNull() {
