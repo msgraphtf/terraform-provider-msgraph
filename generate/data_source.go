@@ -373,12 +373,13 @@ func generateDataSource(pathname string) {
 	input = templateInput{}
 
 	pathObject = openapi.GetPath(pathname)
+	schemaObject = pathObject.Get.Response
 
 	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName = strings.ToLower(pathFields[0])
 
+	// Generate data source name
 	dataSourceName = ""
-
 	if len(pathFields) > 1 {
 		for _, p := range pathFields[1:] {
 			if strings.HasPrefix(p, "{") {
@@ -392,8 +393,6 @@ func generateDataSource(pathname string) {
 	} else {
 		dataSourceName = pathFields[0]
 	}
-
-	schemaObject = pathObject.Get.Response
 
 	// Open augment file if available
 	var err error = nil
