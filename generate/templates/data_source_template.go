@@ -261,19 +261,19 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	{{- end}}
 
 	{{- define "ReadListStringAttribute" }}
-	for _, value := range {{.GetMethod}} {
-		{{.StateVarName}} = append({{.StateVarName}}, types.StringValue(value))
+	for _, v := range {{.GetMethod}} {
+		{{.StateVarName}} = append({{.StateVarName}}, types.StringValue(v))
 	}
 	{{- end}}
 
 	{{- define "ReadListStringFormattedAttribute" }}
-	for _, value := range {{.GetMethod}} {
-		{{.StateVarName}} = append({{.StateVarName}}, types.StringValue(value.String()))
+	for _, v := range {{.GetMethod}} {
+		{{.StateVarName}} = append({{.StateVarName}}, types.StringValue(v.String()))
 	}
 	{{- end}}
 
 	{{- define "ReadListNestedAttribute" }}
-	for _, value := range {{.GetMethod}} {
+	for _, v := range {{.GetMethod}} {
 		{{.ModelVarName}} := new({{.ModelName}})
 			{{template "generate_read" .NestedRead}}
 		{{.StateVarName}} = append({{.StateVarName}}, *{{.ModelVarName}})

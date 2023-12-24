@@ -301,7 +301,7 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 			newAttributeRead.GetMethod = parent.GetMethod + "." + newAttributeRead.GetMethod
 			newAttributeRead.StateVarName = parent.StateVarName + "." + upperFirst(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
-			newAttributeRead.GetMethod = "value." + newAttributeRead.GetMethod
+			newAttributeRead.GetMethod = "v." + newAttributeRead.GetMethod
 			newAttributeRead.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
 		} else {
 			newAttributeRead.GetMethod = "result." + newAttributeRead.GetMethod

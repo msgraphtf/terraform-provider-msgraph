@@ -278,17 +278,17 @@ func (d *deviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	if result.GetAccountEnabled() != nil {
 		state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
 	}
-	for _, value := range result.GetAlternativeSecurityIds() {
+	for _, v := range result.GetAlternativeSecurityIds() {
 		alternativeSecurityIds := new(deviceAlternativeSecurityIdsDataSourceModel)
 
-		if value.GetIdentityProvider() != nil {
-			alternativeSecurityIds.IdentityProvider = types.StringValue(*value.GetIdentityProvider())
+		if v.GetIdentityProvider() != nil {
+			alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
 		}
-		if value.GetKey() != nil {
-			alternativeSecurityIds.Key = types.StringValue(string(value.GetKey()[:]))
+		if v.GetKey() != nil {
+			alternativeSecurityIds.Key = types.StringValue(string(v.GetKey()[:]))
 		}
-		if value.GetTypeEscaped() != nil {
-			alternativeSecurityIds.Type = types.Int64Value(int64(*value.GetTypeEscaped()))
+		if v.GetTypeEscaped() != nil {
+			alternativeSecurityIds.Type = types.Int64Value(int64(*v.GetTypeEscaped()))
 		}
 		state.AlternativeSecurityIds = append(state.AlternativeSecurityIds, *alternativeSecurityIds)
 	}
@@ -340,8 +340,8 @@ func (d *deviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	if result.GetOperatingSystemVersion() != nil {
 		state.OperatingSystemVersion = types.StringValue(*result.GetOperatingSystemVersion())
 	}
-	for _, value := range result.GetPhysicalIds() {
-		state.PhysicalIds = append(state.PhysicalIds, types.StringValue(value))
+	for _, v := range result.GetPhysicalIds() {
+		state.PhysicalIds = append(state.PhysicalIds, types.StringValue(v))
 	}
 	if result.GetProfileType() != nil {
 		state.ProfileType = types.StringValue(*result.GetProfileType())
@@ -349,8 +349,8 @@ func (d *deviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	if result.GetRegistrationDateTime() != nil {
 		state.RegistrationDateTime = types.StringValue(result.GetRegistrationDateTime().String())
 	}
-	for _, value := range result.GetSystemLabels() {
-		state.SystemLabels = append(state.SystemLabels, types.StringValue(value))
+	for _, v := range result.GetSystemLabels() {
+		state.SystemLabels = append(state.SystemLabels, types.StringValue(v))
 	}
 	if result.GetTrustType() != nil {
 		state.TrustType = types.StringValue(*result.GetTrustType())

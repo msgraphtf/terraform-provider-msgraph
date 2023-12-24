@@ -456,25 +456,25 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if result.GetAllowExternalSenders() != nil {
 		state.AllowExternalSenders = types.BoolValue(*result.GetAllowExternalSenders())
 	}
-	for _, value := range result.GetAssignedLabels() {
+	for _, v := range result.GetAssignedLabels() {
 		assignedLabels := new(groupAssignedLabelsDataSourceModel)
 
-		if value.GetDisplayName() != nil {
-			assignedLabels.DisplayName = types.StringValue(*value.GetDisplayName())
+		if v.GetDisplayName() != nil {
+			assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
 		}
-		if value.GetLabelId() != nil {
-			assignedLabels.LabelId = types.StringValue(*value.GetLabelId())
+		if v.GetLabelId() != nil {
+			assignedLabels.LabelId = types.StringValue(*v.GetLabelId())
 		}
 		state.AssignedLabels = append(state.AssignedLabels, *assignedLabels)
 	}
-	for _, value := range result.GetAssignedLicenses() {
+	for _, v := range result.GetAssignedLicenses() {
 		assignedLicenses := new(groupAssignedLicensesDataSourceModel)
 
-		for _, value := range value.GetDisabledPlans() {
-			assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(value.String()))
+		for _, v := range v.GetDisabledPlans() {
+			assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(v.String()))
 		}
-		if value.GetSkuId() != nil {
-			assignedLicenses.SkuId = types.StringValue(value.GetSkuId().String())
+		if v.GetSkuId() != nil {
+			assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
 		}
 		state.AssignedLicenses = append(state.AssignedLicenses, *assignedLicenses)
 	}
@@ -496,8 +496,8 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if result.GetExpirationDateTime() != nil {
 		state.ExpirationDateTime = types.StringValue(result.GetExpirationDateTime().String())
 	}
-	for _, value := range result.GetGroupTypes() {
-		state.GroupTypes = append(state.GroupTypes, types.StringValue(value))
+	for _, v := range result.GetGroupTypes() {
+		state.GroupTypes = append(state.GroupTypes, types.StringValue(v))
 	}
 	if result.GetHideFromAddressLists() != nil {
 		state.HideFromAddressLists = types.BoolValue(*result.GetHideFromAddressLists())
@@ -542,20 +542,20 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if result.GetOnPremisesNetBiosName() != nil {
 		state.OnPremisesNetBiosName = types.StringValue(*result.GetOnPremisesNetBiosName())
 	}
-	for _, value := range result.GetOnPremisesProvisioningErrors() {
+	for _, v := range result.GetOnPremisesProvisioningErrors() {
 		onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorsDataSourceModel)
 
-		if value.GetCategory() != nil {
-			onPremisesProvisioningErrors.Category = types.StringValue(*value.GetCategory())
+		if v.GetCategory() != nil {
+			onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
 		}
-		if value.GetOccurredDateTime() != nil {
-			onPremisesProvisioningErrors.OccurredDateTime = types.StringValue(value.GetOccurredDateTime().String())
+		if v.GetOccurredDateTime() != nil {
+			onPremisesProvisioningErrors.OccurredDateTime = types.StringValue(v.GetOccurredDateTime().String())
 		}
-		if value.GetPropertyCausingError() != nil {
-			onPremisesProvisioningErrors.PropertyCausingError = types.StringValue(*value.GetPropertyCausingError())
+		if v.GetPropertyCausingError() != nil {
+			onPremisesProvisioningErrors.PropertyCausingError = types.StringValue(*v.GetPropertyCausingError())
 		}
-		if value.GetValue() != nil {
-			onPremisesProvisioningErrors.Value = types.StringValue(*value.GetValue())
+		if v.GetValue() != nil {
+			onPremisesProvisioningErrors.Value = types.StringValue(*v.GetValue())
 		}
 		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, *onPremisesProvisioningErrors)
 	}
@@ -574,8 +574,8 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if result.GetPreferredLanguage() != nil {
 		state.PreferredLanguage = types.StringValue(*result.GetPreferredLanguage())
 	}
-	for _, value := range result.GetProxyAddresses() {
-		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(value))
+	for _, v := range result.GetProxyAddresses() {
+		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(v))
 	}
 	if result.GetRenewedDateTime() != nil {
 		state.RenewedDateTime = types.StringValue(result.GetRenewedDateTime().String())
@@ -586,17 +586,17 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if result.GetSecurityIdentifier() != nil {
 		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
 	}
-	for _, value := range result.GetServiceProvisioningErrors() {
+	for _, v := range result.GetServiceProvisioningErrors() {
 		serviceProvisioningErrors := new(groupServiceProvisioningErrorsDataSourceModel)
 
-		if value.GetCreatedDateTime() != nil {
-			serviceProvisioningErrors.CreatedDateTime = types.StringValue(value.GetCreatedDateTime().String())
+		if v.GetCreatedDateTime() != nil {
+			serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
 		}
-		if value.GetIsResolved() != nil {
-			serviceProvisioningErrors.IsResolved = types.BoolValue(*value.GetIsResolved())
+		if v.GetIsResolved() != nil {
+			serviceProvisioningErrors.IsResolved = types.BoolValue(*v.GetIsResolved())
 		}
-		if value.GetServiceInstance() != nil {
-			serviceProvisioningErrors.ServiceInstance = types.StringValue(*value.GetServiceInstance())
+		if v.GetServiceInstance() != nil {
+			serviceProvisioningErrors.ServiceInstance = types.StringValue(*v.GetServiceInstance())
 		}
 		state.ServiceProvisioningErrors = append(state.ServiceProvisioningErrors, *serviceProvisioningErrors)
 	}

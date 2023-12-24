@@ -698,17 +698,17 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if result.GetError().GetCode() != nil {
 			state.Error.Code = types.StringValue(*result.GetError().GetCode())
 		}
-		for _, value := range result.GetError().GetDetails() {
+		for _, v := range result.GetError().GetDetails() {
 			details := new(siteDetailsDataSourceModel)
 
-			if value.GetCode() != nil {
-				details.Code = types.StringValue(*value.GetCode())
+			if v.GetCode() != nil {
+				details.Code = types.StringValue(*v.GetCode())
 			}
-			if value.GetMessage() != nil {
-				details.Message = types.StringValue(*value.GetMessage())
+			if v.GetMessage() != nil {
+				details.Message = types.StringValue(*v.GetMessage())
 			}
-			if value.GetTarget() != nil {
-				details.Target = types.StringValue(*value.GetTarget())
+			if v.GetTarget() != nil {
+				details.Target = types.StringValue(*v.GetTarget())
 			}
 			state.Error.Details = append(state.Error.Details, *details)
 		}
@@ -718,17 +718,17 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			if result.GetError().GetInnerError().GetCode() != nil {
 				state.Error.InnerError.Code = types.StringValue(*result.GetError().GetInnerError().GetCode())
 			}
-			for _, value := range result.GetError().GetInnerError().GetDetails() {
+			for _, v := range result.GetError().GetInnerError().GetDetails() {
 				details := new(siteDetailsDataSourceModel)
 
-				if value.GetCode() != nil {
-					details.Code = types.StringValue(*value.GetCode())
+				if v.GetCode() != nil {
+					details.Code = types.StringValue(*v.GetCode())
 				}
-				if value.GetMessage() != nil {
-					details.Message = types.StringValue(*value.GetMessage())
+				if v.GetMessage() != nil {
+					details.Message = types.StringValue(*v.GetMessage())
 				}
-				if value.GetTarget() != nil {
-					details.Target = types.StringValue(*value.GetTarget())
+				if v.GetTarget() != nil {
+					details.Target = types.StringValue(*v.GetTarget())
 				}
 				state.Error.InnerError.Details = append(state.Error.InnerError.Details, *details)
 			}
