@@ -1,0 +1,9 @@
+excludedProperties:
+  - hasMembersWithLicenseErrors # Can only be used as a $filter argument
+  - isArchived # Property needs to be accessed through other endpoint
+  - allowExternalSenders # All the below cause an error when included
+  - autoSubscribeNewMembers
+  - hideFromAddressLists
+  - hideFromOutlookClients
+  - isSubscribedByMail
+  - unseenCount
