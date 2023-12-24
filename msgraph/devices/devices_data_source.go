@@ -1,0 +1,370 @@
+package devices
+
+import (
+	"context"
+
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	"github.com/microsoftgraph/msgraph-sdk-go/devices"
+)
+
+// Ensure the implementation satisfies the expected interfaces.
+var (
+	_ datasource.DataSource              = &devicesDataSource{}
+	_ datasource.DataSourceWithConfigure = &devicesDataSource{}
+)
+
+// NewDevicesDataSource is a helper function to simplify the provider implementation.
+func NewDevicesDataSource() datasource.DataSource {
+	return &devicesDataSource{}
+}
+
+// devicesDataSource is the data source implementation.
+type devicesDataSource struct {
+	client *msgraphsdk.GraphServiceClient
+}
+
+// Metadata returns the data source type name.
+func (d *devicesDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_devices"
+}
+
+// Configure adds the provider configured client to the data source.
+func (d *devicesDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	d.client = req.ProviderData.(*msgraphsdk.GraphServiceClient)
+}
+
+// Schema defines the schema for the data source.
+func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		Attributes: map[string]schema.Attribute{
+			"value": schema.ListNestedAttribute{
+				Description: "",
+				Computed:    true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"id": schema.StringAttribute{
+							Description: "The unique identifier for an entity. Read-only.",
+							Computed:    true,
+						},
+						"deleted_date_time": schema.StringAttribute{
+							Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+							Computed:    true,
+						},
+						"account_enabled": schema.BoolAttribute{
+							Description: "true if the account is enabled; otherwise, false. Required. Default is true.  Supports $filter (eq, ne, not, in). Only callers in Global Administrator and Cloud Device Administrator roles can set this property.",
+							Computed:    true,
+						},
+						"alternative_security_ids": schema.ListNestedAttribute{
+							Description: "For internal use only. Not nullable. Supports $filter (eq, not, ge, le).",
+							Computed:    true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"identity_provider": schema.StringAttribute{
+										Description: "For internal use only.",
+										Computed:    true,
+									},
+									"key": schema.StringAttribute{
+										Description: "For internal use only.",
+										Computed:    true,
+									},
+									"type": schema.Int64Attribute{
+										Description: "For internal use only.",
+										Computed:    true,
+									},
+								},
+							},
+						},
+						"approximate_last_sign_in_date_time": schema.StringAttribute{
+							Description: "The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Supports $filter (eq, ne, not, ge, le, and eq on null values) and $orderby.",
+							Computed:    true,
+						},
+						"compliance_expiration_date_time": schema.StringAttribute{
+							Description: "The timestamp when the device is no longer deemed compliant. The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.",
+							Computed:    true,
+						},
+						"device_category": schema.StringAttribute{
+							Description: "User-defined property set by Intune to automatically add devices to groups and simplify managing devices.",
+							Computed:    true,
+						},
+						"device_id": schema.StringAttribute{
+							Description: "Unique identifier set by Azure Device Registration Service at the time of registration. This is an alternate key that can be used to reference the device object. Supports $filter (eq, ne, not, startsWith).",
+							Computed:    true,
+						},
+						"device_metadata": schema.StringAttribute{
+							Description: "For internal use only. Set to null.",
+							Computed:    true,
+						},
+						"device_ownership": schema.StringAttribute{
+							Description: "Ownership of the device. This property is set by Intune. Possible values are: unknown, company, personal.",
+							Computed:    true,
+						},
+						"device_version": schema.Int64Attribute{
+							Description: "For internal use only.",
+							Computed:    true,
+						},
+						"display_name": schema.StringAttribute{
+							Description: "The display name for the device. Required. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
+							Computed:    true,
+						},
+						"enrollment_profile_name": schema.StringAttribute{
+							Description: "Enrollment profile applied to the device. For example, Apple Device Enrollment Profile, Device enrollment - Corporate device identifiers, or Windows Autopilot profile name. This property is set by Intune.",
+							Computed:    true,
+						},
+						"is_compliant": schema.BoolAttribute{
+							Description: "true if the device complies with Mobile Device Management (MDM) policies; otherwise, false. Read-only. This can only be updated by Intune for any device OS type or by an approved MDM app for Windows OS devices. Supports $filter (eq, ne, not).",
+							Computed:    true,
+						},
+						"is_managed": schema.BoolAttribute{
+							Description: "true if the device is managed by a Mobile Device Management (MDM) app; otherwise, false. This can only be updated by Intune for any device OS type or by an approved MDM app for Windows OS devices. Supports $filter (eq, ne, not).",
+							Computed:    true,
+						},
+						"mdm_app_id": schema.StringAttribute{
+							Description: "Application identifier used to register device into MDM. Read-only. Supports $filter (eq, ne, not, startsWith).",
+							Computed:    true,
+						},
+						"on_premises_last_sync_date_time": schema.StringAttribute{
+							Description: "The last time at which the object was synced with the on-premises directory. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z Read-only. Supports $filter (eq, ne, not, ge, le, in).",
+							Computed:    true,
+						},
+						"on_premises_sync_enabled": schema.BoolAttribute{
+							Description: "true if this object is synced from an on-premises directory; false if this object was originally synced from an on-premises directory but is no longer synced; null if this object has never been synced from an on-premises directory (default). Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
+							Computed:    true,
+						},
+						"operating_system": schema.StringAttribute{
+							Description: "The type of operating system on the device. Required. Supports $filter (eq, ne, not, ge, le, startsWith, and eq on null values).",
+							Computed:    true,
+						},
+						"operating_system_version": schema.StringAttribute{
+							Description: "The version of the operating system on the device. Required. Supports $filter (eq, ne, not, ge, le, startsWith, and eq on null values).",
+							Computed:    true,
+						},
+						"physical_ids": schema.ListAttribute{
+							Description: "For internal use only. Not nullable. Supports $filter (eq, not, ge, le, startsWith,/$count eq 0, /$count ne 0).",
+							Computed:    true,
+							ElementType: types.StringType,
+						},
+						"profile_type": schema.StringAttribute{
+							Description: "The profile type of the device. Possible values: RegisteredDevice (default), SecureVM, Printer, Shared, IoT.",
+							Computed:    true,
+						},
+						"registration_date_time": schema.StringAttribute{
+							Description: "Date and time of when the device was registered. The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.",
+							Computed:    true,
+						},
+						"system_labels": schema.ListAttribute{
+							Description: "List of labels applied to the device by the system. Supports $filter (/$count eq 0, /$count ne 0).",
+							Computed:    true,
+							ElementType: types.StringType,
+						},
+						"trust_type": schema.StringAttribute{
+							Description: "Type of trust for the joined device. Read-only. Possible values:  Workplace (indicates bring your own personal devices), AzureAd (Cloud only joined devices), ServerAd (on-premises domain joined devices joined to Microsoft Entra ID). For more details, see Introduction to device management in Microsoft Entra ID.",
+							Computed:    true,
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+type devicesDataSourceModel struct {
+	Value []devicesValueDataSourceModel `tfsdk:"value"`
+}
+
+type devicesValueDataSourceModel struct {
+	Id                            types.String                                   `tfsdk:"id"`
+	DeletedDateTime               types.String                                   `tfsdk:"deleted_date_time"`
+	AccountEnabled                types.Bool                                     `tfsdk:"account_enabled"`
+	AlternativeSecurityIds        []devicesAlternativeSecurityIdsDataSourceModel `tfsdk:"alternative_security_ids"`
+	ApproximateLastSignInDateTime types.String                                   `tfsdk:"approximate_last_sign_in_date_time"`
+	ComplianceExpirationDateTime  types.String                                   `tfsdk:"compliance_expiration_date_time"`
+	DeviceCategory                types.String                                   `tfsdk:"device_category"`
+	DeviceId                      types.String                                   `tfsdk:"device_id"`
+	DeviceMetadata                types.String                                   `tfsdk:"device_metadata"`
+	DeviceOwnership               types.String                                   `tfsdk:"device_ownership"`
+	DeviceVersion                 types.Int64                                    `tfsdk:"device_version"`
+	DisplayName                   types.String                                   `tfsdk:"display_name"`
+	EnrollmentProfileName         types.String                                   `tfsdk:"enrollment_profile_name"`
+	IsCompliant                   types.Bool                                     `tfsdk:"is_compliant"`
+	IsManaged                     types.Bool                                     `tfsdk:"is_managed"`
+	MdmAppId                      types.String                                   `tfsdk:"mdm_app_id"`
+	OnPremisesLastSyncDateTime    types.String                                   `tfsdk:"on_premises_last_sync_date_time"`
+	OnPremisesSyncEnabled         types.Bool                                     `tfsdk:"on_premises_sync_enabled"`
+	OperatingSystem               types.String                                   `tfsdk:"operating_system"`
+	OperatingSystemVersion        types.String                                   `tfsdk:"operating_system_version"`
+	PhysicalIds                   []types.String                                 `tfsdk:"physical_ids"`
+	ProfileType                   types.String                                   `tfsdk:"profile_type"`
+	RegistrationDateTime          types.String                                   `tfsdk:"registration_date_time"`
+	SystemLabels                  []types.String                                 `tfsdk:"system_labels"`
+	TrustType                     types.String                                   `tfsdk:"trust_type"`
+}
+
+type devicesAlternativeSecurityIdsDataSourceModel struct {
+	IdentityProvider types.String `tfsdk:"identity_provider"`
+	Key              types.String `tfsdk:"key"`
+	Type             types.Int64  `tfsdk:"type"`
+}
+
+// Read refreshes the Terraform state with the latest data.
+func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state devicesDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	qparams := devices.DevicesRequestBuilderGetRequestConfiguration{
+		QueryParameters: &devices.DevicesRequestBuilderGetQueryParameters{
+			Select: []string{
+				"id",
+				"deletedDateTime",
+				"accountEnabled",
+				"alternativeSecurityIds",
+				"approximateLastSignInDateTime",
+				"complianceExpirationDateTime",
+				"deviceCategory",
+				"deviceId",
+				"deviceMetadata",
+				"deviceOwnership",
+				"deviceVersion",
+				"displayName",
+				"enrollmentProfileName",
+				"isCompliant",
+				"isManaged",
+				"mdmAppId",
+				"onPremisesLastSyncDateTime",
+				"onPremisesSyncEnabled",
+				"operatingSystem",
+				"operatingSystemVersion",
+				"physicalIds",
+				"profileType",
+				"registrationDateTime",
+				"systemLabels",
+				"trustType",
+				"memberOf",
+				"registeredOwners",
+				"registeredUsers",
+				"transitiveMemberOf",
+				"extensions",
+			},
+		},
+	}
+
+	result, err := d.client.Devices().Get(context.Background(), &qparams)
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error getting devices",
+			err.Error(),
+		)
+		return
+	}
+
+	for _, v := range result.GetValue() {
+		value := new(devicesValueDataSourceModel)
+
+		if v.GetId() != nil {
+			value.Id = types.StringValue(*v.GetId())
+		}
+		if v.GetDeletedDateTime() != nil {
+			value.DeletedDateTime = types.StringValue(v.GetDeletedDateTime().String())
+		}
+		if v.GetAccountEnabled() != nil {
+			value.AccountEnabled = types.BoolValue(*v.GetAccountEnabled())
+		}
+		for _, v := range v.GetAlternativeSecurityIds() {
+			alternativeSecurityIds := new(devicesAlternativeSecurityIdsDataSourceModel)
+
+			if v.GetIdentityProvider() != nil {
+				alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
+			}
+			if v.GetKey() != nil {
+				alternativeSecurityIds.Key = types.StringValue(string(v.GetKey()[:]))
+			}
+			if v.GetTypeEscaped() != nil {
+				alternativeSecurityIds.Type = types.Int64Value(int64(*v.GetTypeEscaped()))
+			}
+			value.AlternativeSecurityIds = append(value.AlternativeSecurityIds, *alternativeSecurityIds)
+		}
+		if v.GetApproximateLastSignInDateTime() != nil {
+			value.ApproximateLastSignInDateTime = types.StringValue(v.GetApproximateLastSignInDateTime().String())
+		}
+		if v.GetComplianceExpirationDateTime() != nil {
+			value.ComplianceExpirationDateTime = types.StringValue(v.GetComplianceExpirationDateTime().String())
+		}
+		if v.GetDeviceCategory() != nil {
+			value.DeviceCategory = types.StringValue(*v.GetDeviceCategory())
+		}
+		if v.GetDeviceId() != nil {
+			value.DeviceId = types.StringValue(*v.GetDeviceId())
+		}
+		if v.GetDeviceMetadata() != nil {
+			value.DeviceMetadata = types.StringValue(*v.GetDeviceMetadata())
+		}
+		if v.GetDeviceOwnership() != nil {
+			value.DeviceOwnership = types.StringValue(*v.GetDeviceOwnership())
+		}
+		if v.GetDeviceVersion() != nil {
+			value.DeviceVersion = types.Int64Value(int64(*v.GetDeviceVersion()))
+		}
+		if v.GetDisplayName() != nil {
+			value.DisplayName = types.StringValue(*v.GetDisplayName())
+		}
+		if v.GetEnrollmentProfileName() != nil {
+			value.EnrollmentProfileName = types.StringValue(*v.GetEnrollmentProfileName())
+		}
+		if v.GetIsCompliant() != nil {
+			value.IsCompliant = types.BoolValue(*v.GetIsCompliant())
+		}
+		if v.GetIsManaged() != nil {
+			value.IsManaged = types.BoolValue(*v.GetIsManaged())
+		}
+		if v.GetMdmAppId() != nil {
+			value.MdmAppId = types.StringValue(*v.GetMdmAppId())
+		}
+		if v.GetOnPremisesLastSyncDateTime() != nil {
+			value.OnPremisesLastSyncDateTime = types.StringValue(v.GetOnPremisesLastSyncDateTime().String())
+		}
+		if v.GetOnPremisesSyncEnabled() != nil {
+			value.OnPremisesSyncEnabled = types.BoolValue(*v.GetOnPremisesSyncEnabled())
+		}
+		if v.GetOperatingSystem() != nil {
+			value.OperatingSystem = types.StringValue(*v.GetOperatingSystem())
+		}
+		if v.GetOperatingSystemVersion() != nil {
+			value.OperatingSystemVersion = types.StringValue(*v.GetOperatingSystemVersion())
+		}
+		for _, v := range v.GetPhysicalIds() {
+			value.PhysicalIds = append(value.PhysicalIds, types.StringValue(v))
+		}
+		if v.GetProfileType() != nil {
+			value.ProfileType = types.StringValue(*v.GetProfileType())
+		}
+		if v.GetRegistrationDateTime() != nil {
+			value.RegistrationDateTime = types.StringValue(v.GetRegistrationDateTime().String())
+		}
+		for _, v := range v.GetSystemLabels() {
+			value.SystemLabels = append(value.SystemLabels, types.StringValue(v))
+		}
+		if v.GetTrustType() != nil {
+			value.TrustType = types.StringValue(*v.GetTrustType())
+		}
+		state.Value = append(state.Value, *value)
+	}
+
+	// Overwrite items with refreshed state
+	diags := resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+}

@@ -105,9 +105,11 @@ func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.D
 	return []func() datasource.DataSource{
 		// Provider specific implementation
 		devices.NewDeviceDataSource,
+		devices.NewDevicesDataSource,
 		groups.NewGroupDataSource,
 		groups.NewGroupsDataSource,
 		sites.NewSiteDataSource,
+		sites.NewSitesDataSource,
 		teams.NewTeamDataSource,
 		users.NewUserDataSource,
 		users.NewUsersDataSource,
