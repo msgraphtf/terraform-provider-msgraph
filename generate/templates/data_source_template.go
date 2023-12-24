@@ -200,6 +200,11 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	var result models.{{.DataSourceName.UpperCamel}}able
 	var err error
 
+	{{ define "ReadQueryZeroParameters" }}
+	result, err = d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+	{{- end}}
+
+	{{ define "ReadQueryNonZeroParameters" }}
 	if !state.Id.IsNull() {
 		result, err = d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 	} {{range .ReadQueryAltGetMethod}} else if !state.{{.if}}.IsNull() {
@@ -211,6 +216,14 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 		)
 		return
 	}
+	{{- end}}
+
+	{{- if eq .ReadQueryGetMethodParametersCount 0}}
+	{{- template "ReadQueryZeroParameters" .}}
+	{{- else if gt .ReadQueryGetMethodParametersCount 0 }}
+	{{- template "ReadQueryNonZeroParameters" .}}
+	{{- end}}
+
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error getting {{.DataSourceName.Snake}}",

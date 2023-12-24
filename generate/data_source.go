@@ -47,6 +47,7 @@ type templateInput struct {
 	Model                          []attributeModel
 	ReadQueryConfiguration         string
 	ReadQuerySelectParameters      []string
+	ReadQueryGetMethodParametersCount int
 	ReadQueryGetMethod             []templateMethod
 	ReadQueryAltGetMethod          []map[string]string
 	ReadQueryErrorAttribute        string
@@ -378,7 +379,9 @@ func generateDataSource(pathname string) {
 	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName = strings.ToLower(pathFields[0])
 
-	// Generate data source name
+	var getMethodParametersCount int
+
+	// Generate data source name, and count required get method parameters
 	dataSourceName = ""
 	if len(pathFields) > 1 {
 		for _, p := range pathFields[1:] {
@@ -386,6 +389,7 @@ func generateDataSource(pathname string) {
 				pLeft, _ := pathFieldName(p)
 				pLeft = strcase.ToSnake(pLeft)
 				dataSourceName = dataSourceName + pLeft
+				getMethodParametersCount++
 			} else {
 				dataSourceName = dataSourceName + p
 			}
@@ -414,6 +418,7 @@ func generateDataSource(pathname string) {
 	input.Model                     = generateModel("", nil, schemaObject) // Generate Terraform model from OpenAPI attributes
 	input.ReadQueryConfiguration    = generateReadQueryConfiguration(pathFields)
 	input.ReadQuerySelectParameters = generateReadSelectParameters(pathObject)
+	input.ReadQueryGetMethodParametersCount = getMethodParametersCount
 	input.ReadQueryGetMethod        = generateReadQueryMethod(pathObject)
 	input.ReadQueryAltGetMethod     = augment.AltMethods
 	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI attributes

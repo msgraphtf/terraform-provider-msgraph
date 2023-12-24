@@ -927,6 +927,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		)
 		return
 	}
+
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error getting user",
