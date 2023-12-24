@@ -1,0 +1,14 @@
+excludedProperties:
+  - deviceEnrollmentLimit # Seems to be bugged
+  - print # Seems to be bugged
+  - aboutMe # All the remaining only work when getting single users
+  - birthday
+  - hireDate
+  - interests
+  - mySite
+  - pastProjects
+  - preferredName
+  - responsibilities
+  - schools
+  - skills
+  - mailboxSettings
