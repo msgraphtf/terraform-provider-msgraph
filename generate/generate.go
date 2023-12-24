@@ -13,6 +13,7 @@ func main() {
 			"/groups/{group-id}",
 			"/sites/{site-id}",
 			"/teams/{team-id}",
+			"/users",
 			"/users/{user-id}",
 		}
 
