@@ -1,3 +1,8 @@
+# TODO
+
+- Support validation for enums
+- Support pagination for collection results
+
 # Mapping OpenAPI Concepts to Terraform
 
 ## Open API schema object/property types -> Terraform Attribute types
