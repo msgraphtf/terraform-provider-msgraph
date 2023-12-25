@@ -387,7 +387,6 @@ func generateDataSource(pathname string) {
 		for _, p := range pathFields[1:] {
 			if strings.HasPrefix(p, "{") {
 				pLeft, _ := pathFieldName(p)
-				pLeft = strcase.ToSnake(pLeft)
 				dataSourceName += pLeft
 				getMethodParametersCount++
 			} else {
