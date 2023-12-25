@@ -15,6 +15,8 @@ func main() {
 			"/devices/{device-id}",
 			"/groups",
 			"/groups/{group-id}",
+			"/servicePrincipals",
+			"/servicePrincipals/{servicePrincipal-id}",
 			"/sites",
 			"/sites/{site-id}",
 			"/teams/{team-id}",

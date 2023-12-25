@@ -7,6 +7,7 @@ import (
 	"terraform-provider-msgraph/msgraph/applications"
 	"terraform-provider-msgraph/msgraph/devices"
 	"terraform-provider-msgraph/msgraph/groups"
+	"terraform-provider-msgraph/msgraph/serviceprincipals"
 	"terraform-provider-msgraph/msgraph/sites"
 	"terraform-provider-msgraph/msgraph/teams"
 	"terraform-provider-msgraph/msgraph/users"
@@ -111,6 +112,8 @@ func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.D
 		devices.NewDevicesDataSource,
 		groups.NewGroupDataSource,
 		groups.NewGroupsDataSource,
+		serviceprincipals.NewServicePrincipalDataSource,
+		serviceprincipals.NewServicePrincipalsDataSource,
 		sites.NewSiteDataSource,
 		sites.NewSitesDataSource,
 		teams.NewTeamDataSource,
