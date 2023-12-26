@@ -13,42 +13,42 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-type templateName struct {
+type dataSourceTemplateName struct {
 	string
 }
 
-func (t templateName) LowerCamel() string {
+func (t dataSourceTemplateName) LowerCamel() string {
 	return strcase.ToLowerCamel(t.string)
 }
 
-func (t templateName) UpperCamel() string {
+func (t dataSourceTemplateName) UpperCamel() string {
 	return strcase.ToCamel(t.string)
 }
 
-func (t templateName) Snake() string {
+func (t dataSourceTemplateName) Snake() string {
 	return strcase.ToSnake(t.string)
 }
 
-type templateMethod struct {
+type dataSourceTemplateMethod struct {
 	MethodName string
 	Parameter  string
 }
 
-type templateAugment struct {
+type dataSourceTemplateAugment struct {
 	ExtraOptionals     []string            `yaml:"extraOptionals"`
 	AltMethods         []map[string]string `yaml:"altMethods"`
 	ExcludedProperties []string            `yaml:"excludedProperties"`
 }
 
-type templateInput struct {
+type dataSourceTemplateInput struct {
 	PackageName                    string
-	DataSourceName                 templateName
+	DataSourceName                 dataSourceTemplateName
 	Schema                         []dataSourceSchema
 	Model                          []dataSourceModel
 	ReadQueryConfiguration         string
 	ReadQuerySelectParameters      []string
 	ReadQueryGetMethodParametersCount int
-	ReadQueryGetMethod             []templateMethod
+	ReadQueryGetMethod             []dataSourceTemplateMethod
 	ReadQueryAltGetMethod          []map[string]string
 	ReadQueryErrorAttribute        string
 	ReadQueryErrorExtraAttributes  []string
@@ -106,8 +106,8 @@ var dataSourceName string
 var packageName string
 var pathObject openapi.OpenAPIPathObject
 var schemaObject openapi.OpenAPISchemaObject
-var augment templateAugment
-var input templateInput
+var augment dataSourceTemplateAugment
+var input dataSourceTemplateInput
 var allModelNames []string
 
 func generateSchema(schema []dataSourceSchema, schemaObject openapi.OpenAPISchemaObject) []dataSourceSchema {
@@ -253,15 +253,15 @@ func generateReadSelectParameters(path openapi.OpenAPIPathObject) []string {
 
 }
 
-func generateReadQueryMethod(path openapi.OpenAPIPathObject) []templateMethod {
+func generateReadQueryMethod(path openapi.OpenAPIPathObject) []dataSourceTemplateMethod {
 
-	var getMethod []templateMethod
+	var getMethod []dataSourceTemplateMethod
 
 	pathFields := strings.Split(path.Path, "/")
 	pathFields = pathFields[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 
 	for _, p := range pathFields {
-		newMethod := new(templateMethod)
+		newMethod := new(dataSourceTemplateMethod)
 		if strings.HasPrefix(p, "{") {
 			pLeft, pRight := pathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)
@@ -371,7 +371,7 @@ func generateReadQueryConfiguration(pathFields []string) string {
 
 func generateDataSource(pathname string) {
 
-	input = templateInput{}
+	input = dataSourceTemplateInput{}
 
 	pathObject = openapi.GetPath(pathname)
 	schemaObject = pathObject.Get.Response
@@ -399,7 +399,7 @@ func generateDataSource(pathname string) {
 
 	// Open augment file if available
 	var err error = nil
-	augment = templateAugment{}
+	augment = dataSourceTemplateAugment{}
 	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
 	if err == nil {
 		yaml.Unmarshal(augmentFile, &augment)
@@ -412,7 +412,7 @@ func generateDataSource(pathname string) {
 
 	// Set input values to top level template
 	input.PackageName               = packageName
-	input.DataSourceName            = templateName{dataSourceName}
+	input.DataSourceName            = dataSourceTemplateName{dataSourceName}
 	input.Schema                    = generateSchema(nil, schemaObject) // Generate Terraform Schema from OpenAPI Schama properties
 	input.Model                     = generateModel("", nil, schemaObject) // Generate Terraform model from OpenAPI schema
 	input.ReadQueryConfiguration    = generateReadQueryConfiguration(pathFields)
