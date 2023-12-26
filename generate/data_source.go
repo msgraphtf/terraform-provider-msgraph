@@ -43,8 +43,8 @@ type templateAugment struct {
 type templateInput struct {
 	PackageName                    string
 	DataSourceName                 templateName
-	Schema                         []attributeSchema
-	Model                          []attributeModel
+	Schema                         []dataSourceSchema
+	Model                          []dataSourceModel
 	ReadQueryConfiguration         string
 	ReadQuerySelectParameters      []string
 	ReadQueryGetMethodParametersCount int
@@ -52,11 +52,11 @@ type templateInput struct {
 	ReadQueryAltGetMethod          []map[string]string
 	ReadQueryErrorAttribute        string
 	ReadQueryErrorExtraAttributes  []string
-	Read                           []attributeRead
+	Read                           []dataSourceRead
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
-type attributeSchema struct {
+type dataSourceSchema struct {
 	AttributeName string
 	AttributeType string
 	Description   string
@@ -64,31 +64,31 @@ type attributeSchema struct {
 	Optional      bool
 	Computed      bool
 	ElementType   string
-	Attributes    []attributeSchema
-	NestedObject  []attributeSchema
+	Attributes    []dataSourceSchema
+	NestedObject  []dataSourceSchema
 }
 
 // Used by templates defined inside of data_source_template.go to generate the data models
-type attributeModel struct {
+type dataSourceModel struct {
 	ModelName string
-	Fields    []attributeModelField
+	Fields    []dataSourceModelField
 }
 
-type attributeModelField struct {
+type dataSourceModelField struct {
 	FieldName     string
 	FieldType     string
 	AttributeName string
 }
 
-type attributeRead struct {
+type dataSourceRead struct {
 	GetMethod      string
 	StateVarName   string
 	ModelVarName   string
 	ModelName      string
 	AttributeType  string
 	DataSourceName string
-	NestedRead     []attributeRead
-	ParentRead     *attributeRead
+	NestedRead     []dataSourceRead
+	ParentRead     *dataSourceRead
 }
 
 func upperFirst(s string) string {
@@ -110,7 +110,7 @@ var augment templateAugment
 var input templateInput
 var allModelNames []string
 
-func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchemaObject) []attributeSchema {
+func generateSchema(schema []dataSourceSchema, schemaObject openapi.OpenAPISchemaObject) []dataSourceSchema {
 
 	for _, property := range schemaObject.Properties {
 
@@ -118,63 +118,63 @@ func generateSchema(schema []attributeSchema, schemaObject openapi.OpenAPISchema
 			continue
 		}
 
-		// Create new attribute schema and model for array
-		newAttributeSchema := new(attributeSchema)
+		// Create new dataSource schema and model for array
+		newDataSourceSchema := new(dataSourceSchema)
 
-		newAttributeSchema.AttributeName = strcase.ToSnake(property.Name)
-		newAttributeSchema.Computed = true
-		newAttributeSchema.Description = property.Description
-		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newAttributeSchema.AttributeName) {
-			newAttributeSchema.Optional = true
-			input.ReadQueryErrorAttribute = newAttributeSchema.AttributeName
-		} else if slices.Contains(augment.ExtraOptionals, newAttributeSchema.AttributeName) {
-			newAttributeSchema.Optional = true
-			input.ReadQueryErrorExtraAttributes = append(input.ReadQueryErrorExtraAttributes, newAttributeSchema.AttributeName)
+		newDataSourceSchema.AttributeName = strcase.ToSnake(property.Name)
+		newDataSourceSchema.Computed = true
+		newDataSourceSchema.Description = property.Description
+		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newDataSourceSchema.AttributeName) {
+			newDataSourceSchema.Optional = true
+			input.ReadQueryErrorAttribute = newDataSourceSchema.AttributeName
+		} else if slices.Contains(augment.ExtraOptionals, newDataSourceSchema.AttributeName) {
+			newDataSourceSchema.Optional = true
+			input.ReadQueryErrorExtraAttributes = append(input.ReadQueryErrorExtraAttributes, newDataSourceSchema.AttributeName)
 		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
 		switch property.Type {
 		case "string":
-			newAttributeSchema.AttributeType = "StringAttribute"
+			newDataSourceSchema.AttributeType = "StringAttribute"
 		case "integer":
-			newAttributeSchema.AttributeType = "Int64Attribute"
+			newDataSourceSchema.AttributeType = "Int64Attribute"
 		case "boolean":
-			newAttributeSchema.AttributeType = "BoolAttribute"
+			newDataSourceSchema.AttributeType = "BoolAttribute"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
-				newAttributeSchema.AttributeType = "StringAttribute"
+				newDataSourceSchema.AttributeType = "StringAttribute"
 			} else {
-				newAttributeSchema.AttributeType = "SingleNestedAttribute"
+				newDataSourceSchema.AttributeType = "SingleNestedAttribute"
 			}
-			nestedAttributes := generateSchema(nil, property.ObjectOf)
-			newAttributeSchema.Attributes = nestedAttributes
+			nestedDataSources := generateSchema(nil, property.ObjectOf)
+			newDataSourceSchema.Attributes = nestedDataSources
 		case "array":
 			switch property.ArrayOf {
 			case "string":
-				newAttributeSchema.AttributeType = "ListAttribute"
-				newAttributeSchema.ElementType = "types.StringType"
+				newDataSourceSchema.AttributeType = "ListAttribute"
+				newDataSourceSchema.ElementType = "types.StringType"
 			case "object":
 				if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
-					newAttributeSchema.AttributeType = "ListAttribute"
-					newAttributeSchema.ElementType = "types.StringType"
+					newDataSourceSchema.AttributeType = "ListAttribute"
+					newDataSourceSchema.ElementType = "types.StringType"
 				} else {
-					newAttributeSchema.AttributeType = "ListNestedAttribute"
+					newDataSourceSchema.AttributeType = "ListNestedAttribute"
 				}
-				nestedAttributes := generateSchema(nil, property.ObjectOf)
-				newAttributeSchema.NestedObject = nestedAttributes
+				nestedDataSources := generateSchema(nil, property.ObjectOf)
+				newDataSourceSchema.NestedObject = nestedDataSources
 			}
 		}
 
-		schema = append(schema, *newAttributeSchema)
+		schema = append(schema, *newDataSourceSchema)
 	}
 
 	return schema
 
 }
 
-func generateModel(modelName string, model []attributeModel, schemaObject openapi.OpenAPISchemaObject) []attributeModel {
+func generateModel(modelName string, model []dataSourceModel, schemaObject openapi.OpenAPISchemaObject) []dataSourceModel {
 
-	newModel := attributeModel{
+	newModel := dataSourceModel{
 		ModelName: dataSourceName + modelName + "DataSourceModel",
 	}
 
@@ -185,7 +185,7 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 		allModelNames = append(allModelNames, newModel.ModelName)
 	}
 
-	var nestedModels []attributeModel
+	var nestedModels []dataSourceModel
 
 	for _, property := range schemaObject.Properties {
 
@@ -193,7 +193,7 @@ func generateModel(modelName string, model []attributeModel, schemaObject openap
 			continue
 		}
 
-		newModelField := new(attributeModelField)
+		newModelField := new(dataSourceModelField)
 		newModelField.FieldName = upperFirst(property.Name)
 		newModelField.AttributeName = strcase.ToSnake(property.Name)
 
@@ -277,7 +277,7 @@ func generateReadQueryMethod(path openapi.OpenAPIPathObject) []templateMethod {
 	return getMethod
 }
 
-func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject, parent *attributeRead) []attributeRead {
+func generateRead(read []dataSourceRead, schemaObject openapi.OpenAPISchemaObject, parent *dataSourceRead) []dataSourceRead {
 
 	for _, property := range schemaObject.Properties {
 
@@ -285,7 +285,7 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 			continue
 		}
 
-		newAttributeRead := attributeRead{
+		newDataSourceRead := dataSourceRead{
 			GetMethod:      "Get" + upperFirst(property.Name) + "()",
 			ModelName:      dataSourceName + upperFirst(property.Name) + "DataSourceModel",
 			ModelVarName:   property.Name,
@@ -294,62 +294,62 @@ func generateRead(read []attributeRead, schemaObject openapi.OpenAPISchemaObject
 		}
 
 		if property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
-			newAttributeRead.GetMethod = "GetTypeEscaped()"
+			newDataSourceRead.GetMethod = "GetTypeEscaped()"
 		}
 
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
-			newAttributeRead.GetMethod = parent.GetMethod + "." + newAttributeRead.GetMethod
-			newAttributeRead.StateVarName = parent.StateVarName + "." + upperFirst(property.Name)
+			newDataSourceRead.GetMethod = parent.GetMethod + "." + newDataSourceRead.GetMethod
+			newDataSourceRead.StateVarName = parent.StateVarName + "." + upperFirst(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
-			newAttributeRead.GetMethod = "v." + newAttributeRead.GetMethod
-			newAttributeRead.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
+			newDataSourceRead.GetMethod = "v." + newDataSourceRead.GetMethod
+			newDataSourceRead.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
 		} else {
-			newAttributeRead.GetMethod = "result." + newAttributeRead.GetMethod
-			newAttributeRead.StateVarName = "state." + upperFirst(property.Name)
+			newDataSourceRead.GetMethod = "result." + newDataSourceRead.GetMethod
+			newDataSourceRead.StateVarName = "state." + upperFirst(property.Name)
 		}
 
 		// Convert types from OpenAPI schema types to Terraform attributes
 		switch property.Type {
 		case "string":
 			if property.Format == "" {
-				newAttributeRead.AttributeType = "ReadStringAttribute"
+				newDataSourceRead.AttributeType = "ReadStringAttribute"
 			} else if strings.Contains(property.Format, "base64") { // TODO: base64 encoded data is probably not stored correctly
-				newAttributeRead.AttributeType = "ReadStringBase64Attribute"
+				newDataSourceRead.AttributeType = "ReadStringBase64Attribute"
 			} else {
-				newAttributeRead.AttributeType = "ReadStringFormattedAttribute"
+				newDataSourceRead.AttributeType = "ReadStringFormattedAttribute"
 			}
 		case "integer":
-			newAttributeRead.AttributeType = "ReadInt64Attribute"
+			newDataSourceRead.AttributeType = "ReadInt64Attribute"
 		case "boolean":
-			newAttributeRead.AttributeType = "ReadBoolAttribute"
+			newDataSourceRead.AttributeType = "ReadBoolAttribute"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum.
-				newAttributeRead.AttributeType = "ReadStringFormattedAttribute"
+				newDataSourceRead.AttributeType = "ReadStringFormattedAttribute"
 			} else {
-				newAttributeRead.AttributeType = "ReadSingleNestedAttribute"
-				nestedRead := generateRead(nil, property.ObjectOf, &newAttributeRead)
-				newAttributeRead.NestedRead = nestedRead
+				newDataSourceRead.AttributeType = "ReadSingleNestedAttribute"
+				nestedRead := generateRead(nil, property.ObjectOf, &newDataSourceRead)
+				newDataSourceRead.NestedRead = nestedRead
 			}
 		case "array":
 			switch property.ArrayOf {
 			case "string":
 				if property.Format == "" {
-					newAttributeRead.AttributeType = "ReadListStringAttribute"
+					newDataSourceRead.AttributeType = "ReadListStringAttribute"
 				} else {
-					newAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
+					newDataSourceRead.AttributeType = "ReadListStringFormattedAttribute"
 				}
 			case "object":
 				if property.ObjectOf.Type == "string" { // This is a string enum.
-					newAttributeRead.AttributeType = "ReadListStringFormattedAttribute"
+					newDataSourceRead.AttributeType = "ReadListStringFormattedAttribute"
 				} else {
-					newAttributeRead.AttributeType = "ReadListNestedAttribute"
-					nestedRead := generateRead(nil, property.ObjectOf, &newAttributeRead)
-					newAttributeRead.NestedRead = nestedRead
+					newDataSourceRead.AttributeType = "ReadListNestedAttribute"
+					nestedRead := generateRead(nil, property.ObjectOf, &newDataSourceRead)
+					newDataSourceRead.NestedRead = nestedRead
 				}
 			}
 		}
 
-		read = append(read, newAttributeRead)
+		read = append(read, newDataSourceRead)
 	}
 
 	return read
@@ -414,13 +414,13 @@ func generateDataSource(pathname string) {
 	input.PackageName               = packageName
 	input.DataSourceName            = templateName{dataSourceName}
 	input.Schema                    = generateSchema(nil, schemaObject) // Generate Terraform Schema from OpenAPI Schama properties
-	input.Model                     = generateModel("", nil, schemaObject) // Generate Terraform model from OpenAPI attributes
+	input.Model                     = generateModel("", nil, schemaObject) // Generate Terraform model from OpenAPI schema
 	input.ReadQueryConfiguration    = generateReadQueryConfiguration(pathFields)
 	input.ReadQuerySelectParameters = generateReadSelectParameters(pathObject)
 	input.ReadQueryGetMethodParametersCount = getMethodParametersCount
 	input.ReadQueryGetMethod        = generateReadQueryMethod(pathObject)
 	input.ReadQueryAltGetMethod     = augment.AltMethods
-	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI attributes
+	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, err := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
