@@ -2,6 +2,7 @@
 
 - Support validation for enums
 - Support pagination for collection results
+- User Required instead of Optional for attributes where possible
 
 # Mapping OpenAPI Concepts to Terraform
 
