@@ -109,9 +109,7 @@ func pathFieldName(s string) (string, string) {
 }
 
 var dataSourceName string
-var packageName string
 var pathObject openapi.OpenAPIPathObject
-var schemaObject openapi.OpenAPISchemaObject
 var augment templateAugment
 var input dataSourceTemplateInput
 var allModelNames []string
@@ -390,10 +388,10 @@ func generateDataSource(pathname string) {
 	input = dataSourceTemplateInput{}
 
 	pathObject = openapi.GetPath(pathname)
-	schemaObject = pathObject.Get.Response
+	schemaObject := pathObject.Get.Response
 
 	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-	packageName = strings.ToLower(pathFields[0])
+	packageName := strings.ToLower(pathFields[0])
 
 	// Generate data source name
 	dataSourceName = ""
