@@ -224,20 +224,20 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Computed:    true,
 						},
 						"service_provisioning_errors": schema.ListNestedAttribute{
-							Description: "",
+							Description: "Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a group object .  Supports $filter (eq, not, for isResolved and serviceInstance).",
 							Computed:    true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"created_date_time": schema.StringAttribute{
-										Description: "",
+										Description: "The date and time at which the error occurred.",
 										Computed:    true,
 									},
 									"is_resolved": schema.BoolAttribute{
-										Description: "",
+										Description: "Indicates whether the error has been attended to.",
 										Computed:    true,
 									},
 									"service_instance": schema.StringAttribute{
-										Description: "",
+										Description: "Qualified service instance (for example, 'SharePoint/Dublin') that published the service error information.",
 										Computed:    true,
 									},
 								},
