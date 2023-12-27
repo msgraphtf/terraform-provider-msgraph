@@ -283,7 +283,20 @@ func generateReadQueryMethod(path openapi.OpenAPIPathObject) []queryMethod {
 	return getMethod
 }
 
-func generateRead(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
+func generateReadQueryConfiguration(pathFields []string) string {
+
+	if len(pathFields) == 1 {
+		return upperFirst(pathFields[0])
+	} else if len(pathFields) == 2 {
+		s, _ := pathFieldName(pathFields[1])
+		return upperFirst(s) + "Item"
+	}
+
+	return "MISSING"
+
+}
+
+func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
 
 	for _, property := range schemaObject.Properties {
 
@@ -333,7 +346,7 @@ func generateRead(read []readResponse, schemaObject openapi.OpenAPISchemaObject,
 				newDataSourceRead.AttributeType = "ReadStringFormattedAttribute"
 			} else {
 				newDataSourceRead.AttributeType = "ReadSingleNestedAttribute"
-				nestedRead := generateRead(nil, property.ObjectOf, &newDataSourceRead)
+				nestedRead := generateReadResponse(nil, property.ObjectOf, &newDataSourceRead)
 				newDataSourceRead.NestedRead = nestedRead
 			}
 		case "array":
@@ -349,7 +362,7 @@ func generateRead(read []readResponse, schemaObject openapi.OpenAPISchemaObject,
 					newDataSourceRead.AttributeType = "ReadListStringFormattedAttribute"
 				} else {
 					newDataSourceRead.AttributeType = "ReadListNestedAttribute"
-					nestedRead := generateRead(nil, property.ObjectOf, &newDataSourceRead)
+					nestedRead := generateReadResponse(nil, property.ObjectOf, &newDataSourceRead)
 					newDataSourceRead.NestedRead = nestedRead
 				}
 			}
@@ -359,19 +372,6 @@ func generateRead(read []readResponse, schemaObject openapi.OpenAPISchemaObject,
 	}
 
 	return read
-
-}
-
-func generateReadQueryConfiguration(pathFields []string) string {
-
-	if len(pathFields) == 1 {
-		return upperFirst(pathFields[0])
-	} else if len(pathFields) == 2 {
-		s, _ := pathFieldName(pathFields[1])
-		return upperFirst(s) + "Item"
-	}
-
-	return "MISSING"
 
 }
 
@@ -427,7 +427,7 @@ func generateDataSource(pathname string) {
 	input.ReadQuery.GetMethodParametersCount = getMethodParametersCount
 	input.ReadQuery.GetMethod        = generateReadQueryMethod(pathObject)
 	input.ReadQuery.AltGetMethod     = augment.AltMethods
-	input.ReadResponse               = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
+	input.ReadResponse               = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
