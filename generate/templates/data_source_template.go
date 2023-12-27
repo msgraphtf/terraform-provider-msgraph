@@ -26,53 +26,9 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 		return
 	}
 
+	{{ template "read_query_template.go" .ReadQuery}}
 
-	qparams := {{.ReadQuery.Configuration}}RequestBuilderGetRequestConfiguration{
-		QueryParameters: &{{.ReadQuery.Configuration}}RequestBuilderGetQueryParameters{
-			Select: []string {
-				{{- range .ReadQuery.SelectParameters}}
-				"{{.}}",
-				{{- end }}
-			},
-		},
-	}
-
-	{{ define "ReadQueryZeroParameters" }}
-	result, err := d.client.{{range .ReadQuery.GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
-	{{- end}}
-
-	{{ define "ReadQueryNonZeroParameters" }}
-	var result models.{{.ReadQuery.BlockName.UpperCamel}}able
-	var err error
-
-	if !state.Id.IsNull() {
-		result, err = d.client.{{range .ReadQuery.GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
-	} {{range .ReadQuery.AltGetMethod}} else if !state.{{.if}}.IsNull() {
-		result, err = d.client.{{.method}}.Get(context.Background(), &qparams)
-	} {{end}}else {
-		resp.Diagnostics.AddError(
-			"Missing argument",
-			"`{{.ReadQuery.ErrorAttribute}}` {{range .ReadQuery.ErrorExtraAttributes}}or `{{.}}` {{end}}must be supplied.",
-		)
-		return
-	}
-	{{- end}}
-
-	{{- if not .ReadQuery.MultipleGetMethodParameters }}
-	{{- template "ReadQueryZeroParameters" .}}
-	{{- else }}
-	{{- template "ReadQueryNonZeroParameters" .}}
-	{{- end}}
-
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error getting {{.ReadQuery.BlockName.Snake}}",
-			err.Error(),
-		)
-		return
-	}
-
-	{{- template "read_response_template.go" .ReadResponse}}
+	{{ template "read_response_template.go" .ReadResponse}}
 
 
 	// Overwrite items with refreshed state
