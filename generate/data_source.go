@@ -76,6 +76,7 @@ type terraformModelField struct {
 }
 
 type readQuery struct {
+	BlockName             strWithCases
 	Configuration         string
 	SelectParameters      []string
 	MultipleGetMethodParameters bool
@@ -245,6 +246,8 @@ func generateReadQuery() readQuery {
 
 	var rq readQuery
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
+
+	rq.BlockName = strWithCases{dataSourceName}
 
 	// Generate ReadQuery.Configuration
 	if len(pathFields) == 1 {

@@ -42,7 +42,7 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	{{- end}}
 
 	{{ define "ReadQuery.NonZeroParameters" }}
-	var result models.{{.DataSourceName.UpperCamel}}able
+	var result models.{{.ReadQuery.BlockName.UpperCamel}}able
 	var err error
 
 	if !state.Id.IsNull() {
@@ -66,7 +66,7 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting {{.DataSourceName.Snake}}",
+			"Error getting {{.ReadQuery.BlockName.Snake}}",
 			err.Error(),
 		)
 		return
