@@ -93,7 +93,6 @@ type readResponse struct {
 	ModelVarName   string
 	ModelName      string
 	AttributeType  string
-	DataSourceName string
 	NestedRead     []readResponse
 	ParentRead     *readResponse
 }
@@ -320,7 +319,6 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 			GetMethod:      "Get" + upperFirst(property.Name) + "()",
 			ModelName:      dataSourceName + upperFirst(property.Name) + "DataSourceModel",
 			ModelVarName:   property.Name,
-			DataSourceName: dataSourceName,
 			ParentRead:     parent,
 		}
 
