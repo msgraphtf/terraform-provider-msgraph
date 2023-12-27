@@ -1,7 +1,7 @@
 {{- template "data_source_preamble.go" .}}
 
 // Schema defines the schema for the data source.
-func (d *{{.DataSourceName.LowerCamel}}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *{{.BlockName.LowerCamel}}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
     resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			{{- template "schema_template.go" .}}
@@ -19,8 +19,8 @@ type {{.ModelName}} struct {
 {{end}}
 
 // Read refreshes the Terraform state with the latest data.
-func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state {{.DataSourceName.LowerCamel}}DataSourceModel
+func (d *{{.BlockName.LowerCamel}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state {{.BlockName.LowerCamel}}DataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return

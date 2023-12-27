@@ -30,7 +30,7 @@ func (t strWithCases) Snake() string {
 
 type dataSourceTemplateInput struct {
 	PackageName    string
-	DataSourceName strWithCases
+	BlockName      strWithCases
 	Schema         []terraformSchema
 	Model          []terraformModel
 	ReadQuery      readQuery
@@ -426,12 +426,12 @@ func generateDataSource(pathname string) {
 	tmpl, _ = tmpl.ParseFiles("generate/templates/read_response_template.go")
 
 	// Set input values to top level template
-	input.PackageName    = packageName
-	input.DataSourceName = strWithCases{dataSourceName}
-	input.Schema         = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
-	input.Model          = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
-	input.ReadQuery      = generateReadQuery()
-	input.ReadResponse   = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
+	input.PackageName  = packageName
+	input.BlockName    = strWithCases{dataSourceName}
+	input.Schema       = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
+	input.Model        = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
+	input.ReadQuery    = generateReadQuery()
+	input.ReadResponse = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
