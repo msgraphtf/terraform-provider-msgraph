@@ -27,8 +27,8 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	}
 
 
-	qparams := {{.PackageName}}.{{.ReadQuery.Configuration}}RequestBuilderGetRequestConfiguration{
-		QueryParameters: &{{.PackageName}}.{{.ReadQuery.Configuration}}RequestBuilderGetQueryParameters{
+	qparams := {{.ReadQuery.Configuration}}RequestBuilderGetRequestConfiguration{
+		QueryParameters: &{{.ReadQuery.Configuration}}RequestBuilderGetQueryParameters{
 			Select: []string {
 				{{- range .ReadQuery.SelectParameters}}
 				"{{.}}",
@@ -37,11 +37,11 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 		},
 	}
 
-	{{ define "ReadQuery.ZeroParameters" }}
+	{{ define "ReadQueryZeroParameters" }}
 	result, err := d.client.{{range .ReadQuery.GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 	{{- end}}
 
-	{{ define "ReadQuery.NonZeroParameters" }}
+	{{ define "ReadQueryNonZeroParameters" }}
 	var result models.{{.ReadQuery.BlockName.UpperCamel}}able
 	var err error
 
@@ -59,9 +59,9 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	{{- end}}
 
 	{{- if not .ReadQuery.MultipleGetMethodParameters }}
-	{{- template "ReadQuery.ZeroParameters" .}}
+	{{- template "ReadQueryZeroParameters" .}}
 	{{- else }}
-	{{- template "ReadQuery.NonZeroParameters" .}}
+	{{- template "ReadQueryNonZeroParameters" .}}
 	{{- end}}
 
 	if err != nil {

@@ -250,13 +250,14 @@ func generateReadQuery() readQuery {
 	rq.BlockName = strWithCases{dataSourceName}
 
 	// Generate ReadQuery.Configuration
+	rq.Configuration = strings.ToLower(pathFields[0]) + "."
 	if len(pathFields) == 1 {
-		rq.Configuration = upperFirst(pathFields[0])
+		rq.Configuration += upperFirst(pathFields[0])
 	} else if len(pathFields) == 2 {
 		s, _ := pathFieldName(pathFields[1])
-		rq.Configuration = upperFirst(s) + "Item"
+		rq.Configuration += upperFirst(s) + "Item"
 	} else {
-		rq.Configuration = "MISSING"
+		rq.Configuration += "MISSING"
 	}
 
 
@@ -423,6 +424,7 @@ func generateDataSource(pathname string) {
 	tmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
 	tmpl, _ = tmpl.ParseFiles("generate/templates/data_source_preamble.go")
 	tmpl, _ = tmpl.ParseFiles("generate/templates/schema_template.go")
+	tmpl, _ = tmpl.ParseFiles("generate/templates/read_query_template.go")
 	tmpl, _ = tmpl.ParseFiles("generate/templates/read_response_template.go")
 
 	// Set input values to top level template
