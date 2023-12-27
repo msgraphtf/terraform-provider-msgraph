@@ -28,17 +28,6 @@ func (t strWithCases) Snake() string {
 	return strcase.ToSnake(t.string)
 }
 
-type dataSourceTemplateMethod struct {
-	MethodName string
-	Parameter  string
-}
-
-type dataSourceTemplateAugment struct {
-	ExtraOptionals     []string            `yaml:"extraOptionals"`
-	AltMethods         []map[string]string `yaml:"altMethods"`
-	ExcludedProperties []string            `yaml:"excludedProperties"`
-}
-
 type dataSourceTemplateInput struct {
 	PackageName                    string
 	DataSourceName                 strWithCases
@@ -47,11 +36,24 @@ type dataSourceTemplateInput struct {
 	ReadQueryConfiguration         string
 	ReadQuerySelectParameters      []string
 	ReadQueryGetMethodParametersCount int
-	ReadQueryGetMethod             []dataSourceTemplateMethod
+	ReadQueryGetMethod             []queryMethod
 	ReadQueryAltGetMethod          []map[string]string
 	ReadQueryErrorAttribute        string
 	ReadQueryErrorExtraAttributes  []string
 	Read                           []dataSourceRead
+}
+
+// Represents a method used to perform a query using msgraph-sdk-go 
+type queryMethod struct {
+	MethodName string
+	Parameter  string
+}
+
+// Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
+type templateAugment struct {
+	ExtraOptionals     []string            `yaml:"extraOptionals"`
+	AltMethods         []map[string]string `yaml:"altMethods"`
+	ExcludedProperties []string            `yaml:"excludedProperties"`
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
@@ -105,7 +107,7 @@ var dataSourceName string
 var packageName string
 var pathObject openapi.OpenAPIPathObject
 var schemaObject openapi.OpenAPISchemaObject
-var augment dataSourceTemplateAugment
+var augment templateAugment
 var input dataSourceTemplateInput
 var allModelNames []string
 
@@ -252,15 +254,15 @@ func generateReadSelectParameters(path openapi.OpenAPIPathObject) []string {
 
 }
 
-func generateReadQueryMethod(path openapi.OpenAPIPathObject) []dataSourceTemplateMethod {
+func generateReadQueryMethod(path openapi.OpenAPIPathObject) []queryMethod {
 
-	var getMethod []dataSourceTemplateMethod
+	var getMethod []queryMethod
 
 	pathFields := strings.Split(path.Path, "/")
 	pathFields = pathFields[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 
 	for _, p := range pathFields {
-		newMethod := new(dataSourceTemplateMethod)
+		newMethod := new(queryMethod)
 		if strings.HasPrefix(p, "{") {
 			pLeft, pRight := pathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)
@@ -398,7 +400,7 @@ func generateDataSource(pathname string) {
 
 	// Open augment file if available
 	var err error = nil
-	augment = dataSourceTemplateAugment{}
+	augment = templateAugment{}
 	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
 	if err == nil {
 		yaml.Unmarshal(augmentFile, &augment)
