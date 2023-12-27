@@ -245,27 +245,30 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 }
 
-func generateReadSelectParameters(path openapi.OpenAPIPathObject) []string {
+func generateReadQuery() {
 
-	var selectParamenters []string
+	pathFields := strings.Split(pathObject.Path, "/")[1:]
 
-	for _, parameter := range path.Get.SelectParameters {
+	// Generate ReadQuery.Configuration
+	if len(pathFields) == 1 {
+		input.ReadQuery.Configuration = upperFirst(pathFields[0])
+	} else if len(pathFields) == 2 {
+		s, _ := pathFieldName(pathFields[1])
+		input.ReadQuery.Configuration = upperFirst(s) + "Item"
+	} else {
+		input.ReadQuery.Configuration = "MISSING"
+	}
+
+
+	// Generate ReadQuery.SelectParameters
+	for _, parameter := range pathObject.Get.SelectParameters {
 		if !slices.Contains(augment.ExcludedProperties, parameter) {
-			selectParamenters = append(selectParamenters, parameter)
+			input.ReadQuery.SelectParameters = append(input.ReadQuery.SelectParameters, parameter)
 		}
 	}
 
-	return selectParamenters
-
-}
-
-func generateReadQueryMethod(path openapi.OpenAPIPathObject) []queryMethod {
-
+	// Generate ReadQuery.GetMethod
 	var getMethod []queryMethod
-
-	pathFields := strings.Split(path.Path, "/")
-	pathFields = pathFields[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-
 	for _, p := range pathFields {
 		newMethod := new(queryMethod)
 		if strings.HasPrefix(p, "{") {
@@ -279,20 +282,10 @@ func generateReadQueryMethod(path openapi.OpenAPIPathObject) []queryMethod {
 		}
 		getMethod = append(getMethod, *newMethod)
 	}
+	input.ReadQuery.GetMethod = getMethod
 
-	return getMethod
-}
-
-func generateReadQueryConfiguration(pathFields []string) string {
-
-	if len(pathFields) == 1 {
-		return upperFirst(pathFields[0])
-	} else if len(pathFields) == 2 {
-		s, _ := pathFieldName(pathFields[1])
-		return upperFirst(s) + "Item"
-	}
-
-	return "MISSING"
+	// Generate ReadQuery.AltMethod
+	input.ReadQuery.AltGetMethod = augment.AltMethods
 
 }
 
@@ -422,11 +415,8 @@ func generateDataSource(pathname string) {
 	input.DataSourceName            = strWithCases{dataSourceName}
 	input.Schema                    = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
 	input.Model                     = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
-	input.ReadQuery.Configuration    = generateReadQueryConfiguration(pathFields)
-	input.ReadQuery.SelectParameters = generateReadSelectParameters(pathObject)
+	generateReadQuery()
 	input.ReadQuery.GetMethodParametersCount = getMethodParametersCount
-	input.ReadQuery.GetMethod        = generateReadQueryMethod(pathObject)
-	input.ReadQuery.AltGetMethod     = augment.AltMethods
 	input.ReadResponse               = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
