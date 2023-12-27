@@ -27,41 +27,41 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	}
 
 
-	qparams := {{.PackageName}}.{{.ReadQueryConfiguration}}RequestBuilderGetRequestConfiguration{
-		QueryParameters: &{{.PackageName}}.{{.ReadQueryConfiguration}}RequestBuilderGetQueryParameters{
+	qparams := {{.PackageName}}.{{.ReadQuery.Configuration}}RequestBuilderGetRequestConfiguration{
+		QueryParameters: &{{.PackageName}}.{{.ReadQuery.Configuration}}RequestBuilderGetQueryParameters{
 			Select: []string {
-				{{- range .ReadQuerySelectParameters}}
+				{{- range .ReadQuery.SelectParameters}}
 				"{{.}}",
 				{{- end }}
 			},
 		},
 	}
 
-	{{ define "ReadQueryZeroParameters" }}
-	result, err := d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+	{{ define "ReadQuery.ZeroParameters" }}
+	result, err := d.client.{{range .ReadQuery.GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 	{{- end}}
 
-	{{ define "ReadQueryNonZeroParameters" }}
+	{{ define "ReadQuery.NonZeroParameters" }}
 	var result models.{{.DataSourceName.UpperCamel}}able
 	var err error
 
 	if !state.Id.IsNull() {
-		result, err = d.client.{{range .ReadQueryGetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
-	} {{range .ReadQueryAltGetMethod}} else if !state.{{.if}}.IsNull() {
+		result, err = d.client.{{range .ReadQuery.GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+	} {{range .ReadQuery.AltGetMethod}} else if !state.{{.if}}.IsNull() {
 		result, err = d.client.{{.method}}.Get(context.Background(), &qparams)
 	} {{end}}else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
-			"`{{.ReadQueryErrorAttribute}}` {{range .ReadQueryErrorExtraAttributes}}or `{{.}}` {{end}}must be supplied.",
+			"`{{.ReadQuery.ErrorAttribute}}` {{range .ReadQuery.ErrorExtraAttributes}}or `{{.}}` {{end}}must be supplied.",
 		)
 		return
 	}
 	{{- end}}
 
-	{{- if eq .ReadQueryGetMethodParametersCount 0}}
-	{{- template "ReadQueryZeroParameters" .}}
-	{{- else if gt .ReadQueryGetMethodParametersCount 0 }}
-	{{- template "ReadQueryNonZeroParameters" .}}
+	{{- if eq .ReadQuery.GetMethodParametersCount 0}}
+	{{- template "ReadQuery.ZeroParameters" .}}
+	{{- else if gt .ReadQuery.GetMethodParametersCount 0 }}
+	{{- template "ReadQuery.NonZeroParameters" .}}
 	{{- end}}
 
 	if err != nil {
@@ -72,7 +72,7 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 		return
 	}
 
-	{{- template "read_response_template.go" .}}
+	{{- template "read_response_template.go" .ReadResponse}}
 
 
 	// Overwrite items with refreshed state

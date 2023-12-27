@@ -29,18 +29,12 @@ func (t strWithCases) Snake() string {
 }
 
 type dataSourceTemplateInput struct {
-	PackageName                    string
-	DataSourceName                 strWithCases
-	Schema                         []terraformSchema
-	Model                          []terraformModel
-	ReadQueryConfiguration         string
-	ReadQuerySelectParameters      []string
-	ReadQueryGetMethodParametersCount int
-	ReadQueryGetMethod             []queryMethod
-	ReadQueryAltGetMethod          []map[string]string
-	ReadQueryErrorAttribute        string
-	ReadQueryErrorExtraAttributes  []string
-	Read                           []readResponse
+	PackageName    string
+	DataSourceName strWithCases
+	Schema         []terraformSchema
+	Model          []terraformModel
+	ReadQuery      readQuery
+	ReadResponse   []readResponse
 }
 
 // Represents a method used to perform a query using msgraph-sdk-go 
@@ -79,6 +73,16 @@ type terraformModelField struct {
 	FieldName     string
 	FieldType     string
 	AttributeName string
+}
+
+type readQuery struct {
+	Configuration         string
+	SelectParameters      []string
+	GetMethodParametersCount int
+	GetMethod             []queryMethod
+	AltGetMethod          []map[string]string
+	ErrorAttribute        string
+	ErrorExtraAttributes  []string
 }
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
@@ -128,10 +132,10 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 		newSchema.Description = property.Description
 		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) {
 			newSchema.Optional = true
-			input.ReadQueryErrorAttribute = newSchema.AttributeName
+			input.ReadQuery.ErrorAttribute = newSchema.AttributeName
 		} else if slices.Contains(augment.ExtraOptionals, newSchema.AttributeName) {
 			newSchema.Optional = true
-			input.ReadQueryErrorExtraAttributes = append(input.ReadQueryErrorExtraAttributes, newSchema.AttributeName)
+			input.ReadQuery.ErrorExtraAttributes = append(input.ReadQuery.ErrorExtraAttributes, newSchema.AttributeName)
 		}
 
 		// Convert types from OpenAPI schema types to  attributes
@@ -418,12 +422,12 @@ func generateDataSource(pathname string) {
 	input.DataSourceName            = strWithCases{dataSourceName}
 	input.Schema                    = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
 	input.Model                     = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
-	input.ReadQueryConfiguration    = generateReadQueryConfiguration(pathFields)
-	input.ReadQuerySelectParameters = generateReadSelectParameters(pathObject)
-	input.ReadQueryGetMethodParametersCount = getMethodParametersCount
-	input.ReadQueryGetMethod        = generateReadQueryMethod(pathObject)
-	input.ReadQueryAltGetMethod     = augment.AltMethods
-	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
+	input.ReadQuery.Configuration    = generateReadQueryConfiguration(pathFields)
+	input.ReadQuery.SelectParameters = generateReadSelectParameters(pathObject)
+	input.ReadQuery.GetMethodParametersCount = getMethodParametersCount
+	input.ReadQuery.GetMethod        = generateReadQueryMethod(pathObject)
+	input.ReadQuery.AltGetMethod     = augment.AltMethods
+	input.ReadResponse               = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")

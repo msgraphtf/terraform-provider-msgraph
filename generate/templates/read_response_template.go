@@ -48,7 +48,7 @@ for _, v := range {{.GetMethod}} {
 
 
 {{/* Generate statements to map response to state */}}
-{{- block "generate_read" .Read}}
+{{- block "generate_read" .}}
 {{- range .}}
 {{- if eq .AttributeType "ReadStringAttribute"}}
 {{- template "ReadStringAttribute" .}}
