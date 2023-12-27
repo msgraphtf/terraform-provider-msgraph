@@ -315,7 +315,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 			continue
 		}
 
-		newDataSourceRead := readResponse{
+		newReadResponse := readResponse{
 			GetMethod:      "Get" + upperFirst(property.Name) + "()",
 			ModelName:      dataSourceName + upperFirst(property.Name) + "DataSourceModel",
 			ModelVarName:   property.Name,
@@ -323,62 +323,62 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 		}
 
 		if property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
-			newDataSourceRead.GetMethod = "GetTypeEscaped()"
+			newReadResponse.GetMethod = "GetTypeEscaped()"
 		}
 
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
-			newDataSourceRead.GetMethod = parent.GetMethod + "." + newDataSourceRead.GetMethod
-			newDataSourceRead.StateVarName = parent.StateVarName + "." + upperFirst(property.Name)
+			newReadResponse.GetMethod = parent.GetMethod + "." + newReadResponse.GetMethod
+			newReadResponse.StateVarName = parent.StateVarName + "." + upperFirst(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
-			newDataSourceRead.GetMethod = "v." + newDataSourceRead.GetMethod
-			newDataSourceRead.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
+			newReadResponse.GetMethod = "v." + newReadResponse.GetMethod
+			newReadResponse.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
 		} else {
-			newDataSourceRead.GetMethod = "result." + newDataSourceRead.GetMethod
-			newDataSourceRead.StateVarName = "state." + upperFirst(property.Name)
+			newReadResponse.GetMethod = "result." + newReadResponse.GetMethod
+			newReadResponse.StateVarName = "state." + upperFirst(property.Name)
 		}
 
 		// Convert types from OpenAPI schema types to  attributes
 		switch property.Type {
 		case "string":
 			if property.Format == "" {
-				newDataSourceRead.AttributeType = "ReadStringAttribute"
+				newReadResponse.AttributeType = "ReadStringAttribute"
 			} else if strings.Contains(property.Format, "base64") { // TODO: base64 encoded data is probably not stored correctly
-				newDataSourceRead.AttributeType = "ReadStringBase64Attribute"
+				newReadResponse.AttributeType = "ReadStringBase64Attribute"
 			} else {
-				newDataSourceRead.AttributeType = "ReadStringFormattedAttribute"
+				newReadResponse.AttributeType = "ReadStringFormattedAttribute"
 			}
 		case "integer":
-			newDataSourceRead.AttributeType = "ReadInt64Attribute"
+			newReadResponse.AttributeType = "ReadInt64Attribute"
 		case "boolean":
-			newDataSourceRead.AttributeType = "ReadBoolAttribute"
+			newReadResponse.AttributeType = "ReadBoolAttribute"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum.
-				newDataSourceRead.AttributeType = "ReadStringFormattedAttribute"
+				newReadResponse.AttributeType = "ReadStringFormattedAttribute"
 			} else {
-				newDataSourceRead.AttributeType = "ReadSingleNestedAttribute"
-				nestedRead := generateReadResponse(nil, property.ObjectOf, &newDataSourceRead)
-				newDataSourceRead.NestedRead = nestedRead
+				newReadResponse.AttributeType = "ReadSingleNestedAttribute"
+				nestedRead := generateReadResponse(nil, property.ObjectOf, &newReadResponse)
+				newReadResponse.NestedRead = nestedRead
 			}
 		case "array":
 			switch property.ArrayOf {
 			case "string":
 				if property.Format == "" {
-					newDataSourceRead.AttributeType = "ReadListStringAttribute"
+					newReadResponse.AttributeType = "ReadListStringAttribute"
 				} else {
-					newDataSourceRead.AttributeType = "ReadListStringFormattedAttribute"
+					newReadResponse.AttributeType = "ReadListStringFormattedAttribute"
 				}
 			case "object":
 				if property.ObjectOf.Type == "string" { // This is a string enum.
-					newDataSourceRead.AttributeType = "ReadListStringFormattedAttribute"
+					newReadResponse.AttributeType = "ReadListStringFormattedAttribute"
 				} else {
-					newDataSourceRead.AttributeType = "ReadListNestedAttribute"
-					nestedRead := generateReadResponse(nil, property.ObjectOf, &newDataSourceRead)
-					newDataSourceRead.NestedRead = nestedRead
+					newReadResponse.AttributeType = "ReadListNestedAttribute"
+					nestedRead := generateReadResponse(nil, property.ObjectOf, &newReadResponse)
+					newReadResponse.NestedRead = nestedRead
 				}
 			}
 		}
 
-		read = append(read, newDataSourceRead)
+		read = append(read, newReadResponse)
 	}
 
 	return read
