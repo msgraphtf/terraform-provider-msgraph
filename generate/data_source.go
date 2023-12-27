@@ -423,13 +423,6 @@ func generateDataSource(pathname string) {
 		yaml.Unmarshal(augmentFile, &augment)
 	}
 
-	// Get templates
-	tmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
-	tmpl, _ = tmpl.ParseFiles("generate/templates/data_source_preamble.go")
-	tmpl, _ = tmpl.ParseFiles("generate/templates/schema_template.go")
-	tmpl, _ = tmpl.ParseFiles("generate/templates/read_query_template.go")
-	tmpl, _ = tmpl.ParseFiles("generate/templates/read_response_template.go")
-
 	// Set input values to top level template
 	input.PackageName  = packageName
 	input.BlockName    = strWithCases{blockName}
@@ -438,6 +431,13 @@ func generateDataSource(pathname string) {
 	input.Model        = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
 	input.ReadQuery    = generateReadQuery()
 	input.ReadResponse = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
+
+	// Get templates
+	tmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
+	tmpl, _ = tmpl.ParseFiles("generate/templates/data_source_preamble.go")
+	tmpl, _ = tmpl.ParseFiles("generate/templates/schema_template.go")
+	tmpl, _ = tmpl.ParseFiles("generate/templates/read_query_template.go")
+	tmpl, _ = tmpl.ParseFiles("generate/templates/read_response_template.go")
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_data_source.go")
