@@ -9,7 +9,7 @@ func (d *{{.BlockName.LowerCamel}}DataSource) Schema(_ context.Context, _ dataso
 	}
 }
 
-{{ template "model_template.go" .}}
+{{ template "model_template.go" .Model}}
 
 // Read refreshes the Terraform state with the latest data.
 func (d *{{.BlockName.LowerCamel}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
