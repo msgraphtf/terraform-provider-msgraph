@@ -438,7 +438,6 @@ func generateDataSource(pathname string) {
 
 	// Get templates
 	datasourceTmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
-	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/data_source_preamble.go")
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/schema_template.go")
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_query_template.go")
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_response_template.go")
