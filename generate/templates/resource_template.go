@@ -134,3 +134,16 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 
 }
+
+// Delete deletes the resource and removes the Terraform state on success.
+func (r *{{.BlockName.LowerCamel}}Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	// Retrieve values from state
+	var state {{.BlockName.LowerCamel}}Model
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// TODO: Delete {{.BlockName.LowerCamel}}
+}
