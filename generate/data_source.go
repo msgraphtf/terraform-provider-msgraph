@@ -43,8 +43,8 @@ type dataSourceTemplateAugment struct {
 type dataSourceTemplateInput struct {
 	PackageName                    string
 	DataSourceName                 dataSourceTemplateName
-	Schema                         []dataSourceSchema
-	Model                          []dataSourceModel
+	Schema                         []terraformSchema
+	Model                          []terraformModel
 	ReadQueryConfiguration         string
 	ReadQuerySelectParameters      []string
 	ReadQueryGetMethodParametersCount int
@@ -56,7 +56,7 @@ type dataSourceTemplateInput struct {
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
-type dataSourceSchema struct {
+type terraformSchema struct {
 	AttributeName string
 	AttributeType string
 	Description   string
@@ -64,17 +64,17 @@ type dataSourceSchema struct {
 	Optional      bool
 	Computed      bool
 	ElementType   string
-	Attributes    []dataSourceSchema
-	NestedObject  []dataSourceSchema
+	Attributes    []terraformSchema
+	NestedObject  []terraformSchema
 }
 
 // Used by templates defined inside of data_source_template.go to generate the data models
-type dataSourceModel struct {
+type terraformModel struct {
 	ModelName string
-	Fields    []dataSourceModelField
+	Fields    []terraformModelField
 }
 
-type dataSourceModelField struct {
+type terraformModelField struct {
 	FieldName     string
 	FieldType     string
 	AttributeName string
@@ -110,7 +110,7 @@ var augment dataSourceTemplateAugment
 var input dataSourceTemplateInput
 var allModelNames []string
 
-func generateSchema(schema []dataSourceSchema, schemaObject openapi.OpenAPISchemaObject) []dataSourceSchema {
+func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchemaObject) []terraformSchema {
 
 	for _, property := range schemaObject.Properties {
 
@@ -119,62 +119,62 @@ func generateSchema(schema []dataSourceSchema, schemaObject openapi.OpenAPISchem
 		}
 
 		// Create new dataSource schema and model for array
-		newDataSourceSchema := new(dataSourceSchema)
+		newSchema := new(terraformSchema)
 
-		newDataSourceSchema.AttributeName = strcase.ToSnake(property.Name)
-		newDataSourceSchema.Computed = true
-		newDataSourceSchema.Description = property.Description
-		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newDataSourceSchema.AttributeName) {
-			newDataSourceSchema.Optional = true
-			input.ReadQueryErrorAttribute = newDataSourceSchema.AttributeName
-		} else if slices.Contains(augment.ExtraOptionals, newDataSourceSchema.AttributeName) {
-			newDataSourceSchema.Optional = true
-			input.ReadQueryErrorExtraAttributes = append(input.ReadQueryErrorExtraAttributes, newDataSourceSchema.AttributeName)
+		newSchema.AttributeName = strcase.ToSnake(property.Name)
+		newSchema.Computed = true
+		newSchema.Description = property.Description
+		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) {
+			newSchema.Optional = true
+			input.ReadQueryErrorAttribute = newSchema.AttributeName
+		} else if slices.Contains(augment.ExtraOptionals, newSchema.AttributeName) {
+			newSchema.Optional = true
+			input.ReadQueryErrorExtraAttributes = append(input.ReadQueryErrorExtraAttributes, newSchema.AttributeName)
 		}
 
-		// Convert types from OpenAPI schema types to Terraform attributes
+		// Convert types from OpenAPI schema types to  attributes
 		switch property.Type {
 		case "string":
-			newDataSourceSchema.AttributeType = "StringAttribute"
+			newSchema.AttributeType = "StringAttribute"
 		case "integer":
-			newDataSourceSchema.AttributeType = "Int64Attribute"
+			newSchema.AttributeType = "Int64Attribute"
 		case "boolean":
-			newDataSourceSchema.AttributeType = "BoolAttribute"
+			newSchema.AttributeType = "BoolAttribute"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
-				newDataSourceSchema.AttributeType = "StringAttribute"
+				newSchema.AttributeType = "StringAttribute"
 			} else {
-				newDataSourceSchema.AttributeType = "SingleNestedAttribute"
+				newSchema.AttributeType = "SingleNestedAttribute"
 			}
-			nestedDataSources := generateSchema(nil, property.ObjectOf)
-			newDataSourceSchema.Attributes = nestedDataSources
+			nesteds := generateSchema(nil, property.ObjectOf)
+			newSchema.Attributes = nesteds
 		case "array":
 			switch property.ArrayOf {
 			case "string":
-				newDataSourceSchema.AttributeType = "ListAttribute"
-				newDataSourceSchema.ElementType = "types.StringType"
+				newSchema.AttributeType = "ListAttribute"
+				newSchema.ElementType = "types.StringType"
 			case "object":
 				if property.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
-					newDataSourceSchema.AttributeType = "ListAttribute"
-					newDataSourceSchema.ElementType = "types.StringType"
+					newSchema.AttributeType = "ListAttribute"
+					newSchema.ElementType = "types.StringType"
 				} else {
-					newDataSourceSchema.AttributeType = "ListNestedAttribute"
+					newSchema.AttributeType = "ListNestedAttribute"
 				}
-				nestedDataSources := generateSchema(nil, property.ObjectOf)
-				newDataSourceSchema.NestedObject = nestedDataSources
+				nesteds := generateSchema(nil, property.ObjectOf)
+				newSchema.NestedObject = nesteds
 			}
 		}
 
-		schema = append(schema, *newDataSourceSchema)
+		schema = append(schema, *newSchema)
 	}
 
 	return schema
 
 }
 
-func generateModel(modelName string, model []dataSourceModel, schemaObject openapi.OpenAPISchemaObject) []dataSourceModel {
+func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
 
-	newModel := dataSourceModel{
+	newModel := terraformModel{
 		ModelName: dataSourceName + modelName + "DataSourceModel",
 	}
 
@@ -185,7 +185,7 @@ func generateModel(modelName string, model []dataSourceModel, schemaObject opena
 		allModelNames = append(allModelNames, newModel.ModelName)
 	}
 
-	var nestedModels []dataSourceModel
+	var nestedModels []terraformModel
 
 	for _, property := range schemaObject.Properties {
 
@@ -193,7 +193,7 @@ func generateModel(modelName string, model []dataSourceModel, schemaObject opena
 			continue
 		}
 
-		newModelField := new(dataSourceModelField)
+		newModelField := new(terraformModelField)
 		newModelField.FieldName = upperFirst(property.Name)
 		newModelField.AttributeName = strcase.ToSnake(property.Name)
 
@@ -308,7 +308,7 @@ func generateRead(read []dataSourceRead, schemaObject openapi.OpenAPISchemaObjec
 			newDataSourceRead.StateVarName = "state." + upperFirst(property.Name)
 		}
 
-		// Convert types from OpenAPI schema types to Terraform attributes
+		// Convert types from OpenAPI schema types to  attributes
 		switch property.Type {
 		case "string":
 			if property.Format == "" {
@@ -413,8 +413,8 @@ func generateDataSource(pathname string) {
 	// Set input values to top level template
 	input.PackageName               = packageName
 	input.DataSourceName            = dataSourceTemplateName{dataSourceName}
-	input.Schema                    = generateSchema(nil, schemaObject) // Generate Terraform Schema from OpenAPI Schama properties
-	input.Model                     = generateModel("", nil, schemaObject) // Generate Terraform model from OpenAPI schema
+	input.Schema                    = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
+	input.Model                     = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
 	input.ReadQueryConfiguration    = generateReadQueryConfiguration(pathFields)
 	input.ReadQuerySelectParameters = generateReadSelectParameters(pathObject)
 	input.ReadQueryGetMethodParametersCount = getMethodParametersCount
