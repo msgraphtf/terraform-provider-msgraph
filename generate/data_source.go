@@ -405,9 +405,7 @@ func generateDataSource(pathname string) {
 	}
 
 	// Get template
-	tmpl := template.New("dataSource")
-	templateFile, _ := os.ReadFile("generate/templates/data_source_template.go")
-	tmpl, _ = tmpl.Parse(string(templateFile))
+	tmpl, _ := template.New("data_source_template.go").ParseFiles("generate/templates/data_source_template.go")
 
 	// Set input values to top level template
 	input.PackageName               = packageName
