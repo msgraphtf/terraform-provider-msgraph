@@ -132,10 +132,8 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 		newSchema.Description = property.Description
 		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) {
 			newSchema.Optional = true
-			input.ReadQuery.ErrorAttribute = newSchema.AttributeName
 		} else if slices.Contains(augment.ExtraOptionals, newSchema.AttributeName) {
 			newSchema.Optional = true
-			input.ReadQuery.ErrorExtraAttributes = append(input.ReadQuery.ErrorExtraAttributes, newSchema.AttributeName)
 		}
 
 		// Convert types from OpenAPI schema types to  attributes
@@ -291,6 +289,15 @@ func generateReadQuery() {
 	for _, p := range pathFields[1:] {
 		if strings.HasPrefix(p, "{") {
 			input.ReadQuery.GetMethodParametersCount++
+		}
+	}
+
+	// Generate ReadQuery.ErrorAttribute
+	for _, schema := range input.Schema {
+		if schema.Optional && input.ReadQuery.ErrorAttribute == ""{
+			input.ReadQuery.ErrorAttribute = schema.AttributeName
+		} else if schema.Optional {
+			input.ReadQuery.ErrorExtraAttributes = append(input.ReadQuery.ErrorExtraAttributes, schema.AttributeName)
 		}
 	}
 
