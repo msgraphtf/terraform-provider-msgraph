@@ -58,9 +58,9 @@ func (d *{{.DataSourceName.LowerCamel}}DataSource) Read(ctx context.Context, req
 	}
 	{{- end}}
 
-	{{- if eq .ReadQuery.GetMethodParametersCount 0}}
+	{{- if not .ReadQuery.MultipleGetMethodParameters }}
 	{{- template "ReadQuery.ZeroParameters" .}}
-	{{- else if gt .ReadQuery.GetMethodParametersCount 0 }}
+	{{- else }}
 	{{- template "ReadQuery.NonZeroParameters" .}}
 	{{- end}}
 

@@ -78,7 +78,7 @@ type terraformModelField struct {
 type readQuery struct {
 	Configuration         string
 	SelectParameters      []string
-	GetMethodParametersCount int
+	MultipleGetMethodParameters bool
 	GetMethod             []queryMethod
 	AltGetMethod          []map[string]string
 	ErrorAttribute        string
@@ -287,7 +287,7 @@ func generateReadQuery() readQuery {
 	// Generate ReadQuery.GetMethodParametersCount
 	for _, p := range pathFields[1:] {
 		if strings.HasPrefix(p, "{") {
-			rq.GetMethodParametersCount++
+			rq.MultipleGetMethodParameters = true
 		}
 	}
 

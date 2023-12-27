@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
-	{{- if gt .ReadQuery.GetMethodParametersCount 0 }}
+	{{- if .ReadQuery.MultipleGetMethodParameters }}
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	{{- end}}
 	"github.com/microsoftgraph/msgraph-sdk-go/{{.PackageName}}"
