@@ -287,6 +287,13 @@ func generateReadQuery() {
 	// Generate ReadQuery.AltMethod
 	input.ReadQuery.AltGetMethod = augment.AltMethods
 
+	// Generate ReadQuery.GetMethodParametersCount
+	for _, p := range pathFields[1:] {
+		if strings.HasPrefix(p, "{") {
+			input.ReadQuery.GetMethodParametersCount++
+		}
+	}
+
 }
 
 func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
@@ -378,16 +385,13 @@ func generateDataSource(pathname string) {
 	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName = strings.ToLower(pathFields[0])
 
-	var getMethodParametersCount int
-
-	// Generate data source name, and count required get method parameters
+	// Generate data source name
 	dataSourceName = ""
 	if len(pathFields) > 1 {
 		for _, p := range pathFields[1:] {
 			if strings.HasPrefix(p, "{") {
 				pLeft, _ := pathFieldName(p)
 				dataSourceName += pLeft
-				getMethodParametersCount++
 			} else {
 				dataSourceName += p
 			}
@@ -416,8 +420,7 @@ func generateDataSource(pathname string) {
 	input.Schema                    = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
 	input.Model                     = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
 	generateReadQuery()
-	input.ReadQuery.GetMethodParametersCount = getMethodParametersCount
-	input.ReadResponse               = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
+	input.ReadResponse              = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
