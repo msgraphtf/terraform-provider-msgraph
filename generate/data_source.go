@@ -32,7 +32,7 @@ func (t strWithCases) UpperFirst() string {
 	return strings.ToUpper(t.string[0:1]) + t.string[1:]
 }
 
-type dataSourceTemplateInput struct {
+type templateInput struct {
 	PackageName    string
 	BlockName      strWithCases
 	BlockType      strWithCases
@@ -117,7 +117,7 @@ func pathFieldName(s string) (string, string) {
 var blockName string
 var pathObject openapi.OpenAPIPathObject
 var augment templateAugment
-var input dataSourceTemplateInput
+var input templateInput
 var allModelNames []string
 
 func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchemaObject) []terraformSchema {
@@ -128,7 +128,6 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			continue
 		}
 
-		// Create new dataSource schema and model for array
 		newSchema := new(terraformSchema)
 
 		newSchema.AttributeName = strcase.ToSnake(property.Name)
@@ -393,7 +392,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 
 func generateDataSource(pathname string) {
 
-	input = dataSourceTemplateInput{}
+	input = templateInput{}
 
 	pathObject = openapi.GetPath(pathname)
 	schemaObject := pathObject.Get.Response
