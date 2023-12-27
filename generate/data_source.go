@@ -12,19 +12,19 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-type dataSourceTemplateName struct {
+type strWithCases struct {
 	string
 }
 
-func (t dataSourceTemplateName) LowerCamel() string {
+func (t strWithCases) LowerCamel() string {
 	return strcase.ToLowerCamel(t.string)
 }
 
-func (t dataSourceTemplateName) UpperCamel() string {
+func (t strWithCases) UpperCamel() string {
 	return strcase.ToCamel(t.string)
 }
 
-func (t dataSourceTemplateName) Snake() string {
+func (t strWithCases) Snake() string {
 	return strcase.ToSnake(t.string)
 }
 
@@ -41,7 +41,7 @@ type dataSourceTemplateAugment struct {
 
 type dataSourceTemplateInput struct {
 	PackageName                    string
-	DataSourceName                 dataSourceTemplateName
+	DataSourceName                 strWithCases
 	Schema                         []terraformSchema
 	Model                          []terraformModel
 	ReadQueryConfiguration         string
@@ -404,14 +404,14 @@ func generateDataSource(pathname string) {
 		yaml.Unmarshal(augmentFile, &augment)
 	}
 
-	// Get template
+	// Get templates
 	tmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
 	tmpl, _ = tmpl.ParseFiles("generate/templates/data_source_preamble.go")
 	tmpl, _ = tmpl.ParseFiles("generate/templates/schema_template.go")
 
 	// Set input values to top level template
 	input.PackageName               = packageName
-	input.DataSourceName            = dataSourceTemplateName{dataSourceName}
+	input.DataSourceName            = strWithCases{dataSourceName}
 	input.Schema                    = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
 	input.Model                     = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
 	input.ReadQueryConfiguration    = generateReadQueryConfiguration(pathFields)
