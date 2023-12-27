@@ -55,7 +55,7 @@ description: |-
 - `renewed_date_time` (String) Timestamp of when the group was last renewed. This cannot be modified directly and is only updated via the renew service action. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.
 - `security_enabled` (Boolean) Specifies whether the group is a security group. Required. Returned by default. Supports $filter (eq, ne, not, in).
 - `security_identifier` (String) Security identifier of the group, used in Windows scenarios. Returned by default.
-- `service_provisioning_errors` (Attributes List) (see [below for nested schema](#nestedatt--service_provisioning_errors))
+- `service_provisioning_errors` (Attributes List) Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a group object .  Supports $filter (eq, not, for isResolved and serviceInstance). (see [below for nested schema](#nestedatt--service_provisioning_errors))
 - `theme` (String) Specifies a Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange or Red. Returned by default.
 - `unseen_count` (Number) Count of conversations that have received new posts since the signed-in user last visited the group. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).
 - `visibility` (String) Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value is not specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.
@@ -102,6 +102,6 @@ Read-Only:
 
 Read-Only:
 
-- `created_date_time` (String)
-- `is_resolved` (Boolean)
-- `service_instance` (String)
+- `created_date_time` (String) The date and time at which the error occurred.
+- `is_resolved` (Boolean) Indicates whether the error has been attended to.
+- `service_instance` (String) Qualified service instance (for example, 'SharePoint/Dublin') that published the service error information.
