@@ -405,7 +405,9 @@ func generateDataSource(pathname string) {
 	}
 
 	// Get template
-	tmpl, _ := template.New("data_source_template.go").ParseFiles("generate/templates/data_source_template.go")
+	tmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
+	tmpl, _ = tmpl.ParseFiles("generate/templates/data_source_preamble.go")
+	tmpl, _ = tmpl.ParseFiles("generate/templates/schema_template.go")
 
 	// Set input values to top level template
 	input.PackageName               = packageName
@@ -421,6 +423,6 @@ func generateDataSource(pathname string) {
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
-	tmpl.Execute(outfile, input)
+	tmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
 
 }
