@@ -243,25 +243,26 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 }
 
-func generateReadQuery() {
+func generateReadQuery() readQuery {
 
+	var rq readQuery
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 
 	// Generate ReadQuery.Configuration
 	if len(pathFields) == 1 {
-		input.ReadQuery.Configuration = upperFirst(pathFields[0])
+		rq.Configuration = upperFirst(pathFields[0])
 	} else if len(pathFields) == 2 {
 		s, _ := pathFieldName(pathFields[1])
-		input.ReadQuery.Configuration = upperFirst(s) + "Item"
+		rq.Configuration = upperFirst(s) + "Item"
 	} else {
-		input.ReadQuery.Configuration = "MISSING"
+		rq.Configuration = "MISSING"
 	}
 
 
 	// Generate ReadQuery.SelectParameters
 	for _, parameter := range pathObject.Get.SelectParameters {
 		if !slices.Contains(augment.ExcludedProperties, parameter) {
-			input.ReadQuery.SelectParameters = append(input.ReadQuery.SelectParameters, parameter)
+			rq.SelectParameters = append(rq.SelectParameters, parameter)
 		}
 	}
 
@@ -280,26 +281,28 @@ func generateReadQuery() {
 		}
 		getMethod = append(getMethod, *newMethod)
 	}
-	input.ReadQuery.GetMethod = getMethod
+	rq.GetMethod = getMethod
 
 	// Generate ReadQuery.AltMethod
-	input.ReadQuery.AltGetMethod = augment.AltMethods
+	rq.AltGetMethod = augment.AltMethods
 
 	// Generate ReadQuery.GetMethodParametersCount
 	for _, p := range pathFields[1:] {
 		if strings.HasPrefix(p, "{") {
-			input.ReadQuery.GetMethodParametersCount++
+			rq.GetMethodParametersCount++
 		}
 	}
 
 	// Generate ReadQuery.ErrorAttribute
 	for _, schema := range input.Schema {
-		if schema.Optional && input.ReadQuery.ErrorAttribute == ""{
-			input.ReadQuery.ErrorAttribute = schema.AttributeName
+		if schema.Optional && rq.ErrorAttribute == ""{
+			rq.ErrorAttribute = schema.AttributeName
 		} else if schema.Optional {
-			input.ReadQuery.ErrorExtraAttributes = append(input.ReadQuery.ErrorExtraAttributes, schema.AttributeName)
+			rq.ErrorExtraAttributes = append(rq.ErrorExtraAttributes, schema.AttributeName)
 		}
 	}
+
+	return rq
 
 }
 
@@ -422,12 +425,12 @@ func generateDataSource(pathname string) {
 	tmpl, _ = tmpl.ParseFiles("generate/templates/read_response_template.go")
 
 	// Set input values to top level template
-	input.PackageName               = packageName
-	input.DataSourceName            = strWithCases{dataSourceName}
-	input.Schema                    = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
-	input.Model                     = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
-	generateReadQuery()
-	input.ReadResponse              = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
+	input.PackageName    = packageName
+	input.DataSourceName = strWithCases{dataSourceName}
+	input.Schema         = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
+	input.Model          = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
+	input.ReadQuery      = generateReadQuery()
+	input.ReadResponse   = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
