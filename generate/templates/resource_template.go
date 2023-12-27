@@ -103,3 +103,34 @@ func (d *{{.BlockName.LowerCamel}}Resource) Read(ctx context.Context, req resour
 
 
 }
+
+// Update updates the resource and sets the updated Terraform state on success.
+func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	// Retrieve values from plan
+	var plan {{.BlockName.LowerCamel}}Model
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Get current state
+	var state {{.BlockName.LowerCamel}}Model
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// TODO: Generate API request body from plan
+
+	// TODO: Update {{.BlockName.LowerCamel}}
+
+	// Update resource state with Computed values
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+}
