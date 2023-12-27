@@ -432,28 +432,32 @@ func generateDataSource(pathname string) {
 	input.ReadQuery    = generateReadQuery()
 	input.ReadResponse = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
+	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
+
+	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
+	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_model.go")
+	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", input)
+
 	// Get templates
 	datasourceTmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/data_source_preamble.go")
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/schema_template.go")
-	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/model_template.go")
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_query_template.go")
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_response_template.go")
 
-	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_data_source.go")
 	datasourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
 
-	if pathObject.Patch.Summary != "" {
-		// Get templates
-		resourceTmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
-		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/data_source_preamble.go")
-		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/schema_template.go")
-		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_query_template.go")
-		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_response_template.go")
+	//if pathObject.Patch.Summary != "" {
+	//	// Get templates
+	//	resourceTmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
+	//	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/data_source_preamble.go")
+	//	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/schema_template.go")
+	//	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_query_template.go")
+	//	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_response_template.go")
 
-		outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_resource.go")
-		resourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
-	}
+	//	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_resource.go")
+	//	resourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
+	//}
 
 }
