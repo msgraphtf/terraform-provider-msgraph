@@ -80,6 +80,7 @@ type terraformModelField struct {
 	AttributeName string
 }
 
+// Used by templates defined inside of read_query_template.go to generate the read query code
 type readQuery struct {
 	BlockName             strWithCases
 	Configuration         string
@@ -113,7 +114,7 @@ func pathFieldName(s string) (string, string) {
 	return pLeft, pRight
 }
 
-var dataSourceName string
+var blockName string
 var pathObject openapi.OpenAPIPathObject
 var augment templateAugment
 var input dataSourceTemplateInput
@@ -182,7 +183,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
 
 	newModel := terraformModel{
-		ModelName: dataSourceName + modelName + input.BlockType.UpperFirst() + "Model",
+		ModelName: blockName + modelName + input.BlockType.UpperFirst() + "Model",
 	}
 
 	// Skip duplicate models
@@ -215,7 +216,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 			if property.ObjectOf.Type == "string" { // This is a string enum.
 				newModelField.FieldType = "types.String"
 			} else {
-				newModelField.FieldType = "*" + dataSourceName + newModelField.FieldName + input.BlockType.UpperFirst() + "Model"
+				newModelField.FieldType = "*" + blockName + newModelField.FieldName + input.BlockType.UpperFirst() + "Model"
 				nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 			}
 		case "array":
@@ -224,7 +225,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 				if property.ObjectOf.Type == "string" { // This is a string enum.
 					newModelField.FieldType = "[]types.String"
 				} else {
-					newModelField.FieldType = "[]" + dataSourceName + newModelField.FieldName + input.BlockType.UpperFirst() + "Model"
+					newModelField.FieldType = "[]" + blockName + newModelField.FieldName + input.BlockType.UpperFirst() + "Model"
 					nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 				}
 			case "string":
@@ -251,7 +252,7 @@ func generateReadQuery() readQuery {
 	var rq readQuery
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 
-	rq.BlockName = strWithCases{dataSourceName}
+	rq.BlockName = strWithCases{blockName}
 
 	// Generate ReadQuery.Configuration
 	rq.Configuration = strings.ToLower(pathFields[0]) + "."
@@ -322,7 +323,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 
 		newReadResponse := readResponse{
 			GetMethod:      "Get" + upperFirst(property.Name) + "()",
-			ModelName:      dataSourceName + upperFirst(property.Name) + input.BlockType.UpperFirst() + "Model",
+			ModelName:      blockName + upperFirst(property.Name) + input.BlockType.UpperFirst() + "Model",
 			ModelVarName:   property.Name,
 			ParentRead:     parent,
 		}
@@ -400,25 +401,25 @@ func generateDataSource(pathname string) {
 	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName := strings.ToLower(pathFields[0])
 
-	// Generate data source name
-	dataSourceName = ""
+	// Generate name of the terraform block
+	blockName = ""
 	if len(pathFields) > 1 {
 		for _, p := range pathFields[1:] {
 			if strings.HasPrefix(p, "{") {
 				pLeft, _ := pathFieldName(p)
-				dataSourceName += pLeft
+				blockName += pLeft
 			} else {
-				dataSourceName += p
+				blockName += p
 			}
 		}
 	} else {
-		dataSourceName = pathFields[0]
+		blockName = pathFields[0]
 	}
 
 	// Open augment file if available
 	var err error = nil
 	augment = templateAugment{}
-	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + dataSourceName + "_data_source.yaml")
+	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + blockName + "_data_source.yaml")
 	if err == nil {
 		yaml.Unmarshal(augmentFile, &augment)
 	}
@@ -432,7 +433,7 @@ func generateDataSource(pathname string) {
 
 	// Set input values to top level template
 	input.PackageName  = packageName
-	input.BlockName    = strWithCases{dataSourceName}
+	input.BlockName    = strWithCases{blockName}
 	input.BlockType    = strWithCases{"dataSource"}
 	input.Schema       = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
 	input.Model        = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
@@ -440,7 +441,7 @@ func generateDataSource(pathname string) {
 	input.ReadResponse = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
-	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
+	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_data_source.go")
 	tmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
 
 }
