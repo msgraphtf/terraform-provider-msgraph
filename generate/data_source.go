@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -406,9 +405,9 @@ func generateDataSource(pathname string) {
 	}
 
 	// Get template
-	templateDataSource := template.New("dataSource")
+	tmpl := template.New("dataSource")
 	templateFile, _ := os.ReadFile("generate/templates/data_source_template.go")
-	templateDataSource, _ = templateDataSource.Parse(string(templateFile))
+	tmpl, _ = tmpl.Parse(string(templateFile))
 
 	// Set input values to top level template
 	input.PackageName               = packageName
@@ -423,10 +422,7 @@ func generateDataSource(pathname string) {
 	input.Read                      = generateRead(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
-	outfile, err := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
-	if err != nil {
-		fmt.Print(err)
-	}
-	templateDataSource.Execute(outfile, input)
+	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(dataSourceName) + "_data_source.go")
+	tmpl.Execute(outfile, input)
 
 }
