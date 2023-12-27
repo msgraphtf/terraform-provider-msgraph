@@ -9,14 +9,7 @@ func (d *{{.BlockName.LowerCamel}}DataSource) Schema(_ context.Context, _ dataso
 	}
 }
 
-{{/* Generate data models from provided data */}}
-{{- range .Model}}
-type {{.ModelName}} struct {
-{{- range .Fields}}
-{{.FieldName}} {{.FieldType}} `tfsdk:"{{.AttributeName}}"`
-{{- end}}
-}
-{{end}}
+{{ template "model_template.go" .}}
 
 // Read refreshes the Terraform state with the latest data.
 func (d *{{.BlockName.LowerCamel}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
