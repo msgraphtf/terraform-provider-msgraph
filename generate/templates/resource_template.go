@@ -56,10 +56,35 @@ func (d *{{.BlockName.LowerCamel}}Resource) Schema(_ context.Context, _ resource
 	}
 }
 
+// Create creates the resource and sets the initial Terraform state.
+func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	// Retrieve values from plan
+	var plan {{.BlockName.LowerCamel}}Model
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// TODO: Generate API request body from Plan
+
+	// TODO: Create new {{.BlockName.LowerCamel}}
+
+	// TODO: Map response body to schema and populate Computed attribute value
+
+	// Set state to fully populated data
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+}
+
 // Read refreshes the Terraform state with the latest data.
 func (d *{{.BlockName.LowerCamel}}Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state {{.BlockName.LowerCamel}}Model
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
