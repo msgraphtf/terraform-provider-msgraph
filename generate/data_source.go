@@ -40,7 +40,7 @@ type dataSourceTemplateInput struct {
 	ReadQueryAltGetMethod          []map[string]string
 	ReadQueryErrorAttribute        string
 	ReadQueryErrorExtraAttributes  []string
-	Read                           []dataSourceRead
+	Read                           []readResponse
 }
 
 // Represents a method used to perform a query using msgraph-sdk-go 
@@ -81,15 +81,16 @@ type terraformModelField struct {
 	AttributeName string
 }
 
-type dataSourceRead struct {
+// Used by 'read_response_template' to generate code to map the query response to the terraform model
+type readResponse struct {
 	GetMethod      string
 	StateVarName   string
 	ModelVarName   string
 	ModelName      string
 	AttributeType  string
 	DataSourceName string
-	NestedRead     []dataSourceRead
-	ParentRead     *dataSourceRead
+	NestedRead     []readResponse
+	ParentRead     *readResponse
 }
 
 func upperFirst(s string) string {
@@ -278,7 +279,7 @@ func generateReadQueryMethod(path openapi.OpenAPIPathObject) []queryMethod {
 	return getMethod
 }
 
-func generateRead(read []dataSourceRead, schemaObject openapi.OpenAPISchemaObject, parent *dataSourceRead) []dataSourceRead {
+func generateRead(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
 
 	for _, property := range schemaObject.Properties {
 
@@ -286,7 +287,7 @@ func generateRead(read []dataSourceRead, schemaObject openapi.OpenAPISchemaObjec
 			continue
 		}
 
-		newDataSourceRead := dataSourceRead{
+		newDataSourceRead := readResponse{
 			GetMethod:      "Get" + upperFirst(property.Name) + "()",
 			ModelName:      dataSourceName + upperFirst(property.Name) + "DataSourceModel",
 			ModelVarName:   property.Name,
