@@ -7,10 +7,13 @@ import (
 
 func TestGetPath(t *testing.T) {
 
-	path := GetPath("/users/{user-id}")
-	fmt.Printf("PATH:        %s\n", path.Path)
-	fmt.Printf("DESCRIPTION: %s\n", path.Description)
-	fmt.Printf("PARAMETERS:  %v\n", path.Parameters)
-	fmt.Printf("GET RETURNS: %s\n", path.Get.Response.Title)
+	path := GetPath("/users")
+	fmt.Printf("PATH:           %s\n", path.Path)
+	fmt.Printf("DESCRIPTION:    %s\n", path.Description)
+	fmt.Printf("PARAMETERS:     %v\n", path.Parameters)
+	fmt.Printf("GET RETURNS:    %+v\n", path.Get)
+	fmt.Printf("POST RETURNS:   %+v\n", path.Post)
+	fmt.Printf("PATCH RETURNS:  %+v\n", path.Patch)
+	fmt.Printf("DELETE RETURNS: %+v\n", path.Delete)
 
 }
