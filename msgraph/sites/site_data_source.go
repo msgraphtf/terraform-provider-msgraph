@@ -387,7 +387,7 @@ func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 
 // Read refreshes the Terraform state with the latest data.
 func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state siteDataSourceModel
+	var state siteModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -457,10 +457,10 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.Id = types.StringValue(*result.GetId())
 	}
 	if result.GetCreatedBy() != nil {
-		state.CreatedBy = new(siteCreatedByDataSourceModel)
+		state.CreatedBy = new(siteCreatedByModel)
 
 		if result.GetCreatedBy().GetApplication() != nil {
-			state.CreatedBy.Application = new(siteApplicationDataSourceModel)
+			state.CreatedBy.Application = new(siteApplicationModel)
 
 			if result.GetCreatedBy().GetApplication().GetDisplayName() != nil {
 				state.CreatedBy.Application.DisplayName = types.StringValue(*result.GetCreatedBy().GetApplication().GetDisplayName())
@@ -470,7 +470,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			}
 		}
 		if result.GetCreatedBy().GetDevice() != nil {
-			state.CreatedBy.Device = new(siteDeviceDataSourceModel)
+			state.CreatedBy.Device = new(siteDeviceModel)
 
 			if result.GetCreatedBy().GetDevice().GetDisplayName() != nil {
 				state.CreatedBy.Device.DisplayName = types.StringValue(*result.GetCreatedBy().GetDevice().GetDisplayName())
@@ -480,7 +480,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			}
 		}
 		if result.GetCreatedBy().GetUser() != nil {
-			state.CreatedBy.User = new(siteUserDataSourceModel)
+			state.CreatedBy.User = new(siteUserModel)
 
 			if result.GetCreatedBy().GetUser().GetDisplayName() != nil {
 				state.CreatedBy.User.DisplayName = types.StringValue(*result.GetCreatedBy().GetUser().GetDisplayName())
@@ -500,10 +500,10 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.ETag = types.StringValue(*result.GetETag())
 	}
 	if result.GetLastModifiedBy() != nil {
-		state.LastModifiedBy = new(siteLastModifiedByDataSourceModel)
+		state.LastModifiedBy = new(siteLastModifiedByModel)
 
 		if result.GetLastModifiedBy().GetApplication() != nil {
-			state.LastModifiedBy.Application = new(siteApplicationDataSourceModel)
+			state.LastModifiedBy.Application = new(siteApplicationModel)
 
 			if result.GetLastModifiedBy().GetApplication().GetDisplayName() != nil {
 				state.LastModifiedBy.Application.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetApplication().GetDisplayName())
@@ -513,7 +513,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			}
 		}
 		if result.GetLastModifiedBy().GetDevice() != nil {
-			state.LastModifiedBy.Device = new(siteDeviceDataSourceModel)
+			state.LastModifiedBy.Device = new(siteDeviceModel)
 
 			if result.GetLastModifiedBy().GetDevice().GetDisplayName() != nil {
 				state.LastModifiedBy.Device.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetDevice().GetDisplayName())
@@ -523,7 +523,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			}
 		}
 		if result.GetLastModifiedBy().GetUser() != nil {
-			state.LastModifiedBy.User = new(siteUserDataSourceModel)
+			state.LastModifiedBy.User = new(siteUserModel)
 
 			if result.GetLastModifiedBy().GetUser().GetDisplayName() != nil {
 				state.LastModifiedBy.User.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetUser().GetDisplayName())
@@ -540,7 +540,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.Name = types.StringValue(*result.GetName())
 	}
 	if result.GetParentReference() != nil {
-		state.ParentReference = new(siteParentReferenceDataSourceModel)
+		state.ParentReference = new(siteParentReferenceModel)
 
 		if result.GetParentReference().GetDriveId() != nil {
 			state.ParentReference.DriveId = types.StringValue(*result.GetParentReference().GetDriveId())
@@ -561,7 +561,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			state.ParentReference.ShareId = types.StringValue(*result.GetParentReference().GetShareId())
 		}
 		if result.GetParentReference().GetSharepointIds() != nil {
-			state.ParentReference.SharepointIds = new(siteSharepointIdsDataSourceModel)
+			state.ParentReference.SharepointIds = new(siteSharepointIdsModel)
 
 			if result.GetParentReference().GetSharepointIds().GetListId() != nil {
 				state.ParentReference.SharepointIds.ListId = types.StringValue(*result.GetParentReference().GetSharepointIds().GetListId())
@@ -596,13 +596,13 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.DisplayName = types.StringValue(*result.GetDisplayName())
 	}
 	if result.GetError() != nil {
-		state.Error = new(siteErrorDataSourceModel)
+		state.Error = new(siteErrorModel)
 
 		if result.GetError().GetCode() != nil {
 			state.Error.Code = types.StringValue(*result.GetError().GetCode())
 		}
 		for _, v := range result.GetError().GetDetails() {
-			details := new(siteDetailsDataSourceModel)
+			details := new(siteDetailsModel)
 
 			if v.GetCode() != nil {
 				details.Code = types.StringValue(*v.GetCode())
@@ -616,13 +616,13 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			state.Error.Details = append(state.Error.Details, *details)
 		}
 		if result.GetError().GetInnerError() != nil {
-			state.Error.InnerError = new(siteInnerErrorDataSourceModel)
+			state.Error.InnerError = new(siteInnerErrorModel)
 
 			if result.GetError().GetInnerError().GetCode() != nil {
 				state.Error.InnerError.Code = types.StringValue(*result.GetError().GetInnerError().GetCode())
 			}
 			for _, v := range result.GetError().GetInnerError().GetDetails() {
-				details := new(siteDetailsDataSourceModel)
+				details := new(siteDetailsModel)
 
 				if v.GetCode() != nil {
 					details.Code = types.StringValue(*v.GetCode())
@@ -653,11 +653,11 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.IsPersonalSite = types.BoolValue(*result.GetIsPersonalSite())
 	}
 	if result.GetRoot() != nil {
-		state.Root = new(siteRootDataSourceModel)
+		state.Root = new(siteRootModel)
 
 	}
 	if result.GetSharepointIds() != nil {
-		state.SharepointIds = new(siteSharepointIdsDataSourceModel)
+		state.SharepointIds = new(siteSharepointIdsModel)
 
 		if result.GetSharepointIds().GetListId() != nil {
 			state.SharepointIds.ListId = types.StringValue(*result.GetSharepointIds().GetListId())
@@ -682,7 +682,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 	}
 	if result.GetSiteCollection() != nil {
-		state.SiteCollection = new(siteSiteCollectionDataSourceModel)
+		state.SiteCollection = new(siteSiteCollectionModel)
 
 		if result.GetSiteCollection().GetDataLocationCode() != nil {
 			state.SiteCollection.DataLocationCode = types.StringValue(*result.GetSiteCollection().GetDataLocationCode())
@@ -691,7 +691,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			state.SiteCollection.Hostname = types.StringValue(*result.GetSiteCollection().GetHostname())
 		}
 		if result.GetSiteCollection().GetRoot() != nil {
-			state.SiteCollection.Root = new(siteRootDataSourceModel)
+			state.SiteCollection.Root = new(siteRootModel)
 
 		}
 	}

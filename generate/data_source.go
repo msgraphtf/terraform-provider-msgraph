@@ -35,7 +35,6 @@ func (t strWithCases) UpperFirst() string {
 type templateInput struct {
 	PackageName    string
 	BlockName      strWithCases
-	BlockType      strWithCases
 	Schema         []terraformSchema
 	Model          []terraformModel
 	ReadQuery      readQuery
@@ -182,7 +181,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
 
 	newModel := terraformModel{
-		ModelName: blockName + modelName + input.BlockType.UpperFirst() + "Model",
+		ModelName: blockName + modelName + "Model",
 	}
 
 	// Skip duplicate models
@@ -215,7 +214,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 			if property.ObjectOf.Type == "string" { // This is a string enum.
 				newModelField.FieldType = "types.String"
 			} else {
-				newModelField.FieldType = "*" + blockName + newModelField.FieldName + input.BlockType.UpperFirst() + "Model"
+				newModelField.FieldType = "*" + blockName + newModelField.FieldName + "Model"
 				nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 			}
 		case "array":
@@ -224,7 +223,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 				if property.ObjectOf.Type == "string" { // This is a string enum.
 					newModelField.FieldType = "[]types.String"
 				} else {
-					newModelField.FieldType = "[]" + blockName + newModelField.FieldName + input.BlockType.UpperFirst() + "Model"
+					newModelField.FieldType = "[]" + blockName + newModelField.FieldName + "Model"
 					nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 				}
 			case "string":
@@ -322,7 +321,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 
 		newReadResponse := readResponse{
 			GetMethod:      "Get" + upperFirst(property.Name) + "()",
-			ModelName:      blockName + upperFirst(property.Name) + input.BlockType.UpperFirst() + "Model",
+			ModelName:      blockName + upperFirst(property.Name) + "Model",
 			ModelVarName:   property.Name,
 			ParentRead:     parent,
 		}
@@ -426,7 +425,6 @@ func generateDataSource(pathname string) {
 	// Set input values to top level template
 	input.PackageName  = packageName
 	input.BlockName    = strWithCases{blockName}
-	input.BlockType    = strWithCases{"dataSource"}
 	input.Schema       = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
 	input.Model        = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
 	input.ReadQuery    = generateReadQuery()

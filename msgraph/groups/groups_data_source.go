@@ -260,7 +260,7 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 
 // Read refreshes the Terraform state with the latest data.
 func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state groupsDataSourceModel
+	var state groupsModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -344,7 +344,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 
 	for _, v := range result.GetValue() {
-		value := new(groupsValueDataSourceModel)
+		value := new(groupsValueModel)
 
 		if v.GetId() != nil {
 			value.Id = types.StringValue(*v.GetId())
@@ -353,7 +353,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			value.DeletedDateTime = types.StringValue(v.GetDeletedDateTime().String())
 		}
 		for _, v := range v.GetAssignedLabels() {
-			assignedLabels := new(groupsAssignedLabelsDataSourceModel)
+			assignedLabels := new(groupsAssignedLabelsModel)
 
 			if v.GetDisplayName() != nil {
 				assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
@@ -364,7 +364,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			value.AssignedLabels = append(value.AssignedLabels, *assignedLabels)
 		}
 		for _, v := range v.GetAssignedLicenses() {
-			assignedLicenses := new(groupsAssignedLicensesDataSourceModel)
+			assignedLicenses := new(groupsAssignedLicensesModel)
 
 			for _, v := range v.GetDisabledPlans() {
 				assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(v.String()))
@@ -396,7 +396,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			value.IsAssignableToRole = types.BoolValue(*v.GetIsAssignableToRole())
 		}
 		if v.GetLicenseProcessingState() != nil {
-			value.LicenseProcessingState = new(groupsLicenseProcessingStateDataSourceModel)
+			value.LicenseProcessingState = new(groupsLicenseProcessingStateModel)
 
 			if v.GetLicenseProcessingState().GetState() != nil {
 				value.LicenseProcessingState.State = types.StringValue(*v.GetLicenseProcessingState().GetState())
@@ -427,7 +427,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			value.OnPremisesNetBiosName = types.StringValue(*v.GetOnPremisesNetBiosName())
 		}
 		for _, v := range v.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(groupsOnPremisesProvisioningErrorsDataSourceModel)
+			onPremisesProvisioningErrors := new(groupsOnPremisesProvisioningErrorsModel)
 
 			if v.GetCategory() != nil {
 				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -471,7 +471,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			value.SecurityIdentifier = types.StringValue(*v.GetSecurityIdentifier())
 		}
 		for _, v := range v.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(groupsServiceProvisioningErrorsDataSourceModel)
+			serviceProvisioningErrors := new(groupsServiceProvisioningErrorsModel)
 
 			if v.GetCreatedDateTime() != nil {
 				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())

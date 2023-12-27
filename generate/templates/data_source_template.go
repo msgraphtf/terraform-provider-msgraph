@@ -11,7 +11,7 @@ func (d *{{.BlockName.LowerCamel}}DataSource) Schema(_ context.Context, _ dataso
 
 // Read refreshes the Terraform state with the latest data.
 func (d *{{.BlockName.LowerCamel}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state {{.BlockName.LowerCamel}}DataSourceModel
+	var state {{.BlockName.LowerCamel}}Model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return

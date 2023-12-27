@@ -569,7 +569,7 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 
 // Read refreshes the Terraform state with the latest data.
 func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state usersDataSourceModel
+	var state usersModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -707,7 +707,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 
 	for _, v := range result.GetValue() {
-		value := new(usersValueDataSourceModel)
+		value := new(usersValueModel)
 
 		if v.GetId() != nil {
 			value.Id = types.StringValue(*v.GetId())
@@ -722,7 +722,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.AgeGroup = types.StringValue(*v.GetAgeGroup())
 		}
 		for _, v := range v.GetAssignedLicenses() {
-			assignedLicenses := new(usersAssignedLicensesDataSourceModel)
+			assignedLicenses := new(usersAssignedLicensesModel)
 
 			for _, v := range v.GetDisabledPlans() {
 				assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(v.String()))
@@ -733,7 +733,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.AssignedLicenses = append(value.AssignedLicenses, *assignedLicenses)
 		}
 		for _, v := range v.GetAssignedPlans() {
-			assignedPlans := new(usersAssignedPlansDataSourceModel)
+			assignedPlans := new(usersAssignedPlansModel)
 
 			if v.GetAssignedDateTime() != nil {
 				assignedPlans.AssignedDateTime = types.StringValue(v.GetAssignedDateTime().String())
@@ -750,7 +750,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.AssignedPlans = append(value.AssignedPlans, *assignedPlans)
 		}
 		if v.GetAuthorizationInfo() != nil {
-			value.AuthorizationInfo = new(usersAuthorizationInfoDataSourceModel)
+			value.AuthorizationInfo = new(usersAuthorizationInfoModel)
 
 			for _, v := range v.GetAuthorizationInfo().GetCertificateUserIds() {
 				value.AuthorizationInfo.CertificateUserIds = append(value.AuthorizationInfo.CertificateUserIds, types.StringValue(v))
@@ -778,7 +778,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.CreationType = types.StringValue(*v.GetCreationType())
 		}
 		if v.GetCustomSecurityAttributes() != nil {
-			value.CustomSecurityAttributes = new(usersCustomSecurityAttributesDataSourceModel)
+			value.CustomSecurityAttributes = new(usersCustomSecurityAttributesModel)
 
 		}
 		if v.GetDepartment() != nil {
@@ -797,7 +797,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.EmployeeLeaveDateTime = types.StringValue(v.GetEmployeeLeaveDateTime().String())
 		}
 		if v.GetEmployeeOrgData() != nil {
-			value.EmployeeOrgData = new(usersEmployeeOrgDataDataSourceModel)
+			value.EmployeeOrgData = new(usersEmployeeOrgDataModel)
 
 			if v.GetEmployeeOrgData().GetCostCenter() != nil {
 				value.EmployeeOrgData.CostCenter = types.StringValue(*v.GetEmployeeOrgData().GetCostCenter())
@@ -822,7 +822,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.GivenName = types.StringValue(*v.GetGivenName())
 		}
 		for _, v := range v.GetIdentities() {
-			identities := new(usersIdentitiesDataSourceModel)
+			identities := new(usersIdentitiesModel)
 
 			if v.GetIssuer() != nil {
 				identities.Issuer = types.StringValue(*v.GetIssuer())
@@ -851,7 +851,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.LegalAgeGroupClassification = types.StringValue(*v.GetLegalAgeGroupClassification())
 		}
 		for _, v := range v.GetLicenseAssignmentStates() {
-			licenseAssignmentStates := new(usersLicenseAssignmentStatesDataSourceModel)
+			licenseAssignmentStates := new(usersLicenseAssignmentStatesModel)
 
 			if v.GetAssignedByGroup() != nil {
 				licenseAssignmentStates.AssignedByGroup = types.StringValue(*v.GetAssignedByGroup())
@@ -892,7 +892,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.OnPremisesDomainName = types.StringValue(*v.GetOnPremisesDomainName())
 		}
 		if v.GetOnPremisesExtensionAttributes() != nil {
-			value.OnPremisesExtensionAttributes = new(usersOnPremisesExtensionAttributesDataSourceModel)
+			value.OnPremisesExtensionAttributes = new(usersOnPremisesExtensionAttributesModel)
 
 			if v.GetOnPremisesExtensionAttributes().GetExtensionAttribute1() != nil {
 				value.OnPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*v.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
@@ -947,7 +947,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.OnPremisesLastSyncDateTime = types.StringValue(v.GetOnPremisesLastSyncDateTime().String())
 		}
 		for _, v := range v.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(usersOnPremisesProvisioningErrorsDataSourceModel)
+			onPremisesProvisioningErrors := new(usersOnPremisesProvisioningErrorsModel)
 
 			if v.GetCategory() != nil {
 				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -982,7 +982,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.PasswordPolicies = types.StringValue(*v.GetPasswordPolicies())
 		}
 		if v.GetPasswordProfile() != nil {
-			value.PasswordProfile = new(usersPasswordProfileDataSourceModel)
+			value.PasswordProfile = new(usersPasswordProfileModel)
 
 			if v.GetPasswordProfile().GetForceChangePasswordNextSignIn() != nil {
 				value.PasswordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*v.GetPasswordProfile().GetForceChangePasswordNextSignIn())
@@ -1004,7 +1004,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.PreferredLanguage = types.StringValue(*v.GetPreferredLanguage())
 		}
 		for _, v := range v.GetProvisionedPlans() {
-			provisionedPlans := new(usersProvisionedPlansDataSourceModel)
+			provisionedPlans := new(usersProvisionedPlansModel)
 
 			if v.GetCapabilityStatus() != nil {
 				provisionedPlans.CapabilityStatus = types.StringValue(*v.GetCapabilityStatus())
@@ -1024,7 +1024,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.SecurityIdentifier = types.StringValue(*v.GetSecurityIdentifier())
 		}
 		for _, v := range v.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(usersServiceProvisioningErrorsDataSourceModel)
+			serviceProvisioningErrors := new(usersServiceProvisioningErrorsModel)
 
 			if v.GetCreatedDateTime() != nil {
 				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
@@ -1041,7 +1041,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			value.ShowInAddressList = types.BoolValue(*v.GetShowInAddressList())
 		}
 		if v.GetSignInActivity() != nil {
-			value.SignInActivity = new(usersSignInActivityDataSourceModel)
+			value.SignInActivity = new(usersSignInActivityModel)
 
 			if v.GetSignInActivity().GetLastNonInteractiveSignInDateTime() != nil {
 				value.SignInActivity.LastNonInteractiveSignInDateTime = types.StringValue(v.GetSignInActivity().GetLastNonInteractiveSignInDateTime().String())

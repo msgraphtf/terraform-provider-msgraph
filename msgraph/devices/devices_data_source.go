@@ -177,7 +177,7 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 
 // Read refreshes the Terraform state with the latest data.
 func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state devicesDataSourceModel
+	var state devicesModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -231,7 +231,7 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	}
 
 	for _, v := range result.GetValue() {
-		value := new(devicesValueDataSourceModel)
+		value := new(devicesValueModel)
 
 		if v.GetId() != nil {
 			value.Id = types.StringValue(*v.GetId())
@@ -243,7 +243,7 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 			value.AccountEnabled = types.BoolValue(*v.GetAccountEnabled())
 		}
 		for _, v := range v.GetAlternativeSecurityIds() {
-			alternativeSecurityIds := new(devicesAlternativeSecurityIdsDataSourceModel)
+			alternativeSecurityIds := new(devicesAlternativeSecurityIdsModel)
 
 			if v.GetIdentityProvider() != nil {
 				alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())

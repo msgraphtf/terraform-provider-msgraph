@@ -444,7 +444,7 @@ func (d *servicePrincipalsDataSource) Schema(_ context.Context, _ datasource.Sch
 
 // Read refreshes the Terraform state with the latest data.
 func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state servicePrincipalsDataSourceModel
+	var state servicePrincipalsModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -522,7 +522,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 	}
 
 	for _, v := range result.GetValue() {
-		value := new(servicePrincipalsValueDataSourceModel)
+		value := new(servicePrincipalsValueModel)
 
 		if v.GetId() != nil {
 			value.Id = types.StringValue(*v.GetId())
@@ -534,13 +534,13 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.AccountEnabled = types.BoolValue(*v.GetAccountEnabled())
 		}
 		for _, v := range v.GetAddIns() {
-			addIns := new(servicePrincipalsAddInsDataSourceModel)
+			addIns := new(servicePrincipalsAddInsModel)
 
 			if v.GetId() != nil {
 				addIns.Id = types.StringValue(v.GetId().String())
 			}
 			for _, v := range v.GetProperties() {
-				properties := new(servicePrincipalsPropertiesDataSourceModel)
+				properties := new(servicePrincipalsPropertiesModel)
 
 				if v.GetKey() != nil {
 					properties.Key = types.StringValue(*v.GetKey())
@@ -574,7 +574,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.AppRoleAssignmentRequired = types.BoolValue(*v.GetAppRoleAssignmentRequired())
 		}
 		for _, v := range v.GetAppRoles() {
-			appRoles := new(servicePrincipalsAppRolesDataSourceModel)
+			appRoles := new(servicePrincipalsAppRolesModel)
 
 			for _, v := range v.GetAllowedMemberTypes() {
 				appRoles.AllowedMemberTypes = append(appRoles.AllowedMemberTypes, types.StringValue(v))
@@ -603,7 +603,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.ApplicationTemplateId = types.StringValue(*v.GetApplicationTemplateId())
 		}
 		if v.GetCustomSecurityAttributes() != nil {
-			value.CustomSecurityAttributes = new(servicePrincipalsCustomSecurityAttributesDataSourceModel)
+			value.CustomSecurityAttributes = new(servicePrincipalsCustomSecurityAttributesModel)
 
 		}
 		if v.GetDescription() != nil {
@@ -619,7 +619,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.Homepage = types.StringValue(*v.GetHomepage())
 		}
 		if v.GetInfo() != nil {
-			value.Info = new(servicePrincipalsInfoDataSourceModel)
+			value.Info = new(servicePrincipalsInfoModel)
 
 			if v.GetInfo().GetLogoUrl() != nil {
 				value.Info.LogoUrl = types.StringValue(*v.GetInfo().GetLogoUrl())
@@ -638,7 +638,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			}
 		}
 		for _, v := range v.GetKeyCredentials() {
-			keyCredentials := new(servicePrincipalsKeyCredentialsDataSourceModel)
+			keyCredentials := new(servicePrincipalsKeyCredentialsModel)
 
 			if v.GetCustomKeyIdentifier() != nil {
 				keyCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
@@ -679,7 +679,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.NotificationEmailAddresses = append(value.NotificationEmailAddresses, types.StringValue(v))
 		}
 		for _, v := range v.GetOauth2PermissionScopes() {
-			oauth2PermissionScopes := new(servicePrincipalsOauth2PermissionScopesDataSourceModel)
+			oauth2PermissionScopes := new(servicePrincipalsOauth2PermissionScopesModel)
 
 			if v.GetAdminConsentDescription() != nil {
 				oauth2PermissionScopes.AdminConsentDescription = types.StringValue(*v.GetAdminConsentDescription())
@@ -711,7 +711,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.Oauth2PermissionScopes = append(value.Oauth2PermissionScopes, *oauth2PermissionScopes)
 		}
 		for _, v := range v.GetPasswordCredentials() {
-			passwordCredentials := new(servicePrincipalsPasswordCredentialsDataSourceModel)
+			passwordCredentials := new(servicePrincipalsPasswordCredentialsModel)
 
 			if v.GetCustomKeyIdentifier() != nil {
 				passwordCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
@@ -746,7 +746,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.ReplyUrls = append(value.ReplyUrls, types.StringValue(v))
 		}
 		for _, v := range v.GetResourceSpecificApplicationPermissions() {
-			resourceSpecificApplicationPermissions := new(servicePrincipalsResourceSpecificApplicationPermissionsDataSourceModel)
+			resourceSpecificApplicationPermissions := new(servicePrincipalsResourceSpecificApplicationPermissionsModel)
 
 			if v.GetDescription() != nil {
 				resourceSpecificApplicationPermissions.Description = types.StringValue(*v.GetDescription())
@@ -766,7 +766,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.ResourceSpecificApplicationPermissions = append(value.ResourceSpecificApplicationPermissions, *resourceSpecificApplicationPermissions)
 		}
 		if v.GetSamlSingleSignOnSettings() != nil {
-			value.SamlSingleSignOnSettings = new(servicePrincipalsSamlSingleSignOnSettingsDataSourceModel)
+			value.SamlSingleSignOnSettings = new(servicePrincipalsSamlSingleSignOnSettingsModel)
 
 			if v.GetSamlSingleSignOnSettings().GetRelayState() != nil {
 				value.SamlSingleSignOnSettings.RelayState = types.StringValue(*v.GetSamlSingleSignOnSettings().GetRelayState())
@@ -788,7 +788,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			value.TokenEncryptionKeyId = types.StringValue(v.GetTokenEncryptionKeyId().String())
 		}
 		if v.GetVerifiedPublisher() != nil {
-			value.VerifiedPublisher = new(servicePrincipalsVerifiedPublisherDataSourceModel)
+			value.VerifiedPublisher = new(servicePrincipalsVerifiedPublisherModel)
 
 			if v.GetVerifiedPublisher().GetAddedDateTime() != nil {
 				value.VerifiedPublisher.AddedDateTime = types.StringValue(v.GetVerifiedPublisher().GetAddedDateTime().String())

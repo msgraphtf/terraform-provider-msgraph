@@ -207,7 +207,7 @@ func (d *teamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 
 // Read refreshes the Terraform state with the latest data.
 func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state teamDataSourceModel
+	var state teamModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -286,7 +286,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.DisplayName = types.StringValue(*result.GetDisplayName())
 	}
 	if result.GetFunSettings() != nil {
-		state.FunSettings = new(teamFunSettingsDataSourceModel)
+		state.FunSettings = new(teamFunSettingsModel)
 
 		if result.GetFunSettings().GetAllowCustomMemes() != nil {
 			state.FunSettings.AllowCustomMemes = types.BoolValue(*result.GetFunSettings().GetAllowCustomMemes())
@@ -302,7 +302,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 	}
 	if result.GetGuestSettings() != nil {
-		state.GuestSettings = new(teamGuestSettingsDataSourceModel)
+		state.GuestSettings = new(teamGuestSettingsModel)
 
 		if result.GetGuestSettings().GetAllowCreateUpdateChannels() != nil {
 			state.GuestSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetGuestSettings().GetAllowCreateUpdateChannels())
@@ -318,7 +318,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.IsArchived = types.BoolValue(*result.GetIsArchived())
 	}
 	if result.GetMemberSettings() != nil {
-		state.MemberSettings = new(teamMemberSettingsDataSourceModel)
+		state.MemberSettings = new(teamMemberSettingsModel)
 
 		if result.GetMemberSettings().GetAllowAddRemoveApps() != nil {
 			state.MemberSettings.AllowAddRemoveApps = types.BoolValue(*result.GetMemberSettings().GetAllowAddRemoveApps())
@@ -340,7 +340,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 	}
 	if result.GetMessagingSettings() != nil {
-		state.MessagingSettings = new(teamMessagingSettingsDataSourceModel)
+		state.MessagingSettings = new(teamMessagingSettingsModel)
 
 		if result.GetMessagingSettings().GetAllowChannelMentions() != nil {
 			state.MessagingSettings.AllowChannelMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowChannelMentions())
@@ -362,7 +362,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.Specialization = types.StringValue(result.GetSpecialization().String())
 	}
 	if result.GetSummary() != nil {
-		state.Summary = new(teamSummaryDataSourceModel)
+		state.Summary = new(teamSummaryModel)
 
 		if result.GetSummary().GetGuestsCount() != nil {
 			state.Summary.GuestsCount = types.Int64Value(int64(*result.GetSummary().GetGuestsCount()))

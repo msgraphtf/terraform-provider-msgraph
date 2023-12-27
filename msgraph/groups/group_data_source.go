@@ -278,7 +278,7 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 
 // Read refreshes the Terraform state with the latest data.
 func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state groupDataSourceModel
+	var state groupModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -388,7 +388,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		state.AllowExternalSenders = types.BoolValue(*result.GetAllowExternalSenders())
 	}
 	for _, v := range result.GetAssignedLabels() {
-		assignedLabels := new(groupAssignedLabelsDataSourceModel)
+		assignedLabels := new(groupAssignedLabelsModel)
 
 		if v.GetDisplayName() != nil {
 			assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
@@ -399,7 +399,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		state.AssignedLabels = append(state.AssignedLabels, *assignedLabels)
 	}
 	for _, v := range result.GetAssignedLicenses() {
-		assignedLicenses := new(groupAssignedLicensesDataSourceModel)
+		assignedLicenses := new(groupAssignedLicensesModel)
 
 		for _, v := range v.GetDisabledPlans() {
 			assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(v.String()))
@@ -443,7 +443,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		state.IsSubscribedByMail = types.BoolValue(*result.GetIsSubscribedByMail())
 	}
 	if result.GetLicenseProcessingState() != nil {
-		state.LicenseProcessingState = new(groupLicenseProcessingStateDataSourceModel)
+		state.LicenseProcessingState = new(groupLicenseProcessingStateModel)
 
 		if result.GetLicenseProcessingState().GetState() != nil {
 			state.LicenseProcessingState.State = types.StringValue(*result.GetLicenseProcessingState().GetState())
@@ -474,7 +474,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		state.OnPremisesNetBiosName = types.StringValue(*result.GetOnPremisesNetBiosName())
 	}
 	for _, v := range result.GetOnPremisesProvisioningErrors() {
-		onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorsDataSourceModel)
+		onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorsModel)
 
 		if v.GetCategory() != nil {
 			onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -518,7 +518,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
 	}
 	for _, v := range result.GetServiceProvisioningErrors() {
-		serviceProvisioningErrors := new(groupServiceProvisioningErrorsDataSourceModel)
+		serviceProvisioningErrors := new(groupServiceProvisioningErrorsModel)
 
 		if v.GetCreatedDateTime() != nil {
 			serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())

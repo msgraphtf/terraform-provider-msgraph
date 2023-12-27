@@ -673,7 +673,7 @@ func (d *applicationDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 
 // Read refreshes the Terraform state with the latest data.
 func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state applicationDataSourceModel
+	var state applicationModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -761,13 +761,13 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
 	}
 	for _, v := range result.GetAddIns() {
-		addIns := new(applicationAddInsDataSourceModel)
+		addIns := new(applicationAddInsModel)
 
 		if v.GetId() != nil {
 			addIns.Id = types.StringValue(v.GetId().String())
 		}
 		for _, v := range v.GetProperties() {
-			properties := new(applicationPropertiesDataSourceModel)
+			properties := new(applicationPropertiesModel)
 
 			if v.GetKey() != nil {
 				properties.Key = types.StringValue(*v.GetKey())
@@ -783,7 +783,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.AddIns = append(state.AddIns, *addIns)
 	}
 	if result.GetApi() != nil {
-		state.Api = new(applicationApiDataSourceModel)
+		state.Api = new(applicationApiModel)
 
 		if result.GetApi().GetAcceptMappedClaims() != nil {
 			state.Api.AcceptMappedClaims = types.BoolValue(*result.GetApi().GetAcceptMappedClaims())
@@ -792,7 +792,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 			state.Api.KnownClientApplications = append(state.Api.KnownClientApplications, types.StringValue(v.String()))
 		}
 		for _, v := range result.GetApi().GetOauth2PermissionScopes() {
-			oauth2PermissionScopes := new(applicationOauth2PermissionScopesDataSourceModel)
+			oauth2PermissionScopes := new(applicationOauth2PermissionScopesModel)
 
 			if v.GetAdminConsentDescription() != nil {
 				oauth2PermissionScopes.AdminConsentDescription = types.StringValue(*v.GetAdminConsentDescription())
@@ -824,7 +824,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 			state.Api.Oauth2PermissionScopes = append(state.Api.Oauth2PermissionScopes, *oauth2PermissionScopes)
 		}
 		for _, v := range result.GetApi().GetPreAuthorizedApplications() {
-			preAuthorizedApplications := new(applicationPreAuthorizedApplicationsDataSourceModel)
+			preAuthorizedApplications := new(applicationPreAuthorizedApplicationsModel)
 
 			if v.GetAppId() != nil {
 				preAuthorizedApplications.AppId = types.StringValue(*v.GetAppId())
@@ -842,7 +842,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.AppId = types.StringValue(*result.GetAppId())
 	}
 	for _, v := range result.GetAppRoles() {
-		appRoles := new(applicationAppRolesDataSourceModel)
+		appRoles := new(applicationAppRolesModel)
 
 		for _, v := range v.GetAllowedMemberTypes() {
 			appRoles.AllowedMemberTypes = append(appRoles.AllowedMemberTypes, types.StringValue(v))
@@ -871,7 +871,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.ApplicationTemplateId = types.StringValue(*result.GetApplicationTemplateId())
 	}
 	if result.GetCertification() != nil {
-		state.Certification = new(applicationCertificationDataSourceModel)
+		state.Certification = new(applicationCertificationModel)
 
 		if result.GetCertification().GetCertificationDetailsUrl() != nil {
 			state.Certification.CertificationDetailsUrl = types.StringValue(*result.GetCertification().GetCertificationDetailsUrl())
@@ -911,7 +911,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.IdentifierUris = append(state.IdentifierUris, types.StringValue(v))
 	}
 	if result.GetInfo() != nil {
-		state.Info = new(applicationInfoDataSourceModel)
+		state.Info = new(applicationInfoModel)
 
 		if result.GetInfo().GetLogoUrl() != nil {
 			state.Info.LogoUrl = types.StringValue(*result.GetInfo().GetLogoUrl())
@@ -936,7 +936,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.IsFallbackPublicClient = types.BoolValue(*result.GetIsFallbackPublicClient())
 	}
 	for _, v := range result.GetKeyCredentials() {
-		keyCredentials := new(applicationKeyCredentialsDataSourceModel)
+		keyCredentials := new(applicationKeyCredentialsModel)
 
 		if v.GetCustomKeyIdentifier() != nil {
 			keyCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
@@ -974,10 +974,10 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.Oauth2RequirePostResponse = types.BoolValue(*result.GetOauth2RequirePostResponse())
 	}
 	if result.GetOptionalClaims() != nil {
-		state.OptionalClaims = new(applicationOptionalClaimsDataSourceModel)
+		state.OptionalClaims = new(applicationOptionalClaimsModel)
 
 		for _, v := range result.GetOptionalClaims().GetAccessToken() {
-			accessToken := new(applicationAccessTokenDataSourceModel)
+			accessToken := new(applicationAccessTokenModel)
 
 			for _, v := range v.GetAdditionalProperties() {
 				accessToken.AdditionalProperties = append(accessToken.AdditionalProperties, types.StringValue(v))
@@ -994,7 +994,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 			state.OptionalClaims.AccessToken = append(state.OptionalClaims.AccessToken, *accessToken)
 		}
 		for _, v := range result.GetOptionalClaims().GetIdToken() {
-			idToken := new(applicationIdTokenDataSourceModel)
+			idToken := new(applicationIdTokenModel)
 
 			for _, v := range v.GetAdditionalProperties() {
 				idToken.AdditionalProperties = append(idToken.AdditionalProperties, types.StringValue(v))
@@ -1011,7 +1011,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 			state.OptionalClaims.IdToken = append(state.OptionalClaims.IdToken, *idToken)
 		}
 		for _, v := range result.GetOptionalClaims().GetSaml2Token() {
-			saml2Token := new(applicationSaml2TokenDataSourceModel)
+			saml2Token := new(applicationSaml2TokenModel)
 
 			for _, v := range v.GetAdditionalProperties() {
 				saml2Token.AdditionalProperties = append(saml2Token.AdditionalProperties, types.StringValue(v))
@@ -1029,7 +1029,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		}
 	}
 	if result.GetParentalControlSettings() != nil {
-		state.ParentalControlSettings = new(applicationParentalControlSettingsDataSourceModel)
+		state.ParentalControlSettings = new(applicationParentalControlSettingsModel)
 
 		for _, v := range result.GetParentalControlSettings().GetCountriesBlockedForMinors() {
 			state.ParentalControlSettings.CountriesBlockedForMinors = append(state.ParentalControlSettings.CountriesBlockedForMinors, types.StringValue(v))
@@ -1039,7 +1039,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		}
 	}
 	for _, v := range result.GetPasswordCredentials() {
-		passwordCredentials := new(applicationPasswordCredentialsDataSourceModel)
+		passwordCredentials := new(applicationPasswordCredentialsModel)
 
 		if v.GetCustomKeyIdentifier() != nil {
 			passwordCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
@@ -1065,7 +1065,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.PasswordCredentials = append(state.PasswordCredentials, *passwordCredentials)
 	}
 	if result.GetPublicClient() != nil {
-		state.PublicClient = new(applicationPublicClientDataSourceModel)
+		state.PublicClient = new(applicationPublicClientModel)
 
 		for _, v := range result.GetPublicClient().GetRedirectUris() {
 			state.PublicClient.RedirectUris = append(state.PublicClient.RedirectUris, types.StringValue(v))
@@ -1075,7 +1075,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.PublisherDomain = types.StringValue(*result.GetPublisherDomain())
 	}
 	if result.GetRequestSignatureVerification() != nil {
-		state.RequestSignatureVerification = new(applicationRequestSignatureVerificationDataSourceModel)
+		state.RequestSignatureVerification = new(applicationRequestSignatureVerificationModel)
 
 		if result.GetRequestSignatureVerification().GetAllowedWeakAlgorithms() != nil {
 			state.RequestSignatureVerification.AllowedWeakAlgorithms = types.StringValue(result.GetRequestSignatureVerification().GetAllowedWeakAlgorithms().String())
@@ -1085,10 +1085,10 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		}
 	}
 	for _, v := range result.GetRequiredResourceAccess() {
-		requiredResourceAccess := new(applicationRequiredResourceAccessDataSourceModel)
+		requiredResourceAccess := new(applicationRequiredResourceAccessModel)
 
 		for _, v := range v.GetResourceAccess() {
-			resourceAccess := new(applicationResourceAccessDataSourceModel)
+			resourceAccess := new(applicationResourceAccessModel)
 
 			if v.GetId() != nil {
 				resourceAccess.Id = types.StringValue(v.GetId().String())
@@ -1110,7 +1110,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.ServiceManagementReference = types.StringValue(*result.GetServiceManagementReference())
 	}
 	if result.GetServicePrincipalLockConfiguration() != nil {
-		state.ServicePrincipalLockConfiguration = new(applicationServicePrincipalLockConfigurationDataSourceModel)
+		state.ServicePrincipalLockConfiguration = new(applicationServicePrincipalLockConfigurationModel)
 
 		if result.GetServicePrincipalLockConfiguration().GetAllProperties() != nil {
 			state.ServicePrincipalLockConfiguration.AllProperties = types.BoolValue(*result.GetServicePrincipalLockConfiguration().GetAllProperties())
@@ -1132,7 +1132,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.SignInAudience = types.StringValue(*result.GetSignInAudience())
 	}
 	if result.GetSpa() != nil {
-		state.Spa = new(applicationSpaDataSourceModel)
+		state.Spa = new(applicationSpaModel)
 
 		for _, v := range result.GetSpa().GetRedirectUris() {
 			state.Spa.RedirectUris = append(state.Spa.RedirectUris, types.StringValue(v))
@@ -1145,7 +1145,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		state.TokenEncryptionKeyId = types.StringValue(result.GetTokenEncryptionKeyId().String())
 	}
 	if result.GetVerifiedPublisher() != nil {
-		state.VerifiedPublisher = new(applicationVerifiedPublisherDataSourceModel)
+		state.VerifiedPublisher = new(applicationVerifiedPublisherModel)
 
 		if result.GetVerifiedPublisher().GetAddedDateTime() != nil {
 			state.VerifiedPublisher.AddedDateTime = types.StringValue(result.GetVerifiedPublisher().GetAddedDateTime().String())
@@ -1158,13 +1158,13 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		}
 	}
 	if result.GetWeb() != nil {
-		state.Web = new(applicationWebDataSourceModel)
+		state.Web = new(applicationWebModel)
 
 		if result.GetWeb().GetHomePageUrl() != nil {
 			state.Web.HomePageUrl = types.StringValue(*result.GetWeb().GetHomePageUrl())
 		}
 		if result.GetWeb().GetImplicitGrantSettings() != nil {
-			state.Web.ImplicitGrantSettings = new(applicationImplicitGrantSettingsDataSourceModel)
+			state.Web.ImplicitGrantSettings = new(applicationImplicitGrantSettingsModel)
 
 			if result.GetWeb().GetImplicitGrantSettings().GetEnableAccessTokenIssuance() != nil {
 				state.Web.ImplicitGrantSettings.EnableAccessTokenIssuance = types.BoolValue(*result.GetWeb().GetImplicitGrantSettings().GetEnableAccessTokenIssuance())
@@ -1177,7 +1177,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 			state.Web.LogoutUrl = types.StringValue(*result.GetWeb().GetLogoutUrl())
 		}
 		for _, v := range result.GetWeb().GetRedirectUriSettings() {
-			redirectUriSettings := new(applicationRedirectUriSettingsDataSourceModel)
+			redirectUriSettings := new(applicationRedirectUriSettingsModel)
 
 			if v.GetIndex() != nil {
 				redirectUriSettings.Index = types.Int64Value(int64(*v.GetIndex()))
