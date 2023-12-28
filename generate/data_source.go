@@ -32,77 +32,6 @@ func (t strWithCases) UpperFirst() string {
 	return strings.ToUpper(t.string[0:1]) + t.string[1:]
 }
 
-type templateInput struct {
-	PackageName    string
-	BlockName      strWithCases
-	Schema         []terraformSchema
-	Model          []terraformModel
-	CreateRequest  []createRequest
-	ReadQuery      readQuery
-	ReadResponse   []readResponse
-}
-
-// Represents a method used to perform a query using msgraph-sdk-go 
-type queryMethod struct {
-	MethodName string
-	Parameter  string
-}
-
-// Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
-type templateAugment struct {
-	ExtraOptionals     []string            `yaml:"extraOptionals"`
-	AltMethods         []map[string]string `yaml:"altMethods"`
-	ExcludedProperties []string            `yaml:"excludedProperties"`
-}
-
-// Used by templates defined inside of data_source_template.go to generate the schema
-type terraformSchema struct {
-	AttributeName string
-	AttributeType string
-	Description   string
-	Required      bool
-	Optional      bool
-	Computed      bool
-	ElementType   string
-	Attributes    []terraformSchema
-	NestedObject  []terraformSchema
-}
-
-// Used by templates defined inside of data_source_template.go to generate the data models
-type terraformModel struct {
-	ModelName string
-	Fields    []terraformModelField
-}
-
-type terraformModelField struct {
-	FieldName     string
-	FieldType     string
-	AttributeName string
-}
-
-// Used by templates defined inside of read_query_template.go to generate the read query code
-type readQuery struct {
-	BlockName             strWithCases
-	Configuration         string
-	SelectParameters      []string
-	MultipleGetMethodParameters bool
-	GetMethod             []queryMethod
-	AltGetMethod          []map[string]string
-	ErrorAttribute        string
-	ErrorExtraAttributes  []string
-}
-
-// Used by 'read_response_template' to generate code to map the query response to the terraform model
-type readResponse struct {
-	GetMethod      string
-	StateVarName   string
-	ModelVarName   string
-	ModelName      string
-	AttributeType  string
-	NestedRead     []readResponse
-	ParentRead     *readResponse
-}
-
 func upperFirst(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]
 }
@@ -119,6 +48,19 @@ var pathObject openapi.OpenAPIPathObject
 var augment templateAugment
 var input templateInput
 var allModelNames []string
+
+// Used by templates defined inside of data_source_template.go to generate the schema
+type terraformSchema struct {
+	AttributeName string
+	AttributeType string
+	Description   string
+	Required      bool
+	Optional      bool
+	Computed      bool
+	ElementType   string
+	Attributes    []terraformSchema
+	NestedObject  []terraformSchema
+}
 
 func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchemaObject) []terraformSchema {
 
@@ -177,6 +119,18 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 
 	return schema
 
+}
+
+// Used by templates defined inside of data_source_template.go to generate the data models
+type terraformModel struct {
+	ModelName string
+	Fields    []terraformModelField
+}
+
+type terraformModelField struct {
+	FieldName     string
+	FieldType     string
+	AttributeName string
 }
 
 func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
@@ -289,6 +243,24 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 	return cr
 }
 
+// Used by templates defined inside of read_query_template.go to generate the read query code
+type readQuery struct {
+	BlockName             strWithCases
+	Configuration         string
+	SelectParameters      []string
+	MultipleGetMethodParameters bool
+	GetMethod             []queryMethod
+	AltGetMethod          []map[string]string
+	ErrorAttribute        string
+	ErrorExtraAttributes  []string
+}
+
+// Represents a method used to perform a query using msgraph-sdk-go 
+type queryMethod struct {
+	MethodName string
+	Parameter  string
+}
+
 func generateReadQuery() readQuery {
 
 	var rq readQuery
@@ -353,6 +325,17 @@ func generateReadQuery() readQuery {
 
 	return rq
 
+}
+
+// Used by 'read_response_template' to generate code to map the query response to the terraform model
+type readResponse struct {
+	GetMethod      string
+	StateVarName   string
+	ModelVarName   string
+	ModelName      string
+	AttributeType  string
+	NestedRead     []readResponse
+	ParentRead     *readResponse
 }
 
 func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
@@ -431,6 +414,23 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 
 	return read
 
+}
+
+type templateInput struct {
+	PackageName    string
+	BlockName      strWithCases
+	Schema         []terraformSchema
+	Model          []terraformModel
+	CreateRequest  []createRequest
+	ReadQuery      readQuery
+	ReadResponse   []readResponse
+}
+
+// Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
+type templateAugment struct {
+	ExtraOptionals     []string            `yaml:"extraOptionals"`
+	AltMethods         []map[string]string `yaml:"altMethods"`
+	ExcludedProperties []string            `yaml:"excludedProperties"`
 }
 
 func generateDataSource(pathname string) {
