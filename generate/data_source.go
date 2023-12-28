@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -243,6 +244,12 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 			newCreateRequest.AttributeType = "CreateInt64Attribute"
 		case "boolean":
 			newCreateRequest.AttributeType = "CreateBoolAttribute"
+		case "array":
+			switch property.ArrayOf {
+			case "string":
+				newCreateRequest.AttributeType = "CreateArrayStringAttribute"
+			}
+			fmt.Printf("ARRAY: %s\n", property.Name)
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
 			newCreateRequest.NewModelMethod = upperFirst(property.Name)

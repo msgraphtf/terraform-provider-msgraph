@@ -90,6 +90,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
+	{{- define "CreateArrayStringAttribute" }}
+	var {{.PlanValueVar}} []string
+	for _, i := range plan.{{.PlanFields}} {
+		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.ValueString())
+	}
+	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
+	{{- end}}
+
 	{{- define "CreateObjectAttribute" }}
 	{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 	{{template "generate_create" .NestedCreate}}
@@ -106,6 +114,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{ template "CreateInt64Attribute" .}}
 	{{- else if eq .AttributeType "CreateBoolAttribute"}}
 	{{ template "CreateBoolAttribute" .}}
+	{{- else if eq .AttributeType "CreateArrayStringAttribute"}}
+	{{ template "CreateArrayStringAttribute" .}}
 	{{- else if eq .AttributeType "CreateObjectAttribute"}}
 	{{ template "CreateObjectAttribute" .}}
 	{{- end}}
