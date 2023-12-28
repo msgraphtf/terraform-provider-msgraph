@@ -71,6 +71,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody.Set{{.AttributeName.UpperCamel}}(&{{.AttributeName.LowerCamel}})
 	{{- end}}
 
+	{{- define "CreateInt64Attribute" }}
+	{{.AttributeName.LowerCamel}} := plan.{{.AttributeName.UpperCamel}}.ValueInt64()
+	requestBody.Set{{.AttributeName.UpperCamel}}(&{{.AttributeName.LowerCamel}})
+	{{- end}}
+
 	{{- define "CreateBoolAttribute" }}
 	{{.AttributeName.LowerCamel}} := plan.{{.AttributeName.UpperCamel}}.ValueBool()
 	requestBody.Set{{.AttributeName.UpperCamel}}(&{{.AttributeName.LowerCamel}})
@@ -79,6 +84,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- range .CreateRequest}}
 	{{- if eq .AttributeType "CreateStringAttribute"}}
 	{{- template "CreateStringAttribute" .}}
+	{{- else if eq .AttributeType "CreateInt64Attribute"}}
+	{{- template "CreateInt64Attribute" .}}
 	{{- else if eq .AttributeType "CreateBoolAttribute"}}
 	{{- template "CreateBoolAttribute" .}}
 	{{- end}}
