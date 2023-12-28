@@ -81,13 +81,23 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody.Set{{.AttributeName}}(&{{.VarName}})
 	{{- end}}
 
-	{{- range .CreateRequest}}
+	{{- define "CreateObjectAttribute" }}
+	{{.VarName}} := models.New{{.AttributeName}}()
+	{{template "generate_create" .NestedCreate}}
+	requestBody.Set{{.AttributeName}}(&{{.VarName}})
+	{{- end}}
+
+	{{- block "generate_create" .CreateRequest}}
+	{{- range .}}
 	{{- if eq .AttributeType "CreateStringAttribute"}}
 	{{- template "CreateStringAttribute" .}}
 	{{- else if eq .AttributeType "CreateInt64Attribute"}}
 	{{- template "CreateInt64Attribute" .}}
 	{{- else if eq .AttributeType "CreateBoolAttribute"}}
 	{{- template "CreateBoolAttribute" .}}
+	{{- else if eq .AttributeType "CreateObjectAttribute"}}
+	{{- template "CreateObjectAttribute" .}}
+	{{- end}}
 	{{- end}}
 	{{- end}}
 

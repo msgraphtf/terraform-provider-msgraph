@@ -84,6 +84,7 @@ type createRequest struct {
 	AttributeType string
 	AttributeName string
 	VarName       string
+	NestedCreate  []createRequest
 }
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
@@ -258,7 +259,11 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 	for _, property := range schemaObject.Properties {
 		newCreateRequest := new(createRequest)
 
-		newCreateRequest.AttributeName = strcase.ToCamel(property.Name)
+		if parent != nil {
+			newCreateRequest.AttributeName = parent.AttributeName + "."
+		}
+
+		newCreateRequest.AttributeName += strcase.ToCamel(property.Name)
 		newCreateRequest.VarName = strcase.ToLowerCamel(property.Name)
 
 		switch property.Type {
@@ -268,6 +273,9 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 			newCreateRequest.AttributeType = "CreateInt64Attribute"
 		case "boolean":
 			newCreateRequest.AttributeType = "CreateBoolAttribute"
+		case "object":
+			newCreateRequest.AttributeType = "CreateObjectAttribute"
+			newCreateRequest.NestedCreate = generateCreateRequest(property.ObjectOf, newCreateRequest)
 		}
 
 		cr = append(cr, *newCreateRequest)
