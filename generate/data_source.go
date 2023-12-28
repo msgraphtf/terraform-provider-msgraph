@@ -37,6 +37,7 @@ type templateInput struct {
 	BlockName      strWithCases
 	Schema         []terraformSchema
 	Model          []terraformModel
+	CreateRequest  []createRequest
 	ReadQuery      readQuery
 	ReadResponse   []readResponse
 }
@@ -77,6 +78,11 @@ type terraformModelField struct {
 	FieldName     string
 	FieldType     string
 	AttributeName string
+}
+
+type createRequest struct {
+	AttributeName strWithCases
+	AttributeType string
 }
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
@@ -243,6 +249,25 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 	return model
 
+}
+
+func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject) []createRequest {
+	var cr []createRequest
+
+	for _, property := range schemaObject.Properties {
+		newCreateRequest := new(createRequest)
+
+		newCreateRequest.AttributeName = strWithCases{property.Name}
+
+		switch property.Type {
+		case "string":
+			newCreateRequest.AttributeType = "CreateStringAttribute"
+		}
+
+		cr = append(cr, *newCreateRequest)
+	}
+
+	return cr
 }
 
 func generateReadQuery() readQuery {
@@ -449,6 +474,9 @@ func generateDataSource(pathname string) {
 	datasourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
 
 	if pathObject.Patch.Summary != "" {
+
+		input.CreateRequest = generateCreateRequest(schemaObject)
+
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
 		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/schema_template.go")

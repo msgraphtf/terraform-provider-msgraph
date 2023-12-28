@@ -3,11 +3,8 @@ package {{.PackageName}}
 import (
     "context"
 
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
@@ -67,6 +64,17 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	}
 
 	// TODO: Generate API request body from Plan
+	requestBody := models.New{{.BlockName.UpperCamel}}()
+	{{- define "CreateStringAttribute" }}
+	{{.AttributeName.LowerCamel}} := plan.{{.AttributeName.UpperCamel}}.ValueString()
+	requestBody.SetDisplayName(&{{.AttributeName.LowerCamel}})
+	{{- end}}
+
+	{{- range .CreateRequest}}
+	{{- if eq .AttributeType "CreateStringAttribute"}}
+	{{- template "CreateStringAttribute" .}}
+	{{- end}}
+	{{- end}}
 
 	// TODO: Create new {{.BlockName.LowerCamel}}
 
