@@ -215,6 +215,11 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 	var cr []createRequest
 
 	for _, property := range schemaObject.Properties {
+
+		if slices.Contains(augment.ExcludedProperties, property.Name) {
+			continue
+		}
+
 		newCreateRequest := new(createRequest)
 
 		if parent != nil {
