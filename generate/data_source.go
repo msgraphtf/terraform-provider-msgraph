@@ -83,7 +83,8 @@ type terraformModelField struct {
 type createRequest struct {
 	AttributeType string
 	AttributeName string
-	VarName       string
+	ModelVarName  string
+	PlanVarName   string
 	NestedCreate  []createRequest
 }
 
@@ -264,7 +265,8 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 		}
 
 		newCreateRequest.AttributeName += strcase.ToCamel(property.Name)
-		newCreateRequest.VarName = strcase.ToLowerCamel(property.Name)
+		newCreateRequest.ModelVarName = strcase.ToLowerCamel(property.Name)
+		newCreateRequest.PlanVarName = strcase.ToLowerCamel(property.Name)
 
 		switch property.Type {
 		case "string":
