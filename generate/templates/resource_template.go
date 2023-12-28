@@ -67,18 +67,18 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	{{.NewPlanVar}} := plan.{{.PlanFields}}.ValueString()
-	requestBody.Set{{.ParentModelMethod}}(&{{.NewModelVar}})
+	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueString()
+	requestBody.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	{{.NewPlanVar}} := plan.{{.PlanFields}}.ValueInt64()
-	requestBody.Set{{.ParentModelMethod}}(&{{.NewModelVar}})
+	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueInt64()
+	requestBody.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	{{.NewPlanVar}} := plan.{{.PlanFields}}.ValueBool()
-	requestBody.Set{{.ParentModelMethod}}(&{{.NewModelVar}})
+	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueBool()
+	requestBody.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}

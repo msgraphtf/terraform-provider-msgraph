@@ -248,12 +248,9 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 type createRequest struct {
 	AttributeType string
-	NewPlanVar    string
+	PlanValueVar  string
+	PlanSetMethod string
 	PlanFields    string
-	NewModelVar   string
-	ModelMethod   string
-	ParentModelMethod   string
-	ParentModelVar string
 	NestedCreate  []createRequest
 }
 
@@ -263,19 +260,9 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 	for _, property := range schemaObject.Properties {
 		newCreateRequest := new(createRequest)
 
-		if parent == nil {
-			newCreateRequest.ParentModelVar    = "requestBody"
-			newCreateRequest.ParentModelMethod = upperFirst(property.Name)
-		} else {
-			newCreateRequest.ParentModelMethod = parent.ModelMethod
-			newCreateRequest.ParentModelVar    = parent.NewModelVar
-			newCreateRequest.PlanFields        = parent.PlanFields + "."
-		}
-
-		newCreateRequest.NewPlanVar = property.Name
-		newCreateRequest.PlanFields += upperFirst(property.Name)
-		newCreateRequest.NewModelVar = property.Name
-		newCreateRequest.ModelMethod = upperFirst(property.Name)
+		newCreateRequest.PlanValueVar = property.Name
+		newCreateRequest.PlanFields   = upperFirst(property.Name)
+		newCreateRequest.PlanSetMethod = upperFirst(property.Name)
 
 		switch property.Type {
 		case "string":
