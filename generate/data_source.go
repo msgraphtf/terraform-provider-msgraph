@@ -217,10 +217,16 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 	for _, property := range schemaObject.Properties {
 		newCreateRequest := new(createRequest)
 
+		if parent != nil {
+			newCreateRequest.PlanFields = parent.PlanFields + "."
+			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
+		} else {
+			newCreateRequest.RequestBodyVar = "requestBody"
+		}
+
+		newCreateRequest.PlanFields   += upperFirst(property.Name)
 		newCreateRequest.PlanValueVar = property.Name
-		newCreateRequest.PlanFields   = upperFirst(property.Name)
 		newCreateRequest.PlanSetMethod = upperFirst(property.Name)
-		newCreateRequest.RequestBodyVar = "requestBody"
 
 		switch property.Type {
 		case "string":
