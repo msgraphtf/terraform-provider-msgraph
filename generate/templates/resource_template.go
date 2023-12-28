@@ -67,24 +67,24 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	{{.PlanVarName}} := plan.{{.AttributeName}}.ValueString()
-	requestBody.Set{{.AttributeName}}(&{{.ModelVarName}})
+	{{.NewPlanVar}} := plan.{{.PlanFields}}.ValueString()
+	requestBody.Set{{.ParentModelMethod}}(&{{.NewModelVar}})
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	{{.PlanVarName}} := plan.{{.AttributeName}}.ValueInt64()
-	requestBody.Set{{.AttributeName}}(&{{.ModelVarName}})
+	{{.NewPlanVar}} := plan.{{.PlanFields}}.ValueInt64()
+	requestBody.Set{{.ParentModelMethod}}(&{{.NewModelVar}})
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	{{.PlanVarName}} := plan.{{.AttributeName}}.ValueBool()
-	requestBody.Set{{.AttributeName}}(&{{.ModelVarName}})
+	{{.NewPlanVar}} := plan.{{.PlanFields}}.ValueBool()
+	requestBody.Set{{.ParentModelMethod}}(&{{.NewModelVar}})
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}
-	{{.PlanVarName}} := models.New{{.AttributeName}}()
+	{{.NewModelVar}} := models.New{{.ModelMethod}}()
 	{{template "generate_create" .NestedCreate}}
-	requestBody.Set{{.AttributeName}}(&{{.ModelVarName}})
+	requestBody.Set{{.ParentModelMethod}}(&{{.NewModelVar}})
 	{{- end}}
 
 	{{- block "generate_create" .CreateRequest}}

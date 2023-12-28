@@ -82,9 +82,12 @@ type terraformModelField struct {
 
 type createRequest struct {
 	AttributeType string
-	AttributeName string
-	ModelVarName  string
-	PlanVarName   string
+	NewPlanVar    string
+	PlanFields    string
+	NewModelVar   string
+	ModelMethod   string
+	ParentModelMethod   string
+	ParentModelVar string
 	NestedCreate  []createRequest
 }
 
@@ -260,13 +263,19 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 	for _, property := range schemaObject.Properties {
 		newCreateRequest := new(createRequest)
 
-		if parent != nil {
-			newCreateRequest.AttributeName = parent.AttributeName + "."
+		if parent == nil {
+			newCreateRequest.ParentModelVar    = "requestBody"
+			newCreateRequest.ParentModelMethod = upperFirst(property.Name)
+		} else {
+			newCreateRequest.ParentModelMethod = parent.ModelMethod
+			newCreateRequest.ParentModelVar    = parent.NewModelVar
+			newCreateRequest.PlanFields        = parent.PlanFields + "."
 		}
 
-		newCreateRequest.AttributeName += strcase.ToCamel(property.Name)
-		newCreateRequest.ModelVarName = strcase.ToLowerCamel(property.Name)
-		newCreateRequest.PlanVarName = strcase.ToLowerCamel(property.Name)
+		newCreateRequest.NewPlanVar = property.Name
+		newCreateRequest.PlanFields += upperFirst(property.Name)
+		newCreateRequest.NewModelVar = property.Name
+		newCreateRequest.ModelMethod = upperFirst(property.Name)
 
 		switch property.Type {
 		case "string":
