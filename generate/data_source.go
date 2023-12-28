@@ -80,17 +80,6 @@ type terraformModelField struct {
 	AttributeName string
 }
 
-type createRequest struct {
-	AttributeType string
-	NewPlanVar    string
-	PlanFields    string
-	NewModelVar   string
-	ModelMethod   string
-	ParentModelMethod   string
-	ParentModelVar string
-	NestedCreate  []createRequest
-}
-
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type readQuery struct {
 	BlockName             strWithCases
@@ -255,6 +244,17 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 	return model
 
+}
+
+type createRequest struct {
+	AttributeType string
+	NewPlanVar    string
+	PlanFields    string
+	NewModelVar   string
+	ModelMethod   string
+	ParentModelMethod   string
+	ParentModelVar string
+	NestedCreate  []createRequest
 }
 
 func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *createRequest) []createRequest {
