@@ -81,8 +81,9 @@ type terraformModelField struct {
 }
 
 type createRequest struct {
-	AttributeName strWithCases
 	AttributeType string
+	AttributeName string
+	VarName       string
 }
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
@@ -251,13 +252,14 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 }
 
-func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject) []createRequest {
+func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *createRequest) []createRequest {
 	var cr []createRequest
 
 	for _, property := range schemaObject.Properties {
 		newCreateRequest := new(createRequest)
 
-		newCreateRequest.AttributeName = strWithCases{property.Name}
+		newCreateRequest.AttributeName = strcase.ToCamel(property.Name)
+		newCreateRequest.VarName = strcase.ToLowerCamel(property.Name)
 
 		switch property.Type {
 		case "string":
@@ -479,7 +481,7 @@ func generateDataSource(pathname string) {
 
 	if pathObject.Patch.Summary != "" {
 
-		input.CreateRequest = generateCreateRequest(schemaObject)
+		input.CreateRequest = generateCreateRequest(schemaObject, nil)
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
