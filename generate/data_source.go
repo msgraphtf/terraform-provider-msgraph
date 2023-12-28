@@ -251,6 +251,7 @@ type createRequest struct {
 	PlanValueVar  string
 	PlanSetMethod string
 	PlanFields    string
+	RequestBodyVar string
 	NestedCreate  []createRequest
 }
 
@@ -263,6 +264,7 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 		newCreateRequest.PlanValueVar = property.Name
 		newCreateRequest.PlanFields   = upperFirst(property.Name)
 		newCreateRequest.PlanSetMethod = upperFirst(property.Name)
+		newCreateRequest.RequestBodyVar = "requestBody"
 
 		switch property.Type {
 		case "string":
