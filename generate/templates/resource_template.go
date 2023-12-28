@@ -2,6 +2,7 @@ package {{.PackageName}}
 
 import (
     "context"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -63,12 +64,20 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		return
 	}
 
+	var t time.Time
+
 	// TODO: Generate API request body from Plan
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
 	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueString()
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
+	{{- end}}
+
+	{{- define "CreateStringTimeAttribute" }}
+	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueString()
+	t, _ = time.Parse(time.RFC3339, {{.PlanValueVar}})
+	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&t)
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
@@ -91,6 +100,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- range .}}
 	{{- if eq .AttributeType "CreateStringAttribute"}}
 	{{ template "CreateStringAttribute" .}}
+	{{- else if eq .AttributeType "CreateStringTimeAttribute"}}
+	{{ template "CreateStringTimeAttribute" .}}
 	{{- else if eq .AttributeType "CreateInt64Attribute"}}
 	{{ template "CreateInt64Attribute" .}}
 	{{- else if eq .AttributeType "CreateBoolAttribute"}}
