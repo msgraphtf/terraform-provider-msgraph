@@ -65,14 +65,22 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	// TODO: Generate API request body from Plan
 	requestBody := models.New{{.BlockName.UpperCamel}}()
+
 	{{- define "CreateStringAttribute" }}
 	{{.AttributeName.LowerCamel}} := plan.{{.AttributeName.UpperCamel}}.ValueString()
-	requestBody.SetDisplayName(&{{.AttributeName.LowerCamel}})
+	requestBody.Set{{.AttributeName.UpperCamel}}(&{{.AttributeName.LowerCamel}})
+	{{- end}}
+
+	{{- define "CreateBoolAttribute" }}
+	{{.AttributeName.LowerCamel}} := plan.{{.AttributeName.UpperCamel}}.ValueBool()
+	requestBody.Set{{.AttributeName.UpperCamel}}(&{{.AttributeName.LowerCamel}})
 	{{- end}}
 
 	{{- range .CreateRequest}}
 	{{- if eq .AttributeType "CreateStringAttribute"}}
 	{{- template "CreateStringAttribute" .}}
+	{{- else if eq .AttributeType "CreateBoolAttribute"}}
+	{{- template "CreateBoolAttribute" .}}
 	{{- end}}
 	{{- end}}
 

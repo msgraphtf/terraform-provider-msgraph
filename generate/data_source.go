@@ -262,6 +262,8 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject) []createReq
 		switch property.Type {
 		case "string":
 			newCreateRequest.AttributeType = "CreateStringAttribute"
+		case "boolean":
+			newCreateRequest.AttributeType = "CreateBoolAttribute"
 		}
 
 		cr = append(cr, *newCreateRequest)
