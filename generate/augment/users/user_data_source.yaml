@@ -7,3 +7,4 @@ excludedProperties:
   - mailboxSettings # Only works for the signed in user
   - deviceEnrollmentLimit # Seems to be bugged
   - print # Seems to be bugged
+  - customSecurityAttributes # Some kind of special Odata thing

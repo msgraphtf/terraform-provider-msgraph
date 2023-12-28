@@ -36,7 +36,6 @@ description: |-
 - `country` (String) The country or region where the user is located; for example, US or UK. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).
 - `created_date_time` (String) The date and time the user was created, in ISO 8601 format and UTC. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Microsoft Entra ID. Property is null for some users created before June 2018 and on-premises users that were synced to Microsoft Entra ID before June 2018. Read-only. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).
 - `creation_type` (String) Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by an external user signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).
-- `custom_security_attributes` (Attributes) An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). The filter value is case-sensitive. (see [below for nested schema](#nestedatt--custom_security_attributes))
 - `deleted_date_time` (String) Date and time when this object was deleted. Always null when the object hasn't been deleted.
 - `department` (String) The name of the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).
 - `display_name` (String) The name displayed in the address book for the user. This is usually the combination of the user's first name, middle initial, and last name. This property is required when a user is created and it cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values), $orderby, and $search.
@@ -123,10 +122,6 @@ Read-Only:
 Read-Only:
 
 - `certificate_user_ids` (List of String)
-
-
-<a id="nestedatt--custom_security_attributes"></a>
-### Nested Schema for `custom_security_attributes`
 
 
 <a id="nestedatt--employee_org_data"></a>

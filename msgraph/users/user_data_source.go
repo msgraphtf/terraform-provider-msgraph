@@ -152,11 +152,6 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by an external user signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
 				Computed:    true,
 			},
-			"custom_security_attributes": schema.SingleNestedAttribute{
-				Description: "An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). The filter value is case-sensitive.",
-				Computed:    true,
-				Attributes:  map[string]schema.Attribute{},
-			},
 			"department": schema.StringAttribute{
 				Description: "The name of the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).",
 				Computed:    true,
@@ -633,7 +628,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				"country",
 				"createdDateTime",
 				"creationType",
-				"customSecurityAttributes",
 				"department",
 				"displayName",
 				"employeeHireDate",
@@ -842,10 +836,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 	if result.GetCreationType() != nil {
 		state.CreationType = types.StringValue(*result.GetCreationType())
-	}
-	if result.GetCustomSecurityAttributes() != nil {
-		state.CustomSecurityAttributes = new(userCustomSecurityAttributesModel)
-
 	}
 	if result.GetDepartment() != nil {
 		state.Department = types.StringValue(*result.GetDepartment())

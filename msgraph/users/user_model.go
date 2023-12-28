@@ -21,7 +21,6 @@ type userModel struct {
 	Country                         types.String                            `tfsdk:"country"`
 	CreatedDateTime                 types.String                            `tfsdk:"created_date_time"`
 	CreationType                    types.String                            `tfsdk:"creation_type"`
-	CustomSecurityAttributes        *userCustomSecurityAttributesModel      `tfsdk:"custom_security_attributes"`
 	Department                      types.String                            `tfsdk:"department"`
 	DisplayName                     types.String                            `tfsdk:"display_name"`
 	EmployeeHireDate                types.String                            `tfsdk:"employee_hire_date"`
@@ -97,9 +96,6 @@ type userAssignedPlansModel struct {
 
 type userAuthorizationInfoModel struct {
 	CertificateUserIds []types.String `tfsdk:"certificate_user_ids"`
-}
-
-type userCustomSecurityAttributesModel struct {
 }
 
 type userEmployeeOrgDataModel struct {
