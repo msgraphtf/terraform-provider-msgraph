@@ -90,13 +90,13 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- block "generate_create" .CreateRequest}}
 	{{- range .}}
 	{{- if eq .AttributeType "CreateStringAttribute"}}
-	{{- template "CreateStringAttribute" .}}
+	{{ template "CreateStringAttribute" .}}
 	{{- else if eq .AttributeType "CreateInt64Attribute"}}
-	{{- template "CreateInt64Attribute" .}}
+	{{ template "CreateInt64Attribute" .}}
 	{{- else if eq .AttributeType "CreateBoolAttribute"}}
-	{{- template "CreateBoolAttribute" .}}
+	{{ template "CreateBoolAttribute" .}}
 	{{- else if eq .AttributeType "CreateObjectAttribute"}}
-	{{- template "CreateObjectAttribute" .}}
+	{{ template "CreateObjectAttribute" .}}
 	{{- end}}
 	{{- end}}
 	{{- end}}
