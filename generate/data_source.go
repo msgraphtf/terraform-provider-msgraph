@@ -250,7 +250,9 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 				newCreateRequest.AttributeType = "CreateArrayStringAttribute"
 			case "object":
 				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"
+				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
 				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
+				newCreateRequest.NestedCreate = generateCreateRequest(property.ObjectOf, newCreateRequest)
 				fmt.Printf("OBJ ARRAY: %s\n", property.Name)
 			}
 		case "object":

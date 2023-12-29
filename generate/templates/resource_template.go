@@ -101,9 +101,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateArrayObjectAttribute" }}
 	var {{.PlanValueVar}} []models.{{.NewModelMethod}}able
 	for _, i := range plan.{{.PlanFields}} {
-		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.ValueString())
+		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 	}
-	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
+	requestBody.Set{{.PlanSetMethod}}({{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}
