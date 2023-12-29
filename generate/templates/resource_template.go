@@ -2,8 +2,8 @@ package {{.PackageName}}
 
 import (
     "context"
+	"github.com/google/uuid"
 	"time"
-	"uuid"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -109,7 +109,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateArrayUuidAttribute" }}
 	var {{.PlanValueVar}} []uuid.UUID
 	for _, i := range {{.PlanVar}}{{.PlanFields}} {
-		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.ValueString())
+		u, _ = uuid.Parse(i.ValueString())
+		{{.PlanValueVar}} = append({{.PlanValueVar}}, u)
 	}
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
 	{{- end}}
