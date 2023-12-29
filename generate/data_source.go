@@ -248,8 +248,11 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 			switch property.ArrayOf {
 			case "string":
 				newCreateRequest.AttributeType = "CreateArrayStringAttribute"
+			case "object":
+				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"
+				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
+				fmt.Printf("OBJ ARRAY: %s\n", property.Name)
 			}
-			fmt.Printf("ARRAY: %s\n", property.Name)
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
 			newCreateRequest.NewModelMethod = upperFirst(property.Name)
