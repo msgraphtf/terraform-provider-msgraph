@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -243,9 +242,10 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 		switch property.Type {
 		case "string":
 			newCreateRequest.AttributeType = "CreateStringAttribute"
-			if property.Format == "date-time" {
+			switch property.Format {
+			case "date-time":
 				newCreateRequest.AttributeType = "CreateStringTimeAttribute"
-			} else if property.Format == "uuid" {
+			case "uuid":
 				newCreateRequest.AttributeType = "CreateStringUuidAttribute"
 			}
 		case "integer":
@@ -265,7 +265,6 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
 				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
 				newCreateRequest.NestedCreate = generateCreateRequest(property.ObjectOf, newCreateRequest)
-				fmt.Printf("OBJ ARRAY: %s\n", property.Name)
 			}
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
