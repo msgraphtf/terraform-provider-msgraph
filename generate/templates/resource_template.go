@@ -102,6 +102,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	var {{.PlanValueVar}} []models.{{.NewModelMethod}}able
 	for _, i := range plan.{{.PlanFields}} {
 		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
+		{{template "generate_create" .NestedCreate}}
 	}
 	requestBody.Set{{.PlanSetMethod}}({{.PlanValueVar}})
 	{{- end}}
