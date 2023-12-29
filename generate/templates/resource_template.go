@@ -254,4 +254,13 @@ func (r *{{.BlockName.LowerCamel}}Resource) Delete(ctx context.Context, req reso
 	}
 
 	// TODO: Delete {{.BlockName.LowerCamel}}
+	err := r.client.{{range .UpdateRequest.PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Delete(context.Background(), nil)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error deleting {{.BlockName.Snake}}",
+			err.Error(),
+		)
+		return
+	}
+
 }
