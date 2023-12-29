@@ -218,6 +218,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 
 	// TODO: Generate API request body from plan
+	requestBody := models.New{{.BlockName.UpperCamel}}()
+	var t time.Time
+	var u uuid.UUID
+
+	{{template "generate_create" .CreateRequestBody}}
 
 	// TODO: Update {{.BlockName.LowerCamel}}
 

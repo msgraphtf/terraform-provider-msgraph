@@ -237,7 +237,7 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		}
 
 		newCreateRequest.PlanFields   += upperFirst(property.Name)
-		newCreateRequest.PlanValueVar = property.Name
+		newCreateRequest.PlanValueVar = "plan" + upperFirst(property.Name)
 		newCreateRequest.PlanSetMethod = upperFirst(property.Name)
 
 		switch property.Type {
