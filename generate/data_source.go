@@ -200,7 +200,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 }
 
-type createRequest struct {
+type createRequestBody struct {
 	AttributeType string
 	PlanVar  string
 	PlanValueVar  string
@@ -209,11 +209,11 @@ type createRequest struct {
 	RequestBodyVar string
 	NewModelMethod string
 	SetModelMethod string
-	NestedCreate  []createRequest
+	NestedCreate  []createRequestBody
 }
 
-func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *createRequest) []createRequest {
-	var cr []createRequest
+func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
+	var cr []createRequestBody
 
 	for _, property := range schemaObject.Properties {
 
@@ -221,7 +221,7 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 			continue
 		}
 
-		newCreateRequest := new(createRequest)
+		newCreateRequest := new(createRequestBody)
 
 		if parent != nil && parent.AttributeType != "CreateArrayObjectAttribute" {
 			newCreateRequest.PlanFields = parent.PlanFields + "."
@@ -264,14 +264,14 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
 				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
-				newCreateRequest.NestedCreate = generateCreateRequest(property.ObjectOf, newCreateRequest)
+				newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, newCreateRequest)
 			}
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
 			newCreateRequest.NewModelMethod = upperFirst(property.Name)
 			newCreateRequest.SetModelMethod = upperFirst(property.Name)
 			newCreateRequest.AttributeType = "CreateObjectAttribute"
-			newCreateRequest.NestedCreate = generateCreateRequest(property.ObjectOf, newCreateRequest)
+			newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, newCreateRequest)
 		}
 
 		cr = append(cr, *newCreateRequest)
@@ -458,7 +458,7 @@ type templateInput struct {
 	BlockName      strWithCases
 	Schema         []terraformSchema
 	Model          []terraformModel
-	CreateRequest  []createRequest
+	CreateRequestBody  []createRequestBody
 	ReadQuery      readQuery
 	ReadResponse   []readResponse
 }
@@ -531,7 +531,7 @@ func generateDataSource(pathname string) {
 
 	if pathObject.Patch.Summary != "" {
 
-		input.CreateRequest = generateCreateRequest(schemaObject, nil)
+		input.CreateRequestBody = generateCreateRequestBody(schemaObject, nil)
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")

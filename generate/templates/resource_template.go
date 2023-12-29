@@ -68,7 +68,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	var t time.Time
 	var u uuid.UUID
 
-	// TODO: Generate API request body from Plan
+	// Generate API request body from Plan
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
@@ -129,7 +129,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody.Set{{.SetModelMethod}}({{.RequestBodyVar}})
 	{{- end}}
 
-	{{- block "generate_create" .CreateRequest}}
+	{{- block "generate_create" .CreateRequestBody}}
 	{{- range .}}
 	{{- if eq .AttributeType "CreateStringAttribute"}}
 	{{ template "CreateStringAttribute" .}}
