@@ -163,7 +163,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		return
 	}
 
-	// TODO: Map response body to schema and populate Computed attribute value
+	// Map response body to schema and populate Computed attribute value
+	// TODO: Add support for other Computed values
+	plan.Id = types.StringValue(*result.GetId())
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
