@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -311,8 +310,40 @@ func generateCreateRequest() createRequest {
 		PostMethod: postMethod,
 	}
 
-	fmt.Printf("%s\n", cr)
 	return cr
+
+}
+
+type updateRequest struct {
+	BlockName  string
+	PostMethod []queryMethod
+}
+
+func generateUpdateRequest() updateRequest {
+
+	pathFields := strings.Split(pathObject.Path, "/")[1:]
+
+	var postMethod []queryMethod
+	for _, p := range pathFields {
+		newMethod := new(queryMethod)
+		if strings.HasPrefix(p, "{") {
+			pLeft, pRight := pathFieldName(p)
+			pLeft = strcase.ToCamel(pLeft)
+			pRight = strcase.ToCamel(pRight)
+			newMethod.MethodName = "By" + pLeft + pRight
+			newMethod.Parameter = "state." + pRight + ".ValueString()"
+		} else {
+			newMethod.MethodName = strcase.ToCamel(p)
+		}
+		postMethod = append(postMethod, *newMethod)
+	}
+
+	var ur = updateRequest {
+		BlockName: blockName,
+		PostMethod: postMethod,
+	}
+
+	return ur
 
 }
 
@@ -498,6 +529,7 @@ type templateInput struct {
 	CreateRequest  createRequest
 	ReadQuery      readQuery
 	ReadResponse   []readResponse
+	UpdateRequest  updateRequest
 }
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
@@ -570,6 +602,7 @@ func generateDataSource(pathname string) {
 
 		input.CreateRequestBody = generateCreateRequestBody(schemaObject, nil)
 		input.CreateRequest     = generateCreateRequest()
+		input.UpdateRequest     = generateUpdateRequest()
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")

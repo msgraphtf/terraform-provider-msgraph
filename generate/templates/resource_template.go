@@ -217,14 +217,22 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 		return
 	}
 
-	// TODO: Generate API request body from plan
+	// Generate API request body from plan
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 	var t time.Time
 	var u uuid.UUID
 
 	{{template "generate_create" .CreateRequestBody}}
 
-	// TODO: Update {{.BlockName.LowerCamel}}
+	// Update {{.BlockName.LowerCamel}}
+	_, err := r.client.{{range .UpdateRequest.PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Patch(context.Background(), requestBody, nil)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error creating {{.BlockName.Snake}}",
+			err.Error(),
+		)
+		return
+	}
 
 	// Update resource state with Computed values
 	diags = resp.State.Set(ctx, plan)
