@@ -153,7 +153,15 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 	{{- end}}
 
-	// TODO: Create new {{.BlockName.LowerCamel}}
+	// Create new {{.BlockName.LowerCamel}}
+	result, err := r.client.{{range .CreateRequest.PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Post(context.Background(), requestBody, nil)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error creating {{.BlockName.Snake}}",
+			err.Error(),
+		)
+		return
+	}
 
 	// TODO: Map response body to schema and populate Computed attribute value
 

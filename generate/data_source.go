@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -280,6 +281,41 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 	return cr
 }
 
+type createRequest struct {
+	BlockName  string
+	PostMethod []queryMethod
+}
+
+func generateCreateRequest() createRequest {
+
+	pathFields := strings.Split(pathObject.Path, "/")[1:]
+	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
+
+	var postMethod []queryMethod
+	for _, p := range pathFields {
+		newMethod := new(queryMethod)
+		if strings.HasPrefix(p, "{") {
+			pLeft, pRight := pathFieldName(p)
+			pLeft = strcase.ToCamel(pLeft)
+			pRight = strcase.ToCamel(pRight)
+			newMethod.MethodName = "By" + pLeft + pRight
+			newMethod.Parameter = "state." + pRight + ".ValueString()"
+		} else {
+			newMethod.MethodName = strcase.ToCamel(p)
+		}
+		postMethod = append(postMethod, *newMethod)
+	}
+
+	var cr = createRequest {
+		BlockName: blockName,
+		PostMethod: postMethod,
+	}
+
+	fmt.Printf("%s\n", cr)
+	return cr
+
+}
+
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type readQuery struct {
 	BlockName             strWithCases
@@ -459,6 +495,7 @@ type templateInput struct {
 	Schema         []terraformSchema
 	Model          []terraformModel
 	CreateRequestBody  []createRequestBody
+	CreateRequest  createRequest
 	ReadQuery      readQuery
 	ReadResponse   []readResponse
 }
@@ -532,6 +569,7 @@ func generateDataSource(pathname string) {
 	if pathObject.Patch.Summary != "" {
 
 		input.CreateRequestBody = generateCreateRequestBody(schemaObject, nil)
+		input.CreateRequest     = generateCreateRequest()
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
