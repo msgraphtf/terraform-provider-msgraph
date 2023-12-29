@@ -70,29 +70,29 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueString()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueString()
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateStringTimeAttribute" }}
-	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueString()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueString()
 	t, _ = time.Parse(time.RFC3339, {{.PlanValueVar}})
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&t)
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueInt64()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueInt64()
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	{{.PlanValueVar}} := plan.{{.PlanFields}}.ValueBool()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueBool()
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateArrayStringAttribute" }}
 	var {{.PlanValueVar}} []string
-	for _, i := range plan.{{.PlanFields}} {
+	for _, i := range {{.PlanVar}}{{.PlanFields}} {
 		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.ValueString())
 	}
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
@@ -100,7 +100,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	var {{.PlanValueVar}} []models.{{.NewModelMethod}}able
-	for _, i := range plan.{{.PlanFields}} {
+	for _, i := range {{.PlanVar}}{{.PlanFields}} {
 		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 		{{template "generate_create" .NestedCreate}}
 	}

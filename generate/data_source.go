@@ -203,6 +203,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 type createRequest struct {
 	AttributeType string
+	PlanVar  string
 	PlanValueVar  string
 	PlanSetMethod string
 	PlanFields    string
@@ -230,6 +231,7 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 			newCreateRequest.RequestBodyVar = "requestBody"
 		}
 
+		newCreateRequest.PlanVar = "plan."
 		newCreateRequest.PlanFields   += upperFirst(property.Name)
 		newCreateRequest.PlanValueVar = property.Name
 		newCreateRequest.PlanSetMethod = upperFirst(property.Name)
