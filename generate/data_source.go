@@ -245,6 +245,8 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 			newCreateRequest.AttributeType = "CreateStringAttribute"
 			if property.Format == "date-time" {
 				newCreateRequest.AttributeType = "CreateStringTimeAttribute"
+			} else if property.Format == "uuid" {
+				newCreateRequest.AttributeType = "CreateStringUuidAttribute"
 			}
 		case "integer":
 			newCreateRequest.AttributeType = "CreateInt64Attribute"

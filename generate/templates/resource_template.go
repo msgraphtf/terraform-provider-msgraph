@@ -3,6 +3,7 @@ package {{.PackageName}}
 import (
     "context"
 	"time"
+	"uuid"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -65,6 +66,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	}
 
 	var t time.Time
+	var u uuid.UUID
 
 	// TODO: Generate API request body from Plan
 	requestBody := models.New{{.BlockName.UpperCamel}}()
@@ -78,6 +80,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueString()
 	t, _ = time.Parse(time.RFC3339, {{.PlanValueVar}})
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&t)
+	{{- end}}
+
+	{{- define "CreateStringUuidAttribute" }}
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueString()
+	u, _ = uuid.Parse({{.PlanValueVar}})
+	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&u)
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
@@ -119,6 +127,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{ template "CreateStringAttribute" .}}
 	{{- else if eq .AttributeType "CreateStringTimeAttribute"}}
 	{{ template "CreateStringTimeAttribute" .}}
+	{{- else if eq .AttributeType "CreateStringUuidAttribute"}}
+	{{ template "CreateStringUuidAttribute" .}}
 	{{- else if eq .AttributeType "CreateInt64Attribute"}}
 	{{ template "CreateInt64Attribute" .}}
 	{{- else if eq .AttributeType "CreateBoolAttribute"}}
