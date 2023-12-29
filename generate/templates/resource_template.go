@@ -106,6 +106,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
 	{{- end}}
 
+	{{- define "CreateArrayUuidAttribute" }}
+	var {{.PlanValueVar}} []uuid.UUID
+	for _, i := range {{.PlanVar}}{{.PlanFields}} {
+		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.ValueString())
+	}
+	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
+	{{- end}}
+
 	{{- define "CreateArrayObjectAttribute" }}
 	var {{.PlanValueVar}} []models.{{.NewModelMethod}}able
 	for _, i := range {{.PlanVar}}{{.PlanFields}} {
@@ -135,6 +143,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{ template "CreateBoolAttribute" .}}
 	{{- else if eq .AttributeType "CreateArrayStringAttribute"}}
 	{{ template "CreateArrayStringAttribute" .}}
+	{{- else if eq .AttributeType "CreateArrayUuidAttribute"}}
+	{{ template "CreateArrayUuidAttribute" .}}
 	{{- else if eq .AttributeType "CreateArrayObjectAttribute"}}
 	{{ template "CreateArrayObjectAttribute" .}}
 	{{- else if eq .AttributeType "CreateObjectAttribute"}}

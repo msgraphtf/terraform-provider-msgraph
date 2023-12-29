@@ -255,7 +255,11 @@ func generateCreateRequest(schemaObject openapi.OpenAPISchemaObject, parent *cre
 		case "array":
 			switch property.ArrayOf {
 			case "string":
-				newCreateRequest.AttributeType = "CreateArrayStringAttribute"
+				if property.Format == "uuid" {
+					newCreateRequest.AttributeType = "CreateArrayUuidAttribute"
+				} else {
+					newCreateRequest.AttributeType = "CreateArrayStringAttribute"
+				}
 			case "object":
 				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
