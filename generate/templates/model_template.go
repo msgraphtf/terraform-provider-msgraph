@@ -17,7 +17,7 @@ func (m {{.ModelName}}) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		{{- range .ModelFields}}
 		{{- if .IfPrimitiveType }}
-		"{{.AttributeName}}": {{.FieldType}}Type,
+		"{{.AttributeName}}": {{.AttributeType}},
 		{{- end}}
 		{{- end}}
 	}

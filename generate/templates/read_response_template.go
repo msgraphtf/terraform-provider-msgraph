@@ -45,7 +45,8 @@ for _, v := range {{.GetMethod}} {
 for _, v := range {{.GetMethod}} {
 	{{.ModelVarName}} := new({{.ModelName}})
 		{{template "generate_read" .NestedRead}}
-	{{.StateVarName}} = append({{.StateVarName}}, *{{.ModelVarName}})
+	objectValue, _ := types.ObjectValueFrom(ctx, {{.ModelVarName}}.AttributeTypes(), {{.ModelVarName}})
+	{{.StateVarName}} = append({{.StateVarName}}, objectValue)
 }
 {{- end}}
 

@@ -131,16 +131,14 @@ type terraformModelField struct {
 	FieldName     string
 	FieldType     string
 	AttributeName string
+	AttributeType string
 }
 
 func (m terraformModelField) IfPrimitiveType() bool {
-	if strings.Contains(m.FieldType, "Object") {
-		return false
-	} else if strings.Contains(m.FieldType, "[]") {
-		return false
-	}
-
-	return true
+       if strings.Contains(m.FieldType, "Object") {
+               return false
+       }
+       return true
 }
 
 func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
@@ -172,15 +170,20 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 		switch property.Type {
 		case "string":
 			newModelField.FieldType = "types.String"
+			newModelField.AttributeType = "types.StringType"
 		case "integer":
 			newModelField.FieldType = "types.Int64"
+			newModelField.AttributeType = "types.Int64Type"
 		case "boolean":
 			newModelField.FieldType = "types.Bool"
+			newModelField.AttributeType = "types.BoolType"
 		case "object":
 			if property.ObjectOf.Type == "string" { // This is a string enum.
 				newModelField.FieldType = "types.String"
+				newModelField.AttributeType = "types.StringType"
 			} else {
 				newModelField.FieldType = "types.Object"
+				newModelField.AttributeType = "types.ObjectType"
 				nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 			}
 		case "array":
@@ -188,12 +191,15 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 			case "object":
 				if property.ObjectOf.Type == "string" { // This is a string enum.
 					newModelField.FieldType = "[]types.String"
+					newModelField.AttributeType = "types.ListType{ElemType:types.StringType}"
 				} else {
 					newModelField.FieldType = "[]types.Object"
+					newModelField.AttributeType = "[]types.Object"
 					nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 				}
 			case "string":
 				newModelField.FieldType = "[]types.String"
+				newModelField.AttributeType = "types.ListType{ElemType:types.StringType}"
 			}
 
 		}
