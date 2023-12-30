@@ -239,7 +239,10 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			continue
 		}
 
-		newCreateRequest := new(createRequestBody)
+		newCreateRequest := createRequestBody{
+			PlanSetMethod: upperFirst(property.Name),
+			PlanValueVar: "plan" + upperFirst(property.Name),
+		}
 
 		if parent != nil && parent.AttributeType != "CreateArrayObjectAttribute" {
 			newCreateRequest.PlanFields = parent.PlanFields + "."
@@ -253,9 +256,7 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			newCreateRequest.PlanVar = "plan."
 		}
 
-		newCreateRequest.PlanFields   += upperFirst(property.Name)
-		newCreateRequest.PlanValueVar = "plan" + upperFirst(property.Name)
-		newCreateRequest.PlanSetMethod = upperFirst(property.Name)
+		newCreateRequest.PlanFields += upperFirst(property.Name)
 
 		switch property.Type {
 		case "string":
@@ -287,17 +288,17 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
 				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
-				newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, newCreateRequest)
+				newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, &newCreateRequest)
 			}
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
 			newCreateRequest.NewModelMethod = upperFirst(property.Name)
 			newCreateRequest.SetModelMethod = upperFirst(property.Name)
 			newCreateRequest.AttributeType = "CreateObjectAttribute"
-			newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, newCreateRequest)
+			newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, &newCreateRequest)
 		}
 
-		cr = append(cr, *newCreateRequest)
+		cr = append(cr, newCreateRequest)
 	}
 
 	return cr
