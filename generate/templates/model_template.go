@@ -1,6 +1,7 @@
 package {{.PackageName}}
 
 import (
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -10,4 +11,16 @@ type {{.ModelName}} struct {
 {{.FieldName}} {{.FieldType}} `tfsdk:"{{.AttributeName}}"`
 {{- end}}
 }
+
+
+func (m {{.ModelName}}) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		{{- range .ModelFields}}
+		{{- if .IfPrimitiveType }}
+		"{{.AttributeName}}": {{.FieldType}}Type,
+		{{- end}}
+		{{- end}}
+	}
+}
+
 {{end}}

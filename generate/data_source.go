@@ -133,6 +133,16 @@ type terraformModelField struct {
 	AttributeName string
 }
 
+func (m terraformModelField) IfPrimitiveType() bool {
+	if strings.Contains(m.FieldType, "Object") {
+		return false
+	} else if strings.Contains(m.FieldType, "[]") {
+		return false
+	}
+
+	return true
+}
+
 func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
 
 	newModel := terraformModel{
