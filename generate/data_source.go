@@ -124,7 +124,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 // Used by templates defined inside of data_source_template.go to generate the data models
 type terraformModel struct {
 	ModelName string
-	Fields    []terraformModelField
+	ModelFields    []terraformModelField
 }
 
 type terraformModelField struct {
@@ -187,7 +187,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 		}
 
-		newModel.Fields = append(newModel.Fields, *newModelField)
+		newModel.ModelFields = append(newModel.ModelFields, *newModelField)
 
 	}
 

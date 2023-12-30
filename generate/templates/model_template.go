@@ -6,7 +6,7 @@ import (
 
 {{- range .Model}}
 type {{.ModelName}} struct {
-{{- range .Fields}}
+{{- range .ModelFields}}
 {{.FieldName}} {{.FieldType}} `tfsdk:"{{.AttributeName}}"`
 {{- end}}
 }
