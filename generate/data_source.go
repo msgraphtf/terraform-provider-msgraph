@@ -154,9 +154,10 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 			continue
 		}
 
-		newModelField := new(terraformModelField)
-		newModelField.FieldName = upperFirst(property.Name)
-		newModelField.AttributeName = strcase.ToSnake(property.Name)
+		newModelField := terraformModelField{
+			FieldName: upperFirst(property.Name),
+			AttributeName: strcase.ToSnake(property.Name),
+		}
 
 		switch property.Type {
 		case "string":
@@ -187,7 +188,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 		}
 
-		newModel.ModelFields = append(newModel.ModelFields, *newModelField)
+		newModel.ModelFields = append(newModel.ModelFields, newModelField)
 
 	}
 
