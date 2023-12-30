@@ -1,6 +1,7 @@
 package users
 
 import (
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -82,9 +83,84 @@ type userModel struct {
 	UserType                        types.String   `tfsdk:"user_type"`
 }
 
+func (m userModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":                                    types.StringType,
+		"deleted_date_time":                     types.StringType,
+		"about_me":                              types.StringType,
+		"account_enabled":                       types.BoolType,
+		"age_group":                             types.StringType,
+		"birthday":                              types.StringType,
+		"business_phones":                       types.ListType{ElemType: types.StringType},
+		"city":                                  types.StringType,
+		"company_name":                          types.StringType,
+		"consent_provided_for_minor":            types.StringType,
+		"country":                               types.StringType,
+		"created_date_time":                     types.StringType,
+		"creation_type":                         types.StringType,
+		"department":                            types.StringType,
+		"display_name":                          types.StringType,
+		"employee_hire_date":                    types.StringType,
+		"employee_id":                           types.StringType,
+		"employee_leave_date_time":              types.StringType,
+		"employee_type":                         types.StringType,
+		"external_user_state":                   types.StringType,
+		"external_user_state_change_date_time":  types.StringType,
+		"fax_number":                            types.StringType,
+		"given_name":                            types.StringType,
+		"hire_date":                             types.StringType,
+		"im_addresses":                          types.ListType{ElemType: types.StringType},
+		"interests":                             types.ListType{ElemType: types.StringType},
+		"is_resource_account":                   types.BoolType,
+		"job_title":                             types.StringType,
+		"last_password_change_date_time":        types.StringType,
+		"legal_age_group_classification":        types.StringType,
+		"mail":                                  types.StringType,
+		"mail_nickname":                         types.StringType,
+		"mobile_phone":                          types.StringType,
+		"my_site":                               types.StringType,
+		"office_location":                       types.StringType,
+		"on_premises_distinguished_name":        types.StringType,
+		"on_premises_domain_name":               types.StringType,
+		"on_premises_immutable_id":              types.StringType,
+		"on_premises_last_sync_date_time":       types.StringType,
+		"on_premises_sam_account_name":          types.StringType,
+		"on_premises_security_identifier":       types.StringType,
+		"on_premises_sync_enabled":              types.BoolType,
+		"on_premises_user_principal_name":       types.StringType,
+		"other_mails":                           types.ListType{ElemType: types.StringType},
+		"password_policies":                     types.StringType,
+		"past_projects":                         types.ListType{ElemType: types.StringType},
+		"postal_code":                           types.StringType,
+		"preferred_data_location":               types.StringType,
+		"preferred_language":                    types.StringType,
+		"preferred_name":                        types.StringType,
+		"proxy_addresses":                       types.ListType{ElemType: types.StringType},
+		"responsibilities":                      types.ListType{ElemType: types.StringType},
+		"schools":                               types.ListType{ElemType: types.StringType},
+		"security_identifier":                   types.StringType,
+		"show_in_address_list":                  types.BoolType,
+		"sign_in_sessions_valid_from_date_time": types.StringType,
+		"skills":                                types.ListType{ElemType: types.StringType},
+		"state":                                 types.StringType,
+		"street_address":                        types.StringType,
+		"surname":                               types.StringType,
+		"usage_location":                        types.StringType,
+		"user_principal_name":                   types.StringType,
+		"user_type":                             types.StringType,
+	}
+}
+
 type userAssignedLicensesModel struct {
 	DisabledPlans []types.String `tfsdk:"disabled_plans"`
 	SkuId         types.String   `tfsdk:"sku_id"`
+}
+
+func (m userAssignedLicensesModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"disabled_plans": types.ListType{ElemType: types.StringType},
+		"sku_id":         types.StringType,
+	}
 }
 
 type userAssignedPlansModel struct {
@@ -94,8 +170,23 @@ type userAssignedPlansModel struct {
 	ServicePlanId    types.String `tfsdk:"service_plan_id"`
 }
 
+func (m userAssignedPlansModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"assigned_date_time": types.StringType,
+		"capability_status":  types.StringType,
+		"service":            types.StringType,
+		"service_plan_id":    types.StringType,
+	}
+}
+
 type userAuthorizationInfoModel struct {
 	CertificateUserIds []types.String `tfsdk:"certificate_user_ids"`
+}
+
+func (m userAuthorizationInfoModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"certificate_user_ids": types.ListType{ElemType: types.StringType},
+	}
 }
 
 type userEmployeeOrgDataModel struct {
@@ -103,10 +194,25 @@ type userEmployeeOrgDataModel struct {
 	Division   types.String `tfsdk:"division"`
 }
 
+func (m userEmployeeOrgDataModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cost_center": types.StringType,
+		"division":    types.StringType,
+	}
+}
+
 type userIdentitiesModel struct {
 	Issuer           types.String `tfsdk:"issuer"`
 	IssuerAssignedId types.String `tfsdk:"issuer_assigned_id"`
 	SignInType       types.String `tfsdk:"sign_in_type"`
+}
+
+func (m userIdentitiesModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"issuer":             types.StringType,
+		"issuer_assigned_id": types.StringType,
+		"sign_in_type":       types.StringType,
+	}
 }
 
 type userLicenseAssignmentStatesModel struct {
@@ -116,6 +222,17 @@ type userLicenseAssignmentStatesModel struct {
 	LastUpdatedDateTime types.String   `tfsdk:"last_updated_date_time"`
 	SkuId               types.String   `tfsdk:"sku_id"`
 	State               types.String   `tfsdk:"state"`
+}
+
+func (m userLicenseAssignmentStatesModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"assigned_by_group":      types.StringType,
+		"disabled_plans":         types.ListType{ElemType: types.StringType},
+		"error":                  types.StringType,
+		"last_updated_date_time": types.StringType,
+		"sku_id":                 types.StringType,
+		"state":                  types.StringType,
+	}
 }
 
 type userOnPremisesExtensionAttributesModel struct {
@@ -136,11 +253,40 @@ type userOnPremisesExtensionAttributesModel struct {
 	ExtensionAttribute9  types.String `tfsdk:"extension_attribute_9"`
 }
 
+func (m userOnPremisesExtensionAttributesModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"extension_attribute_1":  types.StringType,
+		"extension_attribute_10": types.StringType,
+		"extension_attribute_11": types.StringType,
+		"extension_attribute_12": types.StringType,
+		"extension_attribute_13": types.StringType,
+		"extension_attribute_14": types.StringType,
+		"extension_attribute_15": types.StringType,
+		"extension_attribute_2":  types.StringType,
+		"extension_attribute_3":  types.StringType,
+		"extension_attribute_4":  types.StringType,
+		"extension_attribute_5":  types.StringType,
+		"extension_attribute_6":  types.StringType,
+		"extension_attribute_7":  types.StringType,
+		"extension_attribute_8":  types.StringType,
+		"extension_attribute_9":  types.StringType,
+	}
+}
+
 type userOnPremisesProvisioningErrorsModel struct {
 	Category             types.String `tfsdk:"category"`
 	OccurredDateTime     types.String `tfsdk:"occurred_date_time"`
 	PropertyCausingError types.String `tfsdk:"property_causing_error"`
 	Value                types.String `tfsdk:"value"`
+}
+
+func (m userOnPremisesProvisioningErrorsModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"category":               types.StringType,
+		"occurred_date_time":     types.StringType,
+		"property_causing_error": types.StringType,
+		"value":                  types.StringType,
+	}
 }
 
 type userPasswordProfileModel struct {
@@ -149,10 +295,26 @@ type userPasswordProfileModel struct {
 	Password                             types.String `tfsdk:"password"`
 }
 
+func (m userPasswordProfileModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"force_change_password_next_sign_in":          types.BoolType,
+		"force_change_password_next_sign_in_with_mfa": types.BoolType,
+		"password": types.StringType,
+	}
+}
+
 type userProvisionedPlansModel struct {
 	CapabilityStatus   types.String `tfsdk:"capability_status"`
 	ProvisioningStatus types.String `tfsdk:"provisioning_status"`
 	Service            types.String `tfsdk:"service"`
+}
+
+func (m userProvisionedPlansModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"capability_status":   types.StringType,
+		"provisioning_status": types.StringType,
+		"service":             types.StringType,
+	}
 }
 
 type userServiceProvisioningErrorsModel struct {
@@ -161,9 +323,26 @@ type userServiceProvisioningErrorsModel struct {
 	ServiceInstance types.String `tfsdk:"service_instance"`
 }
 
+func (m userServiceProvisioningErrorsModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"created_date_time": types.StringType,
+		"is_resolved":       types.BoolType,
+		"service_instance":  types.StringType,
+	}
+}
+
 type userSignInActivityModel struct {
 	LastNonInteractiveSignInDateTime  types.String `tfsdk:"last_non_interactive_sign_in_date_time"`
 	LastNonInteractiveSignInRequestId types.String `tfsdk:"last_non_interactive_sign_in_request_id"`
 	LastSignInDateTime                types.String `tfsdk:"last_sign_in_date_time"`
 	LastSignInRequestId               types.String `tfsdk:"last_sign_in_request_id"`
+}
+
+func (m userSignInActivityModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"last_non_interactive_sign_in_date_time":  types.StringType,
+		"last_non_interactive_sign_in_request_id": types.StringType,
+		"last_sign_in_date_time":                  types.StringType,
+		"last_sign_in_request_id":                 types.StringType,
+	}
 }

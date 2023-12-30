@@ -787,7 +787,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if v.GetSkuId() != nil {
 			assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
 		}
-		state.AssignedLicenses = append(state.AssignedLicenses, *assignedLicenses)
+		objectValue, _ := types.ObjectValueFrom(ctx, assignedLicenses.AttributeTypes(), assignedLicenses)
+		state.AssignedLicenses = append(state.AssignedLicenses, objectValue)
 	}
 	for _, v := range result.GetAssignedPlans() {
 		assignedPlans := new(userAssignedPlansModel)
@@ -804,14 +805,18 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if v.GetServicePlanId() != nil {
 			assignedPlans.ServicePlanId = types.StringValue(v.GetServicePlanId().String())
 		}
-		state.AssignedPlans = append(state.AssignedPlans, *assignedPlans)
+		objectValue, _ := types.ObjectValueFrom(ctx, assignedPlans.AttributeTypes(), assignedPlans)
+		state.AssignedPlans = append(state.AssignedPlans, objectValue)
 	}
 	if result.GetAuthorizationInfo() != nil {
-		state.AuthorizationInfo = new(userAuthorizationInfoModel)
+		authorizationInfo := new(userAuthorizationInfoModel)
 
 		for _, v := range result.GetAuthorizationInfo().GetCertificateUserIds() {
-			state.AuthorizationInfo.CertificateUserIds = append(state.AuthorizationInfo.CertificateUserIds, types.StringValue(v))
+			authorizationInfo.CertificateUserIds = append(authorizationInfo.CertificateUserIds, types.StringValue(v))
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfo.AttributeTypes(), authorizationInfo)
+		state.AuthorizationInfo = objectValue
 	}
 	if result.GetBirthday() != nil {
 		state.Birthday = types.StringValue(result.GetBirthday().String())
@@ -853,14 +858,17 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.EmployeeLeaveDateTime = types.StringValue(result.GetEmployeeLeaveDateTime().String())
 	}
 	if result.GetEmployeeOrgData() != nil {
-		state.EmployeeOrgData = new(userEmployeeOrgDataModel)
+		employeeOrgData := new(userEmployeeOrgDataModel)
 
 		if result.GetEmployeeOrgData().GetCostCenter() != nil {
-			state.EmployeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())
+			employeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())
 		}
 		if result.GetEmployeeOrgData().GetDivision() != nil {
-			state.EmployeeOrgData.Division = types.StringValue(*result.GetEmployeeOrgData().GetDivision())
+			employeeOrgData.Division = types.StringValue(*result.GetEmployeeOrgData().GetDivision())
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, employeeOrgData.AttributeTypes(), employeeOrgData)
+		state.EmployeeOrgData = objectValue
 	}
 	if result.GetEmployeeType() != nil {
 		state.EmployeeType = types.StringValue(*result.GetEmployeeType())
@@ -892,7 +900,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if v.GetSignInType() != nil {
 			identities.SignInType = types.StringValue(*v.GetSignInType())
 		}
-		state.Identities = append(state.Identities, *identities)
+		objectValue, _ := types.ObjectValueFrom(ctx, identities.AttributeTypes(), identities)
+		state.Identities = append(state.Identities, objectValue)
 	}
 	for _, v := range result.GetImAddresses() {
 		state.ImAddresses = append(state.ImAddresses, types.StringValue(v))
@@ -933,7 +942,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if v.GetState() != nil {
 			licenseAssignmentStates.State = types.StringValue(*v.GetState())
 		}
-		state.LicenseAssignmentStates = append(state.LicenseAssignmentStates, *licenseAssignmentStates)
+		objectValue, _ := types.ObjectValueFrom(ctx, licenseAssignmentStates.AttributeTypes(), licenseAssignmentStates)
+		state.LicenseAssignmentStates = append(state.LicenseAssignmentStates, objectValue)
 	}
 	if result.GetMail() != nil {
 		state.Mail = types.StringValue(*result.GetMail())
@@ -957,53 +967,56 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())
 	}
 	if result.GetOnPremisesExtensionAttributes() != nil {
-		state.OnPremisesExtensionAttributes = new(userOnPremisesExtensionAttributesModel)
+		onPremisesExtensionAttributes := new(userOnPremisesExtensionAttributesModel)
 
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
+			onPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute10 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10())
+			onPremisesExtensionAttributes.ExtensionAttribute10 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute10())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute11 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11())
+			onPremisesExtensionAttributes.ExtensionAttribute11 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute11())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute12 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12())
+			onPremisesExtensionAttributes.ExtensionAttribute12 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute12())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute13 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13())
+			onPremisesExtensionAttributes.ExtensionAttribute13 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute13())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute14 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14())
+			onPremisesExtensionAttributes.ExtensionAttribute14 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute14())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute15 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15())
+			onPremisesExtensionAttributes.ExtensionAttribute15 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute15())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute2 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2())
+			onPremisesExtensionAttributes.ExtensionAttribute2 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute2())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute3 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3())
+			onPremisesExtensionAttributes.ExtensionAttribute3 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute3())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute4 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4())
+			onPremisesExtensionAttributes.ExtensionAttribute4 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute4())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute5 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5())
+			onPremisesExtensionAttributes.ExtensionAttribute5 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute5())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute6 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6())
+			onPremisesExtensionAttributes.ExtensionAttribute6 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute6())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute7 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7())
+			onPremisesExtensionAttributes.ExtensionAttribute7 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute7())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute8 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8())
+			onPremisesExtensionAttributes.ExtensionAttribute8 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute8())
 		}
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9() != nil {
-			state.OnPremisesExtensionAttributes.ExtensionAttribute9 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9())
+			onPremisesExtensionAttributes.ExtensionAttribute9 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute9())
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, onPremisesExtensionAttributes.AttributeTypes(), onPremisesExtensionAttributes)
+		state.OnPremisesExtensionAttributes = objectValue
 	}
 	if result.GetOnPremisesImmutableId() != nil {
 		state.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())
@@ -1026,7 +1039,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if v.GetValue() != nil {
 			onPremisesProvisioningErrors.Value = types.StringValue(*v.GetValue())
 		}
-		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, *onPremisesProvisioningErrors)
+		objectValue, _ := types.ObjectValueFrom(ctx, onPremisesProvisioningErrors.AttributeTypes(), onPremisesProvisioningErrors)
+		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, objectValue)
 	}
 	if result.GetOnPremisesSamAccountName() != nil {
 		state.OnPremisesSamAccountName = types.StringValue(*result.GetOnPremisesSamAccountName())
@@ -1047,17 +1061,20 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())
 	}
 	if result.GetPasswordProfile() != nil {
-		state.PasswordProfile = new(userPasswordProfileModel)
+		passwordProfile := new(userPasswordProfileModel)
 
 		if result.GetPasswordProfile().GetForceChangePasswordNextSignIn() != nil {
-			state.PasswordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
+			passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
 		}
 		if result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa() != nil {
-			state.PasswordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())
+			passwordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignInWithMfa())
 		}
 		if result.GetPasswordProfile().GetPassword() != nil {
-			state.PasswordProfile.Password = types.StringValue(*result.GetPasswordProfile().GetPassword())
+			passwordProfile.Password = types.StringValue(*result.GetPasswordProfile().GetPassword())
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, passwordProfile.AttributeTypes(), passwordProfile)
+		state.PasswordProfile = objectValue
 	}
 	for _, v := range result.GetPastProjects() {
 		state.PastProjects = append(state.PastProjects, types.StringValue(v))
@@ -1086,7 +1103,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if v.GetService() != nil {
 			provisionedPlans.Service = types.StringValue(*v.GetService())
 		}
-		state.ProvisionedPlans = append(state.ProvisionedPlans, *provisionedPlans)
+		objectValue, _ := types.ObjectValueFrom(ctx, provisionedPlans.AttributeTypes(), provisionedPlans)
+		state.ProvisionedPlans = append(state.ProvisionedPlans, objectValue)
 	}
 	for _, v := range result.GetProxyAddresses() {
 		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(v))
@@ -1112,26 +1130,30 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if v.GetServiceInstance() != nil {
 			serviceProvisioningErrors.ServiceInstance = types.StringValue(*v.GetServiceInstance())
 		}
-		state.ServiceProvisioningErrors = append(state.ServiceProvisioningErrors, *serviceProvisioningErrors)
+		objectValue, _ := types.ObjectValueFrom(ctx, serviceProvisioningErrors.AttributeTypes(), serviceProvisioningErrors)
+		state.ServiceProvisioningErrors = append(state.ServiceProvisioningErrors, objectValue)
 	}
 	if result.GetShowInAddressList() != nil {
 		state.ShowInAddressList = types.BoolValue(*result.GetShowInAddressList())
 	}
 	if result.GetSignInActivity() != nil {
-		state.SignInActivity = new(userSignInActivityModel)
+		signInActivity := new(userSignInActivityModel)
 
 		if result.GetSignInActivity().GetLastNonInteractiveSignInDateTime() != nil {
-			state.SignInActivity.LastNonInteractiveSignInDateTime = types.StringValue(result.GetSignInActivity().GetLastNonInteractiveSignInDateTime().String())
+			signInActivity.LastNonInteractiveSignInDateTime = types.StringValue(result.GetSignInActivity().GetLastNonInteractiveSignInDateTime().String())
 		}
 		if result.GetSignInActivity().GetLastNonInteractiveSignInRequestId() != nil {
-			state.SignInActivity.LastNonInteractiveSignInRequestId = types.StringValue(*result.GetSignInActivity().GetLastNonInteractiveSignInRequestId())
+			signInActivity.LastNonInteractiveSignInRequestId = types.StringValue(*result.GetSignInActivity().GetLastNonInteractiveSignInRequestId())
 		}
 		if result.GetSignInActivity().GetLastSignInDateTime() != nil {
-			state.SignInActivity.LastSignInDateTime = types.StringValue(result.GetSignInActivity().GetLastSignInDateTime().String())
+			signInActivity.LastSignInDateTime = types.StringValue(result.GetSignInActivity().GetLastSignInDateTime().String())
 		}
 		if result.GetSignInActivity().GetLastSignInRequestId() != nil {
-			state.SignInActivity.LastSignInRequestId = types.StringValue(*result.GetSignInActivity().GetLastSignInRequestId())
+			signInActivity.LastSignInRequestId = types.StringValue(*result.GetSignInActivity().GetLastSignInRequestId())
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, signInActivity.AttributeTypes(), signInActivity)
+		state.SignInActivity = objectValue
 	}
 	if result.GetSignInSessionsValidFromDateTime() != nil {
 		state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())
