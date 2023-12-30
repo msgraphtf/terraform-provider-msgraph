@@ -474,7 +474,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			newReadResponse.GetMethod = parent.GetMethod + "." + newReadResponse.GetMethod
-			newReadResponse.StateVarName = parent.StateVarName + "." + upperFirst(property.Name)
+			newReadResponse.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
 			newReadResponse.GetMethod = "v." + newReadResponse.GetMethod
 			newReadResponse.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)

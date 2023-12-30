@@ -21,8 +21,11 @@ if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.BoolValue(*{{.GetMethod}
 
 {{- define "ReadSingleNestedAttribute" }}
 if {{.GetMethod}} != nil {
-	{{.StateVarName}} = new({{.ModelName}})
+	{{.ModelVarName}} := new({{.ModelName}})
 	{{template "generate_read" .NestedRead}}
+
+	objectValue, _ := types.ObjectValueFrom(ctx, {{.ModelVarName}}.AttributeTypes(), {{.ModelVarName}})
+	{{.StateVarName}} = objectValue
 }
 {{- end}}
 
