@@ -89,12 +89,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}{}
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
