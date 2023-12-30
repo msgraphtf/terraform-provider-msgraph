@@ -244,7 +244,7 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			PlanValueVar: "plan" + upperFirst(property.Name),
 		}
 
-		if parent != nil && parent.AttributeType != "CreateArrayObjectAttribute" {
+		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {
 			newCreateRequest.PlanFields = parent.PlanFields + "."
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = "plan."
