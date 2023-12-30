@@ -169,7 +169,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 			if property.ObjectOf.Type == "string" { // This is a string enum.
 				newModelField.FieldType = "types.String"
 			} else {
-				newModelField.FieldType = "*" + blockName + newModelField.FieldName + "Model"
+				newModelField.FieldType = "types.Object"
 				nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 			}
 		case "array":
@@ -178,7 +178,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 				if property.ObjectOf.Type == "string" { // This is a string enum.
 					newModelField.FieldType = "[]types.String"
 				} else {
-					newModelField.FieldType = "[]" + blockName + newModelField.FieldName + "Model"
+					newModelField.FieldType = "[]types.Object"
 					nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 				}
 			case "string":
