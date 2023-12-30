@@ -245,18 +245,19 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		}
 
 		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {
-			newCreateRequest.PlanFields = parent.PlanFields + "."
+			newCreateRequest.PlanFields = parent.PlanFields + "." + upperFirst(property.Name)
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = "plan."
 		} else if parent != nil {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = "i."
+			newCreateRequest.PlanFields = upperFirst(property.Name)
 		} else {
 			newCreateRequest.RequestBodyVar = "requestBody"
 			newCreateRequest.PlanVar = "plan."
+			newCreateRequest.PlanFields = upperFirst(property.Name)
 		}
 
-		newCreateRequest.PlanFields += upperFirst(property.Name)
 
 		switch property.Type {
 		case "string":
