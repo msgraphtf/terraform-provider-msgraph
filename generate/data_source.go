@@ -223,6 +223,7 @@ type createRequestBody struct {
 	PlanValueVar  string
 	PlanSetMethod string
 	PlanFields    string
+	PlanValueMethod    string
 	RequestBodyVar string
 	NewModelMethod string
 	SetModelMethod string
@@ -259,6 +260,7 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		switch property.Type {
 		case "string":
 			newCreateRequest.AttributeType = "CreateStringAttribute"
+			newCreateRequest.PlanValueMethod = "ValueString"
 			switch property.Format {
 			case "date-time":
 				newCreateRequest.AttributeType = "CreateStringTimeAttribute"
@@ -267,15 +269,19 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			}
 		case "integer":
 			newCreateRequest.AttributeType = "CreateInt64Attribute"
+			newCreateRequest.PlanValueMethod = "ValueInt64"
 		case "boolean":
 			newCreateRequest.AttributeType = "CreateBoolAttribute"
+			newCreateRequest.PlanValueMethod = "ValueBool"
 		case "array":
 			switch property.ArrayOf {
 			case "string":
 				if property.Format == "uuid" {
 					newCreateRequest.AttributeType = "CreateArrayUuidAttribute"
+					newCreateRequest.PlanValueMethod = "ValueString"
 				} else {
 					newCreateRequest.AttributeType = "CreateArrayStringAttribute"
+					newCreateRequest.PlanValueMethod = "ValueString"
 				}
 			case "object":
 				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"

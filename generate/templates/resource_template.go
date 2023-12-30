@@ -72,36 +72,36 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueString()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateStringTimeAttribute" }}
-	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueString()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
 	t, _ = time.Parse(time.RFC3339, {{.PlanValueVar}})
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&t)
 	{{- end}}
 
 	{{- define "CreateStringUuidAttribute" }}
-	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueString()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
 	u, _ = uuid.Parse({{.PlanValueVar}})
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&u)
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueInt64()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}{}
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.ValueBool()
+	{{.PlanValueVar}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}(&{{.PlanValueVar}})
 	{{- end}}
 
 	{{- define "CreateArrayStringAttribute" }}
 	var {{.PlanValueVar}} []string
 	for _, i := range {{.PlanVar}}{{.PlanFields}} {
-		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.ValueString())
+		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.{{.PlanValueMethod}}())
 	}
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
 	{{- end}}
@@ -109,7 +109,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateArrayUuidAttribute" }}
 	var {{.PlanValueVar}} []uuid.UUID
 	for _, i := range {{.PlanVar}}{{.PlanFields}} {
-		u, _ = uuid.Parse(i.ValueString())
+		u, _ = uuid.Parse(i.{{.PlanValueMethod}}())
 		{{.PlanValueVar}} = append({{.PlanValueVar}}, u)
 	}
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
