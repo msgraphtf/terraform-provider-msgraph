@@ -42,6 +42,7 @@ for _, v := range {{.GetMethod}} {
 {{- end}}
 
 {{- define "ReadListNestedAttribute" }}
+if len({{.GetMethod}}) > 0 {
 objectValues = []basetypes.ObjectValue{}
 for _, v := range {{.GetMethod}} {
 	{{.ModelVarName}} := new({{.ModelName}})
@@ -49,7 +50,8 @@ for _, v := range {{.GetMethod}} {
 	objectValue, _ := types.ObjectValueFrom(ctx, {{.ModelVarName}}.AttributeTypes(), {{.ModelVarName}})
 	objectValues = append(objectValues, objectValue)
 }
-{{.StateVarName}}, _ = types.ListValueFrom(ctx, basetypes.ObjectType{}, objectValues)
+{{.StateVarName}}, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+}
 {{- end}}
 
 

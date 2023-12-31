@@ -133,6 +133,16 @@ type terraformModelField struct {
 	FieldType     string
 	AttributeName string
 	AttributeType string
+	ModelVarName  string
+	ModelName     string
+}
+
+func (m terraformModelField) IfObjectType() bool {
+	if strings.Contains(m.AttributeType, "Object") {
+		return true
+	} else {
+		return false
+	}
 }
 
 func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
@@ -159,6 +169,8 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 		newModelField := terraformModelField{
 			FieldName: upperFirst(property.Name),
 			AttributeName: strcase.ToSnake(property.Name),
+			ModelVarName: blockName + upperFirst(property.Name),
+			ModelName: blockName + upperFirst(property.Name) + "Model",
 		}
 
 		switch property.Type {
@@ -177,7 +189,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 				newModelField.AttributeType = "types.StringType"
 			} else {
 				newModelField.FieldType = "types.Object"
-				newModelField.AttributeType = "types.ObjectType{}"
+				newModelField.AttributeType = fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", newModelField.ModelVarName)
 				nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 			}
 		case "array":
@@ -188,7 +200,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 					newModelField.AttributeType = "types.ListType{ElemType:types.StringType}"
 				} else {
 					newModelField.FieldType = "types.List"
-					newModelField.AttributeType = "types.ListType{ElemType:types.ObjectType{}}"
+					newModelField.AttributeType = fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", newModelField.ModelVarName)
 					nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 				}
 			case "string":
