@@ -224,6 +224,7 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 }
 
 type createRequestBody struct {
+	BlockName string
 	AttributeName strWithCases
 	AttributeType string
 	PlanVar  string
@@ -244,14 +245,15 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		}
 
 		newCreateRequest := createRequestBody{
+			BlockName: blockName,
 			AttributeName: strWithCases{property.Name},
 		}
 
 		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {
-			newCreateRequest.PlanFields = parent.PlanFields
+			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
+			newCreateRequest.PlanFields = upperFirst(property.Name)
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-			newCreateRequest.PlanVar = "plan."
-			newCreateRequest.PlanValueMethod = fmt.Sprintf("Attributes()[\"%s\"].", strcase.ToSnake(property.Name))
+			newCreateRequest.PlanValueMethod = "Value"
 		} else if parent != nil && parent.AttributeType == "CreateArrayObjectAttribute" {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = "i"

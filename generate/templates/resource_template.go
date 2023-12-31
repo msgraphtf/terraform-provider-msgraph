@@ -130,6 +130,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateObjectAttribute" }}
 	{{.RequestBodyVar}} := models.New{{.AttributeName.UpperCamel}}()
+	{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+	plan.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
 	{{template "generate_create" .NestedCreate}}
 	requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
 	{{- end}}
@@ -152,8 +154,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{ template "CreateArrayUuidAttribute" .}}
 	{{/* else if eq .AttributeType "CreateArrayObjectAttribute" */}}
 	{{/* template "CreateArrayObjectAttribute" . */}}
-	{{/* - else if eq .AttributeType "CreateObjectAttribute" */}}
-	{{/* template "CreateObjectAttribute" . */}}
+	{{- else if eq .AttributeType "CreateObjectAttribute"}}
+	{{ template "CreateObjectAttribute" .}}
 	{{- end}}
 	{{- end}}
 	{{- end}}
