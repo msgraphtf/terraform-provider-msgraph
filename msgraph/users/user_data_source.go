@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
@@ -763,6 +764,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
+	var objectValues []basetypes.ObjectValue
+
 	if result.GetId() != nil {
 		state.Id = types.StringValue(*result.GetId())
 	}
@@ -778,6 +781,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetAgeGroup() != nil {
 		state.AgeGroup = types.StringValue(*result.GetAgeGroup())
 	}
+	objectValues = []basetypes.ObjectValue{}
 	for _, v := range result.GetAssignedLicenses() {
 		assignedLicenses := new(userAssignedLicensesModel)
 
@@ -788,8 +792,10 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
 		}
 		objectValue, _ := types.ObjectValueFrom(ctx, assignedLicenses.AttributeTypes(), assignedLicenses)
-		state.AssignedLicenses = append(state.AssignedLicenses, objectValue)
+		objectValues = append(objectValues, objectValue)
 	}
+	state.AssignedLicenses, _ = types.ListValueFrom(ctx, basetypes.ObjectType{}, objectValues)
+	objectValues = []basetypes.ObjectValue{}
 	for _, v := range result.GetAssignedPlans() {
 		assignedPlans := new(userAssignedPlansModel)
 
@@ -806,8 +812,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			assignedPlans.ServicePlanId = types.StringValue(v.GetServicePlanId().String())
 		}
 		objectValue, _ := types.ObjectValueFrom(ctx, assignedPlans.AttributeTypes(), assignedPlans)
-		state.AssignedPlans = append(state.AssignedPlans, objectValue)
+		objectValues = append(objectValues, objectValue)
 	}
+	state.AssignedPlans, _ = types.ListValueFrom(ctx, basetypes.ObjectType{}, objectValues)
 	if result.GetAuthorizationInfo() != nil {
 		authorizationInfo := new(userAuthorizationInfoModel)
 
@@ -888,6 +895,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetHireDate() != nil {
 		state.HireDate = types.StringValue(result.GetHireDate().String())
 	}
+	objectValues = []basetypes.ObjectValue{}
 	for _, v := range result.GetIdentities() {
 		identities := new(userIdentitiesModel)
 
@@ -901,8 +909,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			identities.SignInType = types.StringValue(*v.GetSignInType())
 		}
 		objectValue, _ := types.ObjectValueFrom(ctx, identities.AttributeTypes(), identities)
-		state.Identities = append(state.Identities, objectValue)
+		objectValues = append(objectValues, objectValue)
 	}
+	state.Identities, _ = types.ListValueFrom(ctx, basetypes.ObjectType{}, objectValues)
 	for _, v := range result.GetImAddresses() {
 		state.ImAddresses = append(state.ImAddresses, types.StringValue(v))
 	}
@@ -921,6 +930,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetLegalAgeGroupClassification() != nil {
 		state.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())
 	}
+	objectValues = []basetypes.ObjectValue{}
 	for _, v := range result.GetLicenseAssignmentStates() {
 		licenseAssignmentStates := new(userLicenseAssignmentStatesModel)
 
@@ -943,8 +953,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			licenseAssignmentStates.State = types.StringValue(*v.GetState())
 		}
 		objectValue, _ := types.ObjectValueFrom(ctx, licenseAssignmentStates.AttributeTypes(), licenseAssignmentStates)
-		state.LicenseAssignmentStates = append(state.LicenseAssignmentStates, objectValue)
+		objectValues = append(objectValues, objectValue)
 	}
+	state.LicenseAssignmentStates, _ = types.ListValueFrom(ctx, basetypes.ObjectType{}, objectValues)
 	if result.GetMail() != nil {
 		state.Mail = types.StringValue(*result.GetMail())
 	}
@@ -1024,6 +1035,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetOnPremisesLastSyncDateTime() != nil {
 		state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
 	}
+	objectValues = []basetypes.ObjectValue{}
 	for _, v := range result.GetOnPremisesProvisioningErrors() {
 		onPremisesProvisioningErrors := new(userOnPremisesProvisioningErrorsModel)
 
@@ -1040,8 +1052,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			onPremisesProvisioningErrors.Value = types.StringValue(*v.GetValue())
 		}
 		objectValue, _ := types.ObjectValueFrom(ctx, onPremisesProvisioningErrors.AttributeTypes(), onPremisesProvisioningErrors)
-		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, objectValue)
+		objectValues = append(objectValues, objectValue)
 	}
+	state.OnPremisesProvisioningErrors, _ = types.ListValueFrom(ctx, basetypes.ObjectType{}, objectValues)
 	if result.GetOnPremisesSamAccountName() != nil {
 		state.OnPremisesSamAccountName = types.StringValue(*result.GetOnPremisesSamAccountName())
 	}
@@ -1091,6 +1104,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetPreferredName() != nil {
 		state.PreferredName = types.StringValue(*result.GetPreferredName())
 	}
+	objectValues = []basetypes.ObjectValue{}
 	for _, v := range result.GetProvisionedPlans() {
 		provisionedPlans := new(userProvisionedPlansModel)
 
@@ -1104,8 +1118,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			provisionedPlans.Service = types.StringValue(*v.GetService())
 		}
 		objectValue, _ := types.ObjectValueFrom(ctx, provisionedPlans.AttributeTypes(), provisionedPlans)
-		state.ProvisionedPlans = append(state.ProvisionedPlans, objectValue)
+		objectValues = append(objectValues, objectValue)
 	}
+	state.ProvisionedPlans, _ = types.ListValueFrom(ctx, basetypes.ObjectType{}, objectValues)
 	for _, v := range result.GetProxyAddresses() {
 		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(v))
 	}
@@ -1118,6 +1133,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetSecurityIdentifier() != nil {
 		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
 	}
+	objectValues = []basetypes.ObjectValue{}
 	for _, v := range result.GetServiceProvisioningErrors() {
 		serviceProvisioningErrors := new(userServiceProvisioningErrorsModel)
 
@@ -1131,8 +1147,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			serviceProvisioningErrors.ServiceInstance = types.StringValue(*v.GetServiceInstance())
 		}
 		objectValue, _ := types.ObjectValueFrom(ctx, serviceProvisioningErrors.AttributeTypes(), serviceProvisioningErrors)
-		state.ServiceProvisioningErrors = append(state.ServiceProvisioningErrors, objectValue)
+		objectValues = append(objectValues, objectValue)
 	}
+	state.ServiceProvisioningErrors, _ = types.ListValueFrom(ctx, basetypes.ObjectType{}, objectValues)
 	if result.GetShowInAddressList() != nil {
 		state.ShowInAddressList = types.BoolValue(*result.GetShowInAddressList())
 	}

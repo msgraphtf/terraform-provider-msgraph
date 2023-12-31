@@ -11,8 +11,8 @@ type userModel struct {
 	AboutMe                         types.String   `tfsdk:"about_me"`
 	AccountEnabled                  types.Bool     `tfsdk:"account_enabled"`
 	AgeGroup                        types.String   `tfsdk:"age_group"`
-	AssignedLicenses                []types.Object `tfsdk:"assigned_licenses"`
-	AssignedPlans                   []types.Object `tfsdk:"assigned_plans"`
+	AssignedLicenses                types.List     `tfsdk:"assigned_licenses"`
+	AssignedPlans                   types.List     `tfsdk:"assigned_plans"`
 	AuthorizationInfo               types.Object   `tfsdk:"authorization_info"`
 	Birthday                        types.String   `tfsdk:"birthday"`
 	BusinessPhones                  []types.String `tfsdk:"business_phones"`
@@ -34,14 +34,14 @@ type userModel struct {
 	FaxNumber                       types.String   `tfsdk:"fax_number"`
 	GivenName                       types.String   `tfsdk:"given_name"`
 	HireDate                        types.String   `tfsdk:"hire_date"`
-	Identities                      []types.Object `tfsdk:"identities"`
+	Identities                      types.List     `tfsdk:"identities"`
 	ImAddresses                     []types.String `tfsdk:"im_addresses"`
 	Interests                       []types.String `tfsdk:"interests"`
 	IsResourceAccount               types.Bool     `tfsdk:"is_resource_account"`
 	JobTitle                        types.String   `tfsdk:"job_title"`
 	LastPasswordChangeDateTime      types.String   `tfsdk:"last_password_change_date_time"`
 	LegalAgeGroupClassification     types.String   `tfsdk:"legal_age_group_classification"`
-	LicenseAssignmentStates         []types.Object `tfsdk:"license_assignment_states"`
+	LicenseAssignmentStates         types.List     `tfsdk:"license_assignment_states"`
 	Mail                            types.String   `tfsdk:"mail"`
 	MailNickname                    types.String   `tfsdk:"mail_nickname"`
 	MobilePhone                     types.String   `tfsdk:"mobile_phone"`
@@ -52,7 +52,7 @@ type userModel struct {
 	OnPremisesExtensionAttributes   types.Object   `tfsdk:"on_premises_extension_attributes"`
 	OnPremisesImmutableId           types.String   `tfsdk:"on_premises_immutable_id"`
 	OnPremisesLastSyncDateTime      types.String   `tfsdk:"on_premises_last_sync_date_time"`
-	OnPremisesProvisioningErrors    []types.Object `tfsdk:"on_premises_provisioning_errors"`
+	OnPremisesProvisioningErrors    types.List     `tfsdk:"on_premises_provisioning_errors"`
 	OnPremisesSamAccountName        types.String   `tfsdk:"on_premises_sam_account_name"`
 	OnPremisesSecurityIdentifier    types.String   `tfsdk:"on_premises_security_identifier"`
 	OnPremisesSyncEnabled           types.Bool     `tfsdk:"on_premises_sync_enabled"`
@@ -65,12 +65,12 @@ type userModel struct {
 	PreferredDataLocation           types.String   `tfsdk:"preferred_data_location"`
 	PreferredLanguage               types.String   `tfsdk:"preferred_language"`
 	PreferredName                   types.String   `tfsdk:"preferred_name"`
-	ProvisionedPlans                []types.Object `tfsdk:"provisioned_plans"`
+	ProvisionedPlans                types.List     `tfsdk:"provisioned_plans"`
 	ProxyAddresses                  []types.String `tfsdk:"proxy_addresses"`
 	Responsibilities                []types.String `tfsdk:"responsibilities"`
 	Schools                         []types.String `tfsdk:"schools"`
 	SecurityIdentifier              types.String   `tfsdk:"security_identifier"`
-	ServiceProvisioningErrors       []types.Object `tfsdk:"service_provisioning_errors"`
+	ServiceProvisioningErrors       types.List     `tfsdk:"service_provisioning_errors"`
 	ShowInAddressList               types.Bool     `tfsdk:"show_in_address_list"`
 	SignInActivity                  types.Object   `tfsdk:"sign_in_activity"`
 	SignInSessionsValidFromDateTime types.String   `tfsdk:"sign_in_sessions_valid_from_date_time"`
