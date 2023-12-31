@@ -253,25 +253,22 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
 			newCreateRequest.PlanFields = upperFirst(property.Name)
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-			newCreateRequest.PlanValueMethod = "Value"
 		} else if parent != nil && parent.AttributeType == "CreateArrayObjectAttribute" {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
 			newCreateRequest.PlanFields = upperFirst(property.Name)
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-			newCreateRequest.PlanValueMethod = "Value"
 		} else {
 			newCreateRequest.RequestBodyVar = "requestBody"
 			newCreateRequest.PlanVar = "plan."
 			newCreateRequest.PlanFields = upperFirst(property.Name)
-			newCreateRequest.PlanValueMethod = "Value"
 		}
 
 
 		switch property.Type {
 		case "string":
 			newCreateRequest.AttributeType = "CreateStringAttribute"
-			newCreateRequest.PlanValueMethod += "String"
+			newCreateRequest.PlanValueMethod = "ValueString"
 			switch property.Format {
 			case "date-time":
 				newCreateRequest.AttributeType = "CreateStringTimeAttribute"
@@ -280,19 +277,19 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			}
 		case "integer":
 			newCreateRequest.AttributeType = "CreateInt64Attribute"
-			newCreateRequest.PlanValueMethod += "Int64"
+			newCreateRequest.PlanValueMethod = "ValueInt64"
 		case "boolean":
 			newCreateRequest.AttributeType = "CreateBoolAttribute"
-			newCreateRequest.PlanValueMethod += "Bool"
+			newCreateRequest.PlanValueMethod = "ValueBool"
 		case "array":
 			switch property.ArrayOf {
 			case "string":
 				if property.Format == "uuid" {
 					newCreateRequest.AttributeType = "CreateArrayUuidAttribute"
-					newCreateRequest.PlanValueMethod += "String"
+					newCreateRequest.PlanValueMethod = "ValueString"
 				} else {
 					newCreateRequest.AttributeType = "CreateArrayStringAttribute"
-					newCreateRequest.PlanValueMethod += "String"
+					newCreateRequest.PlanValueMethod = "ValueString"
 				}
 			case "object":
 				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"
