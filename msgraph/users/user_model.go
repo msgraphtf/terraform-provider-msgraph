@@ -6,81 +6,81 @@ import (
 )
 
 type userModel struct {
-	Id                              types.String   `tfsdk:"id"`
-	DeletedDateTime                 types.String   `tfsdk:"deleted_date_time"`
-	AboutMe                         types.String   `tfsdk:"about_me"`
-	AccountEnabled                  types.Bool     `tfsdk:"account_enabled"`
-	AgeGroup                        types.String   `tfsdk:"age_group"`
-	AssignedLicenses                types.List     `tfsdk:"assigned_licenses"`
-	AssignedPlans                   types.List     `tfsdk:"assigned_plans"`
-	AuthorizationInfo               types.Object   `tfsdk:"authorization_info"`
-	Birthday                        types.String   `tfsdk:"birthday"`
-	BusinessPhones                  []types.String `tfsdk:"business_phones"`
-	City                            types.String   `tfsdk:"city"`
-	CompanyName                     types.String   `tfsdk:"company_name"`
-	ConsentProvidedForMinor         types.String   `tfsdk:"consent_provided_for_minor"`
-	Country                         types.String   `tfsdk:"country"`
-	CreatedDateTime                 types.String   `tfsdk:"created_date_time"`
-	CreationType                    types.String   `tfsdk:"creation_type"`
-	Department                      types.String   `tfsdk:"department"`
-	DisplayName                     types.String   `tfsdk:"display_name"`
-	EmployeeHireDate                types.String   `tfsdk:"employee_hire_date"`
-	EmployeeId                      types.String   `tfsdk:"employee_id"`
-	EmployeeLeaveDateTime           types.String   `tfsdk:"employee_leave_date_time"`
-	EmployeeOrgData                 types.Object   `tfsdk:"employee_org_data"`
-	EmployeeType                    types.String   `tfsdk:"employee_type"`
-	ExternalUserState               types.String   `tfsdk:"external_user_state"`
-	ExternalUserStateChangeDateTime types.String   `tfsdk:"external_user_state_change_date_time"`
-	FaxNumber                       types.String   `tfsdk:"fax_number"`
-	GivenName                       types.String   `tfsdk:"given_name"`
-	HireDate                        types.String   `tfsdk:"hire_date"`
-	Identities                      types.List     `tfsdk:"identities"`
-	ImAddresses                     []types.String `tfsdk:"im_addresses"`
-	Interests                       []types.String `tfsdk:"interests"`
-	IsResourceAccount               types.Bool     `tfsdk:"is_resource_account"`
-	JobTitle                        types.String   `tfsdk:"job_title"`
-	LastPasswordChangeDateTime      types.String   `tfsdk:"last_password_change_date_time"`
-	LegalAgeGroupClassification     types.String   `tfsdk:"legal_age_group_classification"`
-	LicenseAssignmentStates         types.List     `tfsdk:"license_assignment_states"`
-	Mail                            types.String   `tfsdk:"mail"`
-	MailNickname                    types.String   `tfsdk:"mail_nickname"`
-	MobilePhone                     types.String   `tfsdk:"mobile_phone"`
-	MySite                          types.String   `tfsdk:"my_site"`
-	OfficeLocation                  types.String   `tfsdk:"office_location"`
-	OnPremisesDistinguishedName     types.String   `tfsdk:"on_premises_distinguished_name"`
-	OnPremisesDomainName            types.String   `tfsdk:"on_premises_domain_name"`
-	OnPremisesExtensionAttributes   types.Object   `tfsdk:"on_premises_extension_attributes"`
-	OnPremisesImmutableId           types.String   `tfsdk:"on_premises_immutable_id"`
-	OnPremisesLastSyncDateTime      types.String   `tfsdk:"on_premises_last_sync_date_time"`
-	OnPremisesProvisioningErrors    types.List     `tfsdk:"on_premises_provisioning_errors"`
-	OnPremisesSamAccountName        types.String   `tfsdk:"on_premises_sam_account_name"`
-	OnPremisesSecurityIdentifier    types.String   `tfsdk:"on_premises_security_identifier"`
-	OnPremisesSyncEnabled           types.Bool     `tfsdk:"on_premises_sync_enabled"`
-	OnPremisesUserPrincipalName     types.String   `tfsdk:"on_premises_user_principal_name"`
-	OtherMails                      []types.String `tfsdk:"other_mails"`
-	PasswordPolicies                types.String   `tfsdk:"password_policies"`
-	PasswordProfile                 types.Object   `tfsdk:"password_profile"`
-	PastProjects                    []types.String `tfsdk:"past_projects"`
-	PostalCode                      types.String   `tfsdk:"postal_code"`
-	PreferredDataLocation           types.String   `tfsdk:"preferred_data_location"`
-	PreferredLanguage               types.String   `tfsdk:"preferred_language"`
-	PreferredName                   types.String   `tfsdk:"preferred_name"`
-	ProvisionedPlans                types.List     `tfsdk:"provisioned_plans"`
-	ProxyAddresses                  []types.String `tfsdk:"proxy_addresses"`
-	Responsibilities                []types.String `tfsdk:"responsibilities"`
-	Schools                         []types.String `tfsdk:"schools"`
-	SecurityIdentifier              types.String   `tfsdk:"security_identifier"`
-	ServiceProvisioningErrors       types.List     `tfsdk:"service_provisioning_errors"`
-	ShowInAddressList               types.Bool     `tfsdk:"show_in_address_list"`
-	SignInActivity                  types.Object   `tfsdk:"sign_in_activity"`
-	SignInSessionsValidFromDateTime types.String   `tfsdk:"sign_in_sessions_valid_from_date_time"`
-	Skills                          []types.String `tfsdk:"skills"`
-	State                           types.String   `tfsdk:"state"`
-	StreetAddress                   types.String   `tfsdk:"street_address"`
-	Surname                         types.String   `tfsdk:"surname"`
-	UsageLocation                   types.String   `tfsdk:"usage_location"`
-	UserPrincipalName               types.String   `tfsdk:"user_principal_name"`
-	UserType                        types.String   `tfsdk:"user_type"`
+	Id                              types.String `tfsdk:"id"`
+	DeletedDateTime                 types.String `tfsdk:"deleted_date_time"`
+	AboutMe                         types.String `tfsdk:"about_me"`
+	AccountEnabled                  types.Bool   `tfsdk:"account_enabled"`
+	AgeGroup                        types.String `tfsdk:"age_group"`
+	AssignedLicenses                types.List   `tfsdk:"assigned_licenses"`
+	AssignedPlans                   types.List   `tfsdk:"assigned_plans"`
+	AuthorizationInfo               types.Object `tfsdk:"authorization_info"`
+	Birthday                        types.String `tfsdk:"birthday"`
+	BusinessPhones                  types.List   `tfsdk:"business_phones"`
+	City                            types.String `tfsdk:"city"`
+	CompanyName                     types.String `tfsdk:"company_name"`
+	ConsentProvidedForMinor         types.String `tfsdk:"consent_provided_for_minor"`
+	Country                         types.String `tfsdk:"country"`
+	CreatedDateTime                 types.String `tfsdk:"created_date_time"`
+	CreationType                    types.String `tfsdk:"creation_type"`
+	Department                      types.String `tfsdk:"department"`
+	DisplayName                     types.String `tfsdk:"display_name"`
+	EmployeeHireDate                types.String `tfsdk:"employee_hire_date"`
+	EmployeeId                      types.String `tfsdk:"employee_id"`
+	EmployeeLeaveDateTime           types.String `tfsdk:"employee_leave_date_time"`
+	EmployeeOrgData                 types.Object `tfsdk:"employee_org_data"`
+	EmployeeType                    types.String `tfsdk:"employee_type"`
+	ExternalUserState               types.String `tfsdk:"external_user_state"`
+	ExternalUserStateChangeDateTime types.String `tfsdk:"external_user_state_change_date_time"`
+	FaxNumber                       types.String `tfsdk:"fax_number"`
+	GivenName                       types.String `tfsdk:"given_name"`
+	HireDate                        types.String `tfsdk:"hire_date"`
+	Identities                      types.List   `tfsdk:"identities"`
+	ImAddresses                     types.List   `tfsdk:"im_addresses"`
+	Interests                       types.List   `tfsdk:"interests"`
+	IsResourceAccount               types.Bool   `tfsdk:"is_resource_account"`
+	JobTitle                        types.String `tfsdk:"job_title"`
+	LastPasswordChangeDateTime      types.String `tfsdk:"last_password_change_date_time"`
+	LegalAgeGroupClassification     types.String `tfsdk:"legal_age_group_classification"`
+	LicenseAssignmentStates         types.List   `tfsdk:"license_assignment_states"`
+	Mail                            types.String `tfsdk:"mail"`
+	MailNickname                    types.String `tfsdk:"mail_nickname"`
+	MobilePhone                     types.String `tfsdk:"mobile_phone"`
+	MySite                          types.String `tfsdk:"my_site"`
+	OfficeLocation                  types.String `tfsdk:"office_location"`
+	OnPremisesDistinguishedName     types.String `tfsdk:"on_premises_distinguished_name"`
+	OnPremisesDomainName            types.String `tfsdk:"on_premises_domain_name"`
+	OnPremisesExtensionAttributes   types.Object `tfsdk:"on_premises_extension_attributes"`
+	OnPremisesImmutableId           types.String `tfsdk:"on_premises_immutable_id"`
+	OnPremisesLastSyncDateTime      types.String `tfsdk:"on_premises_last_sync_date_time"`
+	OnPremisesProvisioningErrors    types.List   `tfsdk:"on_premises_provisioning_errors"`
+	OnPremisesSamAccountName        types.String `tfsdk:"on_premises_sam_account_name"`
+	OnPremisesSecurityIdentifier    types.String `tfsdk:"on_premises_security_identifier"`
+	OnPremisesSyncEnabled           types.Bool   `tfsdk:"on_premises_sync_enabled"`
+	OnPremisesUserPrincipalName     types.String `tfsdk:"on_premises_user_principal_name"`
+	OtherMails                      types.List   `tfsdk:"other_mails"`
+	PasswordPolicies                types.String `tfsdk:"password_policies"`
+	PasswordProfile                 types.Object `tfsdk:"password_profile"`
+	PastProjects                    types.List   `tfsdk:"past_projects"`
+	PostalCode                      types.String `tfsdk:"postal_code"`
+	PreferredDataLocation           types.String `tfsdk:"preferred_data_location"`
+	PreferredLanguage               types.String `tfsdk:"preferred_language"`
+	PreferredName                   types.String `tfsdk:"preferred_name"`
+	ProvisionedPlans                types.List   `tfsdk:"provisioned_plans"`
+	ProxyAddresses                  types.List   `tfsdk:"proxy_addresses"`
+	Responsibilities                types.List   `tfsdk:"responsibilities"`
+	Schools                         types.List   `tfsdk:"schools"`
+	SecurityIdentifier              types.String `tfsdk:"security_identifier"`
+	ServiceProvisioningErrors       types.List   `tfsdk:"service_provisioning_errors"`
+	ShowInAddressList               types.Bool   `tfsdk:"show_in_address_list"`
+	SignInActivity                  types.Object `tfsdk:"sign_in_activity"`
+	SignInSessionsValidFromDateTime types.String `tfsdk:"sign_in_sessions_valid_from_date_time"`
+	Skills                          types.List   `tfsdk:"skills"`
+	State                           types.String `tfsdk:"state"`
+	StreetAddress                   types.String `tfsdk:"street_address"`
+	Surname                         types.String `tfsdk:"surname"`
+	UsageLocation                   types.String `tfsdk:"usage_location"`
+	UserPrincipalName               types.String `tfsdk:"user_principal_name"`
+	UserType                        types.String `tfsdk:"user_type"`
 }
 
 func (m userModel) AttributeTypes() map[string]attr.Type {
@@ -176,8 +176,8 @@ func (m userModel) AttributeTypes() map[string]attr.Type {
 }
 
 type userAssignedLicensesModel struct {
-	DisabledPlans []types.String `tfsdk:"disabled_plans"`
-	SkuId         types.String   `tfsdk:"sku_id"`
+	DisabledPlans types.List   `tfsdk:"disabled_plans"`
+	SkuId         types.String `tfsdk:"sku_id"`
 }
 
 func (m userAssignedLicensesModel) AttributeTypes() map[string]attr.Type {
@@ -204,7 +204,7 @@ func (m userAssignedPlansModel) AttributeTypes() map[string]attr.Type {
 }
 
 type userAuthorizationInfoModel struct {
-	CertificateUserIds []types.String `tfsdk:"certificate_user_ids"`
+	CertificateUserIds types.List `tfsdk:"certificate_user_ids"`
 }
 
 func (m userAuthorizationInfoModel) AttributeTypes() map[string]attr.Type {
@@ -240,12 +240,12 @@ func (m userIdentitiesModel) AttributeTypes() map[string]attr.Type {
 }
 
 type userLicenseAssignmentStatesModel struct {
-	AssignedByGroup     types.String   `tfsdk:"assigned_by_group"`
-	DisabledPlans       []types.String `tfsdk:"disabled_plans"`
-	Error               types.String   `tfsdk:"error"`
-	LastUpdatedDateTime types.String   `tfsdk:"last_updated_date_time"`
-	SkuId               types.String   `tfsdk:"sku_id"`
-	State               types.String   `tfsdk:"state"`
+	AssignedByGroup     types.String `tfsdk:"assigned_by_group"`
+	DisabledPlans       types.List   `tfsdk:"disabled_plans"`
+	Error               types.String `tfsdk:"error"`
+	LastUpdatedDateTime types.String `tfsdk:"last_updated_date_time"`
+	SkuId               types.String `tfsdk:"sku_id"`
+	State               types.String `tfsdk:"state"`
 }
 
 func (m userLicenseAssignmentStatesModel) AttributeTypes() map[string]attr.Type {

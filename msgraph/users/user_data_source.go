@@ -3,6 +3,7 @@ package users
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -764,8 +765,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	var objectValues []basetypes.ObjectValue
-
 	if result.GetId() != nil {
 		state.Id = types.StringValue(*result.GetId())
 	}
@@ -782,12 +781,17 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.AgeGroup = types.StringValue(*result.GetAgeGroup())
 	}
 	if len(result.GetAssignedLicenses()) > 0 {
-		objectValues = []basetypes.ObjectValue{}
+		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLicenses() {
 			assignedLicenses := new(userAssignedLicensesModel)
 
-			for _, v := range v.GetDisabledPlans() {
-				assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(v.String()))
+			if len(v.GetDisabledPlans()) > 0 {
+				var disabledPlans []attr.Value
+				for _, v := range v.GetDisabledPlans() {
+					disabledPlans = append(disabledPlans, types.StringValue(v.String()))
+				}
+				listValue, _ := types.ListValue(types.StringType, disabledPlans)
+				assignedLicenses.DisabledPlans = listValue
 			}
 			if v.GetSkuId() != nil {
 				assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
@@ -798,7 +802,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.AssignedLicenses, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if len(result.GetAssignedPlans()) > 0 {
-		objectValues = []basetypes.ObjectValue{}
+		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedPlans() {
 			assignedPlans := new(userAssignedPlansModel)
 
@@ -822,8 +826,13 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetAuthorizationInfo() != nil {
 		authorizationInfo := new(userAuthorizationInfoModel)
 
-		for _, v := range result.GetAuthorizationInfo().GetCertificateUserIds() {
-			authorizationInfo.CertificateUserIds = append(authorizationInfo.CertificateUserIds, types.StringValue(v))
+		if len(result.GetAuthorizationInfo().GetCertificateUserIds()) > 0 {
+			var certificateUserIds []attr.Value
+			for _, v := range result.GetAuthorizationInfo().GetCertificateUserIds() {
+				certificateUserIds = append(certificateUserIds, types.StringValue(v))
+			}
+			listValue, _ := types.ListValue(types.StringType, certificateUserIds)
+			authorizationInfo.CertificateUserIds = listValue
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfo.AttributeTypes(), authorizationInfo)
@@ -832,8 +841,13 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetBirthday() != nil {
 		state.Birthday = types.StringValue(result.GetBirthday().String())
 	}
-	for _, v := range result.GetBusinessPhones() {
-		state.BusinessPhones = append(state.BusinessPhones, types.StringValue(v))
+	if len(result.GetBusinessPhones()) > 0 {
+		var businessPhones []attr.Value
+		for _, v := range result.GetBusinessPhones() {
+			businessPhones = append(businessPhones, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, businessPhones)
+		state.BusinessPhones = listValue
 	}
 	if result.GetCity() != nil {
 		state.City = types.StringValue(*result.GetCity())
@@ -900,7 +914,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.HireDate = types.StringValue(result.GetHireDate().String())
 	}
 	if len(result.GetIdentities()) > 0 {
-		objectValues = []basetypes.ObjectValue{}
+		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetIdentities() {
 			identities := new(userIdentitiesModel)
 
@@ -918,11 +932,21 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 		state.Identities, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	for _, v := range result.GetImAddresses() {
-		state.ImAddresses = append(state.ImAddresses, types.StringValue(v))
+	if len(result.GetImAddresses()) > 0 {
+		var imAddresses []attr.Value
+		for _, v := range result.GetImAddresses() {
+			imAddresses = append(imAddresses, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, imAddresses)
+		state.ImAddresses = listValue
 	}
-	for _, v := range result.GetInterests() {
-		state.Interests = append(state.Interests, types.StringValue(v))
+	if len(result.GetInterests()) > 0 {
+		var interests []attr.Value
+		for _, v := range result.GetInterests() {
+			interests = append(interests, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, interests)
+		state.Interests = listValue
 	}
 	if result.GetIsResourceAccount() != nil {
 		state.IsResourceAccount = types.BoolValue(*result.GetIsResourceAccount())
@@ -937,15 +961,20 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())
 	}
 	if len(result.GetLicenseAssignmentStates()) > 0 {
-		objectValues = []basetypes.ObjectValue{}
+		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetLicenseAssignmentStates() {
 			licenseAssignmentStates := new(userLicenseAssignmentStatesModel)
 
 			if v.GetAssignedByGroup() != nil {
 				licenseAssignmentStates.AssignedByGroup = types.StringValue(*v.GetAssignedByGroup())
 			}
-			for _, v := range v.GetDisabledPlans() {
-				licenseAssignmentStates.DisabledPlans = append(licenseAssignmentStates.DisabledPlans, types.StringValue(v.String()))
+			if len(v.GetDisabledPlans()) > 0 {
+				var disabledPlans []attr.Value
+				for _, v := range v.GetDisabledPlans() {
+					disabledPlans = append(disabledPlans, types.StringValue(v.String()))
+				}
+				listValue, _ := types.ListValue(types.StringType, disabledPlans)
+				licenseAssignmentStates.DisabledPlans = listValue
 			}
 			if v.GetError() != nil {
 				licenseAssignmentStates.Error = types.StringValue(*v.GetError())
@@ -1044,7 +1073,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
 	}
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
-		objectValues = []basetypes.ObjectValue{}
+		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOnPremisesProvisioningErrors() {
 			onPremisesProvisioningErrors := new(userOnPremisesProvisioningErrorsModel)
 
@@ -1077,8 +1106,13 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetOnPremisesUserPrincipalName() != nil {
 		state.OnPremisesUserPrincipalName = types.StringValue(*result.GetOnPremisesUserPrincipalName())
 	}
-	for _, v := range result.GetOtherMails() {
-		state.OtherMails = append(state.OtherMails, types.StringValue(v))
+	if len(result.GetOtherMails()) > 0 {
+		var otherMails []attr.Value
+		for _, v := range result.GetOtherMails() {
+			otherMails = append(otherMails, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, otherMails)
+		state.OtherMails = listValue
 	}
 	if result.GetPasswordPolicies() != nil {
 		state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())
@@ -1099,8 +1133,13 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		objectValue, _ := types.ObjectValueFrom(ctx, passwordProfile.AttributeTypes(), passwordProfile)
 		state.PasswordProfile = objectValue
 	}
-	for _, v := range result.GetPastProjects() {
-		state.PastProjects = append(state.PastProjects, types.StringValue(v))
+	if len(result.GetPastProjects()) > 0 {
+		var pastProjects []attr.Value
+		for _, v := range result.GetPastProjects() {
+			pastProjects = append(pastProjects, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, pastProjects)
+		state.PastProjects = listValue
 	}
 	if result.GetPostalCode() != nil {
 		state.PostalCode = types.StringValue(*result.GetPostalCode())
@@ -1115,7 +1154,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.PreferredName = types.StringValue(*result.GetPreferredName())
 	}
 	if len(result.GetProvisionedPlans()) > 0 {
-		objectValues = []basetypes.ObjectValue{}
+		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetProvisionedPlans() {
 			provisionedPlans := new(userProvisionedPlansModel)
 
@@ -1133,20 +1172,35 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 		state.ProvisionedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	for _, v := range result.GetProxyAddresses() {
-		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(v))
+	if len(result.GetProxyAddresses()) > 0 {
+		var proxyAddresses []attr.Value
+		for _, v := range result.GetProxyAddresses() {
+			proxyAddresses = append(proxyAddresses, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, proxyAddresses)
+		state.ProxyAddresses = listValue
 	}
-	for _, v := range result.GetResponsibilities() {
-		state.Responsibilities = append(state.Responsibilities, types.StringValue(v))
+	if len(result.GetResponsibilities()) > 0 {
+		var responsibilities []attr.Value
+		for _, v := range result.GetResponsibilities() {
+			responsibilities = append(responsibilities, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, responsibilities)
+		state.Responsibilities = listValue
 	}
-	for _, v := range result.GetSchools() {
-		state.Schools = append(state.Schools, types.StringValue(v))
+	if len(result.GetSchools()) > 0 {
+		var schools []attr.Value
+		for _, v := range result.GetSchools() {
+			schools = append(schools, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, schools)
+		state.Schools = listValue
 	}
 	if result.GetSecurityIdentifier() != nil {
 		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
 	}
 	if len(result.GetServiceProvisioningErrors()) > 0 {
-		objectValues = []basetypes.ObjectValue{}
+		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetServiceProvisioningErrors() {
 			serviceProvisioningErrors := new(userServiceProvisioningErrorsModel)
 
@@ -1189,8 +1243,13 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetSignInSessionsValidFromDateTime() != nil {
 		state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())
 	}
-	for _, v := range result.GetSkills() {
-		state.Skills = append(state.Skills, types.StringValue(v))
+	if len(result.GetSkills()) > 0 {
+		var skills []attr.Value
+		for _, v := range result.GetSkills() {
+			skills = append(skills, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, skills)
+		state.Skills = listValue
 	}
 	if result.GetState() != nil {
 		state.State = types.StringValue(*result.GetState())
