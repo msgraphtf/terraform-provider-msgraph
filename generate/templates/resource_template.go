@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	{{- if .ReadQuery.MultipleGetMethodParameters }}
@@ -100,7 +101,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayStringAttribute" }}
 	var {{.PlanValueVar}} []string
-	for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
+	for _, i := range {{.PlanVar}}{{.PlanFields}} {
 		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.{{.PlanValueMethod}}())
 	}
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
@@ -108,7 +109,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayUuidAttribute" }}
 	var {{.PlanValueVar}} []uuid.UUID
-	for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
+	for _, i := range {{.PlanVar}}{{.PlanFields}} {
 		u, _ = uuid.Parse(i.{{.PlanValueMethod}}())
 		{{.PlanValueVar}} = append({{.PlanValueVar}}, u)
 	}
@@ -186,6 +187,8 @@ func (d *{{.BlockName.LowerCamel}}Resource) Read(ctx context.Context, req resour
 	}
 
 	{{ template "read_query_template.go" .ReadQuery}}
+
+	var objectValues []basetypes.ObjectValue
 
 	{{ template "read_response_template.go" .ReadResponse}}
 
