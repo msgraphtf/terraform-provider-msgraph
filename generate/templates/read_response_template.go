@@ -30,21 +30,29 @@ if {{.GetMethod}} != nil {
 {{- end}}
 
 {{- define "ReadListStringAttribute" }}
+if len({{.GetMethod}}) > 0 {
 	var {{.ModelVarName}} []attr.Value
 	for _, v := range {{.GetMethod}} {
 		{{.ModelVarName}} = append({{.ModelVarName}}, types.StringValue(v))
 	}
-	listValue, _ = types.ListValue(types.StringType, {{.ModelVarName}})
+	listValue, _ := types.ListValue(types.StringType, {{.ModelVarName}})
 	{{.StateVarName}} = listValue
+} else {
+	{{.StateVarName}} = types.ListNull(types.StringType)
+}
 {{- end}}
 
 {{- define "ReadListStringFormattedAttribute" }}
+if len({{.GetMethod}}) > 0 {
 	var {{.ModelVarName}} []attr.Value
 	for _, v := range {{.GetMethod}} {
 		{{.ModelVarName}} = append({{.ModelVarName}}, types.StringValue(v.String()))
 	}
-	listValue, _ = types.ListValue(types.StringType, {{.ModelVarName}})
+	listValue, _ := types.ListValue(types.StringType, {{.ModelVarName}})
 	{{.StateVarName}} = listValue
+} else {
+	{{.StateVarName}} = types.ListNull(types.StringType)
+}
 {{- end}}
 
 {{- define "ReadListNestedAttribute" }}

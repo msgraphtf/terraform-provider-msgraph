@@ -765,8 +765,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	var listValue types.List
-
 	if result.GetId() != nil {
 		state.Id = types.StringValue(*result.GetId())
 	}
@@ -787,12 +785,16 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		for _, v := range result.GetAssignedLicenses() {
 			assignedLicenses := new(userAssignedLicensesModel)
 
-			var disabledPlans []attr.Value
-			for _, v := range v.GetDisabledPlans() {
-				disabledPlans = append(disabledPlans, types.StringValue(v.String()))
+			if len(v.GetDisabledPlans()) > 0 {
+				var disabledPlans []attr.Value
+				for _, v := range v.GetDisabledPlans() {
+					disabledPlans = append(disabledPlans, types.StringValue(v.String()))
+				}
+				listValue, _ := types.ListValue(types.StringType, disabledPlans)
+				assignedLicenses.DisabledPlans = listValue
+			} else {
+				assignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 			}
-			listValue, _ = types.ListValue(types.StringType, disabledPlans)
-			assignedLicenses.DisabledPlans = listValue
 			if v.GetSkuId() != nil {
 				assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
 			}
@@ -826,12 +828,16 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetAuthorizationInfo() != nil {
 		authorizationInfo := new(userAuthorizationInfoModel)
 
-		var certificateUserIds []attr.Value
-		for _, v := range result.GetAuthorizationInfo().GetCertificateUserIds() {
-			certificateUserIds = append(certificateUserIds, types.StringValue(v))
+		if len(result.GetAuthorizationInfo().GetCertificateUserIds()) > 0 {
+			var certificateUserIds []attr.Value
+			for _, v := range result.GetAuthorizationInfo().GetCertificateUserIds() {
+				certificateUserIds = append(certificateUserIds, types.StringValue(v))
+			}
+			listValue, _ := types.ListValue(types.StringType, certificateUserIds)
+			authorizationInfo.CertificateUserIds = listValue
+		} else {
+			authorizationInfo.CertificateUserIds = types.ListNull(types.StringType)
 		}
-		listValue, _ = types.ListValue(types.StringType, certificateUserIds)
-		authorizationInfo.CertificateUserIds = listValue
 
 		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfo.AttributeTypes(), authorizationInfo)
 		state.AuthorizationInfo = objectValue
@@ -839,12 +845,16 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetBirthday() != nil {
 		state.Birthday = types.StringValue(result.GetBirthday().String())
 	}
-	var businessPhones []attr.Value
-	for _, v := range result.GetBusinessPhones() {
-		businessPhones = append(businessPhones, types.StringValue(v))
+	if len(result.GetBusinessPhones()) > 0 {
+		var businessPhones []attr.Value
+		for _, v := range result.GetBusinessPhones() {
+			businessPhones = append(businessPhones, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, businessPhones)
+		state.BusinessPhones = listValue
+	} else {
+		state.BusinessPhones = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, businessPhones)
-	state.BusinessPhones = listValue
 	if result.GetCity() != nil {
 		state.City = types.StringValue(*result.GetCity())
 	}
@@ -928,18 +938,26 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 		state.Identities, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	var imAddresses []attr.Value
-	for _, v := range result.GetImAddresses() {
-		imAddresses = append(imAddresses, types.StringValue(v))
+	if len(result.GetImAddresses()) > 0 {
+		var imAddresses []attr.Value
+		for _, v := range result.GetImAddresses() {
+			imAddresses = append(imAddresses, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, imAddresses)
+		state.ImAddresses = listValue
+	} else {
+		state.ImAddresses = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, imAddresses)
-	state.ImAddresses = listValue
-	var interests []attr.Value
-	for _, v := range result.GetInterests() {
-		interests = append(interests, types.StringValue(v))
+	if len(result.GetInterests()) > 0 {
+		var interests []attr.Value
+		for _, v := range result.GetInterests() {
+			interests = append(interests, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, interests)
+		state.Interests = listValue
+	} else {
+		state.Interests = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, interests)
-	state.Interests = listValue
 	if result.GetIsResourceAccount() != nil {
 		state.IsResourceAccount = types.BoolValue(*result.GetIsResourceAccount())
 	}
@@ -960,12 +978,16 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			if v.GetAssignedByGroup() != nil {
 				licenseAssignmentStates.AssignedByGroup = types.StringValue(*v.GetAssignedByGroup())
 			}
-			var disabledPlans []attr.Value
-			for _, v := range v.GetDisabledPlans() {
-				disabledPlans = append(disabledPlans, types.StringValue(v.String()))
+			if len(v.GetDisabledPlans()) > 0 {
+				var disabledPlans []attr.Value
+				for _, v := range v.GetDisabledPlans() {
+					disabledPlans = append(disabledPlans, types.StringValue(v.String()))
+				}
+				listValue, _ := types.ListValue(types.StringType, disabledPlans)
+				licenseAssignmentStates.DisabledPlans = listValue
+			} else {
+				licenseAssignmentStates.DisabledPlans = types.ListNull(types.StringType)
 			}
-			listValue, _ = types.ListValue(types.StringType, disabledPlans)
-			licenseAssignmentStates.DisabledPlans = listValue
 			if v.GetError() != nil {
 				licenseAssignmentStates.Error = types.StringValue(*v.GetError())
 			}
@@ -1096,12 +1118,16 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetOnPremisesUserPrincipalName() != nil {
 		state.OnPremisesUserPrincipalName = types.StringValue(*result.GetOnPremisesUserPrincipalName())
 	}
-	var otherMails []attr.Value
-	for _, v := range result.GetOtherMails() {
-		otherMails = append(otherMails, types.StringValue(v))
+	if len(result.GetOtherMails()) > 0 {
+		var otherMails []attr.Value
+		for _, v := range result.GetOtherMails() {
+			otherMails = append(otherMails, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, otherMails)
+		state.OtherMails = listValue
+	} else {
+		state.OtherMails = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, otherMails)
-	state.OtherMails = listValue
 	if result.GetPasswordPolicies() != nil {
 		state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())
 	}
@@ -1121,12 +1147,16 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		objectValue, _ := types.ObjectValueFrom(ctx, passwordProfile.AttributeTypes(), passwordProfile)
 		state.PasswordProfile = objectValue
 	}
-	var pastProjects []attr.Value
-	for _, v := range result.GetPastProjects() {
-		pastProjects = append(pastProjects, types.StringValue(v))
+	if len(result.GetPastProjects()) > 0 {
+		var pastProjects []attr.Value
+		for _, v := range result.GetPastProjects() {
+			pastProjects = append(pastProjects, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, pastProjects)
+		state.PastProjects = listValue
+	} else {
+		state.PastProjects = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, pastProjects)
-	state.PastProjects = listValue
 	if result.GetPostalCode() != nil {
 		state.PostalCode = types.StringValue(*result.GetPostalCode())
 	}
@@ -1158,24 +1188,36 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 		state.ProvisionedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	var proxyAddresses []attr.Value
-	for _, v := range result.GetProxyAddresses() {
-		proxyAddresses = append(proxyAddresses, types.StringValue(v))
+	if len(result.GetProxyAddresses()) > 0 {
+		var proxyAddresses []attr.Value
+		for _, v := range result.GetProxyAddresses() {
+			proxyAddresses = append(proxyAddresses, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, proxyAddresses)
+		state.ProxyAddresses = listValue
+	} else {
+		state.ProxyAddresses = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, proxyAddresses)
-	state.ProxyAddresses = listValue
-	var responsibilities []attr.Value
-	for _, v := range result.GetResponsibilities() {
-		responsibilities = append(responsibilities, types.StringValue(v))
+	if len(result.GetResponsibilities()) > 0 {
+		var responsibilities []attr.Value
+		for _, v := range result.GetResponsibilities() {
+			responsibilities = append(responsibilities, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, responsibilities)
+		state.Responsibilities = listValue
+	} else {
+		state.Responsibilities = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, responsibilities)
-	state.Responsibilities = listValue
-	var schools []attr.Value
-	for _, v := range result.GetSchools() {
-		schools = append(schools, types.StringValue(v))
+	if len(result.GetSchools()) > 0 {
+		var schools []attr.Value
+		for _, v := range result.GetSchools() {
+			schools = append(schools, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, schools)
+		state.Schools = listValue
+	} else {
+		state.Schools = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, schools)
-	state.Schools = listValue
 	if result.GetSecurityIdentifier() != nil {
 		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
 	}
@@ -1223,12 +1265,16 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetSignInSessionsValidFromDateTime() != nil {
 		state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())
 	}
-	var skills []attr.Value
-	for _, v := range result.GetSkills() {
-		skills = append(skills, types.StringValue(v))
+	if len(result.GetSkills()) > 0 {
+		var skills []attr.Value
+		for _, v := range result.GetSkills() {
+			skills = append(skills, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, skills)
+		state.Skills = listValue
+	} else {
+		state.Skills = types.ListNull(types.StringType)
 	}
-	listValue, _ = types.ListValue(types.StringType, skills)
-	state.Skills = listValue
 	if result.GetState() != nil {
 		state.State = types.StringValue(*result.GetState())
 	}
