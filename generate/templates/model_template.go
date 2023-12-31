@@ -16,9 +16,7 @@ type {{.ModelName}} struct {
 func (m {{.ModelName}}) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		{{- range .ModelFields}}
-		{{- if .IfPrimitiveType }}
 		"{{.AttributeName}}": {{.AttributeType}},
-		{{- end}}
 		{{- end}}
 	}
 }
