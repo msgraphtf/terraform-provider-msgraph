@@ -227,7 +227,6 @@ type createRequestBody struct {
 	AttributeName strWithCases
 	AttributeType string
 	PlanVar  string
-	PlanSetMethod string
 	PlanFields    string
 	PlanValueMethod    string
 	RequestBodyVar string
@@ -247,7 +246,6 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 
 		newCreateRequest := createRequestBody{
 			AttributeName: strWithCases{property.Name},
-			PlanSetMethod: upperFirst(property.Name),
 		}
 
 		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {
