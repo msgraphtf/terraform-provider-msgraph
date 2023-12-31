@@ -590,7 +590,7 @@ func generateDataSource(pathname string) {
 	// Open augment file if available
 	var err error = nil
 	augment = templateAugment{}
-	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + blockName + "_data_source.yaml")
+	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + blockName + ".yaml")
 	if err == nil {
 		yaml.Unmarshal(augmentFile, &augment)
 	}
