@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -100,11 +101,13 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateArrayStringAttribute" }}
-	var {{.AttributeName.LowerCamel}} []string
-	for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
-		{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
+	if len({{.PlanVar}}{{.PlanFields}}.Elements()) > 0 {
+		var {{.AttributeName.LowerCamel}} []string
+		for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
+			{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
+		}
+		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
 	}
-	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
 	{{- end}}
 
 	{{- define "CreateArrayUuidAttribute" }}
@@ -187,8 +190,6 @@ func (d *{{.BlockName.LowerCamel}}Resource) Read(ctx context.Context, req resour
 	}
 
 	{{ template "read_query_template.go" .ReadQuery}}
-
-	var objectValues []basetypes.ObjectValue
 
 	{{ template "read_response_template.go" .ReadResponse}}
 
