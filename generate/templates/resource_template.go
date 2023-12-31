@@ -147,10 +147,10 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{ template "CreateArrayStringAttribute" .}}
 	{{- else if eq .AttributeType "CreateArrayUuidAttribute"}}
 	{{ template "CreateArrayUuidAttribute" .}}
-	{{- else if eq .AttributeType "CreateArrayObjectAttribute"}}
-	{{ template "CreateArrayObjectAttribute" .}}
-	{{- else if eq .AttributeType "CreateObjectAttribute"}}
-	{{ template "CreateObjectAttribute" .}}
+	{{/* else if eq .AttributeType "CreateArrayObjectAttribute" */}}
+	{{/* template "CreateArrayObjectAttribute" . */}}
+	{{/* - else if eq .AttributeType "CreateObjectAttribute" */}}
+	{{/* template "CreateObjectAttribute" . */}}
 	{{- end}}
 	{{- end}}
 	{{- end}}
