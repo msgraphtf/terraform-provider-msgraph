@@ -228,7 +228,6 @@ type createRequestBody struct {
 	AttributeName strWithCases
 	AttributeType string
 	PlanVar  string
-	PlanFields    string
 	PlanValueMethod    string
 	RequestBodyVar string
 	NewModelMethod string
@@ -251,17 +250,14 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 
 		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {
 			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
-			newCreateRequest.PlanFields = upperFirst(property.Name)
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 		} else if parent != nil && parent.AttributeType == "CreateArrayObjectAttribute" {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
-			newCreateRequest.PlanFields = upperFirst(property.Name)
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 		} else {
 			newCreateRequest.RequestBodyVar = "requestBody"
 			newCreateRequest.PlanVar = "plan."
-			newCreateRequest.PlanFields = upperFirst(property.Name)
 		}
 
 

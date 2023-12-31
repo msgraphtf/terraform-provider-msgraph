@@ -74,36 +74,36 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	{{- end}}
 
 	{{- define "CreateStringTimeAttribute" }}
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	t, _ = time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&t)
 	{{- end}}
 
 	{{- define "CreateStringUuidAttribute" }}
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	u, _ = uuid.Parse(plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&u)
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.PlanFields}}.{{.PlanValueMethod}}()
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	{{- end}}
 
 	{{- define "CreateArrayStringAttribute" }}
-	if len({{.PlanVar}}{{.PlanFields}}.Elements()) > 0 {
+	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
 		var {{.AttributeName.LowerCamel}} []string
-		for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
+		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
 			{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
 		}
 		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
@@ -112,7 +112,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayUuidAttribute" }}
 	var plan{{.AttributeName.UpperCamel}} []uuid.UUID
-	for _, i := range {{.PlanVar}}{{.PlanFields}} {
+	for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}} {
 		u, _ = uuid.Parse(i.{{.PlanValueMethod}}())
 		plan{{.AttributeName.UpperCamel}} = append(plan{{.AttributeName.UpperCamel}}, u)
 	}
@@ -121,7 +121,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	var plan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
-	for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
+	for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
 		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 		{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
 		types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
