@@ -65,8 +65,6 @@ func (d *{{.BlockName.LowerCamel}}DataSource) Read(ctx context.Context, req data
 
 	{{ template "read_query_template.go" .ReadQuery}}
 
-	var objectValues []basetypes.ObjectValue
-
 	{{ template "read_response_template.go" .ReadResponse}}
 
 
