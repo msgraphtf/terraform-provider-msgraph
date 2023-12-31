@@ -30,14 +30,24 @@ if {{.GetMethod}} != nil {
 {{- end}}
 
 {{- define "ReadListStringAttribute" }}
-for _, v := range {{.GetMethod}} {
-	{{.StateVarName}} = append({{.StateVarName}}, types.StringValue(v))
+if len({{.GetMethod}}) > 0 {
+	var {{.ModelVarName}} []attr.Value
+	for _, v := range {{.GetMethod}} {
+		{{.ModelVarName}} = append({{.ModelVarName}}, types.StringValue(v))
+	}
+	listValue, _ := types.ListValue(types.StringType, {{.ModelVarName}})
+	{{.StateVarName}} = listValue
 }
 {{- end}}
 
 {{- define "ReadListStringFormattedAttribute" }}
-for _, v := range {{.GetMethod}} {
-	{{.StateVarName}} = append({{.StateVarName}}, types.StringValue(v.String()))
+if len({{.GetMethod}}) > 0 {
+	var {{.ModelVarName}} []attr.Value
+	for _, v := range {{.GetMethod}} {
+		{{.ModelVarName}} = append({{.ModelVarName}}, types.StringValue(v.String()))
+	}
+	listValue, _ := types.ListValue(types.StringType, {{.ModelVarName}})
+	{{.StateVarName}} = listValue
 }
 {{- end}}
 
