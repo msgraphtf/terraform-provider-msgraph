@@ -100,11 +100,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateArrayStringAttribute" }}
-	var plan{{.AttributeName.UpperCamel}} []string
-	for _, i := range {{.PlanVar}}{{.PlanFields}} {
-		plan{{.AttributeName.UpperCamel}} = append(plan{{.AttributeName.UpperCamel}}, i.{{.PlanValueMethod}}())
+	var {{.AttributeName.LowerCamel}} []string
+	for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
+		{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
 	}
-	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(plan{{.AttributeName.UpperCamel}})
+	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
 	{{- end}}
 
 	{{- define "CreateArrayUuidAttribute" }}
