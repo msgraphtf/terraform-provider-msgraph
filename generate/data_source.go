@@ -252,8 +252,8 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			newCreateRequest.PlanValueMethod = fmt.Sprintf("Attributes()[\"%s\"].", strcase.ToSnake(property.Name))
 		} else if parent != nil && parent.AttributeType == "CreateArrayObjectAttribute" {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-			newCreateRequest.PlanVar = "i."
-			newCreateRequest.PlanFields = upperFirst(property.Name)
+			newCreateRequest.PlanVar = "i"
+			newCreateRequest.PlanValueMethod = fmt.Sprintf("Attributes()[\"%s\"].", strcase.ToSnake(property.Name))
 		} else {
 			newCreateRequest.RequestBodyVar = "requestBody"
 			newCreateRequest.PlanVar = "plan."
