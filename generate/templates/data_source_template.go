@@ -6,6 +6,8 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/datasource"
     "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	{{- if .ReadQuery.MultipleGetMethodParameters }}
@@ -62,6 +64,8 @@ func (d *{{.BlockName.LowerCamel}}DataSource) Read(ctx context.Context, req data
 	}
 
 	{{ template "read_query_template.go" .ReadQuery}}
+
+	var objectValues []basetypes.ObjectValue
 
 	{{ template "read_response_template.go" .ReadResponse}}
 
