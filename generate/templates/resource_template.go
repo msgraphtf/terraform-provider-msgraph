@@ -100,7 +100,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayStringAttribute" }}
 	var {{.PlanValueVar}} []string
-	for _, i := range {{.PlanVar}}{{.PlanFields}} {
+	for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
 		{{.PlanValueVar}} = append({{.PlanValueVar}}, i.{{.PlanValueMethod}}())
 	}
 	{{.RequestBodyVar}}.Set{{.PlanSetMethod}}({{.PlanValueVar}})
@@ -108,7 +108,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayUuidAttribute" }}
 	var {{.PlanValueVar}} []uuid.UUID
-	for _, i := range {{.PlanVar}}{{.PlanFields}} {
+	for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
 		u, _ = uuid.Parse(i.{{.PlanValueMethod}}())
 		{{.PlanValueVar}} = append({{.PlanValueVar}}, u)
 	}
@@ -117,7 +117,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	var {{.PlanValueVar}} []models.{{.NewModelMethod}}able
-	for _, i := range {{.PlanVar}}{{.PlanFields}} {
+	for _, i := range {{.PlanVar}}{{.PlanFields}}.Elements() {
 		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 		{{template "generate_create" .NestedCreate}}
 	}

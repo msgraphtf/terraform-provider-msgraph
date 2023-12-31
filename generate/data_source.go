@@ -136,7 +136,7 @@ type terraformModelField struct {
 }
 
 func (m terraformModelField) IfPrimitiveType() bool {
-       if strings.Contains(m.FieldType, "Object") {
+       if strings.Contains(m.AttributeType, "Object") {
                return false
        }
        return true
@@ -194,8 +194,8 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 					newModelField.FieldType = "[]types.String"
 					newModelField.AttributeType = "types.ListType{ElemType:types.StringType}"
 				} else {
-					newModelField.FieldType = "[]types.Object"
-					newModelField.AttributeType = "[]types.Object"
+					newModelField.FieldType = "types.List"
+					newModelField.AttributeType = "types.ListType{ElemType:types.Object}"
 					nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 				}
 			case "string":
