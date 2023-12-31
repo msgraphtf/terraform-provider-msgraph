@@ -111,12 +111,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateArrayUuidAttribute" }}
-	var plan{{.AttributeName.UpperCamel}} []uuid.UUID
-	for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}} {
-		u, _ = uuid.Parse(i.{{.PlanValueMethod}}())
-		plan{{.AttributeName.UpperCamel}} = append(plan{{.AttributeName.UpperCamel}}, u)
+	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
+		var {{.AttributeName.UpperCamel}} []uuid.UUID
+		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
+			u, _ = uuid.Parse(i.String())
+			{{.AttributeName.UpperCamel}} = append({{.AttributeName.UpperCamel}}, u)
+		}
+		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.UpperCamel}})
 	}
-	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(plan{{.AttributeName.UpperCamel}})
 	{{- end}}
 
 	{{- define "CreateArrayObjectAttribute" }}
