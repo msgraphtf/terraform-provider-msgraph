@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -245,9 +246,10 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		}
 
 		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {
-			newCreateRequest.PlanFields = parent.PlanFields + "." + upperFirst(property.Name)
+			newCreateRequest.PlanFields = parent.PlanFields
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = "plan."
+			newCreateRequest.PlanValueMethod = fmt.Sprintf("Attributes()[\"%s\"].", strcase.ToSnake(property.Name))
 		} else if parent != nil {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = "i."
