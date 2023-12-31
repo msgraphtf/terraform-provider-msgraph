@@ -231,7 +231,6 @@ type createRequestBody struct {
 	PlanValueMethod    string
 	RequestBodyVar string
 	NewModelMethod string
-	SetModelMethod string
 	NestedCreate  []createRequestBody
 }
 
@@ -299,8 +298,6 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			}
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
-			newCreateRequest.NewModelMethod = upperFirst(property.Name)
-			newCreateRequest.SetModelMethod = upperFirst(property.Name)
 			newCreateRequest.AttributeType = "CreateObjectAttribute"
 			newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, &newCreateRequest)
 		}

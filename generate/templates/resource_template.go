@@ -126,9 +126,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}
-	{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
+	{{.RequestBodyVar}} := models.New{{.AttributeName.UpperCamel}}()
 	{{template "generate_create" .NestedCreate}}
-	requestBody.Set{{.SetModelMethod}}({{.RequestBodyVar}})
+	requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
 	{{- end}}
 
 	{{- block "generate_create" .CreateRequestBody}}
