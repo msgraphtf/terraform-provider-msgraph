@@ -74,30 +74,41 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	} else {
+	}
 	{{- end}}
 
 	{{- define "CreateStringTimeAttribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	t, _ = time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&t)
+	}
 	{{- end}}
 
 	{{- define "CreateStringUuidAttribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	u, _ = uuid.Parse(plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&u)
+	}
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	}
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	}
 	{{- end}}
 
 	{{- define "CreateArrayStringAttribute" }}
