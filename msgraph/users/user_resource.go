@@ -752,21 +752,6 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Id = types.StringNull()
 	}
 
-	if !plan.DeletedDateTime.IsUnknown() {
-		planDeletedDateTime := plan.DeletedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
-		requestBody.SetDeletedDateTime(&t)
-	} else {
-		plan.DeletedDateTime = types.StringNull()
-	}
-
-	if !plan.AboutMe.IsUnknown() {
-		planAboutMe := plan.AboutMe.ValueString()
-		requestBody.SetAboutMe(&planAboutMe)
-	} else {
-		plan.AboutMe = types.StringNull()
-	}
-
 	if !plan.AccountEnabled.IsUnknown() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
@@ -794,6 +779,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				DisabledPlans = append(DisabledPlans, u)
 			}
 			assignedLicense.SetDisabledPlans(DisabledPlans)
+		} else {
+			assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
 		}
 
 		if !assignedLicenseModel.SkuId.IsUnknown() {
@@ -854,16 +841,10 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			certificateUserIds = append(certificateUserIds, i.String())
 		}
 		authorizationInfo.SetCertificateUserIds(certificateUserIds)
+	} else {
+		authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
 	}
 	requestBody.SetAuthorizationInfo(authorizationInfo)
-
-	if !plan.Birthday.IsUnknown() {
-		planBirthday := plan.Birthday.ValueString()
-		t, _ = time.Parse(time.RFC3339, planBirthday)
-		requestBody.SetBirthday(&t)
-	} else {
-		plan.Birthday = types.StringNull()
-	}
 
 	if len(plan.BusinessPhones.Elements()) > 0 {
 		var businessPhones []string
@@ -871,6 +852,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			businessPhones = append(businessPhones, i.String())
 		}
 		requestBody.SetBusinessPhones(businessPhones)
+	} else {
+		plan.BusinessPhones = types.ListNull(types.StringType)
 	}
 
 	if !plan.City.IsUnknown() {
@@ -1008,14 +991,6 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.GivenName = types.StringNull()
 	}
 
-	if !plan.HireDate.IsUnknown() {
-		planHireDate := plan.HireDate.ValueString()
-		t, _ = time.Parse(time.RFC3339, planHireDate)
-		requestBody.SetHireDate(&t)
-	} else {
-		plan.HireDate = types.StringNull()
-	}
-
 	var planIdentities []models.ObjectIdentityable
 	for _, i := range plan.Identities.Elements() {
 		objectIdentity := models.NewObjectIdentity()
@@ -1051,6 +1026,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			imAddresses = append(imAddresses, i.String())
 		}
 		requestBody.SetImAddresses(imAddresses)
+	} else {
+		plan.ImAddresses = types.ListNull(types.StringType)
 	}
 
 	if len(plan.Interests.Elements()) > 0 {
@@ -1059,6 +1036,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			interests = append(interests, i.String())
 		}
 		requestBody.SetInterests(interests)
+	} else {
+		plan.Interests = types.ListNull(types.StringType)
 	}
 
 	if !plan.IsResourceAccount.IsUnknown() {
@@ -1110,6 +1089,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				DisabledPlans = append(DisabledPlans, u)
 			}
 			licenseAssignmentState.SetDisabledPlans(DisabledPlans)
+		} else {
+			licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
 		}
 
 		if !licenseAssignmentStateModel.Error.IsUnknown() {
@@ -1163,13 +1144,6 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
 		plan.MobilePhone = types.StringNull()
-	}
-
-	if !plan.MySite.IsUnknown() {
-		planMySite := plan.MySite.ValueString()
-		requestBody.SetMySite(&planMySite)
-	} else {
-		plan.MySite = types.StringNull()
 	}
 
 	if !plan.OfficeLocation.IsUnknown() {
@@ -1389,6 +1363,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			otherMails = append(otherMails, i.String())
 		}
 		requestBody.SetOtherMails(otherMails)
+	} else {
+		plan.OtherMails = types.ListNull(types.StringType)
 	}
 
 	if !plan.PasswordPolicies.IsUnknown() {
@@ -1430,6 +1406,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			pastProjects = append(pastProjects, i.String())
 		}
 		requestBody.SetPastProjects(pastProjects)
+	} else {
+		plan.PastProjects = types.ListNull(types.StringType)
 	}
 
 	if !plan.PostalCode.IsUnknown() {
@@ -1451,13 +1429,6 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetPreferredLanguage(&planPreferredLanguage)
 	} else {
 		plan.PreferredLanguage = types.StringNull()
-	}
-
-	if !plan.PreferredName.IsUnknown() {
-		planPreferredName := plan.PreferredName.ValueString()
-		requestBody.SetPreferredName(&planPreferredName)
-	} else {
-		plan.PreferredName = types.StringNull()
 	}
 
 	var planProvisionedPlans []models.ProvisionedPlanable
@@ -1495,6 +1466,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			proxyAddresses = append(proxyAddresses, i.String())
 		}
 		requestBody.SetProxyAddresses(proxyAddresses)
+	} else {
+		plan.ProxyAddresses = types.ListNull(types.StringType)
 	}
 
 	if len(plan.Responsibilities.Elements()) > 0 {
@@ -1503,6 +1476,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			responsibilities = append(responsibilities, i.String())
 		}
 		requestBody.SetResponsibilities(responsibilities)
+	} else {
+		plan.Responsibilities = types.ListNull(types.StringType)
 	}
 
 	if len(plan.Schools.Elements()) > 0 {
@@ -1511,6 +1486,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			schools = append(schools, i.String())
 		}
 		requestBody.SetSchools(schools)
+	} else {
+		plan.Schools = types.ListNull(types.StringType)
 	}
 
 	if !plan.SecurityIdentifier.IsUnknown() {
@@ -1557,41 +1534,6 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.ShowInAddressList = types.BoolNull()
 	}
 
-	signInActivity := models.NewSignInActivity()
-	signInActivityModel := userSignInActivityModel{}
-	plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
-
-	if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
-		planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
-		signInActivity.SetLastNonInteractiveSignInDateTime(&t)
-	} else {
-		signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
-	}
-
-	if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
-		planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
-		signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
-	} else {
-		signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
-	}
-
-	if !signInActivityModel.LastSignInDateTime.IsUnknown() {
-		planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
-		signInActivity.SetLastSignInDateTime(&t)
-	} else {
-		signInActivityModel.LastSignInDateTime = types.StringNull()
-	}
-
-	if !signInActivityModel.LastSignInRequestId.IsUnknown() {
-		planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
-		signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
-	} else {
-		signInActivityModel.LastSignInRequestId = types.StringNull()
-	}
-	requestBody.SetSignInActivity(signInActivity)
-
 	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
@@ -1606,6 +1548,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			skills = append(skills, i.String())
 		}
 		requestBody.SetSkills(skills)
+	} else {
+		plan.Skills = types.ListNull(types.StringType)
 	}
 
 	if !plan.State.IsUnknown() {
@@ -2604,21 +2548,6 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.Id = types.StringNull()
 	}
 
-	if !plan.DeletedDateTime.IsUnknown() {
-		planDeletedDateTime := plan.DeletedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
-		requestBody.SetDeletedDateTime(&t)
-	} else {
-		plan.DeletedDateTime = types.StringNull()
-	}
-
-	if !plan.AboutMe.IsUnknown() {
-		planAboutMe := plan.AboutMe.ValueString()
-		requestBody.SetAboutMe(&planAboutMe)
-	} else {
-		plan.AboutMe = types.StringNull()
-	}
-
 	if !plan.AccountEnabled.IsUnknown() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
@@ -2646,6 +2575,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				DisabledPlans = append(DisabledPlans, u)
 			}
 			assignedLicense.SetDisabledPlans(DisabledPlans)
+		} else {
+			assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
 		}
 
 		if !assignedLicenseModel.SkuId.IsUnknown() {
@@ -2706,16 +2637,10 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			certificateUserIds = append(certificateUserIds, i.String())
 		}
 		authorizationInfo.SetCertificateUserIds(certificateUserIds)
+	} else {
+		authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
 	}
 	requestBody.SetAuthorizationInfo(authorizationInfo)
-
-	if !plan.Birthday.IsUnknown() {
-		planBirthday := plan.Birthday.ValueString()
-		t, _ = time.Parse(time.RFC3339, planBirthday)
-		requestBody.SetBirthday(&t)
-	} else {
-		plan.Birthday = types.StringNull()
-	}
 
 	if len(plan.BusinessPhones.Elements()) > 0 {
 		var businessPhones []string
@@ -2723,6 +2648,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			businessPhones = append(businessPhones, i.String())
 		}
 		requestBody.SetBusinessPhones(businessPhones)
+	} else {
+		plan.BusinessPhones = types.ListNull(types.StringType)
 	}
 
 	if !plan.City.IsUnknown() {
@@ -2860,14 +2787,6 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.GivenName = types.StringNull()
 	}
 
-	if !plan.HireDate.IsUnknown() {
-		planHireDate := plan.HireDate.ValueString()
-		t, _ = time.Parse(time.RFC3339, planHireDate)
-		requestBody.SetHireDate(&t)
-	} else {
-		plan.HireDate = types.StringNull()
-	}
-
 	var planIdentities []models.ObjectIdentityable
 	for _, i := range plan.Identities.Elements() {
 		objectIdentity := models.NewObjectIdentity()
@@ -2903,6 +2822,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			imAddresses = append(imAddresses, i.String())
 		}
 		requestBody.SetImAddresses(imAddresses)
+	} else {
+		plan.ImAddresses = types.ListNull(types.StringType)
 	}
 
 	if len(plan.Interests.Elements()) > 0 {
@@ -2911,6 +2832,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			interests = append(interests, i.String())
 		}
 		requestBody.SetInterests(interests)
+	} else {
+		plan.Interests = types.ListNull(types.StringType)
 	}
 
 	if !plan.IsResourceAccount.IsUnknown() {
@@ -2962,6 +2885,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				DisabledPlans = append(DisabledPlans, u)
 			}
 			licenseAssignmentState.SetDisabledPlans(DisabledPlans)
+		} else {
+			licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
 		}
 
 		if !licenseAssignmentStateModel.Error.IsUnknown() {
@@ -3015,13 +2940,6 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
 		plan.MobilePhone = types.StringNull()
-	}
-
-	if !plan.MySite.IsUnknown() {
-		planMySite := plan.MySite.ValueString()
-		requestBody.SetMySite(&planMySite)
-	} else {
-		plan.MySite = types.StringNull()
 	}
 
 	if !plan.OfficeLocation.IsUnknown() {
@@ -3241,6 +3159,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			otherMails = append(otherMails, i.String())
 		}
 		requestBody.SetOtherMails(otherMails)
+	} else {
+		plan.OtherMails = types.ListNull(types.StringType)
 	}
 
 	if !plan.PasswordPolicies.IsUnknown() {
@@ -3282,6 +3202,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			pastProjects = append(pastProjects, i.String())
 		}
 		requestBody.SetPastProjects(pastProjects)
+	} else {
+		plan.PastProjects = types.ListNull(types.StringType)
 	}
 
 	if !plan.PostalCode.IsUnknown() {
@@ -3303,13 +3225,6 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetPreferredLanguage(&planPreferredLanguage)
 	} else {
 		plan.PreferredLanguage = types.StringNull()
-	}
-
-	if !plan.PreferredName.IsUnknown() {
-		planPreferredName := plan.PreferredName.ValueString()
-		requestBody.SetPreferredName(&planPreferredName)
-	} else {
-		plan.PreferredName = types.StringNull()
 	}
 
 	var planProvisionedPlans []models.ProvisionedPlanable
@@ -3347,6 +3262,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			proxyAddresses = append(proxyAddresses, i.String())
 		}
 		requestBody.SetProxyAddresses(proxyAddresses)
+	} else {
+		plan.ProxyAddresses = types.ListNull(types.StringType)
 	}
 
 	if len(plan.Responsibilities.Elements()) > 0 {
@@ -3355,6 +3272,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			responsibilities = append(responsibilities, i.String())
 		}
 		requestBody.SetResponsibilities(responsibilities)
+	} else {
+		plan.Responsibilities = types.ListNull(types.StringType)
 	}
 
 	if len(plan.Schools.Elements()) > 0 {
@@ -3363,6 +3282,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			schools = append(schools, i.String())
 		}
 		requestBody.SetSchools(schools)
+	} else {
+		plan.Schools = types.ListNull(types.StringType)
 	}
 
 	if !plan.SecurityIdentifier.IsUnknown() {
@@ -3409,41 +3330,6 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.ShowInAddressList = types.BoolNull()
 	}
 
-	signInActivity := models.NewSignInActivity()
-	signInActivityModel := userSignInActivityModel{}
-	plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
-
-	if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
-		planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
-		signInActivity.SetLastNonInteractiveSignInDateTime(&t)
-	} else {
-		signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
-	}
-
-	if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
-		planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
-		signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
-	} else {
-		signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
-	}
-
-	if !signInActivityModel.LastSignInDateTime.IsUnknown() {
-		planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
-		signInActivity.SetLastSignInDateTime(&t)
-	} else {
-		signInActivityModel.LastSignInDateTime = types.StringNull()
-	}
-
-	if !signInActivityModel.LastSignInRequestId.IsUnknown() {
-		planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
-		signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
-	} else {
-		signInActivityModel.LastSignInRequestId = types.StringNull()
-	}
-	requestBody.SetSignInActivity(signInActivity)
-
 	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
@@ -3458,6 +3344,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			skills = append(skills, i.String())
 		}
 		requestBody.SetSkills(skills)
+	} else {
+		plan.Skills = types.ListNull(types.StringType)
 	}
 
 	if !plan.State.IsUnknown() {

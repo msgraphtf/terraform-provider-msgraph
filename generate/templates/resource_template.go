@@ -127,6 +127,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 			{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
 		}
 		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull(types.StringType)
 	}
 	{{- end}}
 
@@ -138,6 +140,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 			{{.AttributeName.UpperCamel}} = append({{.AttributeName.UpperCamel}}, u)
 		}
 		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.UpperCamel}})
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull(types.StringType)
 	}
 	{{- end}}
 
