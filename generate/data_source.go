@@ -85,6 +85,11 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			}
 		} else if behaviourMode == "Resource" {
 			newSchema.Optional = true
+			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) {
+				newSchema.Computed = true
+			} else if slices.Contains(augment.ExtraOptionals, newSchema.AttributeName) {
+				newSchema.Computed = true
+			}
 		}
 
 		// Convert types from OpenAPI schema types to  attributes
