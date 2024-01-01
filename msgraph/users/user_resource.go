@@ -745,21 +745,40 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Generate API request body from Plan
 	requestBody := models.NewUser()
 
-	if !plan.Id.IsNull() {
+	if !plan.Id.IsUnknown() {
 		planId := plan.Id.ValueString()
 		requestBody.SetId(&planId)
 	} else {
+		plan.Id = types.StringNull()
 	}
 
-	if !plan.AccountEnabled.IsNull() {
+	if !plan.DeletedDateTime.IsUnknown() {
+		planDeletedDateTime := plan.DeletedDateTime.ValueString()
+		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
+		requestBody.SetDeletedDateTime(&t)
+	} else {
+		plan.DeletedDateTime = types.StringNull()
+	}
+
+	if !plan.AboutMe.IsUnknown() {
+		planAboutMe := plan.AboutMe.ValueString()
+		requestBody.SetAboutMe(&planAboutMe)
+	} else {
+		plan.AboutMe = types.StringNull()
+	}
+
+	if !plan.AccountEnabled.IsUnknown() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
+	} else {
+		plan.AccountEnabled = types.BoolNull()
 	}
 
-	if !plan.AgeGroup.IsNull() {
+	if !plan.AgeGroup.IsUnknown() {
 		planAgeGroup := plan.AgeGroup.ValueString()
 		requestBody.SetAgeGroup(&planAgeGroup)
 	} else {
+		plan.AgeGroup = types.StringNull()
 	}
 
 	var planAssignedLicenses []models.AssignedLicenseable
@@ -777,10 +796,12 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			assignedLicense.SetDisabledPlans(DisabledPlans)
 		}
 
-		if !assignedLicenseModel.SkuId.IsNull() {
+		if !assignedLicenseModel.SkuId.IsUnknown() {
 			planSkuId := assignedLicenseModel.SkuId.ValueString()
 			u, _ = uuid.Parse(planSkuId)
 			assignedLicense.SetSkuId(&u)
+		} else {
+			assignedLicenseModel.SkuId = types.StringNull()
 		}
 	}
 	requestBody.SetAssignedLicenses(planAssignedLicenses)
@@ -791,28 +812,34 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		assignedPlanModel := userAssignedPlansModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
 
-		if !assignedPlanModel.AssignedDateTime.IsNull() {
+		if !assignedPlanModel.AssignedDateTime.IsUnknown() {
 			planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
 			assignedPlan.SetAssignedDateTime(&t)
+		} else {
+			assignedPlanModel.AssignedDateTime = types.StringNull()
 		}
 
-		if !assignedPlanModel.CapabilityStatus.IsNull() {
+		if !assignedPlanModel.CapabilityStatus.IsUnknown() {
 			planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
 			assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
 		} else {
+			assignedPlanModel.CapabilityStatus = types.StringNull()
 		}
 
-		if !assignedPlanModel.Service.IsNull() {
+		if !assignedPlanModel.Service.IsUnknown() {
 			planService := assignedPlanModel.Service.ValueString()
 			assignedPlan.SetService(&planService)
 		} else {
+			assignedPlanModel.Service = types.StringNull()
 		}
 
-		if !assignedPlanModel.ServicePlanId.IsNull() {
+		if !assignedPlanModel.ServicePlanId.IsUnknown() {
 			planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
 			u, _ = uuid.Parse(planServicePlanId)
 			assignedPlan.SetServicePlanId(&u)
+		} else {
+			assignedPlanModel.ServicePlanId = types.StringNull()
 		}
 	}
 	requestBody.SetAssignedPlans(planAssignedPlans)
@@ -830,6 +857,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	requestBody.SetAuthorizationInfo(authorizationInfo)
 
+	if !plan.Birthday.IsUnknown() {
+		planBirthday := plan.Birthday.ValueString()
+		t, _ = time.Parse(time.RFC3339, planBirthday)
+		requestBody.SetBirthday(&t)
+	} else {
+		plan.Birthday = types.StringNull()
+	}
+
 	if len(plan.BusinessPhones.Elements()) > 0 {
 		var businessPhones []string
 		for _, i := range plan.BusinessPhones.Elements() {
@@ -838,117 +873,147 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetBusinessPhones(businessPhones)
 	}
 
-	if !plan.City.IsNull() {
+	if !plan.City.IsUnknown() {
 		planCity := plan.City.ValueString()
 		requestBody.SetCity(&planCity)
 	} else {
+		plan.City = types.StringNull()
 	}
 
-	if !plan.CompanyName.IsNull() {
+	if !plan.CompanyName.IsUnknown() {
 		planCompanyName := plan.CompanyName.ValueString()
 		requestBody.SetCompanyName(&planCompanyName)
 	} else {
+		plan.CompanyName = types.StringNull()
 	}
 
-	if !plan.ConsentProvidedForMinor.IsNull() {
+	if !plan.ConsentProvidedForMinor.IsUnknown() {
 		planConsentProvidedForMinor := plan.ConsentProvidedForMinor.ValueString()
 		requestBody.SetConsentProvidedForMinor(&planConsentProvidedForMinor)
 	} else {
+		plan.ConsentProvidedForMinor = types.StringNull()
 	}
 
-	if !plan.Country.IsNull() {
+	if !plan.Country.IsUnknown() {
 		planCountry := plan.Country.ValueString()
 		requestBody.SetCountry(&planCountry)
 	} else {
+		plan.Country = types.StringNull()
 	}
 
-	if !plan.CreatedDateTime.IsNull() {
+	if !plan.CreatedDateTime.IsUnknown() {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
+	} else {
+		plan.CreatedDateTime = types.StringNull()
 	}
 
-	if !plan.CreationType.IsNull() {
+	if !plan.CreationType.IsUnknown() {
 		planCreationType := plan.CreationType.ValueString()
 		requestBody.SetCreationType(&planCreationType)
 	} else {
+		plan.CreationType = types.StringNull()
 	}
 
-	if !plan.Department.IsNull() {
+	if !plan.Department.IsUnknown() {
 		planDepartment := plan.Department.ValueString()
 		requestBody.SetDepartment(&planDepartment)
 	} else {
+		plan.Department = types.StringNull()
 	}
 
-	if !plan.DisplayName.IsNull() {
+	if !plan.DisplayName.IsUnknown() {
 		planDisplayName := plan.DisplayName.ValueString()
 		requestBody.SetDisplayName(&planDisplayName)
 	} else {
+		plan.DisplayName = types.StringNull()
 	}
 
-	if !plan.EmployeeHireDate.IsNull() {
+	if !plan.EmployeeHireDate.IsUnknown() {
 		planEmployeeHireDate := plan.EmployeeHireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeHireDate)
 		requestBody.SetEmployeeHireDate(&t)
+	} else {
+		plan.EmployeeHireDate = types.StringNull()
 	}
 
-	if !plan.EmployeeId.IsNull() {
+	if !plan.EmployeeId.IsUnknown() {
 		planEmployeeId := plan.EmployeeId.ValueString()
 		requestBody.SetEmployeeId(&planEmployeeId)
 	} else {
+		plan.EmployeeId = types.StringNull()
 	}
 
-	if !plan.EmployeeLeaveDateTime.IsNull() {
+	if !plan.EmployeeLeaveDateTime.IsUnknown() {
 		planEmployeeLeaveDateTime := plan.EmployeeLeaveDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
 		requestBody.SetEmployeeLeaveDateTime(&t)
+	} else {
+		plan.EmployeeLeaveDateTime = types.StringNull()
 	}
 
 	employeeOrgData := models.NewEmployeeOrgData()
 	employeeOrgDataModel := userEmployeeOrgDataModel{}
 	plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
 
-	if !employeeOrgDataModel.CostCenter.IsNull() {
+	if !employeeOrgDataModel.CostCenter.IsUnknown() {
 		planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
 		employeeOrgData.SetCostCenter(&planCostCenter)
 	} else {
+		employeeOrgDataModel.CostCenter = types.StringNull()
 	}
 
-	if !employeeOrgDataModel.Division.IsNull() {
+	if !employeeOrgDataModel.Division.IsUnknown() {
 		planDivision := employeeOrgDataModel.Division.ValueString()
 		employeeOrgData.SetDivision(&planDivision)
 	} else {
+		employeeOrgDataModel.Division = types.StringNull()
 	}
 	requestBody.SetEmployeeOrgData(employeeOrgData)
 
-	if !plan.EmployeeType.IsNull() {
+	if !plan.EmployeeType.IsUnknown() {
 		planEmployeeType := plan.EmployeeType.ValueString()
 		requestBody.SetEmployeeType(&planEmployeeType)
 	} else {
+		plan.EmployeeType = types.StringNull()
 	}
 
-	if !plan.ExternalUserState.IsNull() {
+	if !plan.ExternalUserState.IsUnknown() {
 		planExternalUserState := plan.ExternalUserState.ValueString()
 		requestBody.SetExternalUserState(&planExternalUserState)
 	} else {
+		plan.ExternalUserState = types.StringNull()
 	}
 
-	if !plan.ExternalUserStateChangeDateTime.IsNull() {
+	if !plan.ExternalUserStateChangeDateTime.IsUnknown() {
 		planExternalUserStateChangeDateTime := plan.ExternalUserStateChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
 		requestBody.SetExternalUserStateChangeDateTime(&t)
+	} else {
+		plan.ExternalUserStateChangeDateTime = types.StringNull()
 	}
 
-	if !plan.FaxNumber.IsNull() {
+	if !plan.FaxNumber.IsUnknown() {
 		planFaxNumber := plan.FaxNumber.ValueString()
 		requestBody.SetFaxNumber(&planFaxNumber)
 	} else {
+		plan.FaxNumber = types.StringNull()
 	}
 
-	if !plan.GivenName.IsNull() {
+	if !plan.GivenName.IsUnknown() {
 		planGivenName := plan.GivenName.ValueString()
 		requestBody.SetGivenName(&planGivenName)
 	} else {
+		plan.GivenName = types.StringNull()
+	}
+
+	if !plan.HireDate.IsUnknown() {
+		planHireDate := plan.HireDate.ValueString()
+		t, _ = time.Parse(time.RFC3339, planHireDate)
+		requestBody.SetHireDate(&t)
+	} else {
+		plan.HireDate = types.StringNull()
 	}
 
 	var planIdentities []models.ObjectIdentityable
@@ -957,22 +1022,25 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		objectIdentityModel := userIdentitiesModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
 
-		if !objectIdentityModel.Issuer.IsNull() {
+		if !objectIdentityModel.Issuer.IsUnknown() {
 			planIssuer := objectIdentityModel.Issuer.ValueString()
 			objectIdentity.SetIssuer(&planIssuer)
 		} else {
+			objectIdentityModel.Issuer = types.StringNull()
 		}
 
-		if !objectIdentityModel.IssuerAssignedId.IsNull() {
+		if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
 			planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
 			objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
 		} else {
+			objectIdentityModel.IssuerAssignedId = types.StringNull()
 		}
 
-		if !objectIdentityModel.SignInType.IsNull() {
+		if !objectIdentityModel.SignInType.IsUnknown() {
 			planSignInType := objectIdentityModel.SignInType.ValueString()
 			objectIdentity.SetSignInType(&planSignInType)
 		} else {
+			objectIdentityModel.SignInType = types.StringNull()
 		}
 	}
 	requestBody.SetIdentities(planIdentities)
@@ -993,27 +1061,33 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetInterests(interests)
 	}
 
-	if !plan.IsResourceAccount.IsNull() {
+	if !plan.IsResourceAccount.IsUnknown() {
 		planIsResourceAccount := plan.IsResourceAccount.ValueBool()
 		requestBody.SetIsResourceAccount(&planIsResourceAccount)
+	} else {
+		plan.IsResourceAccount = types.BoolNull()
 	}
 
-	if !plan.JobTitle.IsNull() {
+	if !plan.JobTitle.IsUnknown() {
 		planJobTitle := plan.JobTitle.ValueString()
 		requestBody.SetJobTitle(&planJobTitle)
 	} else {
+		plan.JobTitle = types.StringNull()
 	}
 
-	if !plan.LastPasswordChangeDateTime.IsNull() {
+	if !plan.LastPasswordChangeDateTime.IsUnknown() {
 		planLastPasswordChangeDateTime := plan.LastPasswordChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planLastPasswordChangeDateTime)
 		requestBody.SetLastPasswordChangeDateTime(&t)
+	} else {
+		plan.LastPasswordChangeDateTime = types.StringNull()
 	}
 
-	if !plan.LegalAgeGroupClassification.IsNull() {
+	if !plan.LegalAgeGroupClassification.IsUnknown() {
 		planLegalAgeGroupClassification := plan.LegalAgeGroupClassification.ValueString()
 		requestBody.SetLegalAgeGroupClassification(&planLegalAgeGroupClassification)
 	} else {
+		plan.LegalAgeGroupClassification = types.StringNull()
 	}
 
 	var planLicenseAssignmentStates []models.LicenseAssignmentStateable
@@ -1022,10 +1096,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
 
-		if !licenseAssignmentStateModel.AssignedByGroup.IsNull() {
+		if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
 			planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
 			licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
 		} else {
+			licenseAssignmentStateModel.AssignedByGroup = types.StringNull()
 		}
 
 		if len(licenseAssignmentStateModel.DisabledPlans.Elements()) > 0 {
@@ -1037,173 +1112,210 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			licenseAssignmentState.SetDisabledPlans(DisabledPlans)
 		}
 
-		if !licenseAssignmentStateModel.Error.IsNull() {
+		if !licenseAssignmentStateModel.Error.IsUnknown() {
 			planError := licenseAssignmentStateModel.Error.ValueString()
 			licenseAssignmentState.SetError(&planError)
 		} else {
+			licenseAssignmentStateModel.Error = types.StringNull()
 		}
 
-		if !licenseAssignmentStateModel.LastUpdatedDateTime.IsNull() {
+		if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
 			planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
 			licenseAssignmentState.SetLastUpdatedDateTime(&t)
+		} else {
+			licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
 		}
 
-		if !licenseAssignmentStateModel.SkuId.IsNull() {
+		if !licenseAssignmentStateModel.SkuId.IsUnknown() {
 			planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
 			u, _ = uuid.Parse(planSkuId)
 			licenseAssignmentState.SetSkuId(&u)
+		} else {
+			licenseAssignmentStateModel.SkuId = types.StringNull()
 		}
 
-		if !licenseAssignmentStateModel.State.IsNull() {
+		if !licenseAssignmentStateModel.State.IsUnknown() {
 			planState := licenseAssignmentStateModel.State.ValueString()
 			licenseAssignmentState.SetState(&planState)
 		} else {
+			licenseAssignmentStateModel.State = types.StringNull()
 		}
 	}
 	requestBody.SetLicenseAssignmentStates(planLicenseAssignmentStates)
 
-	if !plan.Mail.IsNull() {
+	if !plan.Mail.IsUnknown() {
 		planMail := plan.Mail.ValueString()
 		requestBody.SetMail(&planMail)
 	} else {
+		plan.Mail = types.StringNull()
 	}
 
-	if !plan.MailNickname.IsNull() {
+	if !plan.MailNickname.IsUnknown() {
 		planMailNickname := plan.MailNickname.ValueString()
 		requestBody.SetMailNickname(&planMailNickname)
 	} else {
+		plan.MailNickname = types.StringNull()
 	}
 
-	if !plan.MobilePhone.IsNull() {
+	if !plan.MobilePhone.IsUnknown() {
 		planMobilePhone := plan.MobilePhone.ValueString()
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
+		plan.MobilePhone = types.StringNull()
 	}
 
-	if !plan.OfficeLocation.IsNull() {
+	if !plan.MySite.IsUnknown() {
+		planMySite := plan.MySite.ValueString()
+		requestBody.SetMySite(&planMySite)
+	} else {
+		plan.MySite = types.StringNull()
+	}
+
+	if !plan.OfficeLocation.IsUnknown() {
 		planOfficeLocation := plan.OfficeLocation.ValueString()
 		requestBody.SetOfficeLocation(&planOfficeLocation)
 	} else {
+		plan.OfficeLocation = types.StringNull()
 	}
 
-	if !plan.OnPremisesDistinguishedName.IsNull() {
+	if !plan.OnPremisesDistinguishedName.IsUnknown() {
 		planOnPremisesDistinguishedName := plan.OnPremisesDistinguishedName.ValueString()
 		requestBody.SetOnPremisesDistinguishedName(&planOnPremisesDistinguishedName)
 	} else {
+		plan.OnPremisesDistinguishedName = types.StringNull()
 	}
 
-	if !plan.OnPremisesDomainName.IsNull() {
+	if !plan.OnPremisesDomainName.IsUnknown() {
 		planOnPremisesDomainName := plan.OnPremisesDomainName.ValueString()
 		requestBody.SetOnPremisesDomainName(&planOnPremisesDomainName)
 	} else {
+		plan.OnPremisesDomainName = types.StringNull()
 	}
 
 	onPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
 	onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
 	plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
 		planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
 		planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
 		planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
 		planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
 		planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
 		planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
 		planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
 		planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
 		planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
 		planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
 		planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
 		planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
 		planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
 		planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
 		planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
 	}
 	requestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
 
-	if !plan.OnPremisesImmutableId.IsNull() {
+	if !plan.OnPremisesImmutableId.IsUnknown() {
 		planOnPremisesImmutableId := plan.OnPremisesImmutableId.ValueString()
 		requestBody.SetOnPremisesImmutableId(&planOnPremisesImmutableId)
 	} else {
+		plan.OnPremisesImmutableId = types.StringNull()
 	}
 
-	if !plan.OnPremisesLastSyncDateTime.IsNull() {
+	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
+	} else {
+		plan.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 
 	var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
@@ -1212,53 +1324,63 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
 
-		if !onPremisesProvisioningErrorModel.Category.IsNull() {
+		if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
 			planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
 			onPremisesProvisioningError.SetCategory(&planCategory)
 		} else {
+			onPremisesProvisioningErrorModel.Category = types.StringNull()
 		}
 
-		if !onPremisesProvisioningErrorModel.OccurredDateTime.IsNull() {
+		if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
 			planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
 			onPremisesProvisioningError.SetOccurredDateTime(&t)
+		} else {
+			onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
 		}
 
-		if !onPremisesProvisioningErrorModel.PropertyCausingError.IsNull() {
+		if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
 			planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
 			onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
 		} else {
+			onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
 		}
 
-		if !onPremisesProvisioningErrorModel.Value.IsNull() {
+		if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
 			planValue := onPremisesProvisioningErrorModel.Value.ValueString()
 			onPremisesProvisioningError.SetValue(&planValue)
 		} else {
+			onPremisesProvisioningErrorModel.Value = types.StringNull()
 		}
 	}
 	requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
 
-	if !plan.OnPremisesSamAccountName.IsNull() {
+	if !plan.OnPremisesSamAccountName.IsUnknown() {
 		planOnPremisesSamAccountName := plan.OnPremisesSamAccountName.ValueString()
 		requestBody.SetOnPremisesSamAccountName(&planOnPremisesSamAccountName)
 	} else {
+		plan.OnPremisesSamAccountName = types.StringNull()
 	}
 
-	if !plan.OnPremisesSecurityIdentifier.IsNull() {
+	if !plan.OnPremisesSecurityIdentifier.IsUnknown() {
 		planOnPremisesSecurityIdentifier := plan.OnPremisesSecurityIdentifier.ValueString()
 		requestBody.SetOnPremisesSecurityIdentifier(&planOnPremisesSecurityIdentifier)
 	} else {
+		plan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
-	if !plan.OnPremisesSyncEnabled.IsNull() {
+	if !plan.OnPremisesSyncEnabled.IsUnknown() {
 		planOnPremisesSyncEnabled := plan.OnPremisesSyncEnabled.ValueBool()
 		requestBody.SetOnPremisesSyncEnabled(&planOnPremisesSyncEnabled)
+	} else {
+		plan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
-	if !plan.OnPremisesUserPrincipalName.IsNull() {
+	if !plan.OnPremisesUserPrincipalName.IsUnknown() {
 		planOnPremisesUserPrincipalName := plan.OnPremisesUserPrincipalName.ValueString()
 		requestBody.SetOnPremisesUserPrincipalName(&planOnPremisesUserPrincipalName)
 	} else {
+		plan.OnPremisesUserPrincipalName = types.StringNull()
 	}
 
 	if len(plan.OtherMails.Elements()) > 0 {
@@ -1269,30 +1391,36 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetOtherMails(otherMails)
 	}
 
-	if !plan.PasswordPolicies.IsNull() {
+	if !plan.PasswordPolicies.IsUnknown() {
 		planPasswordPolicies := plan.PasswordPolicies.ValueString()
 		requestBody.SetPasswordPolicies(&planPasswordPolicies)
 	} else {
+		plan.PasswordPolicies = types.StringNull()
 	}
 
 	passwordProfile := models.NewPasswordProfile()
 	passwordProfileModel := userPasswordProfileModel{}
 	plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
 
-	if !passwordProfileModel.ForceChangePasswordNextSignIn.IsNull() {
+	if !passwordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
 		planForceChangePasswordNextSignIn := passwordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
 		passwordProfile.SetForceChangePasswordNextSignIn(&planForceChangePasswordNextSignIn)
+	} else {
+		passwordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
 	}
 
-	if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsNull() {
+	if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
 		planForceChangePasswordNextSignInWithMfa := passwordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
 		passwordProfile.SetForceChangePasswordNextSignInWithMfa(&planForceChangePasswordNextSignInWithMfa)
+	} else {
+		passwordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
 	}
 
-	if !passwordProfileModel.Password.IsNull() {
+	if !passwordProfileModel.Password.IsUnknown() {
 		planPassword := passwordProfileModel.Password.ValueString()
 		passwordProfile.SetPassword(&planPassword)
 	} else {
+		passwordProfileModel.Password = types.StringNull()
 	}
 	requestBody.SetPasswordProfile(passwordProfile)
 
@@ -1304,22 +1432,32 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetPastProjects(pastProjects)
 	}
 
-	if !plan.PostalCode.IsNull() {
+	if !plan.PostalCode.IsUnknown() {
 		planPostalCode := plan.PostalCode.ValueString()
 		requestBody.SetPostalCode(&planPostalCode)
 	} else {
+		plan.PostalCode = types.StringNull()
 	}
 
-	if !plan.PreferredDataLocation.IsNull() {
+	if !plan.PreferredDataLocation.IsUnknown() {
 		planPreferredDataLocation := plan.PreferredDataLocation.ValueString()
 		requestBody.SetPreferredDataLocation(&planPreferredDataLocation)
 	} else {
+		plan.PreferredDataLocation = types.StringNull()
 	}
 
-	if !plan.PreferredLanguage.IsNull() {
+	if !plan.PreferredLanguage.IsUnknown() {
 		planPreferredLanguage := plan.PreferredLanguage.ValueString()
 		requestBody.SetPreferredLanguage(&planPreferredLanguage)
 	} else {
+		plan.PreferredLanguage = types.StringNull()
+	}
+
+	if !plan.PreferredName.IsUnknown() {
+		planPreferredName := plan.PreferredName.ValueString()
+		requestBody.SetPreferredName(&planPreferredName)
+	} else {
+		plan.PreferredName = types.StringNull()
 	}
 
 	var planProvisionedPlans []models.ProvisionedPlanable
@@ -1328,22 +1466,25 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		provisionedPlanModel := userProvisionedPlansModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
 
-		if !provisionedPlanModel.CapabilityStatus.IsNull() {
+		if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
 			planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
 			provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
 		} else {
+			provisionedPlanModel.CapabilityStatus = types.StringNull()
 		}
 
-		if !provisionedPlanModel.ProvisioningStatus.IsNull() {
+		if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
 			planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
 			provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
 		} else {
+			provisionedPlanModel.ProvisioningStatus = types.StringNull()
 		}
 
-		if !provisionedPlanModel.Service.IsNull() {
+		if !provisionedPlanModel.Service.IsUnknown() {
 			planService := provisionedPlanModel.Service.ValueString()
 			provisionedPlan.SetService(&planService)
 		} else {
+			provisionedPlanModel.Service = types.StringNull()
 		}
 	}
 	requestBody.SetProvisionedPlans(planProvisionedPlans)
@@ -1372,10 +1513,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetSchools(schools)
 	}
 
-	if !plan.SecurityIdentifier.IsNull() {
+	if !plan.SecurityIdentifier.IsUnknown() {
 		planSecurityIdentifier := plan.SecurityIdentifier.ValueString()
 		requestBody.SetSecurityIdentifier(&planSecurityIdentifier)
 	} else {
+		plan.SecurityIdentifier = types.StringNull()
 	}
 
 	var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
@@ -1384,34 +1526,78 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
 
-		if !serviceProvisioningErrorModel.CreatedDateTime.IsNull() {
+		if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
 			planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 			serviceProvisioningError.SetCreatedDateTime(&t)
+		} else {
+			serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
 		}
 
-		if !serviceProvisioningErrorModel.IsResolved.IsNull() {
+		if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
 			planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
 			serviceProvisioningError.SetIsResolved(&planIsResolved)
+		} else {
+			serviceProvisioningErrorModel.IsResolved = types.BoolNull()
 		}
 
-		if !serviceProvisioningErrorModel.ServiceInstance.IsNull() {
+		if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
 			planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
 			serviceProvisioningError.SetServiceInstance(&planServiceInstance)
 		} else {
+			serviceProvisioningErrorModel.ServiceInstance = types.StringNull()
 		}
 	}
 	requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
 
-	if !plan.ShowInAddressList.IsNull() {
+	if !plan.ShowInAddressList.IsUnknown() {
 		planShowInAddressList := plan.ShowInAddressList.ValueBool()
 		requestBody.SetShowInAddressList(&planShowInAddressList)
+	} else {
+		plan.ShowInAddressList = types.BoolNull()
 	}
 
-	if !plan.SignInSessionsValidFromDateTime.IsNull() {
+	signInActivity := models.NewSignInActivity()
+	signInActivityModel := userSignInActivityModel{}
+	plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
+
+	if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
+		planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
+		t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
+		signInActivity.SetLastNonInteractiveSignInDateTime(&t)
+	} else {
+		signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
+	}
+
+	if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
+		planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
+		signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
+	} else {
+		signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
+	}
+
+	if !signInActivityModel.LastSignInDateTime.IsUnknown() {
+		planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
+		t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
+		signInActivity.SetLastSignInDateTime(&t)
+	} else {
+		signInActivityModel.LastSignInDateTime = types.StringNull()
+	}
+
+	if !signInActivityModel.LastSignInRequestId.IsUnknown() {
+		planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
+		signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
+	} else {
+		signInActivityModel.LastSignInRequestId = types.StringNull()
+	}
+	requestBody.SetSignInActivity(signInActivity)
+
+	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
 		requestBody.SetSignInSessionsValidFromDateTime(&t)
+	} else {
+		plan.SignInSessionsValidFromDateTime = types.StringNull()
 	}
 
 	if len(plan.Skills.Elements()) > 0 {
@@ -1422,40 +1608,46 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetSkills(skills)
 	}
 
-	if !plan.State.IsNull() {
+	if !plan.State.IsUnknown() {
 		planState := plan.State.ValueString()
 		requestBody.SetState(&planState)
 	} else {
+		plan.State = types.StringNull()
 	}
 
-	if !plan.StreetAddress.IsNull() {
+	if !plan.StreetAddress.IsUnknown() {
 		planStreetAddress := plan.StreetAddress.ValueString()
 		requestBody.SetStreetAddress(&planStreetAddress)
 	} else {
+		plan.StreetAddress = types.StringNull()
 	}
 
-	if !plan.Surname.IsNull() {
+	if !plan.Surname.IsUnknown() {
 		planSurname := plan.Surname.ValueString()
 		requestBody.SetSurname(&planSurname)
 	} else {
+		plan.Surname = types.StringNull()
 	}
 
-	if !plan.UsageLocation.IsNull() {
+	if !plan.UsageLocation.IsUnknown() {
 		planUsageLocation := plan.UsageLocation.ValueString()
 		requestBody.SetUsageLocation(&planUsageLocation)
 	} else {
+		plan.UsageLocation = types.StringNull()
 	}
 
-	if !plan.UserPrincipalName.IsNull() {
+	if !plan.UserPrincipalName.IsUnknown() {
 		planUserPrincipalName := plan.UserPrincipalName.ValueString()
 		requestBody.SetUserPrincipalName(&planUserPrincipalName)
 	} else {
+		plan.UserPrincipalName = types.StringNull()
 	}
 
-	if !plan.UserType.IsNull() {
+	if !plan.UserType.IsUnknown() {
 		planUserType := plan.UserType.ValueString()
 		requestBody.SetUserType(&planUserType)
 	} else {
+		plan.UserType = types.StringNull()
 	}
 
 	// Create new user
@@ -2405,21 +2597,40 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	var t time.Time
 	var u uuid.UUID
 
-	if !plan.Id.IsNull() {
+	if !plan.Id.IsUnknown() {
 		planId := plan.Id.ValueString()
 		requestBody.SetId(&planId)
 	} else {
+		plan.Id = types.StringNull()
 	}
 
-	if !plan.AccountEnabled.IsNull() {
+	if !plan.DeletedDateTime.IsUnknown() {
+		planDeletedDateTime := plan.DeletedDateTime.ValueString()
+		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
+		requestBody.SetDeletedDateTime(&t)
+	} else {
+		plan.DeletedDateTime = types.StringNull()
+	}
+
+	if !plan.AboutMe.IsUnknown() {
+		planAboutMe := plan.AboutMe.ValueString()
+		requestBody.SetAboutMe(&planAboutMe)
+	} else {
+		plan.AboutMe = types.StringNull()
+	}
+
+	if !plan.AccountEnabled.IsUnknown() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
+	} else {
+		plan.AccountEnabled = types.BoolNull()
 	}
 
-	if !plan.AgeGroup.IsNull() {
+	if !plan.AgeGroup.IsUnknown() {
 		planAgeGroup := plan.AgeGroup.ValueString()
 		requestBody.SetAgeGroup(&planAgeGroup)
 	} else {
+		plan.AgeGroup = types.StringNull()
 	}
 
 	var planAssignedLicenses []models.AssignedLicenseable
@@ -2437,10 +2648,12 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			assignedLicense.SetDisabledPlans(DisabledPlans)
 		}
 
-		if !assignedLicenseModel.SkuId.IsNull() {
+		if !assignedLicenseModel.SkuId.IsUnknown() {
 			planSkuId := assignedLicenseModel.SkuId.ValueString()
 			u, _ = uuid.Parse(planSkuId)
 			assignedLicense.SetSkuId(&u)
+		} else {
+			assignedLicenseModel.SkuId = types.StringNull()
 		}
 	}
 	requestBody.SetAssignedLicenses(planAssignedLicenses)
@@ -2451,28 +2664,34 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		assignedPlanModel := userAssignedPlansModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
 
-		if !assignedPlanModel.AssignedDateTime.IsNull() {
+		if !assignedPlanModel.AssignedDateTime.IsUnknown() {
 			planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
 			assignedPlan.SetAssignedDateTime(&t)
+		} else {
+			assignedPlanModel.AssignedDateTime = types.StringNull()
 		}
 
-		if !assignedPlanModel.CapabilityStatus.IsNull() {
+		if !assignedPlanModel.CapabilityStatus.IsUnknown() {
 			planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
 			assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
 		} else {
+			assignedPlanModel.CapabilityStatus = types.StringNull()
 		}
 
-		if !assignedPlanModel.Service.IsNull() {
+		if !assignedPlanModel.Service.IsUnknown() {
 			planService := assignedPlanModel.Service.ValueString()
 			assignedPlan.SetService(&planService)
 		} else {
+			assignedPlanModel.Service = types.StringNull()
 		}
 
-		if !assignedPlanModel.ServicePlanId.IsNull() {
+		if !assignedPlanModel.ServicePlanId.IsUnknown() {
 			planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
 			u, _ = uuid.Parse(planServicePlanId)
 			assignedPlan.SetServicePlanId(&u)
+		} else {
+			assignedPlanModel.ServicePlanId = types.StringNull()
 		}
 	}
 	requestBody.SetAssignedPlans(planAssignedPlans)
@@ -2490,6 +2709,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	requestBody.SetAuthorizationInfo(authorizationInfo)
 
+	if !plan.Birthday.IsUnknown() {
+		planBirthday := plan.Birthday.ValueString()
+		t, _ = time.Parse(time.RFC3339, planBirthday)
+		requestBody.SetBirthday(&t)
+	} else {
+		plan.Birthday = types.StringNull()
+	}
+
 	if len(plan.BusinessPhones.Elements()) > 0 {
 		var businessPhones []string
 		for _, i := range plan.BusinessPhones.Elements() {
@@ -2498,117 +2725,147 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetBusinessPhones(businessPhones)
 	}
 
-	if !plan.City.IsNull() {
+	if !plan.City.IsUnknown() {
 		planCity := plan.City.ValueString()
 		requestBody.SetCity(&planCity)
 	} else {
+		plan.City = types.StringNull()
 	}
 
-	if !plan.CompanyName.IsNull() {
+	if !plan.CompanyName.IsUnknown() {
 		planCompanyName := plan.CompanyName.ValueString()
 		requestBody.SetCompanyName(&planCompanyName)
 	} else {
+		plan.CompanyName = types.StringNull()
 	}
 
-	if !plan.ConsentProvidedForMinor.IsNull() {
+	if !plan.ConsentProvidedForMinor.IsUnknown() {
 		planConsentProvidedForMinor := plan.ConsentProvidedForMinor.ValueString()
 		requestBody.SetConsentProvidedForMinor(&planConsentProvidedForMinor)
 	} else {
+		plan.ConsentProvidedForMinor = types.StringNull()
 	}
 
-	if !plan.Country.IsNull() {
+	if !plan.Country.IsUnknown() {
 		planCountry := plan.Country.ValueString()
 		requestBody.SetCountry(&planCountry)
 	} else {
+		plan.Country = types.StringNull()
 	}
 
-	if !plan.CreatedDateTime.IsNull() {
+	if !plan.CreatedDateTime.IsUnknown() {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
+	} else {
+		plan.CreatedDateTime = types.StringNull()
 	}
 
-	if !plan.CreationType.IsNull() {
+	if !plan.CreationType.IsUnknown() {
 		planCreationType := plan.CreationType.ValueString()
 		requestBody.SetCreationType(&planCreationType)
 	} else {
+		plan.CreationType = types.StringNull()
 	}
 
-	if !plan.Department.IsNull() {
+	if !plan.Department.IsUnknown() {
 		planDepartment := plan.Department.ValueString()
 		requestBody.SetDepartment(&planDepartment)
 	} else {
+		plan.Department = types.StringNull()
 	}
 
-	if !plan.DisplayName.IsNull() {
+	if !plan.DisplayName.IsUnknown() {
 		planDisplayName := plan.DisplayName.ValueString()
 		requestBody.SetDisplayName(&planDisplayName)
 	} else {
+		plan.DisplayName = types.StringNull()
 	}
 
-	if !plan.EmployeeHireDate.IsNull() {
+	if !plan.EmployeeHireDate.IsUnknown() {
 		planEmployeeHireDate := plan.EmployeeHireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeHireDate)
 		requestBody.SetEmployeeHireDate(&t)
+	} else {
+		plan.EmployeeHireDate = types.StringNull()
 	}
 
-	if !plan.EmployeeId.IsNull() {
+	if !plan.EmployeeId.IsUnknown() {
 		planEmployeeId := plan.EmployeeId.ValueString()
 		requestBody.SetEmployeeId(&planEmployeeId)
 	} else {
+		plan.EmployeeId = types.StringNull()
 	}
 
-	if !plan.EmployeeLeaveDateTime.IsNull() {
+	if !plan.EmployeeLeaveDateTime.IsUnknown() {
 		planEmployeeLeaveDateTime := plan.EmployeeLeaveDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
 		requestBody.SetEmployeeLeaveDateTime(&t)
+	} else {
+		plan.EmployeeLeaveDateTime = types.StringNull()
 	}
 
 	employeeOrgData := models.NewEmployeeOrgData()
 	employeeOrgDataModel := userEmployeeOrgDataModel{}
 	plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
 
-	if !employeeOrgDataModel.CostCenter.IsNull() {
+	if !employeeOrgDataModel.CostCenter.IsUnknown() {
 		planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
 		employeeOrgData.SetCostCenter(&planCostCenter)
 	} else {
+		employeeOrgDataModel.CostCenter = types.StringNull()
 	}
 
-	if !employeeOrgDataModel.Division.IsNull() {
+	if !employeeOrgDataModel.Division.IsUnknown() {
 		planDivision := employeeOrgDataModel.Division.ValueString()
 		employeeOrgData.SetDivision(&planDivision)
 	} else {
+		employeeOrgDataModel.Division = types.StringNull()
 	}
 	requestBody.SetEmployeeOrgData(employeeOrgData)
 
-	if !plan.EmployeeType.IsNull() {
+	if !plan.EmployeeType.IsUnknown() {
 		planEmployeeType := plan.EmployeeType.ValueString()
 		requestBody.SetEmployeeType(&planEmployeeType)
 	} else {
+		plan.EmployeeType = types.StringNull()
 	}
 
-	if !plan.ExternalUserState.IsNull() {
+	if !plan.ExternalUserState.IsUnknown() {
 		planExternalUserState := plan.ExternalUserState.ValueString()
 		requestBody.SetExternalUserState(&planExternalUserState)
 	} else {
+		plan.ExternalUserState = types.StringNull()
 	}
 
-	if !plan.ExternalUserStateChangeDateTime.IsNull() {
+	if !plan.ExternalUserStateChangeDateTime.IsUnknown() {
 		planExternalUserStateChangeDateTime := plan.ExternalUserStateChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
 		requestBody.SetExternalUserStateChangeDateTime(&t)
+	} else {
+		plan.ExternalUserStateChangeDateTime = types.StringNull()
 	}
 
-	if !plan.FaxNumber.IsNull() {
+	if !plan.FaxNumber.IsUnknown() {
 		planFaxNumber := plan.FaxNumber.ValueString()
 		requestBody.SetFaxNumber(&planFaxNumber)
 	} else {
+		plan.FaxNumber = types.StringNull()
 	}
 
-	if !plan.GivenName.IsNull() {
+	if !plan.GivenName.IsUnknown() {
 		planGivenName := plan.GivenName.ValueString()
 		requestBody.SetGivenName(&planGivenName)
 	} else {
+		plan.GivenName = types.StringNull()
+	}
+
+	if !plan.HireDate.IsUnknown() {
+		planHireDate := plan.HireDate.ValueString()
+		t, _ = time.Parse(time.RFC3339, planHireDate)
+		requestBody.SetHireDate(&t)
+	} else {
+		plan.HireDate = types.StringNull()
 	}
 
 	var planIdentities []models.ObjectIdentityable
@@ -2617,22 +2874,25 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		objectIdentityModel := userIdentitiesModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
 
-		if !objectIdentityModel.Issuer.IsNull() {
+		if !objectIdentityModel.Issuer.IsUnknown() {
 			planIssuer := objectIdentityModel.Issuer.ValueString()
 			objectIdentity.SetIssuer(&planIssuer)
 		} else {
+			objectIdentityModel.Issuer = types.StringNull()
 		}
 
-		if !objectIdentityModel.IssuerAssignedId.IsNull() {
+		if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
 			planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
 			objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
 		} else {
+			objectIdentityModel.IssuerAssignedId = types.StringNull()
 		}
 
-		if !objectIdentityModel.SignInType.IsNull() {
+		if !objectIdentityModel.SignInType.IsUnknown() {
 			planSignInType := objectIdentityModel.SignInType.ValueString()
 			objectIdentity.SetSignInType(&planSignInType)
 		} else {
+			objectIdentityModel.SignInType = types.StringNull()
 		}
 	}
 	requestBody.SetIdentities(planIdentities)
@@ -2653,27 +2913,33 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetInterests(interests)
 	}
 
-	if !plan.IsResourceAccount.IsNull() {
+	if !plan.IsResourceAccount.IsUnknown() {
 		planIsResourceAccount := plan.IsResourceAccount.ValueBool()
 		requestBody.SetIsResourceAccount(&planIsResourceAccount)
+	} else {
+		plan.IsResourceAccount = types.BoolNull()
 	}
 
-	if !plan.JobTitle.IsNull() {
+	if !plan.JobTitle.IsUnknown() {
 		planJobTitle := plan.JobTitle.ValueString()
 		requestBody.SetJobTitle(&planJobTitle)
 	} else {
+		plan.JobTitle = types.StringNull()
 	}
 
-	if !plan.LastPasswordChangeDateTime.IsNull() {
+	if !plan.LastPasswordChangeDateTime.IsUnknown() {
 		planLastPasswordChangeDateTime := plan.LastPasswordChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planLastPasswordChangeDateTime)
 		requestBody.SetLastPasswordChangeDateTime(&t)
+	} else {
+		plan.LastPasswordChangeDateTime = types.StringNull()
 	}
 
-	if !plan.LegalAgeGroupClassification.IsNull() {
+	if !plan.LegalAgeGroupClassification.IsUnknown() {
 		planLegalAgeGroupClassification := plan.LegalAgeGroupClassification.ValueString()
 		requestBody.SetLegalAgeGroupClassification(&planLegalAgeGroupClassification)
 	} else {
+		plan.LegalAgeGroupClassification = types.StringNull()
 	}
 
 	var planLicenseAssignmentStates []models.LicenseAssignmentStateable
@@ -2682,10 +2948,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
 
-		if !licenseAssignmentStateModel.AssignedByGroup.IsNull() {
+		if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
 			planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
 			licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
 		} else {
+			licenseAssignmentStateModel.AssignedByGroup = types.StringNull()
 		}
 
 		if len(licenseAssignmentStateModel.DisabledPlans.Elements()) > 0 {
@@ -2697,173 +2964,210 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			licenseAssignmentState.SetDisabledPlans(DisabledPlans)
 		}
 
-		if !licenseAssignmentStateModel.Error.IsNull() {
+		if !licenseAssignmentStateModel.Error.IsUnknown() {
 			planError := licenseAssignmentStateModel.Error.ValueString()
 			licenseAssignmentState.SetError(&planError)
 		} else {
+			licenseAssignmentStateModel.Error = types.StringNull()
 		}
 
-		if !licenseAssignmentStateModel.LastUpdatedDateTime.IsNull() {
+		if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
 			planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
 			licenseAssignmentState.SetLastUpdatedDateTime(&t)
+		} else {
+			licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
 		}
 
-		if !licenseAssignmentStateModel.SkuId.IsNull() {
+		if !licenseAssignmentStateModel.SkuId.IsUnknown() {
 			planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
 			u, _ = uuid.Parse(planSkuId)
 			licenseAssignmentState.SetSkuId(&u)
+		} else {
+			licenseAssignmentStateModel.SkuId = types.StringNull()
 		}
 
-		if !licenseAssignmentStateModel.State.IsNull() {
+		if !licenseAssignmentStateModel.State.IsUnknown() {
 			planState := licenseAssignmentStateModel.State.ValueString()
 			licenseAssignmentState.SetState(&planState)
 		} else {
+			licenseAssignmentStateModel.State = types.StringNull()
 		}
 	}
 	requestBody.SetLicenseAssignmentStates(planLicenseAssignmentStates)
 
-	if !plan.Mail.IsNull() {
+	if !plan.Mail.IsUnknown() {
 		planMail := plan.Mail.ValueString()
 		requestBody.SetMail(&planMail)
 	} else {
+		plan.Mail = types.StringNull()
 	}
 
-	if !plan.MailNickname.IsNull() {
+	if !plan.MailNickname.IsUnknown() {
 		planMailNickname := plan.MailNickname.ValueString()
 		requestBody.SetMailNickname(&planMailNickname)
 	} else {
+		plan.MailNickname = types.StringNull()
 	}
 
-	if !plan.MobilePhone.IsNull() {
+	if !plan.MobilePhone.IsUnknown() {
 		planMobilePhone := plan.MobilePhone.ValueString()
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
+		plan.MobilePhone = types.StringNull()
 	}
 
-	if !plan.OfficeLocation.IsNull() {
+	if !plan.MySite.IsUnknown() {
+		planMySite := plan.MySite.ValueString()
+		requestBody.SetMySite(&planMySite)
+	} else {
+		plan.MySite = types.StringNull()
+	}
+
+	if !plan.OfficeLocation.IsUnknown() {
 		planOfficeLocation := plan.OfficeLocation.ValueString()
 		requestBody.SetOfficeLocation(&planOfficeLocation)
 	} else {
+		plan.OfficeLocation = types.StringNull()
 	}
 
-	if !plan.OnPremisesDistinguishedName.IsNull() {
+	if !plan.OnPremisesDistinguishedName.IsUnknown() {
 		planOnPremisesDistinguishedName := plan.OnPremisesDistinguishedName.ValueString()
 		requestBody.SetOnPremisesDistinguishedName(&planOnPremisesDistinguishedName)
 	} else {
+		plan.OnPremisesDistinguishedName = types.StringNull()
 	}
 
-	if !plan.OnPremisesDomainName.IsNull() {
+	if !plan.OnPremisesDomainName.IsUnknown() {
 		planOnPremisesDomainName := plan.OnPremisesDomainName.ValueString()
 		requestBody.SetOnPremisesDomainName(&planOnPremisesDomainName)
 	} else {
+		plan.OnPremisesDomainName = types.StringNull()
 	}
 
 	onPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
 	onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
 	plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
 		planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
 		planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
 		planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
 		planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
 		planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
 		planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
 		planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
 		planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
 		planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
 		planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
 		planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
 		planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
 		planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
 		planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
 	}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsNull() {
+	if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
 		planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
 		onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
 	} else {
+		onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
 	}
 	requestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
 
-	if !plan.OnPremisesImmutableId.IsNull() {
+	if !plan.OnPremisesImmutableId.IsUnknown() {
 		planOnPremisesImmutableId := plan.OnPremisesImmutableId.ValueString()
 		requestBody.SetOnPremisesImmutableId(&planOnPremisesImmutableId)
 	} else {
+		plan.OnPremisesImmutableId = types.StringNull()
 	}
 
-	if !plan.OnPremisesLastSyncDateTime.IsNull() {
+	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
+	} else {
+		plan.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 
 	var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
@@ -2872,53 +3176,63 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
 
-		if !onPremisesProvisioningErrorModel.Category.IsNull() {
+		if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
 			planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
 			onPremisesProvisioningError.SetCategory(&planCategory)
 		} else {
+			onPremisesProvisioningErrorModel.Category = types.StringNull()
 		}
 
-		if !onPremisesProvisioningErrorModel.OccurredDateTime.IsNull() {
+		if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
 			planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
 			onPremisesProvisioningError.SetOccurredDateTime(&t)
+		} else {
+			onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
 		}
 
-		if !onPremisesProvisioningErrorModel.PropertyCausingError.IsNull() {
+		if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
 			planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
 			onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
 		} else {
+			onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
 		}
 
-		if !onPremisesProvisioningErrorModel.Value.IsNull() {
+		if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
 			planValue := onPremisesProvisioningErrorModel.Value.ValueString()
 			onPremisesProvisioningError.SetValue(&planValue)
 		} else {
+			onPremisesProvisioningErrorModel.Value = types.StringNull()
 		}
 	}
 	requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
 
-	if !plan.OnPremisesSamAccountName.IsNull() {
+	if !plan.OnPremisesSamAccountName.IsUnknown() {
 		planOnPremisesSamAccountName := plan.OnPremisesSamAccountName.ValueString()
 		requestBody.SetOnPremisesSamAccountName(&planOnPremisesSamAccountName)
 	} else {
+		plan.OnPremisesSamAccountName = types.StringNull()
 	}
 
-	if !plan.OnPremisesSecurityIdentifier.IsNull() {
+	if !plan.OnPremisesSecurityIdentifier.IsUnknown() {
 		planOnPremisesSecurityIdentifier := plan.OnPremisesSecurityIdentifier.ValueString()
 		requestBody.SetOnPremisesSecurityIdentifier(&planOnPremisesSecurityIdentifier)
 	} else {
+		plan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
-	if !plan.OnPremisesSyncEnabled.IsNull() {
+	if !plan.OnPremisesSyncEnabled.IsUnknown() {
 		planOnPremisesSyncEnabled := plan.OnPremisesSyncEnabled.ValueBool()
 		requestBody.SetOnPremisesSyncEnabled(&planOnPremisesSyncEnabled)
+	} else {
+		plan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
-	if !plan.OnPremisesUserPrincipalName.IsNull() {
+	if !plan.OnPremisesUserPrincipalName.IsUnknown() {
 		planOnPremisesUserPrincipalName := plan.OnPremisesUserPrincipalName.ValueString()
 		requestBody.SetOnPremisesUserPrincipalName(&planOnPremisesUserPrincipalName)
 	} else {
+		plan.OnPremisesUserPrincipalName = types.StringNull()
 	}
 
 	if len(plan.OtherMails.Elements()) > 0 {
@@ -2929,30 +3243,36 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetOtherMails(otherMails)
 	}
 
-	if !plan.PasswordPolicies.IsNull() {
+	if !plan.PasswordPolicies.IsUnknown() {
 		planPasswordPolicies := plan.PasswordPolicies.ValueString()
 		requestBody.SetPasswordPolicies(&planPasswordPolicies)
 	} else {
+		plan.PasswordPolicies = types.StringNull()
 	}
 
 	passwordProfile := models.NewPasswordProfile()
 	passwordProfileModel := userPasswordProfileModel{}
 	plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
 
-	if !passwordProfileModel.ForceChangePasswordNextSignIn.IsNull() {
+	if !passwordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
 		planForceChangePasswordNextSignIn := passwordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
 		passwordProfile.SetForceChangePasswordNextSignIn(&planForceChangePasswordNextSignIn)
+	} else {
+		passwordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
 	}
 
-	if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsNull() {
+	if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
 		planForceChangePasswordNextSignInWithMfa := passwordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
 		passwordProfile.SetForceChangePasswordNextSignInWithMfa(&planForceChangePasswordNextSignInWithMfa)
+	} else {
+		passwordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
 	}
 
-	if !passwordProfileModel.Password.IsNull() {
+	if !passwordProfileModel.Password.IsUnknown() {
 		planPassword := passwordProfileModel.Password.ValueString()
 		passwordProfile.SetPassword(&planPassword)
 	} else {
+		passwordProfileModel.Password = types.StringNull()
 	}
 	requestBody.SetPasswordProfile(passwordProfile)
 
@@ -2964,22 +3284,32 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetPastProjects(pastProjects)
 	}
 
-	if !plan.PostalCode.IsNull() {
+	if !plan.PostalCode.IsUnknown() {
 		planPostalCode := plan.PostalCode.ValueString()
 		requestBody.SetPostalCode(&planPostalCode)
 	} else {
+		plan.PostalCode = types.StringNull()
 	}
 
-	if !plan.PreferredDataLocation.IsNull() {
+	if !plan.PreferredDataLocation.IsUnknown() {
 		planPreferredDataLocation := plan.PreferredDataLocation.ValueString()
 		requestBody.SetPreferredDataLocation(&planPreferredDataLocation)
 	} else {
+		plan.PreferredDataLocation = types.StringNull()
 	}
 
-	if !plan.PreferredLanguage.IsNull() {
+	if !plan.PreferredLanguage.IsUnknown() {
 		planPreferredLanguage := plan.PreferredLanguage.ValueString()
 		requestBody.SetPreferredLanguage(&planPreferredLanguage)
 	} else {
+		plan.PreferredLanguage = types.StringNull()
+	}
+
+	if !plan.PreferredName.IsUnknown() {
+		planPreferredName := plan.PreferredName.ValueString()
+		requestBody.SetPreferredName(&planPreferredName)
+	} else {
+		plan.PreferredName = types.StringNull()
 	}
 
 	var planProvisionedPlans []models.ProvisionedPlanable
@@ -2988,22 +3318,25 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		provisionedPlanModel := userProvisionedPlansModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
 
-		if !provisionedPlanModel.CapabilityStatus.IsNull() {
+		if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
 			planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
 			provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
 		} else {
+			provisionedPlanModel.CapabilityStatus = types.StringNull()
 		}
 
-		if !provisionedPlanModel.ProvisioningStatus.IsNull() {
+		if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
 			planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
 			provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
 		} else {
+			provisionedPlanModel.ProvisioningStatus = types.StringNull()
 		}
 
-		if !provisionedPlanModel.Service.IsNull() {
+		if !provisionedPlanModel.Service.IsUnknown() {
 			planService := provisionedPlanModel.Service.ValueString()
 			provisionedPlan.SetService(&planService)
 		} else {
+			provisionedPlanModel.Service = types.StringNull()
 		}
 	}
 	requestBody.SetProvisionedPlans(planProvisionedPlans)
@@ -3032,10 +3365,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetSchools(schools)
 	}
 
-	if !plan.SecurityIdentifier.IsNull() {
+	if !plan.SecurityIdentifier.IsUnknown() {
 		planSecurityIdentifier := plan.SecurityIdentifier.ValueString()
 		requestBody.SetSecurityIdentifier(&planSecurityIdentifier)
 	} else {
+		plan.SecurityIdentifier = types.StringNull()
 	}
 
 	var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
@@ -3044,34 +3378,78 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
 		types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
 
-		if !serviceProvisioningErrorModel.CreatedDateTime.IsNull() {
+		if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
 			planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 			serviceProvisioningError.SetCreatedDateTime(&t)
+		} else {
+			serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
 		}
 
-		if !serviceProvisioningErrorModel.IsResolved.IsNull() {
+		if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
 			planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
 			serviceProvisioningError.SetIsResolved(&planIsResolved)
+		} else {
+			serviceProvisioningErrorModel.IsResolved = types.BoolNull()
 		}
 
-		if !serviceProvisioningErrorModel.ServiceInstance.IsNull() {
+		if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
 			planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
 			serviceProvisioningError.SetServiceInstance(&planServiceInstance)
 		} else {
+			serviceProvisioningErrorModel.ServiceInstance = types.StringNull()
 		}
 	}
 	requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
 
-	if !plan.ShowInAddressList.IsNull() {
+	if !plan.ShowInAddressList.IsUnknown() {
 		planShowInAddressList := plan.ShowInAddressList.ValueBool()
 		requestBody.SetShowInAddressList(&planShowInAddressList)
+	} else {
+		plan.ShowInAddressList = types.BoolNull()
 	}
 
-	if !plan.SignInSessionsValidFromDateTime.IsNull() {
+	signInActivity := models.NewSignInActivity()
+	signInActivityModel := userSignInActivityModel{}
+	plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
+
+	if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
+		planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
+		t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
+		signInActivity.SetLastNonInteractiveSignInDateTime(&t)
+	} else {
+		signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
+	}
+
+	if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
+		planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
+		signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
+	} else {
+		signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
+	}
+
+	if !signInActivityModel.LastSignInDateTime.IsUnknown() {
+		planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
+		t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
+		signInActivity.SetLastSignInDateTime(&t)
+	} else {
+		signInActivityModel.LastSignInDateTime = types.StringNull()
+	}
+
+	if !signInActivityModel.LastSignInRequestId.IsUnknown() {
+		planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
+		signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
+	} else {
+		signInActivityModel.LastSignInRequestId = types.StringNull()
+	}
+	requestBody.SetSignInActivity(signInActivity)
+
+	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
 		requestBody.SetSignInSessionsValidFromDateTime(&t)
+	} else {
+		plan.SignInSessionsValidFromDateTime = types.StringNull()
 	}
 
 	if len(plan.Skills.Elements()) > 0 {
@@ -3082,40 +3460,46 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetSkills(skills)
 	}
 
-	if !plan.State.IsNull() {
+	if !plan.State.IsUnknown() {
 		planState := plan.State.ValueString()
 		requestBody.SetState(&planState)
 	} else {
+		plan.State = types.StringNull()
 	}
 
-	if !plan.StreetAddress.IsNull() {
+	if !plan.StreetAddress.IsUnknown() {
 		planStreetAddress := plan.StreetAddress.ValueString()
 		requestBody.SetStreetAddress(&planStreetAddress)
 	} else {
+		plan.StreetAddress = types.StringNull()
 	}
 
-	if !plan.Surname.IsNull() {
+	if !plan.Surname.IsUnknown() {
 		planSurname := plan.Surname.ValueString()
 		requestBody.SetSurname(&planSurname)
 	} else {
+		plan.Surname = types.StringNull()
 	}
 
-	if !plan.UsageLocation.IsNull() {
+	if !plan.UsageLocation.IsUnknown() {
 		planUsageLocation := plan.UsageLocation.ValueString()
 		requestBody.SetUsageLocation(&planUsageLocation)
 	} else {
+		plan.UsageLocation = types.StringNull()
 	}
 
-	if !plan.UserPrincipalName.IsNull() {
+	if !plan.UserPrincipalName.IsUnknown() {
 		planUserPrincipalName := plan.UserPrincipalName.ValueString()
 		requestBody.SetUserPrincipalName(&planUserPrincipalName)
 	} else {
+		plan.UserPrincipalName = types.StringNull()
 	}
 
-	if !plan.UserType.IsNull() {
+	if !plan.UserType.IsUnknown() {
 		planUserType := plan.UserType.ValueString()
 		requestBody.SetUserType(&planUserType)
 	} else {
+		plan.UserType = types.StringNull()
 	}
 
 	// Update user

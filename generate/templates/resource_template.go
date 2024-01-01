@@ -74,40 +74,49 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsNull(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringTimeAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsNull(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	t, _ = time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&t)
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringUuidAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsNull(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	u, _ = uuid.Parse(plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&u)
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsNull(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.Int64Null()
 	}
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsNull(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.BoolNull()
 	}
 	{{- end}}
 
