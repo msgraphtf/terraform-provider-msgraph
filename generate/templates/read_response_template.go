@@ -1,22 +1,42 @@
 {{- /* Define templates for mapping each response type to state */}}
 {{- define "ReadStringAttribute" }}
-if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue(*{{.GetMethod}})}
+if {{.GetMethod}} != nil {
+	{{.StateVarName}} = types.StringValue(*{{.GetMethod}})
+} else {
+	{{.StateVarName}} = types.StringNull()
+}
 {{- end}}
 
 {{- define "ReadStringBase64Attribute" }}
-if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue(string({{.GetMethod}}[:]))}
+if {{.GetMethod}} != nil {
+	{{.StateVarName}} = types.StringValue(string({{.GetMethod}}[:]))
+} else {
+	{{.StateVarName}} = types.StringNull()
+}
 {{- end}}
 
 {{- define "ReadStringFormattedAttribute" }}
-if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.StringValue({{.GetMethod}}.String())}
+if {{.GetMethod}} != nil {
+	{{.StateVarName}} = types.StringValue({{.GetMethod}}.String())
+} else {
+	{{.StateVarName}} = types.StringNull()
+}
 {{- end}}
 
 {{- define "ReadInt64Attribute" }}
-if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.Int64Value(int64(*{{.GetMethod}}))}
+if {{.GetMethod}} != nil {
+	{{ .StateVarName}} = types.Int64Value(int64(*{{.GetMethod}}))
+} else {
+	{{.StateVarName}} = types.Int64Null()
+}
 {{- end}}
 
 {{- define "ReadBoolAttribute" }}
-if {{.GetMethod}}  != nil { {{- .StateVarName}} = types.BoolValue(*{{.GetMethod}})}
+if {{.GetMethod}} != nil {
+	{{ .StateVarName}} = types.BoolValue(*{{.GetMethod}})
+} else {
+	{{.StateVarName}} = types.BoolNull()
+}
 {{- end}}
 
 {{- define "ReadSingleNestedAttribute" }}
