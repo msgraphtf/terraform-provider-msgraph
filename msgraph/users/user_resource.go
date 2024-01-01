@@ -839,20 +839,24 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.AssignedPlans = types.ListNull(plan.AssignedPlans.ElementType(ctx))
 	}
 
-	authorizationInfo := models.NewAuthorizationInfo()
-	authorizationInfoModel := userAuthorizationInfoModel{}
-	plan.AuthorizationInfo.As(ctx, &authorizationInfoModel, basetypes.ObjectAsOptions{})
+	if !plan.AuthorizationInfo.IsUnknown() {
+		authorizationInfo := models.NewAuthorizationInfo()
+		authorizationInfoModel := userAuthorizationInfoModel{}
+		plan.AuthorizationInfo.As(ctx, &authorizationInfoModel, basetypes.ObjectAsOptions{})
 
-	if len(authorizationInfoModel.CertificateUserIds.Elements()) > 0 {
-		var certificateUserIds []string
-		for _, i := range authorizationInfoModel.CertificateUserIds.Elements() {
-			certificateUserIds = append(certificateUserIds, i.String())
+		if len(authorizationInfoModel.CertificateUserIds.Elements()) > 0 {
+			var certificateUserIds []string
+			for _, i := range authorizationInfoModel.CertificateUserIds.Elements() {
+				certificateUserIds = append(certificateUserIds, i.String())
+			}
+			authorizationInfo.SetCertificateUserIds(certificateUserIds)
+		} else {
+			authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
 		}
-		authorizationInfo.SetCertificateUserIds(certificateUserIds)
+		requestBody.SetAuthorizationInfo(authorizationInfo)
 	} else {
-		authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
+		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
 	}
-	requestBody.SetAuthorizationInfo(authorizationInfo)
 
 	if len(plan.BusinessPhones.Elements()) > 0 {
 		var businessPhones []string
@@ -944,24 +948,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.EmployeeLeaveDateTime = types.StringNull()
 	}
 
-	employeeOrgData := models.NewEmployeeOrgData()
-	employeeOrgDataModel := userEmployeeOrgDataModel{}
-	plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
+	if !plan.EmployeeOrgData.IsUnknown() {
+		employeeOrgData := models.NewEmployeeOrgData()
+		employeeOrgDataModel := userEmployeeOrgDataModel{}
+		plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
 
-	if !employeeOrgDataModel.CostCenter.IsUnknown() {
-		planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
-		employeeOrgData.SetCostCenter(&planCostCenter)
-	} else {
-		employeeOrgDataModel.CostCenter = types.StringNull()
-	}
+		if !employeeOrgDataModel.CostCenter.IsUnknown() {
+			planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
+			employeeOrgData.SetCostCenter(&planCostCenter)
+		} else {
+			employeeOrgDataModel.CostCenter = types.StringNull()
+		}
 
-	if !employeeOrgDataModel.Division.IsUnknown() {
-		planDivision := employeeOrgDataModel.Division.ValueString()
-		employeeOrgData.SetDivision(&planDivision)
+		if !employeeOrgDataModel.Division.IsUnknown() {
+			planDivision := employeeOrgDataModel.Division.ValueString()
+			employeeOrgData.SetDivision(&planDivision)
+		} else {
+			employeeOrgDataModel.Division = types.StringNull()
+		}
+		requestBody.SetEmployeeOrgData(employeeOrgData)
 	} else {
-		employeeOrgDataModel.Division = types.StringNull()
+		plan.EmployeeOrgData = types.ObjectNull(plan.EmployeeOrgData.AttributeTypes(ctx))
 	}
-	requestBody.SetEmployeeOrgData(employeeOrgData)
 
 	if !plan.EmployeeType.IsUnknown() {
 		planEmployeeType := plan.EmployeeType.ValueString()
@@ -1183,115 +1191,119 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.OnPremisesDomainName = types.StringNull()
 	}
 
-	onPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
-	onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
-	plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
+	if !plan.OnPremisesExtensionAttributes.IsUnknown() {
+		onPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
+		onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
+		plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
-		planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
+			planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
-		planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
+			planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
-		planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
+			planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
-		planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
+			planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
-		planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
+			planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
-		planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
+			planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
-		planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
+			planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
-		planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
+			planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
-		planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
+			planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
-		planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
+			planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
-		planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
+			planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
-		planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
+			planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
-		planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
+			planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
-		planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
+			planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
-		planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
+			planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
+		}
+		requestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
 	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
+		plan.OnPremisesExtensionAttributes = types.ObjectNull(plan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
-	requestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
 
 	if !plan.OnPremisesImmutableId.IsUnknown() {
 		planOnPremisesImmutableId := plan.OnPremisesImmutableId.ValueString()
@@ -1394,31 +1406,35 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.PasswordPolicies = types.StringNull()
 	}
 
-	passwordProfile := models.NewPasswordProfile()
-	passwordProfileModel := userPasswordProfileModel{}
-	plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
+	if !plan.PasswordProfile.IsUnknown() {
+		passwordProfile := models.NewPasswordProfile()
+		passwordProfileModel := userPasswordProfileModel{}
+		plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
 
-	if !passwordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
-		planForceChangePasswordNextSignIn := passwordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
-		passwordProfile.SetForceChangePasswordNextSignIn(&planForceChangePasswordNextSignIn)
-	} else {
-		passwordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
-	}
+		if !passwordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
+			planForceChangePasswordNextSignIn := passwordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
+			passwordProfile.SetForceChangePasswordNextSignIn(&planForceChangePasswordNextSignIn)
+		} else {
+			passwordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
+		}
 
-	if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
-		planForceChangePasswordNextSignInWithMfa := passwordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
-		passwordProfile.SetForceChangePasswordNextSignInWithMfa(&planForceChangePasswordNextSignInWithMfa)
-	} else {
-		passwordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
-	}
+		if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
+			planForceChangePasswordNextSignInWithMfa := passwordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
+			passwordProfile.SetForceChangePasswordNextSignInWithMfa(&planForceChangePasswordNextSignInWithMfa)
+		} else {
+			passwordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
+		}
 
-	if !passwordProfileModel.Password.IsUnknown() {
-		planPassword := passwordProfileModel.Password.ValueString()
-		passwordProfile.SetPassword(&planPassword)
+		if !passwordProfileModel.Password.IsUnknown() {
+			planPassword := passwordProfileModel.Password.ValueString()
+			passwordProfile.SetPassword(&planPassword)
+		} else {
+			passwordProfileModel.Password = types.StringNull()
+		}
+		requestBody.SetPasswordProfile(passwordProfile)
 	} else {
-		passwordProfileModel.Password = types.StringNull()
+		plan.PasswordProfile = types.ObjectNull(plan.PasswordProfile.AttributeTypes(ctx))
 	}
-	requestBody.SetPasswordProfile(passwordProfile)
 
 	if len(plan.PastProjects.Elements()) > 0 {
 		var pastProjects []string
@@ -2663,20 +2679,24 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.AssignedPlans = types.ListNull(plan.AssignedPlans.ElementType(ctx))
 	}
 
-	authorizationInfo := models.NewAuthorizationInfo()
-	authorizationInfoModel := userAuthorizationInfoModel{}
-	plan.AuthorizationInfo.As(ctx, &authorizationInfoModel, basetypes.ObjectAsOptions{})
+	if !plan.AuthorizationInfo.IsUnknown() {
+		authorizationInfo := models.NewAuthorizationInfo()
+		authorizationInfoModel := userAuthorizationInfoModel{}
+		plan.AuthorizationInfo.As(ctx, &authorizationInfoModel, basetypes.ObjectAsOptions{})
 
-	if len(authorizationInfoModel.CertificateUserIds.Elements()) > 0 {
-		var certificateUserIds []string
-		for _, i := range authorizationInfoModel.CertificateUserIds.Elements() {
-			certificateUserIds = append(certificateUserIds, i.String())
+		if len(authorizationInfoModel.CertificateUserIds.Elements()) > 0 {
+			var certificateUserIds []string
+			for _, i := range authorizationInfoModel.CertificateUserIds.Elements() {
+				certificateUserIds = append(certificateUserIds, i.String())
+			}
+			authorizationInfo.SetCertificateUserIds(certificateUserIds)
+		} else {
+			authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
 		}
-		authorizationInfo.SetCertificateUserIds(certificateUserIds)
+		requestBody.SetAuthorizationInfo(authorizationInfo)
 	} else {
-		authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
+		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
 	}
-	requestBody.SetAuthorizationInfo(authorizationInfo)
 
 	if len(plan.BusinessPhones.Elements()) > 0 {
 		var businessPhones []string
@@ -2768,24 +2788,28 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.EmployeeLeaveDateTime = types.StringNull()
 	}
 
-	employeeOrgData := models.NewEmployeeOrgData()
-	employeeOrgDataModel := userEmployeeOrgDataModel{}
-	plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
+	if !plan.EmployeeOrgData.IsUnknown() {
+		employeeOrgData := models.NewEmployeeOrgData()
+		employeeOrgDataModel := userEmployeeOrgDataModel{}
+		plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
 
-	if !employeeOrgDataModel.CostCenter.IsUnknown() {
-		planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
-		employeeOrgData.SetCostCenter(&planCostCenter)
-	} else {
-		employeeOrgDataModel.CostCenter = types.StringNull()
-	}
+		if !employeeOrgDataModel.CostCenter.IsUnknown() {
+			planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
+			employeeOrgData.SetCostCenter(&planCostCenter)
+		} else {
+			employeeOrgDataModel.CostCenter = types.StringNull()
+		}
 
-	if !employeeOrgDataModel.Division.IsUnknown() {
-		planDivision := employeeOrgDataModel.Division.ValueString()
-		employeeOrgData.SetDivision(&planDivision)
+		if !employeeOrgDataModel.Division.IsUnknown() {
+			planDivision := employeeOrgDataModel.Division.ValueString()
+			employeeOrgData.SetDivision(&planDivision)
+		} else {
+			employeeOrgDataModel.Division = types.StringNull()
+		}
+		requestBody.SetEmployeeOrgData(employeeOrgData)
 	} else {
-		employeeOrgDataModel.Division = types.StringNull()
+		plan.EmployeeOrgData = types.ObjectNull(plan.EmployeeOrgData.AttributeTypes(ctx))
 	}
-	requestBody.SetEmployeeOrgData(employeeOrgData)
 
 	if !plan.EmployeeType.IsUnknown() {
 		planEmployeeType := plan.EmployeeType.ValueString()
@@ -3007,115 +3031,119 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.OnPremisesDomainName = types.StringNull()
 	}
 
-	onPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
-	onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
-	plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
+	if !plan.OnPremisesExtensionAttributes.IsUnknown() {
+		onPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
+		onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
+		plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
-		planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
+			planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
-		planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
+			planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
-		planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
+			planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
-		planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
+			planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
-		planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
+			planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
-		planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
+			planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
-		planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
+			planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
-		planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
+			planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
-		planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
+			planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
-		planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
+			planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
-		planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
+			planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
-		planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
+			planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
-		planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
+			planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
-		planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
-	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
-	}
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
+			planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
+		}
 
-	if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
-		planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
-		onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
+			planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
+			onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
+		} else {
+			onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
+		}
+		requestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
 	} else {
-		onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
+		plan.OnPremisesExtensionAttributes = types.ObjectNull(plan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
-	requestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
 
 	if !plan.OnPremisesImmutableId.IsUnknown() {
 		planOnPremisesImmutableId := plan.OnPremisesImmutableId.ValueString()
@@ -3218,31 +3246,35 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.PasswordPolicies = types.StringNull()
 	}
 
-	passwordProfile := models.NewPasswordProfile()
-	passwordProfileModel := userPasswordProfileModel{}
-	plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
+	if !plan.PasswordProfile.IsUnknown() {
+		passwordProfile := models.NewPasswordProfile()
+		passwordProfileModel := userPasswordProfileModel{}
+		plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
 
-	if !passwordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
-		planForceChangePasswordNextSignIn := passwordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
-		passwordProfile.SetForceChangePasswordNextSignIn(&planForceChangePasswordNextSignIn)
-	} else {
-		passwordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
-	}
+		if !passwordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
+			planForceChangePasswordNextSignIn := passwordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
+			passwordProfile.SetForceChangePasswordNextSignIn(&planForceChangePasswordNextSignIn)
+		} else {
+			passwordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
+		}
 
-	if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
-		planForceChangePasswordNextSignInWithMfa := passwordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
-		passwordProfile.SetForceChangePasswordNextSignInWithMfa(&planForceChangePasswordNextSignInWithMfa)
-	} else {
-		passwordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
-	}
+		if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
+			planForceChangePasswordNextSignInWithMfa := passwordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
+			passwordProfile.SetForceChangePasswordNextSignInWithMfa(&planForceChangePasswordNextSignInWithMfa)
+		} else {
+			passwordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
+		}
 
-	if !passwordProfileModel.Password.IsUnknown() {
-		planPassword := passwordProfileModel.Password.ValueString()
-		passwordProfile.SetPassword(&planPassword)
+		if !passwordProfileModel.Password.IsUnknown() {
+			planPassword := passwordProfileModel.Password.ValueString()
+			passwordProfile.SetPassword(&planPassword)
+		} else {
+			passwordProfileModel.Password = types.StringNull()
+		}
+		requestBody.SetPasswordProfile(passwordProfile)
 	} else {
-		passwordProfileModel.Password = types.StringNull()
+		plan.PasswordProfile = types.ObjectNull(plan.PasswordProfile.AttributeTypes(ctx))
 	}
-	requestBody.SetPasswordProfile(passwordProfile)
 
 	if len(plan.PastProjects.Elements()) > 0 {
 		var pastProjects []string

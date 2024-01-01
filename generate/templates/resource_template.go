@@ -161,11 +161,15 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}
-	{{.RequestBodyVar}} := models.New{{.AttributeName.UpperCamel}}()
-	{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
-	plan.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
-	{{template "generate_create" .NestedCreate}}
-	requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
+		{{.RequestBodyVar}} := models.New{{.AttributeName.UpperCamel}}()
+		{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+		plan.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
+		{{template "generate_create" .NestedCreate}}
+		requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ObjectNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.AttributeTypes(ctx))
+	}
 	{{- end}}
 
 	{{- block "generate_create" .CreateRequestBody}}
