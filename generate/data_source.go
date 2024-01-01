@@ -63,7 +63,7 @@ type terraformSchema struct {
 	NestedObject  []terraformSchema
 }
 
-func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchemaObject) []terraformSchema {
+func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) []terraformSchema {
 
 	for _, property := range schemaObject.Properties {
 
@@ -74,11 +74,16 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 		newSchema := new(terraformSchema)
 
 		newSchema.AttributeName = strcase.ToSnake(property.Name)
-		newSchema.Computed = true
 		newSchema.Description = property.Description
-		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) {
-			newSchema.Optional = true
-		} else if slices.Contains(augment.ExtraOptionals, newSchema.AttributeName) {
+
+		if behaviourMode == "DataSource" {
+			newSchema.Computed = true
+			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) {
+				newSchema.Optional = true
+			} else if slices.Contains(augment.ExtraOptionals, newSchema.AttributeName) {
+				newSchema.Optional = true
+			}
+		} else if behaviourMode == "Resource" {
 			newSchema.Optional = true
 		}
 
@@ -96,7 +101,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			} else {
 				newSchema.AttributeType = "SingleNestedAttribute"
 			}
-			nesteds := generateSchema(nil, property.ObjectOf)
+			nesteds := generateSchema(nil, property.ObjectOf, behaviourMode)
 			newSchema.Attributes = nesteds
 		case "array":
 			switch property.ArrayOf {
@@ -110,7 +115,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 				} else {
 					newSchema.AttributeType = "ListNestedAttribute"
 				}
-				nesteds := generateSchema(nil, property.ObjectOf)
+				nesteds := generateSchema(nil, property.ObjectOf, behaviourMode)
 				newSchema.NestedObject = nesteds
 			}
 		}
@@ -599,7 +604,7 @@ func generateDataSource(pathname string) {
 	// Set input values to top level template
 	input.PackageName  = packageName
 	input.BlockName    = strWithCases{blockName}
-	input.Schema       = generateSchema(nil, schemaObject) // Generate  Schema from OpenAPI Schama properties
+	input.Schema       = generateSchema(nil, schemaObject, "DataSource") // Generate  Schema from OpenAPI Schama properties
 	input.Model        = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
 	input.ReadQuery    = generateReadQuery()
 	input.ReadResponse = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
@@ -624,6 +629,7 @@ func generateDataSource(pathname string) {
 
 	if pathObject.Patch.Summary != "" {
 
+		input.Schema            = generateSchema(nil, schemaObject, "Resource")
 		input.CreateRequestBody = generateCreateRequestBody(schemaObject, nil)
 		input.CreateRequest     = generateCreateRequest()
 		input.UpdateRequest     = generateUpdateRequest()
