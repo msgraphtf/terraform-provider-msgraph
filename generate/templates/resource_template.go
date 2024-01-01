@@ -146,14 +146,18 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateArrayObjectAttribute" }}
-	var plan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
-	for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
-		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
-		{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
-		types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
-		{{template "generate_create" .NestedCreate}}
+	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
+		var plan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
+		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
+			{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
+			{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+			types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
+			{{template "generate_create" .NestedCreate}}
+		}
+		requestBody.Set{{.AttributeName.UpperCamel}}(plan{{.AttributeName.UpperCamel}})
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.ElementType(ctx))
 	}
-	requestBody.Set{{.AttributeName.UpperCamel}}(plan{{.AttributeName.UpperCamel}})
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}

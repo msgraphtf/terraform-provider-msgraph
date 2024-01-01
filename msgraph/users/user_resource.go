@@ -766,70 +766,78 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.AgeGroup = types.StringNull()
 	}
 
-	var planAssignedLicenses []models.AssignedLicenseable
-	for _, i := range plan.AssignedLicenses.Elements() {
-		assignedLicense := models.NewAssignedLicense()
-		assignedLicenseModel := userAssignedLicensesModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &assignedLicenseModel)
+	if len(plan.AssignedLicenses.Elements()) > 0 {
+		var planAssignedLicenses []models.AssignedLicenseable
+		for _, i := range plan.AssignedLicenses.Elements() {
+			assignedLicense := models.NewAssignedLicense()
+			assignedLicenseModel := userAssignedLicensesModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicenseModel)
 
-		if len(assignedLicenseModel.DisabledPlans.Elements()) > 0 {
-			var DisabledPlans []uuid.UUID
-			for _, i := range assignedLicenseModel.DisabledPlans.Elements() {
-				u, _ = uuid.Parse(i.String())
-				DisabledPlans = append(DisabledPlans, u)
+			if len(assignedLicenseModel.DisabledPlans.Elements()) > 0 {
+				var DisabledPlans []uuid.UUID
+				for _, i := range assignedLicenseModel.DisabledPlans.Elements() {
+					u, _ = uuid.Parse(i.String())
+					DisabledPlans = append(DisabledPlans, u)
+				}
+				assignedLicense.SetDisabledPlans(DisabledPlans)
+			} else {
+				assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
 			}
-			assignedLicense.SetDisabledPlans(DisabledPlans)
-		} else {
-			assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
-		}
 
-		if !assignedLicenseModel.SkuId.IsUnknown() {
-			planSkuId := assignedLicenseModel.SkuId.ValueString()
-			u, _ = uuid.Parse(planSkuId)
-			assignedLicense.SetSkuId(&u)
-		} else {
-			assignedLicenseModel.SkuId = types.StringNull()
+			if !assignedLicenseModel.SkuId.IsUnknown() {
+				planSkuId := assignedLicenseModel.SkuId.ValueString()
+				u, _ = uuid.Parse(planSkuId)
+				assignedLicense.SetSkuId(&u)
+			} else {
+				assignedLicenseModel.SkuId = types.StringNull()
+			}
 		}
+		requestBody.SetAssignedLicenses(planAssignedLicenses)
+	} else {
+		plan.AssignedLicenses = types.ListNull(plan.AssignedLicenses.ElementType(ctx))
 	}
-	requestBody.SetAssignedLicenses(planAssignedLicenses)
 
-	var planAssignedPlans []models.AssignedPlanable
-	for _, i := range plan.AssignedPlans.Elements() {
-		assignedPlan := models.NewAssignedPlan()
-		assignedPlanModel := userAssignedPlansModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
+	if len(plan.AssignedPlans.Elements()) > 0 {
+		var planAssignedPlans []models.AssignedPlanable
+		for _, i := range plan.AssignedPlans.Elements() {
+			assignedPlan := models.NewAssignedPlan()
+			assignedPlanModel := userAssignedPlansModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
 
-		if !assignedPlanModel.AssignedDateTime.IsUnknown() {
-			planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
-			assignedPlan.SetAssignedDateTime(&t)
-		} else {
-			assignedPlanModel.AssignedDateTime = types.StringNull()
+			if !assignedPlanModel.AssignedDateTime.IsUnknown() {
+				planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
+				t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
+				assignedPlan.SetAssignedDateTime(&t)
+			} else {
+				assignedPlanModel.AssignedDateTime = types.StringNull()
+			}
+
+			if !assignedPlanModel.CapabilityStatus.IsUnknown() {
+				planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
+				assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
+			} else {
+				assignedPlanModel.CapabilityStatus = types.StringNull()
+			}
+
+			if !assignedPlanModel.Service.IsUnknown() {
+				planService := assignedPlanModel.Service.ValueString()
+				assignedPlan.SetService(&planService)
+			} else {
+				assignedPlanModel.Service = types.StringNull()
+			}
+
+			if !assignedPlanModel.ServicePlanId.IsUnknown() {
+				planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
+				u, _ = uuid.Parse(planServicePlanId)
+				assignedPlan.SetServicePlanId(&u)
+			} else {
+				assignedPlanModel.ServicePlanId = types.StringNull()
+			}
 		}
-
-		if !assignedPlanModel.CapabilityStatus.IsUnknown() {
-			planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
-			assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
-		} else {
-			assignedPlanModel.CapabilityStatus = types.StringNull()
-		}
-
-		if !assignedPlanModel.Service.IsUnknown() {
-			planService := assignedPlanModel.Service.ValueString()
-			assignedPlan.SetService(&planService)
-		} else {
-			assignedPlanModel.Service = types.StringNull()
-		}
-
-		if !assignedPlanModel.ServicePlanId.IsUnknown() {
-			planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
-			u, _ = uuid.Parse(planServicePlanId)
-			assignedPlan.SetServicePlanId(&u)
-		} else {
-			assignedPlanModel.ServicePlanId = types.StringNull()
-		}
+		requestBody.SetAssignedPlans(planAssignedPlans)
+	} else {
+		plan.AssignedPlans = types.ListNull(plan.AssignedPlans.ElementType(ctx))
 	}
-	requestBody.SetAssignedPlans(planAssignedPlans)
 
 	authorizationInfo := models.NewAuthorizationInfo()
 	authorizationInfoModel := userAuthorizationInfoModel{}
@@ -991,34 +999,38 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.GivenName = types.StringNull()
 	}
 
-	var planIdentities []models.ObjectIdentityable
-	for _, i := range plan.Identities.Elements() {
-		objectIdentity := models.NewObjectIdentity()
-		objectIdentityModel := userIdentitiesModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
+	if len(plan.Identities.Elements()) > 0 {
+		var planIdentities []models.ObjectIdentityable
+		for _, i := range plan.Identities.Elements() {
+			objectIdentity := models.NewObjectIdentity()
+			objectIdentityModel := userIdentitiesModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
 
-		if !objectIdentityModel.Issuer.IsUnknown() {
-			planIssuer := objectIdentityModel.Issuer.ValueString()
-			objectIdentity.SetIssuer(&planIssuer)
-		} else {
-			objectIdentityModel.Issuer = types.StringNull()
-		}
+			if !objectIdentityModel.Issuer.IsUnknown() {
+				planIssuer := objectIdentityModel.Issuer.ValueString()
+				objectIdentity.SetIssuer(&planIssuer)
+			} else {
+				objectIdentityModel.Issuer = types.StringNull()
+			}
 
-		if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
-			planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
-			objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
-		} else {
-			objectIdentityModel.IssuerAssignedId = types.StringNull()
-		}
+			if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
+				planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
+				objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
+			} else {
+				objectIdentityModel.IssuerAssignedId = types.StringNull()
+			}
 
-		if !objectIdentityModel.SignInType.IsUnknown() {
-			planSignInType := objectIdentityModel.SignInType.ValueString()
-			objectIdentity.SetSignInType(&planSignInType)
-		} else {
-			objectIdentityModel.SignInType = types.StringNull()
+			if !objectIdentityModel.SignInType.IsUnknown() {
+				planSignInType := objectIdentityModel.SignInType.ValueString()
+				objectIdentity.SetSignInType(&planSignInType)
+			} else {
+				objectIdentityModel.SignInType = types.StringNull()
+			}
 		}
+		requestBody.SetIdentities(planIdentities)
+	} else {
+		plan.Identities = types.ListNull(plan.Identities.ElementType(ctx))
 	}
-	requestBody.SetIdentities(planIdentities)
 
 	if len(plan.ImAddresses.Elements()) > 0 {
 		var imAddresses []string
@@ -1069,61 +1081,65 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.LegalAgeGroupClassification = types.StringNull()
 	}
 
-	var planLicenseAssignmentStates []models.LicenseAssignmentStateable
-	for _, i := range plan.LicenseAssignmentStates.Elements() {
-		licenseAssignmentState := models.NewLicenseAssignmentState()
-		licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
+	if len(plan.LicenseAssignmentStates.Elements()) > 0 {
+		var planLicenseAssignmentStates []models.LicenseAssignmentStateable
+		for _, i := range plan.LicenseAssignmentStates.Elements() {
+			licenseAssignmentState := models.NewLicenseAssignmentState()
+			licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
 
-		if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
-			planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
-			licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
-		} else {
-			licenseAssignmentStateModel.AssignedByGroup = types.StringNull()
-		}
-
-		if len(licenseAssignmentStateModel.DisabledPlans.Elements()) > 0 {
-			var DisabledPlans []uuid.UUID
-			for _, i := range licenseAssignmentStateModel.DisabledPlans.Elements() {
-				u, _ = uuid.Parse(i.String())
-				DisabledPlans = append(DisabledPlans, u)
+			if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
+				planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
+				licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
+			} else {
+				licenseAssignmentStateModel.AssignedByGroup = types.StringNull()
 			}
-			licenseAssignmentState.SetDisabledPlans(DisabledPlans)
-		} else {
-			licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
-		}
 
-		if !licenseAssignmentStateModel.Error.IsUnknown() {
-			planError := licenseAssignmentStateModel.Error.ValueString()
-			licenseAssignmentState.SetError(&planError)
-		} else {
-			licenseAssignmentStateModel.Error = types.StringNull()
-		}
+			if len(licenseAssignmentStateModel.DisabledPlans.Elements()) > 0 {
+				var DisabledPlans []uuid.UUID
+				for _, i := range licenseAssignmentStateModel.DisabledPlans.Elements() {
+					u, _ = uuid.Parse(i.String())
+					DisabledPlans = append(DisabledPlans, u)
+				}
+				licenseAssignmentState.SetDisabledPlans(DisabledPlans)
+			} else {
+				licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
+			}
 
-		if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
-			planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
-			licenseAssignmentState.SetLastUpdatedDateTime(&t)
-		} else {
-			licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
-		}
+			if !licenseAssignmentStateModel.Error.IsUnknown() {
+				planError := licenseAssignmentStateModel.Error.ValueString()
+				licenseAssignmentState.SetError(&planError)
+			} else {
+				licenseAssignmentStateModel.Error = types.StringNull()
+			}
 
-		if !licenseAssignmentStateModel.SkuId.IsUnknown() {
-			planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
-			u, _ = uuid.Parse(planSkuId)
-			licenseAssignmentState.SetSkuId(&u)
-		} else {
-			licenseAssignmentStateModel.SkuId = types.StringNull()
-		}
+			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
+				planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
+				t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
+				licenseAssignmentState.SetLastUpdatedDateTime(&t)
+			} else {
+				licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
+			}
 
-		if !licenseAssignmentStateModel.State.IsUnknown() {
-			planState := licenseAssignmentStateModel.State.ValueString()
-			licenseAssignmentState.SetState(&planState)
-		} else {
-			licenseAssignmentStateModel.State = types.StringNull()
+			if !licenseAssignmentStateModel.SkuId.IsUnknown() {
+				planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
+				u, _ = uuid.Parse(planSkuId)
+				licenseAssignmentState.SetSkuId(&u)
+			} else {
+				licenseAssignmentStateModel.SkuId = types.StringNull()
+			}
+
+			if !licenseAssignmentStateModel.State.IsUnknown() {
+				planState := licenseAssignmentStateModel.State.ValueString()
+				licenseAssignmentState.SetState(&planState)
+			} else {
+				licenseAssignmentStateModel.State = types.StringNull()
+			}
 		}
+		requestBody.SetLicenseAssignmentStates(planLicenseAssignmentStates)
+	} else {
+		plan.LicenseAssignmentStates = types.ListNull(plan.LicenseAssignmentStates.ElementType(ctx))
 	}
-	requestBody.SetLicenseAssignmentStates(planLicenseAssignmentStates)
 
 	if !plan.Mail.IsUnknown() {
 		planMail := plan.Mail.ValueString()
@@ -1292,42 +1308,46 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 
-	var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
-	for _, i := range plan.OnPremisesProvisioningErrors.Elements() {
-		onPremisesProvisioningError := models.NewOnPremisesProvisioningError()
-		onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
+	if len(plan.OnPremisesProvisioningErrors.Elements()) > 0 {
+		var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
+		for _, i := range plan.OnPremisesProvisioningErrors.Elements() {
+			onPremisesProvisioningError := models.NewOnPremisesProvisioningError()
+			onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
 
-		if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
-			planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
-			onPremisesProvisioningError.SetCategory(&planCategory)
-		} else {
-			onPremisesProvisioningErrorModel.Category = types.StringNull()
-		}
+			if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
+				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
+				onPremisesProvisioningError.SetCategory(&planCategory)
+			} else {
+				onPremisesProvisioningErrorModel.Category = types.StringNull()
+			}
 
-		if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
-			planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
-			onPremisesProvisioningError.SetOccurredDateTime(&t)
-		} else {
-			onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
-		}
+			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
+				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
+				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
+				onPremisesProvisioningError.SetOccurredDateTime(&t)
+			} else {
+				onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
+			}
 
-		if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
-			planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
-			onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
-		} else {
-			onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
-		}
+			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
+				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
+				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
+			} else {
+				onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
+			}
 
-		if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
-			planValue := onPremisesProvisioningErrorModel.Value.ValueString()
-			onPremisesProvisioningError.SetValue(&planValue)
-		} else {
-			onPremisesProvisioningErrorModel.Value = types.StringNull()
+			if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
+				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
+				onPremisesProvisioningError.SetValue(&planValue)
+			} else {
+				onPremisesProvisioningErrorModel.Value = types.StringNull()
+			}
 		}
+		requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
+	} else {
+		plan.OnPremisesProvisioningErrors = types.ListNull(plan.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
-	requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
 
 	if !plan.OnPremisesSamAccountName.IsUnknown() {
 		planOnPremisesSamAccountName := plan.OnPremisesSamAccountName.ValueString()
@@ -1431,34 +1451,38 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.PreferredLanguage = types.StringNull()
 	}
 
-	var planProvisionedPlans []models.ProvisionedPlanable
-	for _, i := range plan.ProvisionedPlans.Elements() {
-		provisionedPlan := models.NewProvisionedPlan()
-		provisionedPlanModel := userProvisionedPlansModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
+	if len(plan.ProvisionedPlans.Elements()) > 0 {
+		var planProvisionedPlans []models.ProvisionedPlanable
+		for _, i := range plan.ProvisionedPlans.Elements() {
+			provisionedPlan := models.NewProvisionedPlan()
+			provisionedPlanModel := userProvisionedPlansModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
 
-		if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
-			planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
-			provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
-		} else {
-			provisionedPlanModel.CapabilityStatus = types.StringNull()
-		}
+			if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
+				planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
+				provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
+			} else {
+				provisionedPlanModel.CapabilityStatus = types.StringNull()
+			}
 
-		if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
-			planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
-			provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
-		} else {
-			provisionedPlanModel.ProvisioningStatus = types.StringNull()
-		}
+			if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
+				planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
+				provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
+			} else {
+				provisionedPlanModel.ProvisioningStatus = types.StringNull()
+			}
 
-		if !provisionedPlanModel.Service.IsUnknown() {
-			planService := provisionedPlanModel.Service.ValueString()
-			provisionedPlan.SetService(&planService)
-		} else {
-			provisionedPlanModel.Service = types.StringNull()
+			if !provisionedPlanModel.Service.IsUnknown() {
+				planService := provisionedPlanModel.Service.ValueString()
+				provisionedPlan.SetService(&planService)
+			} else {
+				provisionedPlanModel.Service = types.StringNull()
+			}
 		}
+		requestBody.SetProvisionedPlans(planProvisionedPlans)
+	} else {
+		plan.ProvisionedPlans = types.ListNull(plan.ProvisionedPlans.ElementType(ctx))
 	}
-	requestBody.SetProvisionedPlans(planProvisionedPlans)
 
 	if len(plan.ProxyAddresses.Elements()) > 0 {
 		var proxyAddresses []string
@@ -1497,35 +1521,39 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.SecurityIdentifier = types.StringNull()
 	}
 
-	var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
-	for _, i := range plan.ServiceProvisioningErrors.Elements() {
-		serviceProvisioningError := models.NewServiceProvisioningError()
-		serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
+	if len(plan.ServiceProvisioningErrors.Elements()) > 0 {
+		var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
+		for _, i := range plan.ServiceProvisioningErrors.Elements() {
+			serviceProvisioningError := models.NewServiceProvisioningError()
+			serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
 
-		if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
-			planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
-			serviceProvisioningError.SetCreatedDateTime(&t)
-		} else {
-			serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
-		}
+			if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
+				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
+				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
+				serviceProvisioningError.SetCreatedDateTime(&t)
+			} else {
+				serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
+			}
 
-		if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
-			planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
-			serviceProvisioningError.SetIsResolved(&planIsResolved)
-		} else {
-			serviceProvisioningErrorModel.IsResolved = types.BoolNull()
-		}
+			if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
+				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
+				serviceProvisioningError.SetIsResolved(&planIsResolved)
+			} else {
+				serviceProvisioningErrorModel.IsResolved = types.BoolNull()
+			}
 
-		if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
-			planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
-			serviceProvisioningError.SetServiceInstance(&planServiceInstance)
-		} else {
-			serviceProvisioningErrorModel.ServiceInstance = types.StringNull()
+			if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
+				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
+				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
+			} else {
+				serviceProvisioningErrorModel.ServiceInstance = types.StringNull()
+			}
 		}
+		requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
+	} else {
+		plan.ServiceProvisioningErrors = types.ListNull(plan.ServiceProvisioningErrors.ElementType(ctx))
 	}
-	requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
 
 	if !plan.ShowInAddressList.IsUnknown() {
 		planShowInAddressList := plan.ShowInAddressList.ValueBool()
@@ -2562,70 +2590,78 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.AgeGroup = types.StringNull()
 	}
 
-	var planAssignedLicenses []models.AssignedLicenseable
-	for _, i := range plan.AssignedLicenses.Elements() {
-		assignedLicense := models.NewAssignedLicense()
-		assignedLicenseModel := userAssignedLicensesModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &assignedLicenseModel)
+	if len(plan.AssignedLicenses.Elements()) > 0 {
+		var planAssignedLicenses []models.AssignedLicenseable
+		for _, i := range plan.AssignedLicenses.Elements() {
+			assignedLicense := models.NewAssignedLicense()
+			assignedLicenseModel := userAssignedLicensesModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicenseModel)
 
-		if len(assignedLicenseModel.DisabledPlans.Elements()) > 0 {
-			var DisabledPlans []uuid.UUID
-			for _, i := range assignedLicenseModel.DisabledPlans.Elements() {
-				u, _ = uuid.Parse(i.String())
-				DisabledPlans = append(DisabledPlans, u)
+			if len(assignedLicenseModel.DisabledPlans.Elements()) > 0 {
+				var DisabledPlans []uuid.UUID
+				for _, i := range assignedLicenseModel.DisabledPlans.Elements() {
+					u, _ = uuid.Parse(i.String())
+					DisabledPlans = append(DisabledPlans, u)
+				}
+				assignedLicense.SetDisabledPlans(DisabledPlans)
+			} else {
+				assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
 			}
-			assignedLicense.SetDisabledPlans(DisabledPlans)
-		} else {
-			assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
-		}
 
-		if !assignedLicenseModel.SkuId.IsUnknown() {
-			planSkuId := assignedLicenseModel.SkuId.ValueString()
-			u, _ = uuid.Parse(planSkuId)
-			assignedLicense.SetSkuId(&u)
-		} else {
-			assignedLicenseModel.SkuId = types.StringNull()
+			if !assignedLicenseModel.SkuId.IsUnknown() {
+				planSkuId := assignedLicenseModel.SkuId.ValueString()
+				u, _ = uuid.Parse(planSkuId)
+				assignedLicense.SetSkuId(&u)
+			} else {
+				assignedLicenseModel.SkuId = types.StringNull()
+			}
 		}
+		requestBody.SetAssignedLicenses(planAssignedLicenses)
+	} else {
+		plan.AssignedLicenses = types.ListNull(plan.AssignedLicenses.ElementType(ctx))
 	}
-	requestBody.SetAssignedLicenses(planAssignedLicenses)
 
-	var planAssignedPlans []models.AssignedPlanable
-	for _, i := range plan.AssignedPlans.Elements() {
-		assignedPlan := models.NewAssignedPlan()
-		assignedPlanModel := userAssignedPlansModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
+	if len(plan.AssignedPlans.Elements()) > 0 {
+		var planAssignedPlans []models.AssignedPlanable
+		for _, i := range plan.AssignedPlans.Elements() {
+			assignedPlan := models.NewAssignedPlan()
+			assignedPlanModel := userAssignedPlansModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
 
-		if !assignedPlanModel.AssignedDateTime.IsUnknown() {
-			planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
-			assignedPlan.SetAssignedDateTime(&t)
-		} else {
-			assignedPlanModel.AssignedDateTime = types.StringNull()
+			if !assignedPlanModel.AssignedDateTime.IsUnknown() {
+				planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
+				t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
+				assignedPlan.SetAssignedDateTime(&t)
+			} else {
+				assignedPlanModel.AssignedDateTime = types.StringNull()
+			}
+
+			if !assignedPlanModel.CapabilityStatus.IsUnknown() {
+				planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
+				assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
+			} else {
+				assignedPlanModel.CapabilityStatus = types.StringNull()
+			}
+
+			if !assignedPlanModel.Service.IsUnknown() {
+				planService := assignedPlanModel.Service.ValueString()
+				assignedPlan.SetService(&planService)
+			} else {
+				assignedPlanModel.Service = types.StringNull()
+			}
+
+			if !assignedPlanModel.ServicePlanId.IsUnknown() {
+				planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
+				u, _ = uuid.Parse(planServicePlanId)
+				assignedPlan.SetServicePlanId(&u)
+			} else {
+				assignedPlanModel.ServicePlanId = types.StringNull()
+			}
 		}
-
-		if !assignedPlanModel.CapabilityStatus.IsUnknown() {
-			planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
-			assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
-		} else {
-			assignedPlanModel.CapabilityStatus = types.StringNull()
-		}
-
-		if !assignedPlanModel.Service.IsUnknown() {
-			planService := assignedPlanModel.Service.ValueString()
-			assignedPlan.SetService(&planService)
-		} else {
-			assignedPlanModel.Service = types.StringNull()
-		}
-
-		if !assignedPlanModel.ServicePlanId.IsUnknown() {
-			planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
-			u, _ = uuid.Parse(planServicePlanId)
-			assignedPlan.SetServicePlanId(&u)
-		} else {
-			assignedPlanModel.ServicePlanId = types.StringNull()
-		}
+		requestBody.SetAssignedPlans(planAssignedPlans)
+	} else {
+		plan.AssignedPlans = types.ListNull(plan.AssignedPlans.ElementType(ctx))
 	}
-	requestBody.SetAssignedPlans(planAssignedPlans)
 
 	authorizationInfo := models.NewAuthorizationInfo()
 	authorizationInfoModel := userAuthorizationInfoModel{}
@@ -2787,34 +2823,38 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.GivenName = types.StringNull()
 	}
 
-	var planIdentities []models.ObjectIdentityable
-	for _, i := range plan.Identities.Elements() {
-		objectIdentity := models.NewObjectIdentity()
-		objectIdentityModel := userIdentitiesModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
+	if len(plan.Identities.Elements()) > 0 {
+		var planIdentities []models.ObjectIdentityable
+		for _, i := range plan.Identities.Elements() {
+			objectIdentity := models.NewObjectIdentity()
+			objectIdentityModel := userIdentitiesModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
 
-		if !objectIdentityModel.Issuer.IsUnknown() {
-			planIssuer := objectIdentityModel.Issuer.ValueString()
-			objectIdentity.SetIssuer(&planIssuer)
-		} else {
-			objectIdentityModel.Issuer = types.StringNull()
-		}
+			if !objectIdentityModel.Issuer.IsUnknown() {
+				planIssuer := objectIdentityModel.Issuer.ValueString()
+				objectIdentity.SetIssuer(&planIssuer)
+			} else {
+				objectIdentityModel.Issuer = types.StringNull()
+			}
 
-		if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
-			planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
-			objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
-		} else {
-			objectIdentityModel.IssuerAssignedId = types.StringNull()
-		}
+			if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
+				planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
+				objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
+			} else {
+				objectIdentityModel.IssuerAssignedId = types.StringNull()
+			}
 
-		if !objectIdentityModel.SignInType.IsUnknown() {
-			planSignInType := objectIdentityModel.SignInType.ValueString()
-			objectIdentity.SetSignInType(&planSignInType)
-		} else {
-			objectIdentityModel.SignInType = types.StringNull()
+			if !objectIdentityModel.SignInType.IsUnknown() {
+				planSignInType := objectIdentityModel.SignInType.ValueString()
+				objectIdentity.SetSignInType(&planSignInType)
+			} else {
+				objectIdentityModel.SignInType = types.StringNull()
+			}
 		}
+		requestBody.SetIdentities(planIdentities)
+	} else {
+		plan.Identities = types.ListNull(plan.Identities.ElementType(ctx))
 	}
-	requestBody.SetIdentities(planIdentities)
 
 	if len(plan.ImAddresses.Elements()) > 0 {
 		var imAddresses []string
@@ -2865,61 +2905,65 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.LegalAgeGroupClassification = types.StringNull()
 	}
 
-	var planLicenseAssignmentStates []models.LicenseAssignmentStateable
-	for _, i := range plan.LicenseAssignmentStates.Elements() {
-		licenseAssignmentState := models.NewLicenseAssignmentState()
-		licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
+	if len(plan.LicenseAssignmentStates.Elements()) > 0 {
+		var planLicenseAssignmentStates []models.LicenseAssignmentStateable
+		for _, i := range plan.LicenseAssignmentStates.Elements() {
+			licenseAssignmentState := models.NewLicenseAssignmentState()
+			licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
 
-		if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
-			planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
-			licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
-		} else {
-			licenseAssignmentStateModel.AssignedByGroup = types.StringNull()
-		}
-
-		if len(licenseAssignmentStateModel.DisabledPlans.Elements()) > 0 {
-			var DisabledPlans []uuid.UUID
-			for _, i := range licenseAssignmentStateModel.DisabledPlans.Elements() {
-				u, _ = uuid.Parse(i.String())
-				DisabledPlans = append(DisabledPlans, u)
+			if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
+				planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
+				licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
+			} else {
+				licenseAssignmentStateModel.AssignedByGroup = types.StringNull()
 			}
-			licenseAssignmentState.SetDisabledPlans(DisabledPlans)
-		} else {
-			licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
-		}
 
-		if !licenseAssignmentStateModel.Error.IsUnknown() {
-			planError := licenseAssignmentStateModel.Error.ValueString()
-			licenseAssignmentState.SetError(&planError)
-		} else {
-			licenseAssignmentStateModel.Error = types.StringNull()
-		}
+			if len(licenseAssignmentStateModel.DisabledPlans.Elements()) > 0 {
+				var DisabledPlans []uuid.UUID
+				for _, i := range licenseAssignmentStateModel.DisabledPlans.Elements() {
+					u, _ = uuid.Parse(i.String())
+					DisabledPlans = append(DisabledPlans, u)
+				}
+				licenseAssignmentState.SetDisabledPlans(DisabledPlans)
+			} else {
+				licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
+			}
 
-		if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
-			planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
-			licenseAssignmentState.SetLastUpdatedDateTime(&t)
-		} else {
-			licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
-		}
+			if !licenseAssignmentStateModel.Error.IsUnknown() {
+				planError := licenseAssignmentStateModel.Error.ValueString()
+				licenseAssignmentState.SetError(&planError)
+			} else {
+				licenseAssignmentStateModel.Error = types.StringNull()
+			}
 
-		if !licenseAssignmentStateModel.SkuId.IsUnknown() {
-			planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
-			u, _ = uuid.Parse(planSkuId)
-			licenseAssignmentState.SetSkuId(&u)
-		} else {
-			licenseAssignmentStateModel.SkuId = types.StringNull()
-		}
+			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
+				planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
+				t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
+				licenseAssignmentState.SetLastUpdatedDateTime(&t)
+			} else {
+				licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
+			}
 
-		if !licenseAssignmentStateModel.State.IsUnknown() {
-			planState := licenseAssignmentStateModel.State.ValueString()
-			licenseAssignmentState.SetState(&planState)
-		} else {
-			licenseAssignmentStateModel.State = types.StringNull()
+			if !licenseAssignmentStateModel.SkuId.IsUnknown() {
+				planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
+				u, _ = uuid.Parse(planSkuId)
+				licenseAssignmentState.SetSkuId(&u)
+			} else {
+				licenseAssignmentStateModel.SkuId = types.StringNull()
+			}
+
+			if !licenseAssignmentStateModel.State.IsUnknown() {
+				planState := licenseAssignmentStateModel.State.ValueString()
+				licenseAssignmentState.SetState(&planState)
+			} else {
+				licenseAssignmentStateModel.State = types.StringNull()
+			}
 		}
+		requestBody.SetLicenseAssignmentStates(planLicenseAssignmentStates)
+	} else {
+		plan.LicenseAssignmentStates = types.ListNull(plan.LicenseAssignmentStates.ElementType(ctx))
 	}
-	requestBody.SetLicenseAssignmentStates(planLicenseAssignmentStates)
 
 	if !plan.Mail.IsUnknown() {
 		planMail := plan.Mail.ValueString()
@@ -3088,42 +3132,46 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 
-	var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
-	for _, i := range plan.OnPremisesProvisioningErrors.Elements() {
-		onPremisesProvisioningError := models.NewOnPremisesProvisioningError()
-		onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
+	if len(plan.OnPremisesProvisioningErrors.Elements()) > 0 {
+		var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
+		for _, i := range plan.OnPremisesProvisioningErrors.Elements() {
+			onPremisesProvisioningError := models.NewOnPremisesProvisioningError()
+			onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
 
-		if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
-			planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
-			onPremisesProvisioningError.SetCategory(&planCategory)
-		} else {
-			onPremisesProvisioningErrorModel.Category = types.StringNull()
-		}
+			if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
+				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
+				onPremisesProvisioningError.SetCategory(&planCategory)
+			} else {
+				onPremisesProvisioningErrorModel.Category = types.StringNull()
+			}
 
-		if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
-			planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
-			onPremisesProvisioningError.SetOccurredDateTime(&t)
-		} else {
-			onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
-		}
+			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
+				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
+				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
+				onPremisesProvisioningError.SetOccurredDateTime(&t)
+			} else {
+				onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
+			}
 
-		if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
-			planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
-			onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
-		} else {
-			onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
-		}
+			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
+				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
+				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
+			} else {
+				onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
+			}
 
-		if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
-			planValue := onPremisesProvisioningErrorModel.Value.ValueString()
-			onPremisesProvisioningError.SetValue(&planValue)
-		} else {
-			onPremisesProvisioningErrorModel.Value = types.StringNull()
+			if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
+				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
+				onPremisesProvisioningError.SetValue(&planValue)
+			} else {
+				onPremisesProvisioningErrorModel.Value = types.StringNull()
+			}
 		}
+		requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
+	} else {
+		plan.OnPremisesProvisioningErrors = types.ListNull(plan.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
-	requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
 
 	if !plan.OnPremisesSamAccountName.IsUnknown() {
 		planOnPremisesSamAccountName := plan.OnPremisesSamAccountName.ValueString()
@@ -3227,34 +3275,38 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.PreferredLanguage = types.StringNull()
 	}
 
-	var planProvisionedPlans []models.ProvisionedPlanable
-	for _, i := range plan.ProvisionedPlans.Elements() {
-		provisionedPlan := models.NewProvisionedPlan()
-		provisionedPlanModel := userProvisionedPlansModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
+	if len(plan.ProvisionedPlans.Elements()) > 0 {
+		var planProvisionedPlans []models.ProvisionedPlanable
+		for _, i := range plan.ProvisionedPlans.Elements() {
+			provisionedPlan := models.NewProvisionedPlan()
+			provisionedPlanModel := userProvisionedPlansModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
 
-		if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
-			planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
-			provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
-		} else {
-			provisionedPlanModel.CapabilityStatus = types.StringNull()
-		}
+			if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
+				planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
+				provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
+			} else {
+				provisionedPlanModel.CapabilityStatus = types.StringNull()
+			}
 
-		if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
-			planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
-			provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
-		} else {
-			provisionedPlanModel.ProvisioningStatus = types.StringNull()
-		}
+			if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
+				planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
+				provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
+			} else {
+				provisionedPlanModel.ProvisioningStatus = types.StringNull()
+			}
 
-		if !provisionedPlanModel.Service.IsUnknown() {
-			planService := provisionedPlanModel.Service.ValueString()
-			provisionedPlan.SetService(&planService)
-		} else {
-			provisionedPlanModel.Service = types.StringNull()
+			if !provisionedPlanModel.Service.IsUnknown() {
+				planService := provisionedPlanModel.Service.ValueString()
+				provisionedPlan.SetService(&planService)
+			} else {
+				provisionedPlanModel.Service = types.StringNull()
+			}
 		}
+		requestBody.SetProvisionedPlans(planProvisionedPlans)
+	} else {
+		plan.ProvisionedPlans = types.ListNull(plan.ProvisionedPlans.ElementType(ctx))
 	}
-	requestBody.SetProvisionedPlans(planProvisionedPlans)
 
 	if len(plan.ProxyAddresses.Elements()) > 0 {
 		var proxyAddresses []string
@@ -3293,35 +3345,39 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.SecurityIdentifier = types.StringNull()
 	}
 
-	var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
-	for _, i := range plan.ServiceProvisioningErrors.Elements() {
-		serviceProvisioningError := models.NewServiceProvisioningError()
-		serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
-		types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
+	if len(plan.ServiceProvisioningErrors.Elements()) > 0 {
+		var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
+		for _, i := range plan.ServiceProvisioningErrors.Elements() {
+			serviceProvisioningError := models.NewServiceProvisioningError()
+			serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
 
-		if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
-			planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
-			serviceProvisioningError.SetCreatedDateTime(&t)
-		} else {
-			serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
-		}
+			if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
+				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
+				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
+				serviceProvisioningError.SetCreatedDateTime(&t)
+			} else {
+				serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
+			}
 
-		if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
-			planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
-			serviceProvisioningError.SetIsResolved(&planIsResolved)
-		} else {
-			serviceProvisioningErrorModel.IsResolved = types.BoolNull()
-		}
+			if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
+				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
+				serviceProvisioningError.SetIsResolved(&planIsResolved)
+			} else {
+				serviceProvisioningErrorModel.IsResolved = types.BoolNull()
+			}
 
-		if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
-			planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
-			serviceProvisioningError.SetServiceInstance(&planServiceInstance)
-		} else {
-			serviceProvisioningErrorModel.ServiceInstance = types.StringNull()
+			if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
+				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
+				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
+			} else {
+				serviceProvisioningErrorModel.ServiceInstance = types.StringNull()
+			}
 		}
+		requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
+	} else {
+		plan.ServiceProvisioningErrors = types.ListNull(plan.ServiceProvisioningErrors.ElementType(ctx))
 	}
-	requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
 
 	if !plan.ShowInAddressList.IsUnknown() {
 		planShowInAddressList := plan.ShowInAddressList.ValueBool()
