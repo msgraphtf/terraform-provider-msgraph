@@ -15,7 +15,3 @@ data "msgraph_user" "user" {
 	//user_principal_name = "AdeleV@msgraphtf.onmicrosoft.com"
 }
 
-output "my_data" {
-	value = data.msgraph_user.user
-}
-
