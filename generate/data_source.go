@@ -85,7 +85,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			}
 		} else if behaviourMode == "Resource" {
 			newSchema.Optional = true
-			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) {
+			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) || slices.Contains(augment.ResourceExtraComputed, newSchema.AttributeName) {
 				newSchema.Computed = true
 			}
 		}
@@ -563,9 +563,10 @@ type templateInput struct {
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
 type templateAugment struct {
-	DataSourceExtraOptionals []string            `yaml:"dataSourceExtraOptionals"`
-	AltReadMethods               []map[string]string `yaml:"altReadMethods"`
 	ExcludedProperties       []string            `yaml:"excludedProperties"`
+	AltReadMethods           []map[string]string `yaml:"altReadMethods"`
+	DataSourceExtraOptionals []string            `yaml:"dataSourceExtraOptionals"`
+	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
 }
 
 func generateDataSource(pathname string) {

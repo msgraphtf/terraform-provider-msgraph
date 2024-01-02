@@ -1,10 +1,23 @@
-dataSourceExtraOptionals:
-  - user_principal_name
-altReadMethods:
-  - if: UserPrincipalName
-    method: "Users().ByUserId(state.UserPrincipalName.ValueString())"
 excludedProperties:
   - mailboxSettings # Only works for the signed in user
   - deviceEnrollmentLimit # Seems to be bugged
   - print # Seems to be bugged
   - customSecurityAttributes # Some kind of special Odata thing
+dataSourceExtraOptionals:
+  - user_principal_name
+altReadMethods:
+  - if: UserPrincipalName
+    method: "Users().ByUserId(state.UserPrincipalName.ValueString())"
+resourceExtraComputed:
+  - authorization_info
+  - birthday
+  - created_date_time
+  - hire_date
+  - identities
+  - last_password_change_date_time
+  - on_premise_extension_attributes
+  - force_change_password_at_next_sign_in
+  - force_change_password_at_next_sign_in_with_mfa
+  - security_identifier
+  - sign_in_sessions_valid_from_date_time
+  - user_type

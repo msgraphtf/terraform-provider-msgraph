@@ -115,6 +115,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"authorization_info": schema.SingleNestedAttribute{
 				Description: "",
 				Optional:    true,
+				Computed:    true,
 				Attributes: map[string]schema.Attribute{
 					"certificate_user_ids": schema.ListAttribute{
 						Description: "",
@@ -126,6 +127,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"birthday": schema.StringAttribute{
 				Description: "The birthday of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014, is 2014-01-01T00:00:00Z. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"business_phones": schema.ListAttribute{
 				Description: "The telephone numbers for the user. NOTE: Although it is a string collection, only one number can be set for this property. Read-only for users synced from the on-premises directory. Returned by default. Supports $filter (eq, not, ge, le, startsWith).",
@@ -151,6 +153,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"created_date_time": schema.StringAttribute{
 				Description: "The date and time the user was created, in ISO 8601 format and UTC. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Microsoft Entra ID. Property is null for some users created before June 2018 and on-premises users that were synced to Microsoft Entra ID before June 2018. Read-only. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).",
 				Optional:    true,
+				Computed:    true,
 			},
 			"creation_type": schema.StringAttribute{
 				Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by an external user signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
@@ -213,10 +216,12 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"hire_date": schema.StringAttribute{
 				Description: "The hire date of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014, is 2014-01-01T00:00:00Z. Returned only on $select.  Note: This property is specific to SharePoint Online. We recommend using the native employeeHireDate property to set and update hire date values using Microsoft Graph APIs.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"identities": schema.ListNestedAttribute{
 				Description: "Represents the identities that can be used to sign in to this user account. Microsoft (also known as a local account), organizations, or social identity providers such as Facebook, Google, and Microsoft can provide identity and tie it to a user account. It may contain multiple items with the same signInType value. Returned only on $select. Supports $filter (eq) including on null values, only where the signInType is not userPrincipalName.",
 				Optional:    true,
+				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"issuer": schema.StringAttribute{
@@ -255,6 +260,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"last_password_change_date_time": schema.StringAttribute{
 				Description: "The time when this Microsoft Entra user last changed their password or when their password was created, whichever date the latest action was performed. The date and time information uses ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"legal_age_group_classification": schema.StringAttribute{
 				Description: "Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, MinorWithOutParentalConsent, MinorWithParentalConsent, MinorNoParentalConsentRequired, NotAdult, and Adult. Refer to the legal age group property definitions for further information. Returned only on $select.",
@@ -521,6 +527,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"security_identifier": schema.StringAttribute{
 				Description: "Security identifier (SID) of the user, used in Windows scenarios. Read-only. Returned by default. Supports $select and $filter (eq, not, ge, le, startsWith).",
 				Optional:    true,
+				Computed:    true,
 			},
 			"service_provisioning_errors": schema.ListNestedAttribute{
 				Description: "Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a user object .  Supports $filter (eq, not, for isResolved and serviceInstance).",
@@ -530,6 +537,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"created_date_time": schema.StringAttribute{
 							Description: "The date and time at which the error occurred.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"is_resolved": schema.BoolAttribute{
 							Description: "Indicates whether the error has been attended to.",
@@ -571,6 +579,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"sign_in_sessions_valid_from_date_time": schema.StringAttribute{
 				Description: "Any refresh tokens or sessions tokens (session cookies) issued before this time are invalid, and applications get an error when using an invalid refresh or sessions token to acquire a delegated access token (to access APIs such as Microsoft Graph).  If this happens, the application needs to acquire a new refresh token by requesting the authorized endpoint. Read-only. Use revokeSignInSessions to reset. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"skills": schema.ListAttribute{
 				Description: "A list for the user to enumerate their skills. Returned only on $select.",
@@ -600,6 +609,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"user_type": schema.StringAttribute{
 				Description: "A string value that can be used to classify user types in your directory, such as Member and Guest. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values). NOTE: For more information about the permissions for member and guest users, see What are the default user permissions in Microsoft Entra ID?",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 	}
