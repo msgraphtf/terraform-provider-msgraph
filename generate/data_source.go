@@ -17,20 +17,20 @@ type strWithCases struct {
 	string
 }
 
-func (t strWithCases) LowerCamel() string {
-	return strcase.ToLowerCamel(t.string)
+func (s strWithCases) LowerCamel() string {
+	return strcase.ToLowerCamel(s.string)
 }
 
-func (t strWithCases) UpperCamel() string {
-	return strcase.ToCamel(t.string)
+func (s strWithCases) UpperCamel() string {
+	return strcase.ToCamel(s.string)
 }
 
-func (t strWithCases) Snake() string {
-	return strcase.ToSnake(t.string)
+func (s strWithCases) Snake() string {
+	return strcase.ToSnake(s.string)
 }
 
-func (t strWithCases) UpperFirst() string {
-	return strings.ToUpper(t.string[0:1]) + t.string[1:]
+func (s strWithCases) UpperFirst() string {
+	return strings.ToUpper(s.string[0:1]) + s.string[1:]
 }
 
 func upperFirst(s string) string {
