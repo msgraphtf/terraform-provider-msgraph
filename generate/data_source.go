@@ -247,7 +247,7 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 
 	for _, property := range schemaObject.Properties {
 
-		if slices.Contains(augment.ExcludedProperties, property.Name) || slices.Contains(augment.CreateExcludedProperties, property.Name) {
+		if slices.Contains(augment.ExcludedProperties, property.Name) {
 			continue
 		}
 
@@ -566,7 +566,6 @@ type templateAugment struct {
 	ExtraOptionals           []string            `yaml:"extraOptionals"`
 	AltMethods               []map[string]string `yaml:"altMethods"`
 	ExcludedProperties       []string            `yaml:"excludedProperties"`
-	CreateExcludedProperties []string            `yaml:"createExcludedProperties"`
 }
 
 func generateDataSource(pathname string) {
