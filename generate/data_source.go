@@ -130,8 +130,8 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 
 // Used by templates defined inside of data_source_template.go to generate the data models
 type terraformModel struct {
-	ModelName string
-	ModelFields    []terraformModelField
+	ModelName   string
+	ModelFields []terraformModelField
 }
 
 type terraformModelField struct {
@@ -173,10 +173,10 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 		}
 
 		newModelField := terraformModelField{
-			FieldName: upperFirst(property.Name),
+			FieldName:     upperFirst(property.Name),
 			AttributeName: strcase.ToSnake(property.Name),
-			ModelVarName: blockName + upperFirst(property.Name),
-			ModelName: blockName + upperFirst(property.Name) + "Model",
+			ModelVarName:  blockName + upperFirst(property.Name),
+			ModelName:     blockName + upperFirst(property.Name) + "Model",
 		}
 
 		switch property.Type {
@@ -230,14 +230,14 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 }
 
 type createRequestBody struct {
-	BlockName string
-	AttributeName strWithCases
-	AttributeType string
-	PlanVar  string
-	PlanValueMethod    string
-	RequestBodyVar string
-	NewModelMethod string
-	NestedCreate  []createRequestBody
+	BlockName       string
+	AttributeName   strWithCases
+	AttributeType   string
+	PlanVar         string
+	PlanValueMethod string
+	RequestBodyVar  string
+	NewModelMethod  string
+	NestedCreate    []createRequestBody
 }
 
 func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
@@ -250,7 +250,7 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		}
 
 		newCreateRequest := createRequestBody{
-			BlockName: blockName,
+			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
 		}
 
@@ -265,7 +265,6 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 			newCreateRequest.RequestBodyVar = "requestBody"
 			newCreateRequest.PlanVar = "plan."
 		}
-
 
 		switch property.Type {
 		case "string":
@@ -336,8 +335,8 @@ func generateCreateRequest() createRequest {
 		postMethod = append(postMethod, *newMethod)
 	}
 
-	var cr = createRequest {
-		BlockName: blockName,
+	var cr = createRequest{
+		BlockName:  blockName,
 		PostMethod: postMethod,
 	}
 
@@ -369,8 +368,8 @@ func generateUpdateRequest() updateRequest {
 		postMethod = append(postMethod, *newMethod)
 	}
 
-	var ur = updateRequest {
-		BlockName: blockName,
+	var ur = updateRequest{
+		BlockName:  blockName,
 		PostMethod: postMethod,
 	}
 
@@ -380,17 +379,17 @@ func generateUpdateRequest() updateRequest {
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type readQuery struct {
-	BlockName             strWithCases
-	Configuration         string
-	SelectParameters      []string
+	BlockName                   strWithCases
+	Configuration               string
+	SelectParameters            []string
 	MultipleGetMethodParameters bool
-	GetMethod             []queryMethod
-	AltGetMethod          []map[string]string
-	ErrorAttribute        string
-	ErrorExtraAttributes  []string
+	GetMethod                   []queryMethod
+	AltGetMethod                []map[string]string
+	ErrorAttribute              string
+	ErrorExtraAttributes        []string
 }
 
-// Represents a method used to perform a query using msgraph-sdk-go 
+// Represents a method used to perform a query using msgraph-sdk-go
 type queryMethod struct {
 	MethodName string
 	Parameter  string
@@ -413,7 +412,6 @@ func generateReadQuery() readQuery {
 	} else {
 		rq.Configuration += "MISSING"
 	}
-
 
 	// Generate ReadQuery.SelectParameters
 	for _, parameter := range pathObject.Get.SelectParameters {
@@ -451,7 +449,7 @@ func generateReadQuery() readQuery {
 
 	// Generate ReadQuery.ErrorAttribute
 	for _, schema := range input.Schema {
-		if schema.Optional && rq.ErrorAttribute == ""{
+		if schema.Optional && rq.ErrorAttribute == "" {
 			rq.ErrorAttribute = schema.AttributeName
 		} else if schema.Optional {
 			rq.ErrorExtraAttributes = append(rq.ErrorExtraAttributes, schema.AttributeName)
@@ -464,12 +462,12 @@ func generateReadQuery() readQuery {
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type readResponse struct {
-	GetMethod      string
-	StateVarName   string
-	ModelVarName   string
-	ModelName      string
-	AttributeType  string
-	NestedRead     []readResponse
+	GetMethod     string
+	StateVarName  string
+	ModelVarName  string
+	ModelName     string
+	AttributeType string
+	NestedRead    []readResponse
 }
 
 func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
@@ -481,9 +479,9 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 		}
 
 		newReadResponse := readResponse{
-			GetMethod:      "Get" + upperFirst(property.Name) + "()",
-			ModelName:      blockName + upperFirst(property.Name) + "Model",
-			ModelVarName:   property.Name,
+			GetMethod:    "Get" + upperFirst(property.Name) + "()",
+			ModelName:    blockName + upperFirst(property.Name) + "Model",
+			ModelVarName: property.Name,
 		}
 
 		if property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
@@ -550,22 +548,22 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 }
 
 type templateInput struct {
-	PackageName    string
-	BlockName      strWithCases
-	Schema         []terraformSchema
-	Model          []terraformModel
-	CreateRequestBody  []createRequestBody
-	CreateRequest  createRequest
-	ReadQuery      readQuery
-	ReadResponse   []readResponse
-	UpdateRequest  updateRequest
+	PackageName       string
+	BlockName         strWithCases
+	Schema            []terraformSchema
+	Model             []terraformModel
+	CreateRequestBody []createRequestBody
+	CreateRequest     createRequest
+	ReadQuery         readQuery
+	ReadResponse      []readResponse
+	UpdateRequest     updateRequest
 }
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
 type templateAugment struct {
-	ExtraOptionals     []string            `yaml:"extraOptionals"`
-	AltMethods         []map[string]string `yaml:"altMethods"`
-	ExcludedProperties []string            `yaml:"excludedProperties"`
+	ExtraOptionals           []string            `yaml:"extraOptionals"`
+	AltMethods               []map[string]string `yaml:"altMethods"`
+	ExcludedProperties       []string            `yaml:"excludedProperties"`
 	CreateExcludedProperties []string            `yaml:"createExcludedProperties"`
 }
 
@@ -603,15 +601,15 @@ func generateDataSource(pathname string) {
 	}
 
 	// Set input values to top level template
-	input.PackageName  = packageName
-	input.BlockName    = strWithCases{blockName}
-	input.Schema       = generateSchema(nil, schemaObject, "DataSource") // Generate  Schema from OpenAPI Schama properties
-	input.Model        = generateModel("", nil, schemaObject) // Generate  model from OpenAPI schema
-	input.ReadQuery    = generateReadQuery()
+	input.PackageName = packageName
+	input.BlockName = strWithCases{blockName}
+	input.Schema = generateSchema(nil, schemaObject, "DataSource") // Generate  Schema from OpenAPI Schama properties
+	input.Model = generateModel("", nil, schemaObject)             // Generate  model from OpenAPI schema
+	input.ReadQuery = generateReadQuery()
 	input.ReadResponse = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
 	// Create directory for package
-	os.Mkdir("msgraph/" + packageName + "/", os.ModePerm)
+	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)
 
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
@@ -630,10 +628,10 @@ func generateDataSource(pathname string) {
 
 	if pathObject.Patch.Summary != "" {
 
-		input.Schema            = generateSchema(nil, schemaObject, "Resource")
+		input.Schema = generateSchema(nil, schemaObject, "Resource")
 		input.CreateRequestBody = generateCreateRequestBody(schemaObject, nil)
-		input.CreateRequest     = generateCreateRequest()
-		input.UpdateRequest     = generateUpdateRequest()
+		input.CreateRequest = generateCreateRequest()
+		input.UpdateRequest = generateUpdateRequest()
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
