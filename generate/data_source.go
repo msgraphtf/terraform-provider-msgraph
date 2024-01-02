@@ -232,9 +232,10 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 }
 
 type createRequestBody struct {
+	AttributeType   string
 	BlockName       string
 	AttributeName   strWithCases
-	AttributeType   string
+	IfCondition     string
 	PlanVar         string
 	PlanValueMethod string
 	RequestBodyVar  string
@@ -254,6 +255,7 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		newCreateRequest := createRequestBody{
 			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
+			IfCondition: "Null",
 		}
 
 		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {
