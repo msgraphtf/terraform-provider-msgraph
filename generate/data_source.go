@@ -80,7 +80,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			newSchema.Computed = true
 			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) {
 				newSchema.Optional = true
-			} else if slices.Contains(augment.ExtraOptionals, newSchema.AttributeName) {
+			} else if slices.Contains(augment.DataSourceExtraOptionals, newSchema.AttributeName) {
 				newSchema.Optional = true
 			}
 		} else if behaviourMode == "Resource" {
@@ -440,7 +440,7 @@ func generateReadQuery() readQuery {
 	rq.GetMethod = getMethod
 
 	// Generate ReadQuery.AltMethod
-	rq.AltGetMethod = augment.AltMethods
+	rq.AltGetMethod = augment.AltReadMethods
 
 	// Generate ReadQuery.GetMethodParametersCount
 	for _, p := range pathFields[1:] {
@@ -563,8 +563,8 @@ type templateInput struct {
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
 type templateAugment struct {
-	ExtraOptionals           []string            `yaml:"extraOptionals"`
-	AltMethods               []map[string]string `yaml:"altMethods"`
+	DataSourceExtraOptionals []string            `yaml:"dataSourceExtraOptionals"`
+	AltReadMethods               []map[string]string `yaml:"altReadMethods"`
 	ExcludedProperties       []string            `yaml:"excludedProperties"`
 }
 

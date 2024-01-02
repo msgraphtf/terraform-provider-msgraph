@@ -1,6 +1,6 @@
-extraOptionals:
+dataSourceExtraOptionals:
   - user_principal_name
-altMethods:
+altReadMethods:
   - if: UserPrincipalName
     method: "Users().ByUserId(state.UserPrincipalName.ValueString())"
 excludedProperties:
@@ -8,4 +8,3 @@ excludedProperties:
   - deviceEnrollmentLimit # Seems to be bugged
   - print # Seems to be bugged
   - customSecurityAttributes # Some kind of special Odata thing
-createExcludedProperties:
