@@ -9,10 +9,3 @@ excludedProperties:
   - print # Seems to be bugged
   - customSecurityAttributes # Some kind of special Odata thing
 createExcludedProperties:
-  - aboutMe # None of these are allowed during user creation
-  - birthday
-  - hireDate
-  - mySite
-  - preferredName
-  - signInActivity
-  - deletedDateTime # Read-only

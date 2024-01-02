@@ -752,6 +752,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Id = types.StringNull()
 	}
 
+	if !plan.DeletedDateTime.IsUnknown() {
+		planDeletedDateTime := plan.DeletedDateTime.ValueString()
+		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
+		requestBody.SetDeletedDateTime(&t)
+	} else {
+		plan.DeletedDateTime = types.StringNull()
+	}
+
+	if !plan.AboutMe.IsUnknown() {
+		planAboutMe := plan.AboutMe.ValueString()
+		requestBody.SetAboutMe(&planAboutMe)
+	} else {
+		plan.AboutMe = types.StringNull()
+	}
+
 	if !plan.AccountEnabled.IsUnknown() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
@@ -856,6 +871,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetAuthorizationInfo(authorizationInfo)
 	} else {
 		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
+	}
+
+	if !plan.Birthday.IsUnknown() {
+		planBirthday := plan.Birthday.ValueString()
+		t, _ = time.Parse(time.RFC3339, planBirthday)
+		requestBody.SetBirthday(&t)
+	} else {
+		plan.Birthday = types.StringNull()
 	}
 
 	if len(plan.BusinessPhones.Elements()) > 0 {
@@ -1005,6 +1028,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetGivenName(&planGivenName)
 	} else {
 		plan.GivenName = types.StringNull()
+	}
+
+	if !plan.HireDate.IsUnknown() {
+		planHireDate := plan.HireDate.ValueString()
+		t, _ = time.Parse(time.RFC3339, planHireDate)
+		requestBody.SetHireDate(&t)
+	} else {
+		plan.HireDate = types.StringNull()
 	}
 
 	if len(plan.Identities.Elements()) > 0 {
@@ -1168,6 +1199,13 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
 		plan.MobilePhone = types.StringNull()
+	}
+
+	if !plan.MySite.IsUnknown() {
+		planMySite := plan.MySite.ValueString()
+		requestBody.SetMySite(&planMySite)
+	} else {
+		plan.MySite = types.StringNull()
 	}
 
 	if !plan.OfficeLocation.IsUnknown() {
@@ -1467,6 +1505,13 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.PreferredLanguage = types.StringNull()
 	}
 
+	if !plan.PreferredName.IsUnknown() {
+		planPreferredName := plan.PreferredName.ValueString()
+		requestBody.SetPreferredName(&planPreferredName)
+	} else {
+		plan.PreferredName = types.StringNull()
+	}
+
 	if len(plan.ProvisionedPlans.Elements()) > 0 {
 		var planProvisionedPlans []models.ProvisionedPlanable
 		for _, i := range plan.ProvisionedPlans.Elements() {
@@ -1576,6 +1621,45 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBody.SetShowInAddressList(&planShowInAddressList)
 	} else {
 		plan.ShowInAddressList = types.BoolNull()
+	}
+
+	if !plan.SignInActivity.IsUnknown() {
+		signInActivity := models.NewSignInActivity()
+		signInActivityModel := userSignInActivityModel{}
+		plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
+
+		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
+			planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
+			t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
+			signInActivity.SetLastNonInteractiveSignInDateTime(&t)
+		} else {
+			signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
+		}
+
+		if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
+			planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
+			signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
+		} else {
+			signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
+		}
+
+		if !signInActivityModel.LastSignInDateTime.IsUnknown() {
+			planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
+			t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
+			signInActivity.SetLastSignInDateTime(&t)
+		} else {
+			signInActivityModel.LastSignInDateTime = types.StringNull()
+		}
+
+		if !signInActivityModel.LastSignInRequestId.IsUnknown() {
+			planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
+			signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
+		} else {
+			signInActivityModel.LastSignInRequestId = types.StringNull()
+		}
+		requestBody.SetSignInActivity(signInActivity)
+	} else {
+		plan.SignInActivity = types.ObjectNull(plan.SignInActivity.AttributeTypes(ctx))
 	}
 
 	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
@@ -2592,6 +2676,21 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.Id = types.StringNull()
 	}
 
+	if !plan.DeletedDateTime.IsUnknown() {
+		planDeletedDateTime := plan.DeletedDateTime.ValueString()
+		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
+		requestBody.SetDeletedDateTime(&t)
+	} else {
+		plan.DeletedDateTime = types.StringNull()
+	}
+
+	if !plan.AboutMe.IsUnknown() {
+		planAboutMe := plan.AboutMe.ValueString()
+		requestBody.SetAboutMe(&planAboutMe)
+	} else {
+		plan.AboutMe = types.StringNull()
+	}
+
 	if !plan.AccountEnabled.IsUnknown() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
@@ -2696,6 +2795,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetAuthorizationInfo(authorizationInfo)
 	} else {
 		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
+	}
+
+	if !plan.Birthday.IsUnknown() {
+		planBirthday := plan.Birthday.ValueString()
+		t, _ = time.Parse(time.RFC3339, planBirthday)
+		requestBody.SetBirthday(&t)
+	} else {
+		plan.Birthday = types.StringNull()
 	}
 
 	if len(plan.BusinessPhones.Elements()) > 0 {
@@ -2845,6 +2952,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetGivenName(&planGivenName)
 	} else {
 		plan.GivenName = types.StringNull()
+	}
+
+	if !plan.HireDate.IsUnknown() {
+		planHireDate := plan.HireDate.ValueString()
+		t, _ = time.Parse(time.RFC3339, planHireDate)
+		requestBody.SetHireDate(&t)
+	} else {
+		plan.HireDate = types.StringNull()
 	}
 
 	if len(plan.Identities.Elements()) > 0 {
@@ -3008,6 +3123,13 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
 		plan.MobilePhone = types.StringNull()
+	}
+
+	if !plan.MySite.IsUnknown() {
+		planMySite := plan.MySite.ValueString()
+		requestBody.SetMySite(&planMySite)
+	} else {
+		plan.MySite = types.StringNull()
 	}
 
 	if !plan.OfficeLocation.IsUnknown() {
@@ -3307,6 +3429,13 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.PreferredLanguage = types.StringNull()
 	}
 
+	if !plan.PreferredName.IsUnknown() {
+		planPreferredName := plan.PreferredName.ValueString()
+		requestBody.SetPreferredName(&planPreferredName)
+	} else {
+		plan.PreferredName = types.StringNull()
+	}
+
 	if len(plan.ProvisionedPlans.Elements()) > 0 {
 		var planProvisionedPlans []models.ProvisionedPlanable
 		for _, i := range plan.ProvisionedPlans.Elements() {
@@ -3416,6 +3545,45 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetShowInAddressList(&planShowInAddressList)
 	} else {
 		plan.ShowInAddressList = types.BoolNull()
+	}
+
+	if !plan.SignInActivity.IsUnknown() {
+		signInActivity := models.NewSignInActivity()
+		signInActivityModel := userSignInActivityModel{}
+		plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
+
+		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
+			planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
+			t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
+			signInActivity.SetLastNonInteractiveSignInDateTime(&t)
+		} else {
+			signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
+		}
+
+		if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
+			planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
+			signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
+		} else {
+			signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
+		}
+
+		if !signInActivityModel.LastSignInDateTime.IsUnknown() {
+			planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
+			t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
+			signInActivity.SetLastSignInDateTime(&t)
+		} else {
+			signInActivityModel.LastSignInDateTime = types.StringNull()
+		}
+
+		if !signInActivityModel.LastSignInRequestId.IsUnknown() {
+			planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
+			signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
+		} else {
+			signInActivityModel.LastSignInRequestId = types.StringNull()
+		}
+		requestBody.SetSignInActivity(signInActivity)
+	} else {
+		plan.SignInActivity = types.ObjectNull(plan.SignInActivity.AttributeTypes(ctx))
 	}
 
 	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
