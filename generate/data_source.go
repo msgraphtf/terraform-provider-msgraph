@@ -354,6 +354,95 @@ func generateCreateRequest() createRequest {
 
 }
 
+type updateRequestBody struct {
+	AttributeType   string
+	BlockName       string
+	AttributeName   strWithCases
+	IfCondition     string
+	PlanVar         string
+	PlanValueMethod string
+	RequestBodyVar  string
+	NewModelMethod  string
+	NestedUpdate    []updateRequestBody
+}
+
+func generateUpdateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent *updateRequestBody) []updateRequestBody {
+	var cr []updateRequestBody
+
+	for _, property := range schemaObject.Properties {
+
+		if slices.Contains(augment.ExcludedProperties, property.Name) {
+			continue
+		}
+
+		newUpdateRequest := updateRequestBody{
+			BlockName:     blockName,
+			AttributeName: strWithCases{property.Name},
+			IfCondition: "Null",
+		}
+
+		if parent != nil && parent.AttributeType == "UpdateObjectAttribute" {
+			newUpdateRequest.PlanVar = parent.RequestBodyVar + "Model."
+			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
+		} else if parent != nil && parent.AttributeType == "UpdateArrayObjectAttribute" {
+			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
+			newUpdateRequest.PlanVar = parent.RequestBodyVar + "Model."
+			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
+		} else {
+			newUpdateRequest.RequestBodyVar = "requestBody"
+			newUpdateRequest.PlanVar = "plan."
+		}
+
+
+		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+property.Name) ||
+			slices.Contains(augment.ResourceExtraComputed, property.Name) {
+			newUpdateRequest.IfCondition = "Unknown"
+		}
+
+		switch property.Type {
+		case "string":
+			newUpdateRequest.AttributeType = "UpdateStringAttribute"
+			newUpdateRequest.PlanValueMethod = "ValueString"
+			switch property.Format {
+			case "date-time":
+				newUpdateRequest.AttributeType = "UpdateStringTimeAttribute"
+			case "uuid":
+				newUpdateRequest.AttributeType = "UpdateStringUuidAttribute"
+			}
+		case "integer":
+			newUpdateRequest.AttributeType = "UpdateInt64Attribute"
+			newUpdateRequest.PlanValueMethod = "ValueInt64"
+		case "boolean":
+			newUpdateRequest.AttributeType = "UpdateBoolAttribute"
+			newUpdateRequest.PlanValueMethod = "ValueBool"
+		case "array":
+			switch property.ArrayOf {
+			case "string":
+				if property.Format == "uuid" {
+					newUpdateRequest.AttributeType = "UpdateArrayUuidAttribute"
+					newUpdateRequest.PlanValueMethod = "ValueString"
+				} else {
+					newUpdateRequest.AttributeType = "UpdateArrayStringAttribute"
+					newUpdateRequest.PlanValueMethod = "ValueString"
+				}
+			case "object":
+				newUpdateRequest.AttributeType = "UpdateArrayObjectAttribute"
+				newUpdateRequest.RequestBodyVar = property.ObjectOf.Title
+				newUpdateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
+				newUpdateRequest.NestedUpdate = generateUpdateRequestBody(property.ObjectOf, &newUpdateRequest)
+			}
+		case "object":
+			newUpdateRequest.RequestBodyVar = property.Name
+			newUpdateRequest.AttributeType = "UpdateObjectAttribute"
+			newUpdateRequest.NestedUpdate = generateUpdateRequestBody(property.ObjectOf, &newUpdateRequest)
+		}
+
+		cr = append(cr, newUpdateRequest)
+	}
+
+	return cr
+}
+
 type updateRequest struct {
 	BlockName  string
 	PostMethod []queryMethod
@@ -566,6 +655,7 @@ type templateInput struct {
 	CreateRequest     createRequest
 	ReadQuery         readQuery
 	ReadResponse      []readResponse
+	UpdateRequestBody []updateRequestBody
 	UpdateRequest     updateRequest
 }
 
@@ -641,6 +731,7 @@ func generateDataSource(pathname string) {
 		input.Schema = generateSchema(nil, schemaObject, "Resource")
 		input.CreateRequestBody = generateCreateRequestBody(schemaObject, nil)
 		input.CreateRequest = generateCreateRequest()
+		input.UpdateRequestBody = generateUpdateRequestBody(schemaObject, nil)
 		input.UpdateRequest = generateUpdateRequest()
 
 		// Get templates
