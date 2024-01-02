@@ -58,39 +58,32 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"deleted_date_time": schema.StringAttribute{
 				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"about_me": schema.StringAttribute{
 				Description: "A freeform text entry field for the user to describe themselves. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"account_enabled": schema.BoolAttribute{
 				Description: "true if the account is enabled; otherwise, false. This property is required when a user is created. Returned only on $select. Supports $filter (eq, ne, not, and in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"age_group": schema.StringAttribute{
 				Description: "Sets the age group of the user. Allowed values: null, Minor, NotAdult, and Adult. For more information, see legal age group property definitions. Returned only on $select. Supports $filter (eq, ne, not, and in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"assigned_licenses": schema.ListNestedAttribute{
 				Description: "The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate between directly assigned and inherited licenses. Use the licenseAssignmentStates property to identify the directly assigned and inherited licenses.  Not nullable. Returned only on $select. Supports $filter (eq, not, /$count eq 0, /$count ne 0).",
 				Optional:    true,
-				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"disabled_plans": schema.ListAttribute{
 							Description: "A collection of the unique identifiers for plans that have been disabled.",
 							Optional:    true,
-							Computed:    true,
 							ElementType: types.StringType,
 						},
 						"sku_id": schema.StringAttribute{
 							Description: "The unique identifier for the SKU.",
 							Optional:    true,
-							Computed:    true,
 						},
 					},
 				},
@@ -98,28 +91,23 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"assigned_plans": schema.ListNestedAttribute{
 				Description: "The plans that are assigned to the user. Read-only. Not nullable. Returned only on $select. Supports $filter (eq and not).",
 				Optional:    true,
-				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"assigned_date_time": schema.StringAttribute{
 							Description: "The date and time at which the plan was assigned. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"capability_status": schema.StringAttribute{
 							Description: "Condition of the capability assignment. The possible values are Enabled, Warning, Suspended, Deleted, LockedOut. See a detailed description of each value.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"service": schema.StringAttribute{
 							Description: "The name of the service; for example, exchange.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"service_plan_id": schema.StringAttribute{
 							Description: "A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see Product names and service plan identifiers for licensing.",
 							Optional:    true,
-							Computed:    true,
 						},
 					},
 				},
@@ -127,12 +115,10 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"authorization_info": schema.SingleNestedAttribute{
 				Description: "",
 				Optional:    true,
-				Computed:    true,
 				Attributes: map[string]schema.Attribute{
 					"certificate_user_ids": schema.ListAttribute{
 						Description: "",
 						Optional:    true,
-						Computed:    true,
 						ElementType: types.StringType,
 					},
 				},
@@ -140,136 +126,110 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"birthday": schema.StringAttribute{
 				Description: "The birthday of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014, is 2014-01-01T00:00:00Z. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"business_phones": schema.ListAttribute{
 				Description: "The telephone numbers for the user. NOTE: Although it is a string collection, only one number can be set for this property. Read-only for users synced from the on-premises directory. Returned by default. Supports $filter (eq, not, ge, le, startsWith).",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"city": schema.StringAttribute{
 				Description: "The city where the user is located. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"company_name": schema.StringAttribute{
 				Description: "The name of the company that the user is associated with. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"consent_provided_for_minor": schema.StringAttribute{
 				Description: "Sets whether consent was obtained for minors. Allowed values: null, Granted, Denied and NotRequired. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"country": schema.StringAttribute{
 				Description: "The country or region where the user is located; for example, US or UK. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"created_date_time": schema.StringAttribute{
 				Description: "The date and time the user was created, in ISO 8601 format and UTC. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Microsoft Entra ID. Property is null for some users created before June 2018 and on-premises users that were synced to Microsoft Entra ID before June 2018. Read-only. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"creation_type": schema.StringAttribute{
 				Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by an external user signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"department": schema.StringAttribute{
 				Description: "The name of the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"display_name": schema.StringAttribute{
 				Description: "The name displayed in the address book for the user. This is usually the combination of the user's first name, middle initial, and last name. This property is required when a user is created and it cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values), $orderby, and $search.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"employee_hire_date": schema.StringAttribute{
 				Description: "The date and time when the user was hired or will start work in a future hire. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"employee_id": schema.StringAttribute{
 				Description: "The employee identifier assigned to the user by the organization. The maximum length is 16 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"employee_leave_date_time": schema.StringAttribute{
 				Description: "The date and time when the user left or will leave the organization. To read this property, the calling app must be assigned the User-LifeCycleInfo.Read.All permission. To write this property, the calling app must be assigned the User.Read.All and User-LifeCycleInfo.ReadWrite.All permissions. To read this property in delegated scenarios, the admin needs one of the following Microsoft Entra roles: Lifecycle Workflows Administrator, Global Reader, or Global Administrator. To write this property in delegated scenarios, the admin needs the Global Administrator role. Supports $filter (eq, ne, not , ge, le, in). For more information, see Configure the employeeLeaveDateTime property for a user.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"employee_org_data": schema.SingleNestedAttribute{
 				Description: "Represents organization data (for example, division and costCenter) associated with a user. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).",
 				Optional:    true,
-				Computed:    true,
 				Attributes: map[string]schema.Attribute{
 					"cost_center": schema.StringAttribute{
 						Description: "The cost center associated with the user. Returned only on $select. Supports $filter.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"division": schema.StringAttribute{
 						Description: "The name of the division in which the user works. Returned only on $select. Supports $filter.",
 						Optional:    true,
-						Computed:    true,
 					},
 				},
 			},
 			"employee_type": schema.StringAttribute{
 				Description: "Captures enterprise worker type. For example, Employee, Contractor, Consultant, or Vendor. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"external_user_state": schema.StringAttribute{
 				Description: "For an external user invited to the tenant using the invitation API, this property represents the invited user's invitation status. For invited users, the state can be PendingAcceptance or Accepted, or null for all other users. Returned only on $select. Supports $filter (eq, ne, not , in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"external_user_state_change_date_time": schema.StringAttribute{
 				Description: "Shows the timestamp for the latest change to the externalUserState property. Returned only on $select. Supports $filter (eq, ne, not , in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"fax_number": schema.StringAttribute{
 				Description: "The fax number of the user. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"given_name": schema.StringAttribute{
 				Description: "The given name (first name) of the user. Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"hire_date": schema.StringAttribute{
 				Description: "The hire date of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014, is 2014-01-01T00:00:00Z. Returned only on $select.  Note: This property is specific to SharePoint Online. We recommend using the native employeeHireDate property to set and update hire date values using Microsoft Graph APIs.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"identities": schema.ListNestedAttribute{
 				Description: "Represents the identities that can be used to sign in to this user account. Microsoft (also known as a local account), organizations, or social identity providers such as Facebook, Google, and Microsoft can provide identity and tie it to a user account. It may contain multiple items with the same signInType value. Returned only on $select. Supports $filter (eq) including on null values, only where the signInType is not userPrincipalName.",
 				Optional:    true,
-				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"issuer": schema.StringAttribute{
 							Description: "Specifies the issuer of the identity, for example facebook.com.For local accounts (where signInType isn't federated), this property is the local B2C tenant default domain name, for example contoso.onmicrosoft.com.For guests from other Microsoft Entra organization, this is the domain of the federated organization, for example contoso.com.Supports $filter. 512 character limit.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"issuer_assigned_id": schema.StringAttribute{
 							Description: "Specifies the unique identifier assigned to the user by the issuer. The combination of issuer and issuerAssignedId must be unique within the organization. Represents the sign-in name for the user, when signInType is set to emailAddress or userName (also known as local accounts).When signInType is set to: emailAddress, (or a custom string that starts with emailAddress like emailAddress1) issuerAssignedId must be a valid email addressuserName, issuerAssignedId must begin with alphabetical character or number, and can only contain alphanumeric characters and the following symbols: - or Supports $filter. 64 character limit.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"sign_in_type": schema.StringAttribute{
 							Description: "Specifies the user sign-in types in your directory, such as emailAddress, userName, federated, or userPrincipalName. federated represents a unique identifier for a user from an issuer, that can be in any format chosen by the issuer. Setting or updating a userPrincipalName identity will update the value of the userPrincipalName property on the user object. The validations performed on the userPrincipalName property on the user object, for example, verified domains and acceptable characters, will be performed when setting or updating a userPrincipalName identity. Other validation is enforced on issuerAssignedId when the sign-in type is set to emailAddress or userName. This property can also be set to any custom string.",
 							Optional:    true,
-							Computed:    true,
 						},
 					},
 				},
@@ -277,71 +237,58 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"im_addresses": schema.ListAttribute{
 				Description: "The instant message voice-over IP (VOIP) session initiation protocol (SIP) addresses for the user. Read-only. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith).",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"interests": schema.ListAttribute{
 				Description: "A list for the user to describe their interests. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"is_resource_account": schema.BoolAttribute{
 				Description: "Do not use – reserved for future use.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"job_title": schema.StringAttribute{
 				Description: "The user's job title. Maximum length is 128 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"last_password_change_date_time": schema.StringAttribute{
 				Description: "The time when this Microsoft Entra user last changed their password or when their password was created, whichever date the latest action was performed. The date and time information uses ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"legal_age_group_classification": schema.StringAttribute{
 				Description: "Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, MinorWithOutParentalConsent, MinorWithParentalConsent, MinorNoParentalConsentRequired, NotAdult, and Adult. Refer to the legal age group property definitions for further information. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"license_assignment_states": schema.ListNestedAttribute{
 				Description: "State of license assignments for this user. Also indicates licenses that are directly assigned or the user has inherited through group memberships. Read-only. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"assigned_by_group": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
-							Computed:    true,
 						},
 						"disabled_plans": schema.ListAttribute{
 							Description: "",
 							Optional:    true,
-							Computed:    true,
 							ElementType: types.StringType,
 						},
 						"error": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
-							Computed:    true,
 						},
 						"last_updated_date_time": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
-							Computed:    true,
 						},
 						"sku_id": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
-							Computed:    true,
 						},
 						"state": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
-							Computed:    true,
 						},
 					},
 				},
@@ -349,155 +296,125 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"mail": schema.StringAttribute{
 				Description: "The SMTP address for the user, for example, jeff@contoso.onmicrosoft.com. Changes to this property update the user's proxyAddresses collection to include the value as an SMTP address. This property can't contain accent characters.  NOTE: We don't recommend updating this property for Azure AD B2C user profiles. Use the otherMails property instead. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"mail_nickname": schema.StringAttribute{
 				Description: "The mail alias for the user. This property must be specified when a user is created. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"mobile_phone": schema.StringAttribute{
 				Description: "The primary cellular telephone number for the user. Read-only for users synced from the on-premises directory. Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values) and $search.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"my_site": schema.StringAttribute{
 				Description: "The URL for the user's site. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"office_location": schema.StringAttribute{
 				Description: "The office location in the user's place of business. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"on_premises_distinguished_name": schema.StringAttribute{
 				Description: "Contains the on-premises Active Directory distinguished name or DN. The property is only populated for customers who are synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect. Read-only. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"on_premises_domain_name": schema.StringAttribute{
 				Description: "Contains the on-premises domainFQDN, also called dnsDomainName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect. Read-only. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"on_premises_extension_attributes": schema.SingleNestedAttribute{
 				Description: "Contains extensionAttributes1-15 for the user. These extension attributes are also known as Exchange custom attributes 1-15. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during the creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. Returned only on $select. Supports $filter (eq, ne, not, in).",
 				Optional:    true,
-				Computed:    true,
 				Attributes: map[string]schema.Attribute{
 					"extension_attribute_1": schema.StringAttribute{
 						Description: "First customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_10": schema.StringAttribute{
 						Description: "Tenth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_11": schema.StringAttribute{
 						Description: "Eleventh customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_12": schema.StringAttribute{
 						Description: "Twelfth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_13": schema.StringAttribute{
 						Description: "Thirteenth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_14": schema.StringAttribute{
 						Description: "Fourteenth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_15": schema.StringAttribute{
 						Description: "Fifteenth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_2": schema.StringAttribute{
 						Description: "Second customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_3": schema.StringAttribute{
 						Description: "Third customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_4": schema.StringAttribute{
 						Description: "Fourth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_5": schema.StringAttribute{
 						Description: "Fifth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_6": schema.StringAttribute{
 						Description: "Sixth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_7": schema.StringAttribute{
 						Description: "Seventh customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_8": schema.StringAttribute{
 						Description: "Eighth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"extension_attribute_9": schema.StringAttribute{
 						Description: "Ninth customizable extension attribute.",
 						Optional:    true,
-						Computed:    true,
 					},
 				},
 			},
 			"on_premises_immutable_id": schema.StringAttribute{
 				Description: "This property is used to associate an on-premises Active Directory user account to their Microsoft Entra user object. This property must be specified when creating a new user account in the Graph if you're using a federated domain for the user's userPrincipalName (UPN) property. NOTE: The $ and _ characters can't be used when specifying this property. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in)..",
 				Optional:    true,
-				Computed:    true,
 			},
 			"on_premises_last_sync_date_time": schema.StringAttribute{
 				Description: "Indicates the last time at which the object was synced with the on-premises directory; for example: 2013-02-16T03:04:54Z. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"on_premises_provisioning_errors": schema.ListNestedAttribute{
 				Description: "Errors when using Microsoft synchronization product during provisioning. Returned only on $select. Supports $filter (eq, not, ge, le).",
 				Optional:    true,
-				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"category": schema.StringAttribute{
 							Description: "Category of the provisioning error. Note: Currently, there is only one possible value. Possible value: PropertyConflict - indicates a property value is not unique. Other objects contain the same value for the property.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"occurred_date_time": schema.StringAttribute{
 							Description: "The date and time at which the error occurred.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"property_causing_error": schema.StringAttribute{
 							Description: "Name of the directory property causing the error. Current possible values: UserPrincipalName or ProxyAddress",
 							Optional:    true,
-							Computed:    true,
 						},
 						"value": schema.StringAttribute{
 							Description: "Value of the property causing the error.",
 							Optional:    true,
-							Computed:    true,
 						},
 					},
 				},
@@ -505,102 +422,83 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_sam_account_name": schema.StringAttribute{
 				Description: "Contains the on-premises samAccountName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect. Read-only. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"on_premises_security_identifier": schema.StringAttribute{
 				Description: "Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. Returned only on $select.  Supports $filter (eq including on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"on_premises_sync_enabled": schema.BoolAttribute{
 				Description: "true if this user object is currently being synced from an on-premises Active Directory (AD); otherwise the user isn't being synced and can be managed in Microsoft Entra ID. Read-only. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"on_premises_user_principal_name": schema.StringAttribute{
 				Description: "Contains the on-premises userPrincipalName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect. Read-only. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"other_mails": schema.ListAttribute{
 				Description: "A list of additional email addresses for the user; for example: ['bob@contoso.com', 'Robert@fabrikam.com']. NOTE: This property can't contain accent characters. Returned only on $select. Supports $filter (eq, not, ge, le, in, startsWith, endsWith, /$count eq 0, /$count ne 0).",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"password_policies": schema.StringAttribute{
 				Description: "Specifies password policies for the user. This value is an enumeration with one possible value being DisableStrongPassword, which allows weaker passwords than the default policy to be specified. DisablePasswordExpiration can also be specified. The two may be specified together; for example: DisablePasswordExpiration, DisableStrongPassword. Returned only on $select. For more information on the default password policies, see Microsoft Entra password policies. Supports $filter (ne, not, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"password_profile": schema.SingleNestedAttribute{
 				Description: "Specifies the password profile for the user. The profile contains the user's password. This property is required when a user is created. The password in the profile must satisfy minimum requirements as specified by the passwordPolicies property. By default, a strong password is required. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 				Attributes: map[string]schema.Attribute{
 					"force_change_password_next_sign_in": schema.BoolAttribute{
 						Description: "true if the user must change her password on the next login; otherwise false.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"force_change_password_next_sign_in_with_mfa": schema.BoolAttribute{
 						Description: "If true, at next sign-in, the user must perform a multi-factor authentication (MFA) before being forced to change their password. The behavior is identical to forceChangePasswordNextSignIn except that the user is required to first perform a multi-factor authentication before password change. After a password change, this property will be automatically reset to false. If not set, default is false.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"password": schema.StringAttribute{
 						Description: "The password for the user. This property is required when a user is created. It can be updated, but the user will be required to change the password on the next login. The password must satisfy minimum requirements as specified by the user's passwordPolicies property. By default, a strong password is required.",
 						Optional:    true,
-						Computed:    true,
 					},
 				},
 			},
 			"past_projects": schema.ListAttribute{
 				Description: "A list for the user to enumerate their past projects. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"postal_code": schema.StringAttribute{
 				Description: "The postal code for the user's postal address. The postal code is specific to the user's country/region. In the United States of America, this attribute contains the ZIP code. Maximum length is 40 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"preferred_data_location": schema.StringAttribute{
 				Description: "The preferred data location for the user. For more information, see OneDrive Online Multi-Geo.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"preferred_language": schema.StringAttribute{
 				Description: "The preferred language for the user. The preferred language format is based on RFC 4646. The name is a combination of an ISO 639 two-letter lowercase culture code associated with the language and an ISO 3166 two-letter uppercase subculture code associated with the country or region. Example: 'en-US', or 'es-ES'. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values)",
 				Optional:    true,
-				Computed:    true,
 			},
 			"preferred_name": schema.StringAttribute{
 				Description: "The preferred name for the user. Not Supported. This attribute returns an empty string.Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"provisioned_plans": schema.ListNestedAttribute{
 				Description: "The plans that are provisioned for the user. Read-only. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le).",
 				Optional:    true,
-				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"capability_status": schema.StringAttribute{
 							Description: "For example, 'Enabled'.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"provisioning_status": schema.StringAttribute{
 							Description: "For example, 'Success'.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"service": schema.StringAttribute{
 							Description: "The name of the service; for example, 'AccessControlS2S'",
 							Optional:    true,
-							Computed:    true,
 						},
 					},
 				},
@@ -608,46 +506,38 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"proxy_addresses": schema.ListAttribute{
 				Description: "For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. Changes to the mail property will also update this collection to include the value as an SMTP address. For more information, see mail and proxyAddresses properties. The proxy address prefixed with SMTP (capitalized) is the primary proxy address while those prefixed with smtp are the secondary proxy addresses. For Azure AD B2C accounts, this property has a limit of 10 unique addresses. Read-only in Microsoft Graph; you can update this property only through the Microsoft 365 admin center. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith, endsWith, /$count eq 0, /$count ne 0).",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"responsibilities": schema.ListAttribute{
 				Description: "A list for the user to enumerate their responsibilities. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"schools": schema.ListAttribute{
 				Description: "A list for the user to enumerate the schools they have attended. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"security_identifier": schema.StringAttribute{
 				Description: "Security identifier (SID) of the user, used in Windows scenarios. Read-only. Returned by default. Supports $select and $filter (eq, not, ge, le, startsWith).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"service_provisioning_errors": schema.ListNestedAttribute{
 				Description: "Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a user object .  Supports $filter (eq, not, for isResolved and serviceInstance).",
 				Optional:    true,
-				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"created_date_time": schema.StringAttribute{
 							Description: "The date and time at which the error occurred.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"is_resolved": schema.BoolAttribute{
 							Description: "Indicates whether the error has been attended to.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"service_instance": schema.StringAttribute{
 							Description: "Qualified service instance (for example, 'SharePoint/Dublin') that published the service error information.",
 							Optional:    true,
-							Computed:    true,
 						},
 					},
 				},
@@ -655,75 +545,61 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"show_in_address_list": schema.BoolAttribute{
 				Description: "Do not use in Microsoft Graph. Manage this property through the Microsoft 365 admin center instead. Represents whether the user should be included in the Outlook global address list. See Known issue.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"sign_in_activity": schema.SingleNestedAttribute{
 				Description: "Get the last signed-in date and request ID of the sign-in for a given user. Read-only.Returned only on $select. Supports $filter (eq, ne, not, ge, le) but not with any other filterable properties. Note: Details for this property require a Microsoft Entra ID P1 or P2 license and the AuditLog.Read.All permission.This property is not returned for a user who has never signed in or last signed in before April 2020.",
 				Optional:    true,
-				Computed:    true,
 				Attributes: map[string]schema.Attribute{
 					"last_non_interactive_sign_in_date_time": schema.StringAttribute{
 						Description: "The last non-interactive sign-in date for a specific user. You can use this field to calculate the last time a client attempted to sign into the directory on behalf of a user. Because some users may use clients to access tenant resources rather than signing into your tenant directly, you can use the non-interactive sign-in date to along with lastSignInDateTime to identify inactive users. The timestamp represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is: '2014-01-01T00:00:00Z'. Microsoft Entra ID maintains non-interactive sign-ins going back to May 2020. For more information about using the value of this property, see Manage inactive user accounts in Microsoft Entra ID.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"last_non_interactive_sign_in_request_id": schema.StringAttribute{
 						Description: "Request identifier of the last non-interactive sign-in performed by this user.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"last_sign_in_date_time": schema.StringAttribute{
 						Description: "The last interactive sign-in date and time for a specific user. You can use this field to calculate the last time a user attempted to sign into the directory with an interactive authentication method. This field can be used to build reports, such as inactive users. The timestamp represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is: '2014-01-01T00:00:00Z'. Microsoft Entra ID maintains interactive sign-ins going back to April 2020. For more information about using the value of this property, see Manage inactive user accounts in Microsoft Entra ID.",
 						Optional:    true,
-						Computed:    true,
 					},
 					"last_sign_in_request_id": schema.StringAttribute{
 						Description: "Request identifier of the last interactive sign-in performed by this user.",
 						Optional:    true,
-						Computed:    true,
 					},
 				},
 			},
 			"sign_in_sessions_valid_from_date_time": schema.StringAttribute{
 				Description: "Any refresh tokens or sessions tokens (session cookies) issued before this time are invalid, and applications get an error when using an invalid refresh or sessions token to acquire a delegated access token (to access APIs such as Microsoft Graph).  If this happens, the application needs to acquire a new refresh token by requesting the authorized endpoint. Read-only. Use revokeSignInSessions to reset. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"skills": schema.ListAttribute{
 				Description: "A list for the user to enumerate their skills. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"state": schema.StringAttribute{
 				Description: "The state or province in the user's address. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"street_address": schema.StringAttribute{
 				Description: "The street address of the user's place of business. Maximum length is 1024 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"surname": schema.StringAttribute{
 				Description: "The user's surname (family name or last name). Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"usage_location": schema.StringAttribute{
 				Description: "A two-letter country code (ISO standard 3166). Required for users that are assigned licenses due to legal requirements to check for availability of services in countries.  Examples include: US, JP, and GB. Not nullable. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
-				Computed:    true,
 			},
 			"user_principal_name": schema.StringAttribute{
 				Description: "The user principal name (UPN) of the user. The UPN is an Internet-style sign-in name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where the domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the verifiedDomains property of organization.NOTE: This property can't contain accent characters. Only the following characters are allowed A - Z, a - z, 0 - 9, ' . - _ ! # ^ ~. For the complete list of allowed characters, see username policies. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith) and $orderby.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"user_type": schema.StringAttribute{
 				Description: "A string value that can be used to classify user types in your directory, such as Member and Guest. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values). NOTE: For more information about the permissions for member and guest users, see What are the default user permissions in Microsoft Entra ID?",
 				Optional:    true,
-				Computed:    true,
 			},
 		},
 	}
@@ -745,14 +621,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Generate API request body from Plan
 	requestBody := models.NewUser()
 
-	if !plan.Id.IsUnknown() {
+	if !plan.Id.IsNull() {
 		planId := plan.Id.ValueString()
 		requestBody.SetId(&planId)
 	} else {
 		plan.Id = types.StringNull()
 	}
 
-	if !plan.DeletedDateTime.IsUnknown() {
+	if !plan.DeletedDateTime.IsNull() {
 		planDeletedDateTime := plan.DeletedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
@@ -760,21 +636,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.DeletedDateTime = types.StringNull()
 	}
 
-	if !plan.AboutMe.IsUnknown() {
+	if !plan.AboutMe.IsNull() {
 		planAboutMe := plan.AboutMe.ValueString()
 		requestBody.SetAboutMe(&planAboutMe)
 	} else {
 		plan.AboutMe = types.StringNull()
 	}
 
-	if !plan.AccountEnabled.IsUnknown() {
+	if !plan.AccountEnabled.IsNull() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
 	} else {
 		plan.AccountEnabled = types.BoolNull()
 	}
 
-	if !plan.AgeGroup.IsUnknown() {
+	if !plan.AgeGroup.IsNull() {
 		planAgeGroup := plan.AgeGroup.ValueString()
 		requestBody.SetAgeGroup(&planAgeGroup)
 	} else {
@@ -799,7 +675,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !assignedLicenseModel.SkuId.IsUnknown() {
+			if !assignedLicenseModel.SkuId.IsNull() {
 				planSkuId := assignedLicenseModel.SkuId.ValueString()
 				u, _ = uuid.Parse(planSkuId)
 				assignedLicense.SetSkuId(&u)
@@ -819,7 +695,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			assignedPlanModel := userAssignedPlansModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
 
-			if !assignedPlanModel.AssignedDateTime.IsUnknown() {
+			if !assignedPlanModel.AssignedDateTime.IsNull() {
 				planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
 				assignedPlan.SetAssignedDateTime(&t)
@@ -827,21 +703,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				assignedPlanModel.AssignedDateTime = types.StringNull()
 			}
 
-			if !assignedPlanModel.CapabilityStatus.IsUnknown() {
+			if !assignedPlanModel.CapabilityStatus.IsNull() {
 				planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
 				assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
 			} else {
 				assignedPlanModel.CapabilityStatus = types.StringNull()
 			}
 
-			if !assignedPlanModel.Service.IsUnknown() {
+			if !assignedPlanModel.Service.IsNull() {
 				planService := assignedPlanModel.Service.ValueString()
 				assignedPlan.SetService(&planService)
 			} else {
 				assignedPlanModel.Service = types.StringNull()
 			}
 
-			if !assignedPlanModel.ServicePlanId.IsUnknown() {
+			if !assignedPlanModel.ServicePlanId.IsNull() {
 				planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
 				u, _ = uuid.Parse(planServicePlanId)
 				assignedPlan.SetServicePlanId(&u)
@@ -854,7 +730,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.AssignedPlans = types.ListNull(plan.AssignedPlans.ElementType(ctx))
 	}
 
-	if !plan.AuthorizationInfo.IsUnknown() {
+	if !plan.AuthorizationInfo.IsNull() {
 		authorizationInfo := models.NewAuthorizationInfo()
 		authorizationInfoModel := userAuthorizationInfoModel{}
 		plan.AuthorizationInfo.As(ctx, &authorizationInfoModel, basetypes.ObjectAsOptions{})
@@ -875,7 +751,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
 	}
 
-	if !plan.Birthday.IsUnknown() {
+	if !plan.Birthday.IsNull() {
 		planBirthday := plan.Birthday.ValueString()
 		t, _ = time.Parse(time.RFC3339, planBirthday)
 		requestBody.SetBirthday(&t)
@@ -893,35 +769,35 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.BusinessPhones = types.ListNull(types.StringType)
 	}
 
-	if !plan.City.IsUnknown() {
+	if !plan.City.IsNull() {
 		planCity := plan.City.ValueString()
 		requestBody.SetCity(&planCity)
 	} else {
 		plan.City = types.StringNull()
 	}
 
-	if !plan.CompanyName.IsUnknown() {
+	if !plan.CompanyName.IsNull() {
 		planCompanyName := plan.CompanyName.ValueString()
 		requestBody.SetCompanyName(&planCompanyName)
 	} else {
 		plan.CompanyName = types.StringNull()
 	}
 
-	if !plan.ConsentProvidedForMinor.IsUnknown() {
+	if !plan.ConsentProvidedForMinor.IsNull() {
 		planConsentProvidedForMinor := plan.ConsentProvidedForMinor.ValueString()
 		requestBody.SetConsentProvidedForMinor(&planConsentProvidedForMinor)
 	} else {
 		plan.ConsentProvidedForMinor = types.StringNull()
 	}
 
-	if !plan.Country.IsUnknown() {
+	if !plan.Country.IsNull() {
 		planCountry := plan.Country.ValueString()
 		requestBody.SetCountry(&planCountry)
 	} else {
 		plan.Country = types.StringNull()
 	}
 
-	if !plan.CreatedDateTime.IsUnknown() {
+	if !plan.CreatedDateTime.IsNull() {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
@@ -929,28 +805,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.CreatedDateTime = types.StringNull()
 	}
 
-	if !plan.CreationType.IsUnknown() {
+	if !plan.CreationType.IsNull() {
 		planCreationType := plan.CreationType.ValueString()
 		requestBody.SetCreationType(&planCreationType)
 	} else {
 		plan.CreationType = types.StringNull()
 	}
 
-	if !plan.Department.IsUnknown() {
+	if !plan.Department.IsNull() {
 		planDepartment := plan.Department.ValueString()
 		requestBody.SetDepartment(&planDepartment)
 	} else {
 		plan.Department = types.StringNull()
 	}
 
-	if !plan.DisplayName.IsUnknown() {
+	if !plan.DisplayName.IsNull() {
 		planDisplayName := plan.DisplayName.ValueString()
 		requestBody.SetDisplayName(&planDisplayName)
 	} else {
 		plan.DisplayName = types.StringNull()
 	}
 
-	if !plan.EmployeeHireDate.IsUnknown() {
+	if !plan.EmployeeHireDate.IsNull() {
 		planEmployeeHireDate := plan.EmployeeHireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeHireDate)
 		requestBody.SetEmployeeHireDate(&t)
@@ -958,14 +834,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.EmployeeHireDate = types.StringNull()
 	}
 
-	if !plan.EmployeeId.IsUnknown() {
+	if !plan.EmployeeId.IsNull() {
 		planEmployeeId := plan.EmployeeId.ValueString()
 		requestBody.SetEmployeeId(&planEmployeeId)
 	} else {
 		plan.EmployeeId = types.StringNull()
 	}
 
-	if !plan.EmployeeLeaveDateTime.IsUnknown() {
+	if !plan.EmployeeLeaveDateTime.IsNull() {
 		planEmployeeLeaveDateTime := plan.EmployeeLeaveDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
 		requestBody.SetEmployeeLeaveDateTime(&t)
@@ -973,19 +849,19 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.EmployeeLeaveDateTime = types.StringNull()
 	}
 
-	if !plan.EmployeeOrgData.IsUnknown() {
+	if !plan.EmployeeOrgData.IsNull() {
 		employeeOrgData := models.NewEmployeeOrgData()
 		employeeOrgDataModel := userEmployeeOrgDataModel{}
 		plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
 
-		if !employeeOrgDataModel.CostCenter.IsUnknown() {
+		if !employeeOrgDataModel.CostCenter.IsNull() {
 			planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
 			employeeOrgData.SetCostCenter(&planCostCenter)
 		} else {
 			employeeOrgDataModel.CostCenter = types.StringNull()
 		}
 
-		if !employeeOrgDataModel.Division.IsUnknown() {
+		if !employeeOrgDataModel.Division.IsNull() {
 			planDivision := employeeOrgDataModel.Division.ValueString()
 			employeeOrgData.SetDivision(&planDivision)
 		} else {
@@ -998,21 +874,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.EmployeeOrgData = types.ObjectNull(plan.EmployeeOrgData.AttributeTypes(ctx))
 	}
 
-	if !plan.EmployeeType.IsUnknown() {
+	if !plan.EmployeeType.IsNull() {
 		planEmployeeType := plan.EmployeeType.ValueString()
 		requestBody.SetEmployeeType(&planEmployeeType)
 	} else {
 		plan.EmployeeType = types.StringNull()
 	}
 
-	if !plan.ExternalUserState.IsUnknown() {
+	if !plan.ExternalUserState.IsNull() {
 		planExternalUserState := plan.ExternalUserState.ValueString()
 		requestBody.SetExternalUserState(&planExternalUserState)
 	} else {
 		plan.ExternalUserState = types.StringNull()
 	}
 
-	if !plan.ExternalUserStateChangeDateTime.IsUnknown() {
+	if !plan.ExternalUserStateChangeDateTime.IsNull() {
 		planExternalUserStateChangeDateTime := plan.ExternalUserStateChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
 		requestBody.SetExternalUserStateChangeDateTime(&t)
@@ -1020,21 +896,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.ExternalUserStateChangeDateTime = types.StringNull()
 	}
 
-	if !plan.FaxNumber.IsUnknown() {
+	if !plan.FaxNumber.IsNull() {
 		planFaxNumber := plan.FaxNumber.ValueString()
 		requestBody.SetFaxNumber(&planFaxNumber)
 	} else {
 		plan.FaxNumber = types.StringNull()
 	}
 
-	if !plan.GivenName.IsUnknown() {
+	if !plan.GivenName.IsNull() {
 		planGivenName := plan.GivenName.ValueString()
 		requestBody.SetGivenName(&planGivenName)
 	} else {
 		plan.GivenName = types.StringNull()
 	}
 
-	if !plan.HireDate.IsUnknown() {
+	if !plan.HireDate.IsNull() {
 		planHireDate := plan.HireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planHireDate)
 		requestBody.SetHireDate(&t)
@@ -1049,21 +925,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			objectIdentityModel := userIdentitiesModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
 
-			if !objectIdentityModel.Issuer.IsUnknown() {
+			if !objectIdentityModel.Issuer.IsNull() {
 				planIssuer := objectIdentityModel.Issuer.ValueString()
 				objectIdentity.SetIssuer(&planIssuer)
 			} else {
 				objectIdentityModel.Issuer = types.StringNull()
 			}
 
-			if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
+			if !objectIdentityModel.IssuerAssignedId.IsNull() {
 				planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
 				objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
 			} else {
 				objectIdentityModel.IssuerAssignedId = types.StringNull()
 			}
 
-			if !objectIdentityModel.SignInType.IsUnknown() {
+			if !objectIdentityModel.SignInType.IsNull() {
 				planSignInType := objectIdentityModel.SignInType.ValueString()
 				objectIdentity.SetSignInType(&planSignInType)
 			} else {
@@ -1095,21 +971,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Interests = types.ListNull(types.StringType)
 	}
 
-	if !plan.IsResourceAccount.IsUnknown() {
+	if !plan.IsResourceAccount.IsNull() {
 		planIsResourceAccount := plan.IsResourceAccount.ValueBool()
 		requestBody.SetIsResourceAccount(&planIsResourceAccount)
 	} else {
 		plan.IsResourceAccount = types.BoolNull()
 	}
 
-	if !plan.JobTitle.IsUnknown() {
+	if !plan.JobTitle.IsNull() {
 		planJobTitle := plan.JobTitle.ValueString()
 		requestBody.SetJobTitle(&planJobTitle)
 	} else {
 		plan.JobTitle = types.StringNull()
 	}
 
-	if !plan.LastPasswordChangeDateTime.IsUnknown() {
+	if !plan.LastPasswordChangeDateTime.IsNull() {
 		planLastPasswordChangeDateTime := plan.LastPasswordChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planLastPasswordChangeDateTime)
 		requestBody.SetLastPasswordChangeDateTime(&t)
@@ -1117,7 +993,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.LastPasswordChangeDateTime = types.StringNull()
 	}
 
-	if !plan.LegalAgeGroupClassification.IsUnknown() {
+	if !plan.LegalAgeGroupClassification.IsNull() {
 		planLegalAgeGroupClassification := plan.LegalAgeGroupClassification.ValueString()
 		requestBody.SetLegalAgeGroupClassification(&planLegalAgeGroupClassification)
 	} else {
@@ -1131,7 +1007,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
 
-			if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
+			if !licenseAssignmentStateModel.AssignedByGroup.IsNull() {
 				planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
 				licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
 			} else {
@@ -1149,14 +1025,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !licenseAssignmentStateModel.Error.IsUnknown() {
+			if !licenseAssignmentStateModel.Error.IsNull() {
 				planError := licenseAssignmentStateModel.Error.ValueString()
 				licenseAssignmentState.SetError(&planError)
 			} else {
 				licenseAssignmentStateModel.Error = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
+			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsNull() {
 				planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
 				licenseAssignmentState.SetLastUpdatedDateTime(&t)
@@ -1164,7 +1040,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.SkuId.IsUnknown() {
+			if !licenseAssignmentStateModel.SkuId.IsNull() {
 				planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
 				u, _ = uuid.Parse(planSkuId)
 				licenseAssignmentState.SetSkuId(&u)
@@ -1172,7 +1048,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				licenseAssignmentStateModel.SkuId = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.State.IsUnknown() {
+			if !licenseAssignmentStateModel.State.IsNull() {
 				planState := licenseAssignmentStateModel.State.ValueString()
 				licenseAssignmentState.SetState(&planState)
 			} else {
@@ -1184,159 +1060,159 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.LicenseAssignmentStates = types.ListNull(plan.LicenseAssignmentStates.ElementType(ctx))
 	}
 
-	if !plan.Mail.IsUnknown() {
+	if !plan.Mail.IsNull() {
 		planMail := plan.Mail.ValueString()
 		requestBody.SetMail(&planMail)
 	} else {
 		plan.Mail = types.StringNull()
 	}
 
-	if !plan.MailNickname.IsUnknown() {
+	if !plan.MailNickname.IsNull() {
 		planMailNickname := plan.MailNickname.ValueString()
 		requestBody.SetMailNickname(&planMailNickname)
 	} else {
 		plan.MailNickname = types.StringNull()
 	}
 
-	if !plan.MobilePhone.IsUnknown() {
+	if !plan.MobilePhone.IsNull() {
 		planMobilePhone := plan.MobilePhone.ValueString()
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
 		plan.MobilePhone = types.StringNull()
 	}
 
-	if !plan.MySite.IsUnknown() {
+	if !plan.MySite.IsNull() {
 		planMySite := plan.MySite.ValueString()
 		requestBody.SetMySite(&planMySite)
 	} else {
 		plan.MySite = types.StringNull()
 	}
 
-	if !plan.OfficeLocation.IsUnknown() {
+	if !plan.OfficeLocation.IsNull() {
 		planOfficeLocation := plan.OfficeLocation.ValueString()
 		requestBody.SetOfficeLocation(&planOfficeLocation)
 	} else {
 		plan.OfficeLocation = types.StringNull()
 	}
 
-	if !plan.OnPremisesDistinguishedName.IsUnknown() {
+	if !plan.OnPremisesDistinguishedName.IsNull() {
 		planOnPremisesDistinguishedName := plan.OnPremisesDistinguishedName.ValueString()
 		requestBody.SetOnPremisesDistinguishedName(&planOnPremisesDistinguishedName)
 	} else {
 		plan.OnPremisesDistinguishedName = types.StringNull()
 	}
 
-	if !plan.OnPremisesDomainName.IsUnknown() {
+	if !plan.OnPremisesDomainName.IsNull() {
 		planOnPremisesDomainName := plan.OnPremisesDomainName.ValueString()
 		requestBody.SetOnPremisesDomainName(&planOnPremisesDomainName)
 	} else {
 		plan.OnPremisesDomainName = types.StringNull()
 	}
 
-	if !plan.OnPremisesExtensionAttributes.IsUnknown() {
+	if !plan.OnPremisesExtensionAttributes.IsNull() {
 		onPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
 		onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
 		plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsNull() {
 			planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsNull() {
 			planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsNull() {
 			planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsNull() {
 			planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsNull() {
 			planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsNull() {
 			planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsNull() {
 			planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsNull() {
 			planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsNull() {
 			planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsNull() {
 			planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsNull() {
 			planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsNull() {
 			planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsNull() {
 			planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsNull() {
 			planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsNull() {
 			planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
 		} else {
@@ -1349,14 +1225,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.OnPremisesExtensionAttributes = types.ObjectNull(plan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
 
-	if !plan.OnPremisesImmutableId.IsUnknown() {
+	if !plan.OnPremisesImmutableId.IsNull() {
 		planOnPremisesImmutableId := plan.OnPremisesImmutableId.ValueString()
 		requestBody.SetOnPremisesImmutableId(&planOnPremisesImmutableId)
 	} else {
 		plan.OnPremisesImmutableId = types.StringNull()
 	}
 
-	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
+	if !plan.OnPremisesLastSyncDateTime.IsNull() {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
@@ -1371,14 +1247,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
 
-			if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
+			if !onPremisesProvisioningErrorModel.Category.IsNull() {
 				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
 				onPremisesProvisioningError.SetCategory(&planCategory)
 			} else {
 				onPremisesProvisioningErrorModel.Category = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
+			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsNull() {
 				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
 				onPremisesProvisioningError.SetOccurredDateTime(&t)
@@ -1386,14 +1262,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
+			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsNull() {
 				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
 				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
 			} else {
 				onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
+			if !onPremisesProvisioningErrorModel.Value.IsNull() {
 				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
 				onPremisesProvisioningError.SetValue(&planValue)
 			} else {
@@ -1405,28 +1281,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.OnPremisesProvisioningErrors = types.ListNull(plan.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
 
-	if !plan.OnPremisesSamAccountName.IsUnknown() {
+	if !plan.OnPremisesSamAccountName.IsNull() {
 		planOnPremisesSamAccountName := plan.OnPremisesSamAccountName.ValueString()
 		requestBody.SetOnPremisesSamAccountName(&planOnPremisesSamAccountName)
 	} else {
 		plan.OnPremisesSamAccountName = types.StringNull()
 	}
 
-	if !plan.OnPremisesSecurityIdentifier.IsUnknown() {
+	if !plan.OnPremisesSecurityIdentifier.IsNull() {
 		planOnPremisesSecurityIdentifier := plan.OnPremisesSecurityIdentifier.ValueString()
 		requestBody.SetOnPremisesSecurityIdentifier(&planOnPremisesSecurityIdentifier)
 	} else {
 		plan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
-	if !plan.OnPremisesSyncEnabled.IsUnknown() {
+	if !plan.OnPremisesSyncEnabled.IsNull() {
 		planOnPremisesSyncEnabled := plan.OnPremisesSyncEnabled.ValueBool()
 		requestBody.SetOnPremisesSyncEnabled(&planOnPremisesSyncEnabled)
 	} else {
 		plan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
-	if !plan.OnPremisesUserPrincipalName.IsUnknown() {
+	if !plan.OnPremisesUserPrincipalName.IsNull() {
 		planOnPremisesUserPrincipalName := plan.OnPremisesUserPrincipalName.ValueString()
 		requestBody.SetOnPremisesUserPrincipalName(&planOnPremisesUserPrincipalName)
 	} else {
@@ -1443,33 +1319,33 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.OtherMails = types.ListNull(types.StringType)
 	}
 
-	if !plan.PasswordPolicies.IsUnknown() {
+	if !plan.PasswordPolicies.IsNull() {
 		planPasswordPolicies := plan.PasswordPolicies.ValueString()
 		requestBody.SetPasswordPolicies(&planPasswordPolicies)
 	} else {
 		plan.PasswordPolicies = types.StringNull()
 	}
 
-	if !plan.PasswordProfile.IsUnknown() {
+	if !plan.PasswordProfile.IsNull() {
 		passwordProfile := models.NewPasswordProfile()
 		passwordProfileModel := userPasswordProfileModel{}
 		plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
 
-		if !passwordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
+		if !passwordProfileModel.ForceChangePasswordNextSignIn.IsNull() {
 			planForceChangePasswordNextSignIn := passwordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
 			passwordProfile.SetForceChangePasswordNextSignIn(&planForceChangePasswordNextSignIn)
 		} else {
 			passwordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
 		}
 
-		if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
+		if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsNull() {
 			planForceChangePasswordNextSignInWithMfa := passwordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
 			passwordProfile.SetForceChangePasswordNextSignInWithMfa(&planForceChangePasswordNextSignInWithMfa)
 		} else {
 			passwordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
 		}
 
-		if !passwordProfileModel.Password.IsUnknown() {
+		if !passwordProfileModel.Password.IsNull() {
 			planPassword := passwordProfileModel.Password.ValueString()
 			passwordProfile.SetPassword(&planPassword)
 		} else {
@@ -1492,28 +1368,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.PastProjects = types.ListNull(types.StringType)
 	}
 
-	if !plan.PostalCode.IsUnknown() {
+	if !plan.PostalCode.IsNull() {
 		planPostalCode := plan.PostalCode.ValueString()
 		requestBody.SetPostalCode(&planPostalCode)
 	} else {
 		plan.PostalCode = types.StringNull()
 	}
 
-	if !plan.PreferredDataLocation.IsUnknown() {
+	if !plan.PreferredDataLocation.IsNull() {
 		planPreferredDataLocation := plan.PreferredDataLocation.ValueString()
 		requestBody.SetPreferredDataLocation(&planPreferredDataLocation)
 	} else {
 		plan.PreferredDataLocation = types.StringNull()
 	}
 
-	if !plan.PreferredLanguage.IsUnknown() {
+	if !plan.PreferredLanguage.IsNull() {
 		planPreferredLanguage := plan.PreferredLanguage.ValueString()
 		requestBody.SetPreferredLanguage(&planPreferredLanguage)
 	} else {
 		plan.PreferredLanguage = types.StringNull()
 	}
 
-	if !plan.PreferredName.IsUnknown() {
+	if !plan.PreferredName.IsNull() {
 		planPreferredName := plan.PreferredName.ValueString()
 		requestBody.SetPreferredName(&planPreferredName)
 	} else {
@@ -1527,21 +1403,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			provisionedPlanModel := userProvisionedPlansModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
 
-			if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
+			if !provisionedPlanModel.CapabilityStatus.IsNull() {
 				planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
 				provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
 			} else {
 				provisionedPlanModel.CapabilityStatus = types.StringNull()
 			}
 
-			if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
+			if !provisionedPlanModel.ProvisioningStatus.IsNull() {
 				planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
 				provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
 			} else {
 				provisionedPlanModel.ProvisioningStatus = types.StringNull()
 			}
 
-			if !provisionedPlanModel.Service.IsUnknown() {
+			if !provisionedPlanModel.Service.IsNull() {
 				planService := provisionedPlanModel.Service.ValueString()
 				provisionedPlan.SetService(&planService)
 			} else {
@@ -1583,7 +1459,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Schools = types.ListNull(types.StringType)
 	}
 
-	if !plan.SecurityIdentifier.IsUnknown() {
+	if !plan.SecurityIdentifier.IsNull() {
 		planSecurityIdentifier := plan.SecurityIdentifier.ValueString()
 		requestBody.SetSecurityIdentifier(&planSecurityIdentifier)
 	} else {
@@ -1597,7 +1473,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
 
-			if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
+			if !serviceProvisioningErrorModel.CreatedDateTime.IsNull() {
 				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 				serviceProvisioningError.SetCreatedDateTime(&t)
@@ -1605,14 +1481,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
 			}
 
-			if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
+			if !serviceProvisioningErrorModel.IsResolved.IsNull() {
 				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
 				serviceProvisioningError.SetIsResolved(&planIsResolved)
 			} else {
 				serviceProvisioningErrorModel.IsResolved = types.BoolNull()
 			}
 
-			if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
+			if !serviceProvisioningErrorModel.ServiceInstance.IsNull() {
 				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
 				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
 			} else {
@@ -1624,19 +1500,19 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.ServiceProvisioningErrors = types.ListNull(plan.ServiceProvisioningErrors.ElementType(ctx))
 	}
 
-	if !plan.ShowInAddressList.IsUnknown() {
+	if !plan.ShowInAddressList.IsNull() {
 		planShowInAddressList := plan.ShowInAddressList.ValueBool()
 		requestBody.SetShowInAddressList(&planShowInAddressList)
 	} else {
 		plan.ShowInAddressList = types.BoolNull()
 	}
 
-	if !plan.SignInActivity.IsUnknown() {
+	if !plan.SignInActivity.IsNull() {
 		signInActivity := models.NewSignInActivity()
 		signInActivityModel := userSignInActivityModel{}
 		plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
 
-		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
+		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsNull() {
 			planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
 			signInActivity.SetLastNonInteractiveSignInDateTime(&t)
@@ -1644,14 +1520,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
 		}
 
-		if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
+		if !signInActivityModel.LastNonInteractiveSignInRequestId.IsNull() {
 			planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
 			signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
 		} else {
 			signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
 		}
 
-		if !signInActivityModel.LastSignInDateTime.IsUnknown() {
+		if !signInActivityModel.LastSignInDateTime.IsNull() {
 			planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
 			signInActivity.SetLastSignInDateTime(&t)
@@ -1659,7 +1535,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			signInActivityModel.LastSignInDateTime = types.StringNull()
 		}
 
-		if !signInActivityModel.LastSignInRequestId.IsUnknown() {
+		if !signInActivityModel.LastSignInRequestId.IsNull() {
 			planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
 			signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
 		} else {
@@ -1672,7 +1548,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.SignInActivity = types.ObjectNull(plan.SignInActivity.AttributeTypes(ctx))
 	}
 
-	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
+	if !plan.SignInSessionsValidFromDateTime.IsNull() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
 		requestBody.SetSignInSessionsValidFromDateTime(&t)
@@ -1690,42 +1566,42 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Skills = types.ListNull(types.StringType)
 	}
 
-	if !plan.State.IsUnknown() {
+	if !plan.State.IsNull() {
 		planState := plan.State.ValueString()
 		requestBody.SetState(&planState)
 	} else {
 		plan.State = types.StringNull()
 	}
 
-	if !plan.StreetAddress.IsUnknown() {
+	if !plan.StreetAddress.IsNull() {
 		planStreetAddress := plan.StreetAddress.ValueString()
 		requestBody.SetStreetAddress(&planStreetAddress)
 	} else {
 		plan.StreetAddress = types.StringNull()
 	}
 
-	if !plan.Surname.IsUnknown() {
+	if !plan.Surname.IsNull() {
 		planSurname := plan.Surname.ValueString()
 		requestBody.SetSurname(&planSurname)
 	} else {
 		plan.Surname = types.StringNull()
 	}
 
-	if !plan.UsageLocation.IsUnknown() {
+	if !plan.UsageLocation.IsNull() {
 		planUsageLocation := plan.UsageLocation.ValueString()
 		requestBody.SetUsageLocation(&planUsageLocation)
 	} else {
 		plan.UsageLocation = types.StringNull()
 	}
 
-	if !plan.UserPrincipalName.IsUnknown() {
+	if !plan.UserPrincipalName.IsNull() {
 		planUserPrincipalName := plan.UserPrincipalName.ValueString()
 		requestBody.SetUserPrincipalName(&planUserPrincipalName)
 	} else {
 		plan.UserPrincipalName = types.StringNull()
 	}
 
-	if !plan.UserType.IsUnknown() {
+	if !plan.UserType.IsNull() {
 		planUserType := plan.UserType.ValueString()
 		requestBody.SetUserType(&planUserType)
 	} else {
@@ -2679,14 +2555,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	var t time.Time
 	var u uuid.UUID
 
-	if !plan.Id.IsUnknown() {
+	if !plan.Id.IsNull() {
 		planId := plan.Id.ValueString()
 		requestBody.SetId(&planId)
 	} else {
 		plan.Id = types.StringNull()
 	}
 
-	if !plan.DeletedDateTime.IsUnknown() {
+	if !plan.DeletedDateTime.IsNull() {
 		planDeletedDateTime := plan.DeletedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
@@ -2694,21 +2570,21 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.DeletedDateTime = types.StringNull()
 	}
 
-	if !plan.AboutMe.IsUnknown() {
+	if !plan.AboutMe.IsNull() {
 		planAboutMe := plan.AboutMe.ValueString()
 		requestBody.SetAboutMe(&planAboutMe)
 	} else {
 		plan.AboutMe = types.StringNull()
 	}
 
-	if !plan.AccountEnabled.IsUnknown() {
+	if !plan.AccountEnabled.IsNull() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
 	} else {
 		plan.AccountEnabled = types.BoolNull()
 	}
 
-	if !plan.AgeGroup.IsUnknown() {
+	if !plan.AgeGroup.IsNull() {
 		planAgeGroup := plan.AgeGroup.ValueString()
 		requestBody.SetAgeGroup(&planAgeGroup)
 	} else {
@@ -2733,7 +2609,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !assignedLicenseModel.SkuId.IsUnknown() {
+			if !assignedLicenseModel.SkuId.IsNull() {
 				planSkuId := assignedLicenseModel.SkuId.ValueString()
 				u, _ = uuid.Parse(planSkuId)
 				assignedLicense.SetSkuId(&u)
@@ -2753,7 +2629,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			assignedPlanModel := userAssignedPlansModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
 
-			if !assignedPlanModel.AssignedDateTime.IsUnknown() {
+			if !assignedPlanModel.AssignedDateTime.IsNull() {
 				planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
 				assignedPlan.SetAssignedDateTime(&t)
@@ -2761,21 +2637,21 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				assignedPlanModel.AssignedDateTime = types.StringNull()
 			}
 
-			if !assignedPlanModel.CapabilityStatus.IsUnknown() {
+			if !assignedPlanModel.CapabilityStatus.IsNull() {
 				planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
 				assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
 			} else {
 				assignedPlanModel.CapabilityStatus = types.StringNull()
 			}
 
-			if !assignedPlanModel.Service.IsUnknown() {
+			if !assignedPlanModel.Service.IsNull() {
 				planService := assignedPlanModel.Service.ValueString()
 				assignedPlan.SetService(&planService)
 			} else {
 				assignedPlanModel.Service = types.StringNull()
 			}
 
-			if !assignedPlanModel.ServicePlanId.IsUnknown() {
+			if !assignedPlanModel.ServicePlanId.IsNull() {
 				planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
 				u, _ = uuid.Parse(planServicePlanId)
 				assignedPlan.SetServicePlanId(&u)
@@ -2788,7 +2664,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.AssignedPlans = types.ListNull(plan.AssignedPlans.ElementType(ctx))
 	}
 
-	if !plan.AuthorizationInfo.IsUnknown() {
+	if !plan.AuthorizationInfo.IsNull() {
 		authorizationInfo := models.NewAuthorizationInfo()
 		authorizationInfoModel := userAuthorizationInfoModel{}
 		plan.AuthorizationInfo.As(ctx, &authorizationInfoModel, basetypes.ObjectAsOptions{})
@@ -2809,7 +2685,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
 	}
 
-	if !plan.Birthday.IsUnknown() {
+	if !plan.Birthday.IsNull() {
 		planBirthday := plan.Birthday.ValueString()
 		t, _ = time.Parse(time.RFC3339, planBirthday)
 		requestBody.SetBirthday(&t)
@@ -2827,35 +2703,35 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.BusinessPhones = types.ListNull(types.StringType)
 	}
 
-	if !plan.City.IsUnknown() {
+	if !plan.City.IsNull() {
 		planCity := plan.City.ValueString()
 		requestBody.SetCity(&planCity)
 	} else {
 		plan.City = types.StringNull()
 	}
 
-	if !plan.CompanyName.IsUnknown() {
+	if !plan.CompanyName.IsNull() {
 		planCompanyName := plan.CompanyName.ValueString()
 		requestBody.SetCompanyName(&planCompanyName)
 	} else {
 		plan.CompanyName = types.StringNull()
 	}
 
-	if !plan.ConsentProvidedForMinor.IsUnknown() {
+	if !plan.ConsentProvidedForMinor.IsNull() {
 		planConsentProvidedForMinor := plan.ConsentProvidedForMinor.ValueString()
 		requestBody.SetConsentProvidedForMinor(&planConsentProvidedForMinor)
 	} else {
 		plan.ConsentProvidedForMinor = types.StringNull()
 	}
 
-	if !plan.Country.IsUnknown() {
+	if !plan.Country.IsNull() {
 		planCountry := plan.Country.ValueString()
 		requestBody.SetCountry(&planCountry)
 	} else {
 		plan.Country = types.StringNull()
 	}
 
-	if !plan.CreatedDateTime.IsUnknown() {
+	if !plan.CreatedDateTime.IsNull() {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
@@ -2863,28 +2739,28 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.CreatedDateTime = types.StringNull()
 	}
 
-	if !plan.CreationType.IsUnknown() {
+	if !plan.CreationType.IsNull() {
 		planCreationType := plan.CreationType.ValueString()
 		requestBody.SetCreationType(&planCreationType)
 	} else {
 		plan.CreationType = types.StringNull()
 	}
 
-	if !plan.Department.IsUnknown() {
+	if !plan.Department.IsNull() {
 		planDepartment := plan.Department.ValueString()
 		requestBody.SetDepartment(&planDepartment)
 	} else {
 		plan.Department = types.StringNull()
 	}
 
-	if !plan.DisplayName.IsUnknown() {
+	if !plan.DisplayName.IsNull() {
 		planDisplayName := plan.DisplayName.ValueString()
 		requestBody.SetDisplayName(&planDisplayName)
 	} else {
 		plan.DisplayName = types.StringNull()
 	}
 
-	if !plan.EmployeeHireDate.IsUnknown() {
+	if !plan.EmployeeHireDate.IsNull() {
 		planEmployeeHireDate := plan.EmployeeHireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeHireDate)
 		requestBody.SetEmployeeHireDate(&t)
@@ -2892,14 +2768,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.EmployeeHireDate = types.StringNull()
 	}
 
-	if !plan.EmployeeId.IsUnknown() {
+	if !plan.EmployeeId.IsNull() {
 		planEmployeeId := plan.EmployeeId.ValueString()
 		requestBody.SetEmployeeId(&planEmployeeId)
 	} else {
 		plan.EmployeeId = types.StringNull()
 	}
 
-	if !plan.EmployeeLeaveDateTime.IsUnknown() {
+	if !plan.EmployeeLeaveDateTime.IsNull() {
 		planEmployeeLeaveDateTime := plan.EmployeeLeaveDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
 		requestBody.SetEmployeeLeaveDateTime(&t)
@@ -2907,19 +2783,19 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.EmployeeLeaveDateTime = types.StringNull()
 	}
 
-	if !plan.EmployeeOrgData.IsUnknown() {
+	if !plan.EmployeeOrgData.IsNull() {
 		employeeOrgData := models.NewEmployeeOrgData()
 		employeeOrgDataModel := userEmployeeOrgDataModel{}
 		plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
 
-		if !employeeOrgDataModel.CostCenter.IsUnknown() {
+		if !employeeOrgDataModel.CostCenter.IsNull() {
 			planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
 			employeeOrgData.SetCostCenter(&planCostCenter)
 		} else {
 			employeeOrgDataModel.CostCenter = types.StringNull()
 		}
 
-		if !employeeOrgDataModel.Division.IsUnknown() {
+		if !employeeOrgDataModel.Division.IsNull() {
 			planDivision := employeeOrgDataModel.Division.ValueString()
 			employeeOrgData.SetDivision(&planDivision)
 		} else {
@@ -2932,21 +2808,21 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.EmployeeOrgData = types.ObjectNull(plan.EmployeeOrgData.AttributeTypes(ctx))
 	}
 
-	if !plan.EmployeeType.IsUnknown() {
+	if !plan.EmployeeType.IsNull() {
 		planEmployeeType := plan.EmployeeType.ValueString()
 		requestBody.SetEmployeeType(&planEmployeeType)
 	} else {
 		plan.EmployeeType = types.StringNull()
 	}
 
-	if !plan.ExternalUserState.IsUnknown() {
+	if !plan.ExternalUserState.IsNull() {
 		planExternalUserState := plan.ExternalUserState.ValueString()
 		requestBody.SetExternalUserState(&planExternalUserState)
 	} else {
 		plan.ExternalUserState = types.StringNull()
 	}
 
-	if !plan.ExternalUserStateChangeDateTime.IsUnknown() {
+	if !plan.ExternalUserStateChangeDateTime.IsNull() {
 		planExternalUserStateChangeDateTime := plan.ExternalUserStateChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
 		requestBody.SetExternalUserStateChangeDateTime(&t)
@@ -2954,21 +2830,21 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.ExternalUserStateChangeDateTime = types.StringNull()
 	}
 
-	if !plan.FaxNumber.IsUnknown() {
+	if !plan.FaxNumber.IsNull() {
 		planFaxNumber := plan.FaxNumber.ValueString()
 		requestBody.SetFaxNumber(&planFaxNumber)
 	} else {
 		plan.FaxNumber = types.StringNull()
 	}
 
-	if !plan.GivenName.IsUnknown() {
+	if !plan.GivenName.IsNull() {
 		planGivenName := plan.GivenName.ValueString()
 		requestBody.SetGivenName(&planGivenName)
 	} else {
 		plan.GivenName = types.StringNull()
 	}
 
-	if !plan.HireDate.IsUnknown() {
+	if !plan.HireDate.IsNull() {
 		planHireDate := plan.HireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planHireDate)
 		requestBody.SetHireDate(&t)
@@ -2983,21 +2859,21 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			objectIdentityModel := userIdentitiesModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
 
-			if !objectIdentityModel.Issuer.IsUnknown() {
+			if !objectIdentityModel.Issuer.IsNull() {
 				planIssuer := objectIdentityModel.Issuer.ValueString()
 				objectIdentity.SetIssuer(&planIssuer)
 			} else {
 				objectIdentityModel.Issuer = types.StringNull()
 			}
 
-			if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
+			if !objectIdentityModel.IssuerAssignedId.IsNull() {
 				planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
 				objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
 			} else {
 				objectIdentityModel.IssuerAssignedId = types.StringNull()
 			}
 
-			if !objectIdentityModel.SignInType.IsUnknown() {
+			if !objectIdentityModel.SignInType.IsNull() {
 				planSignInType := objectIdentityModel.SignInType.ValueString()
 				objectIdentity.SetSignInType(&planSignInType)
 			} else {
@@ -3029,21 +2905,21 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.Interests = types.ListNull(types.StringType)
 	}
 
-	if !plan.IsResourceAccount.IsUnknown() {
+	if !plan.IsResourceAccount.IsNull() {
 		planIsResourceAccount := plan.IsResourceAccount.ValueBool()
 		requestBody.SetIsResourceAccount(&planIsResourceAccount)
 	} else {
 		plan.IsResourceAccount = types.BoolNull()
 	}
 
-	if !plan.JobTitle.IsUnknown() {
+	if !plan.JobTitle.IsNull() {
 		planJobTitle := plan.JobTitle.ValueString()
 		requestBody.SetJobTitle(&planJobTitle)
 	} else {
 		plan.JobTitle = types.StringNull()
 	}
 
-	if !plan.LastPasswordChangeDateTime.IsUnknown() {
+	if !plan.LastPasswordChangeDateTime.IsNull() {
 		planLastPasswordChangeDateTime := plan.LastPasswordChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planLastPasswordChangeDateTime)
 		requestBody.SetLastPasswordChangeDateTime(&t)
@@ -3051,7 +2927,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.LastPasswordChangeDateTime = types.StringNull()
 	}
 
-	if !plan.LegalAgeGroupClassification.IsUnknown() {
+	if !plan.LegalAgeGroupClassification.IsNull() {
 		planLegalAgeGroupClassification := plan.LegalAgeGroupClassification.ValueString()
 		requestBody.SetLegalAgeGroupClassification(&planLegalAgeGroupClassification)
 	} else {
@@ -3065,7 +2941,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
 
-			if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
+			if !licenseAssignmentStateModel.AssignedByGroup.IsNull() {
 				planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
 				licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
 			} else {
@@ -3083,14 +2959,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !licenseAssignmentStateModel.Error.IsUnknown() {
+			if !licenseAssignmentStateModel.Error.IsNull() {
 				planError := licenseAssignmentStateModel.Error.ValueString()
 				licenseAssignmentState.SetError(&planError)
 			} else {
 				licenseAssignmentStateModel.Error = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
+			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsNull() {
 				planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
 				licenseAssignmentState.SetLastUpdatedDateTime(&t)
@@ -3098,7 +2974,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.SkuId.IsUnknown() {
+			if !licenseAssignmentStateModel.SkuId.IsNull() {
 				planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
 				u, _ = uuid.Parse(planSkuId)
 				licenseAssignmentState.SetSkuId(&u)
@@ -3106,7 +2982,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				licenseAssignmentStateModel.SkuId = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.State.IsUnknown() {
+			if !licenseAssignmentStateModel.State.IsNull() {
 				planState := licenseAssignmentStateModel.State.ValueString()
 				licenseAssignmentState.SetState(&planState)
 			} else {
@@ -3118,159 +2994,159 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.LicenseAssignmentStates = types.ListNull(plan.LicenseAssignmentStates.ElementType(ctx))
 	}
 
-	if !plan.Mail.IsUnknown() {
+	if !plan.Mail.IsNull() {
 		planMail := plan.Mail.ValueString()
 		requestBody.SetMail(&planMail)
 	} else {
 		plan.Mail = types.StringNull()
 	}
 
-	if !plan.MailNickname.IsUnknown() {
+	if !plan.MailNickname.IsNull() {
 		planMailNickname := plan.MailNickname.ValueString()
 		requestBody.SetMailNickname(&planMailNickname)
 	} else {
 		plan.MailNickname = types.StringNull()
 	}
 
-	if !plan.MobilePhone.IsUnknown() {
+	if !plan.MobilePhone.IsNull() {
 		planMobilePhone := plan.MobilePhone.ValueString()
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
 		plan.MobilePhone = types.StringNull()
 	}
 
-	if !plan.MySite.IsUnknown() {
+	if !plan.MySite.IsNull() {
 		planMySite := plan.MySite.ValueString()
 		requestBody.SetMySite(&planMySite)
 	} else {
 		plan.MySite = types.StringNull()
 	}
 
-	if !plan.OfficeLocation.IsUnknown() {
+	if !plan.OfficeLocation.IsNull() {
 		planOfficeLocation := plan.OfficeLocation.ValueString()
 		requestBody.SetOfficeLocation(&planOfficeLocation)
 	} else {
 		plan.OfficeLocation = types.StringNull()
 	}
 
-	if !plan.OnPremisesDistinguishedName.IsUnknown() {
+	if !plan.OnPremisesDistinguishedName.IsNull() {
 		planOnPremisesDistinguishedName := plan.OnPremisesDistinguishedName.ValueString()
 		requestBody.SetOnPremisesDistinguishedName(&planOnPremisesDistinguishedName)
 	} else {
 		plan.OnPremisesDistinguishedName = types.StringNull()
 	}
 
-	if !plan.OnPremisesDomainName.IsUnknown() {
+	if !plan.OnPremisesDomainName.IsNull() {
 		planOnPremisesDomainName := plan.OnPremisesDomainName.ValueString()
 		requestBody.SetOnPremisesDomainName(&planOnPremisesDomainName)
 	} else {
 		plan.OnPremisesDomainName = types.StringNull()
 	}
 
-	if !plan.OnPremisesExtensionAttributes.IsUnknown() {
+	if !plan.OnPremisesExtensionAttributes.IsNull() {
 		onPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
 		onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
 		plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsNull() {
 			planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsNull() {
 			planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsNull() {
 			planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsNull() {
 			planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsNull() {
 			planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsNull() {
 			planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsNull() {
 			planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsNull() {
 			planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsNull() {
 			planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsNull() {
 			planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsNull() {
 			planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsNull() {
 			planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsNull() {
 			planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsNull() {
 			planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsNull() {
 			planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
 		} else {
@@ -3283,14 +3159,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.OnPremisesExtensionAttributes = types.ObjectNull(plan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
 
-	if !plan.OnPremisesImmutableId.IsUnknown() {
+	if !plan.OnPremisesImmutableId.IsNull() {
 		planOnPremisesImmutableId := plan.OnPremisesImmutableId.ValueString()
 		requestBody.SetOnPremisesImmutableId(&planOnPremisesImmutableId)
 	} else {
 		plan.OnPremisesImmutableId = types.StringNull()
 	}
 
-	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
+	if !plan.OnPremisesLastSyncDateTime.IsNull() {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
@@ -3305,14 +3181,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
 
-			if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
+			if !onPremisesProvisioningErrorModel.Category.IsNull() {
 				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
 				onPremisesProvisioningError.SetCategory(&planCategory)
 			} else {
 				onPremisesProvisioningErrorModel.Category = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
+			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsNull() {
 				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
 				onPremisesProvisioningError.SetOccurredDateTime(&t)
@@ -3320,14 +3196,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
+			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsNull() {
 				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
 				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
 			} else {
 				onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
+			if !onPremisesProvisioningErrorModel.Value.IsNull() {
 				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
 				onPremisesProvisioningError.SetValue(&planValue)
 			} else {
@@ -3339,28 +3215,28 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.OnPremisesProvisioningErrors = types.ListNull(plan.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
 
-	if !plan.OnPremisesSamAccountName.IsUnknown() {
+	if !plan.OnPremisesSamAccountName.IsNull() {
 		planOnPremisesSamAccountName := plan.OnPremisesSamAccountName.ValueString()
 		requestBody.SetOnPremisesSamAccountName(&planOnPremisesSamAccountName)
 	} else {
 		plan.OnPremisesSamAccountName = types.StringNull()
 	}
 
-	if !plan.OnPremisesSecurityIdentifier.IsUnknown() {
+	if !plan.OnPremisesSecurityIdentifier.IsNull() {
 		planOnPremisesSecurityIdentifier := plan.OnPremisesSecurityIdentifier.ValueString()
 		requestBody.SetOnPremisesSecurityIdentifier(&planOnPremisesSecurityIdentifier)
 	} else {
 		plan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
-	if !plan.OnPremisesSyncEnabled.IsUnknown() {
+	if !plan.OnPremisesSyncEnabled.IsNull() {
 		planOnPremisesSyncEnabled := plan.OnPremisesSyncEnabled.ValueBool()
 		requestBody.SetOnPremisesSyncEnabled(&planOnPremisesSyncEnabled)
 	} else {
 		plan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
-	if !plan.OnPremisesUserPrincipalName.IsUnknown() {
+	if !plan.OnPremisesUserPrincipalName.IsNull() {
 		planOnPremisesUserPrincipalName := plan.OnPremisesUserPrincipalName.ValueString()
 		requestBody.SetOnPremisesUserPrincipalName(&planOnPremisesUserPrincipalName)
 	} else {
@@ -3377,33 +3253,33 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.OtherMails = types.ListNull(types.StringType)
 	}
 
-	if !plan.PasswordPolicies.IsUnknown() {
+	if !plan.PasswordPolicies.IsNull() {
 		planPasswordPolicies := plan.PasswordPolicies.ValueString()
 		requestBody.SetPasswordPolicies(&planPasswordPolicies)
 	} else {
 		plan.PasswordPolicies = types.StringNull()
 	}
 
-	if !plan.PasswordProfile.IsUnknown() {
+	if !plan.PasswordProfile.IsNull() {
 		passwordProfile := models.NewPasswordProfile()
 		passwordProfileModel := userPasswordProfileModel{}
 		plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
 
-		if !passwordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
+		if !passwordProfileModel.ForceChangePasswordNextSignIn.IsNull() {
 			planForceChangePasswordNextSignIn := passwordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
 			passwordProfile.SetForceChangePasswordNextSignIn(&planForceChangePasswordNextSignIn)
 		} else {
 			passwordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
 		}
 
-		if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
+		if !passwordProfileModel.ForceChangePasswordNextSignInWithMfa.IsNull() {
 			planForceChangePasswordNextSignInWithMfa := passwordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
 			passwordProfile.SetForceChangePasswordNextSignInWithMfa(&planForceChangePasswordNextSignInWithMfa)
 		} else {
 			passwordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
 		}
 
-		if !passwordProfileModel.Password.IsUnknown() {
+		if !passwordProfileModel.Password.IsNull() {
 			planPassword := passwordProfileModel.Password.ValueString()
 			passwordProfile.SetPassword(&planPassword)
 		} else {
@@ -3426,28 +3302,28 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.PastProjects = types.ListNull(types.StringType)
 	}
 
-	if !plan.PostalCode.IsUnknown() {
+	if !plan.PostalCode.IsNull() {
 		planPostalCode := plan.PostalCode.ValueString()
 		requestBody.SetPostalCode(&planPostalCode)
 	} else {
 		plan.PostalCode = types.StringNull()
 	}
 
-	if !plan.PreferredDataLocation.IsUnknown() {
+	if !plan.PreferredDataLocation.IsNull() {
 		planPreferredDataLocation := plan.PreferredDataLocation.ValueString()
 		requestBody.SetPreferredDataLocation(&planPreferredDataLocation)
 	} else {
 		plan.PreferredDataLocation = types.StringNull()
 	}
 
-	if !plan.PreferredLanguage.IsUnknown() {
+	if !plan.PreferredLanguage.IsNull() {
 		planPreferredLanguage := plan.PreferredLanguage.ValueString()
 		requestBody.SetPreferredLanguage(&planPreferredLanguage)
 	} else {
 		plan.PreferredLanguage = types.StringNull()
 	}
 
-	if !plan.PreferredName.IsUnknown() {
+	if !plan.PreferredName.IsNull() {
 		planPreferredName := plan.PreferredName.ValueString()
 		requestBody.SetPreferredName(&planPreferredName)
 	} else {
@@ -3461,21 +3337,21 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			provisionedPlanModel := userProvisionedPlansModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
 
-			if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
+			if !provisionedPlanModel.CapabilityStatus.IsNull() {
 				planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
 				provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
 			} else {
 				provisionedPlanModel.CapabilityStatus = types.StringNull()
 			}
 
-			if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
+			if !provisionedPlanModel.ProvisioningStatus.IsNull() {
 				planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
 				provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
 			} else {
 				provisionedPlanModel.ProvisioningStatus = types.StringNull()
 			}
 
-			if !provisionedPlanModel.Service.IsUnknown() {
+			if !provisionedPlanModel.Service.IsNull() {
 				planService := provisionedPlanModel.Service.ValueString()
 				provisionedPlan.SetService(&planService)
 			} else {
@@ -3517,7 +3393,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.Schools = types.ListNull(types.StringType)
 	}
 
-	if !plan.SecurityIdentifier.IsUnknown() {
+	if !plan.SecurityIdentifier.IsNull() {
 		planSecurityIdentifier := plan.SecurityIdentifier.ValueString()
 		requestBody.SetSecurityIdentifier(&planSecurityIdentifier)
 	} else {
@@ -3531,7 +3407,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
 
-			if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
+			if !serviceProvisioningErrorModel.CreatedDateTime.IsNull() {
 				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 				serviceProvisioningError.SetCreatedDateTime(&t)
@@ -3539,14 +3415,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 				serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
 			}
 
-			if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
+			if !serviceProvisioningErrorModel.IsResolved.IsNull() {
 				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
 				serviceProvisioningError.SetIsResolved(&planIsResolved)
 			} else {
 				serviceProvisioningErrorModel.IsResolved = types.BoolNull()
 			}
 
-			if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
+			if !serviceProvisioningErrorModel.ServiceInstance.IsNull() {
 				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
 				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
 			} else {
@@ -3558,19 +3434,19 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.ServiceProvisioningErrors = types.ListNull(plan.ServiceProvisioningErrors.ElementType(ctx))
 	}
 
-	if !plan.ShowInAddressList.IsUnknown() {
+	if !plan.ShowInAddressList.IsNull() {
 		planShowInAddressList := plan.ShowInAddressList.ValueBool()
 		requestBody.SetShowInAddressList(&planShowInAddressList)
 	} else {
 		plan.ShowInAddressList = types.BoolNull()
 	}
 
-	if !plan.SignInActivity.IsUnknown() {
+	if !plan.SignInActivity.IsNull() {
 		signInActivity := models.NewSignInActivity()
 		signInActivityModel := userSignInActivityModel{}
 		plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
 
-		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
+		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsNull() {
 			planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
 			signInActivity.SetLastNonInteractiveSignInDateTime(&t)
@@ -3578,14 +3454,14 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
 		}
 
-		if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
+		if !signInActivityModel.LastNonInteractiveSignInRequestId.IsNull() {
 			planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
 			signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
 		} else {
 			signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
 		}
 
-		if !signInActivityModel.LastSignInDateTime.IsUnknown() {
+		if !signInActivityModel.LastSignInDateTime.IsNull() {
 			planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
 			signInActivity.SetLastSignInDateTime(&t)
@@ -3593,7 +3469,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			signInActivityModel.LastSignInDateTime = types.StringNull()
 		}
 
-		if !signInActivityModel.LastSignInRequestId.IsUnknown() {
+		if !signInActivityModel.LastSignInRequestId.IsNull() {
 			planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
 			signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
 		} else {
@@ -3606,7 +3482,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.SignInActivity = types.ObjectNull(plan.SignInActivity.AttributeTypes(ctx))
 	}
 
-	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
+	if !plan.SignInSessionsValidFromDateTime.IsNull() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
 		requestBody.SetSignInSessionsValidFromDateTime(&t)
@@ -3624,42 +3500,42 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.Skills = types.ListNull(types.StringType)
 	}
 
-	if !plan.State.IsUnknown() {
+	if !plan.State.IsNull() {
 		planState := plan.State.ValueString()
 		requestBody.SetState(&planState)
 	} else {
 		plan.State = types.StringNull()
 	}
 
-	if !plan.StreetAddress.IsUnknown() {
+	if !plan.StreetAddress.IsNull() {
 		planStreetAddress := plan.StreetAddress.ValueString()
 		requestBody.SetStreetAddress(&planStreetAddress)
 	} else {
 		plan.StreetAddress = types.StringNull()
 	}
 
-	if !plan.Surname.IsUnknown() {
+	if !plan.Surname.IsNull() {
 		planSurname := plan.Surname.ValueString()
 		requestBody.SetSurname(&planSurname)
 	} else {
 		plan.Surname = types.StringNull()
 	}
 
-	if !plan.UsageLocation.IsUnknown() {
+	if !plan.UsageLocation.IsNull() {
 		planUsageLocation := plan.UsageLocation.ValueString()
 		requestBody.SetUsageLocation(&planUsageLocation)
 	} else {
 		plan.UsageLocation = types.StringNull()
 	}
 
-	if !plan.UserPrincipalName.IsUnknown() {
+	if !plan.UserPrincipalName.IsNull() {
 		planUserPrincipalName := plan.UserPrincipalName.ValueString()
 		requestBody.SetUserPrincipalName(&planUserPrincipalName)
 	} else {
 		plan.UserPrincipalName = types.StringNull()
 	}
 
-	if !plan.UserType.IsUnknown() {
+	if !plan.UserType.IsNull() {
 		planUserType := plan.UserType.ValueString()
 		requestBody.SetUserType(&planUserType)
 	} else {
