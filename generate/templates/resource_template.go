@@ -167,6 +167,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		plan.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
 		requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
+		objectValue, _ := types.ObjectValueFrom(ctx, {{.RequestBodyVar}}Model.AttributeTypes(), {{.RequestBodyVar}}Model)
+		plan.{{.AttributeName.UpperCamel}} = objectValue
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ObjectNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.AttributeTypes(ctx))
 	}

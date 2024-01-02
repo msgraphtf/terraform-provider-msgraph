@@ -869,6 +869,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
 		}
 		requestBody.SetAuthorizationInfo(authorizationInfo)
+		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfoModel.AttributeTypes(), authorizationInfoModel)
+		plan.AuthorizationInfo = objectValue
 	} else {
 		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
 	}
@@ -990,6 +992,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			employeeOrgDataModel.Division = types.StringNull()
 		}
 		requestBody.SetEmployeeOrgData(employeeOrgData)
+		objectValue, _ := types.ObjectValueFrom(ctx, employeeOrgDataModel.AttributeTypes(), employeeOrgDataModel)
+		plan.EmployeeOrgData = objectValue
 	} else {
 		plan.EmployeeOrgData = types.ObjectNull(plan.EmployeeOrgData.AttributeTypes(ctx))
 	}
@@ -1339,6 +1343,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
 		}
 		requestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
+		objectValue, _ := types.ObjectValueFrom(ctx, onPremisesExtensionAttributesModel.AttributeTypes(), onPremisesExtensionAttributesModel)
+		plan.OnPremisesExtensionAttributes = objectValue
 	} else {
 		plan.OnPremisesExtensionAttributes = types.ObjectNull(plan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
@@ -1470,6 +1476,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			passwordProfileModel.Password = types.StringNull()
 		}
 		requestBody.SetPasswordProfile(passwordProfile)
+		objectValue, _ := types.ObjectValueFrom(ctx, passwordProfileModel.AttributeTypes(), passwordProfileModel)
+		plan.PasswordProfile = objectValue
 	} else {
 		plan.PasswordProfile = types.ObjectNull(plan.PasswordProfile.AttributeTypes(ctx))
 	}
@@ -1658,6 +1666,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			signInActivityModel.LastSignInRequestId = types.StringNull()
 		}
 		requestBody.SetSignInActivity(signInActivity)
+		objectValue, _ := types.ObjectValueFrom(ctx, signInActivityModel.AttributeTypes(), signInActivityModel)
+		plan.SignInActivity = objectValue
 	} else {
 		plan.SignInActivity = types.ObjectNull(plan.SignInActivity.AttributeTypes(ctx))
 	}
@@ -2793,6 +2803,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
 		}
 		requestBody.SetAuthorizationInfo(authorizationInfo)
+		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfoModel.AttributeTypes(), authorizationInfoModel)
+		plan.AuthorizationInfo = objectValue
 	} else {
 		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
 	}
@@ -2914,6 +2926,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			employeeOrgDataModel.Division = types.StringNull()
 		}
 		requestBody.SetEmployeeOrgData(employeeOrgData)
+		objectValue, _ := types.ObjectValueFrom(ctx, employeeOrgDataModel.AttributeTypes(), employeeOrgDataModel)
+		plan.EmployeeOrgData = objectValue
 	} else {
 		plan.EmployeeOrgData = types.ObjectNull(plan.EmployeeOrgData.AttributeTypes(ctx))
 	}
@@ -3263,6 +3277,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
 		}
 		requestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
+		objectValue, _ := types.ObjectValueFrom(ctx, onPremisesExtensionAttributesModel.AttributeTypes(), onPremisesExtensionAttributesModel)
+		plan.OnPremisesExtensionAttributes = objectValue
 	} else {
 		plan.OnPremisesExtensionAttributes = types.ObjectNull(plan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
@@ -3394,6 +3410,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			passwordProfileModel.Password = types.StringNull()
 		}
 		requestBody.SetPasswordProfile(passwordProfile)
+		objectValue, _ := types.ObjectValueFrom(ctx, passwordProfileModel.AttributeTypes(), passwordProfileModel)
+		plan.PasswordProfile = objectValue
 	} else {
 		plan.PasswordProfile = types.ObjectNull(plan.PasswordProfile.AttributeTypes(ctx))
 	}
@@ -3582,6 +3600,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			signInActivityModel.LastSignInRequestId = types.StringNull()
 		}
 		requestBody.SetSignInActivity(signInActivity)
+		objectValue, _ := types.ObjectValueFrom(ctx, signInActivityModel.AttributeTypes(), signInActivityModel)
+		plan.SignInActivity = objectValue
 	} else {
 		plan.SignInActivity = types.ObjectNull(plan.SignInActivity.AttributeTypes(ctx))
 	}
