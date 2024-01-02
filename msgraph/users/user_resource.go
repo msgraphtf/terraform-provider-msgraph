@@ -260,7 +260,6 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"last_password_change_date_time": schema.StringAttribute{
 				Description: "The time when this Microsoft Entra user last changed their password or when their password was created, whichever date the latest action was performed. The date and time information uses ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned only on $select.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"legal_age_group_classification": schema.StringAttribute{
 				Description: "Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, MinorWithOutParentalConsent, MinorWithParentalConsent, MinorNoParentalConsentRequired, NotAdult, and Adult. Refer to the legal age group property definitions for further information. Returned only on $select.",
@@ -631,7 +630,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Generate API request body from Plan
 	requestBody := models.NewUser()
 
-	if !plan.Id.IsNull() {
+	if !plan.Id.IsUnknown() {
 		planId := plan.Id.ValueString()
 		requestBody.SetId(&planId)
 	} else {
@@ -740,7 +739,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.AssignedPlans = types.ListNull(plan.AssignedPlans.ElementType(ctx))
 	}
 
-	if !plan.AuthorizationInfo.IsNull() {
+	if !plan.AuthorizationInfo.IsUnknown() {
 		authorizationInfo := models.NewAuthorizationInfo()
 		authorizationInfoModel := userAuthorizationInfoModel{}
 		plan.AuthorizationInfo.As(ctx, &authorizationInfoModel, basetypes.ObjectAsOptions{})
@@ -761,7 +760,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
 	}
 
-	if !plan.Birthday.IsNull() {
+	if !plan.Birthday.IsUnknown() {
 		planBirthday := plan.Birthday.ValueString()
 		t, _ = time.Parse(time.RFC3339, planBirthday)
 		requestBody.SetBirthday(&t)
@@ -807,7 +806,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Country = types.StringNull()
 	}
 
-	if !plan.CreatedDateTime.IsNull() {
+	if !plan.CreatedDateTime.IsUnknown() {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
@@ -920,7 +919,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.GivenName = types.StringNull()
 	}
 
-	if !plan.HireDate.IsNull() {
+	if !plan.HireDate.IsUnknown() {
 		planHireDate := plan.HireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planHireDate)
 		requestBody.SetHireDate(&t)
@@ -1469,7 +1468,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Schools = types.ListNull(types.StringType)
 	}
 
-	if !plan.SecurityIdentifier.IsNull() {
+	if !plan.SecurityIdentifier.IsUnknown() {
 		planSecurityIdentifier := plan.SecurityIdentifier.ValueString()
 		requestBody.SetSecurityIdentifier(&planSecurityIdentifier)
 	} else {
@@ -1483,7 +1482,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
 
-			if !serviceProvisioningErrorModel.CreatedDateTime.IsNull() {
+			if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
 				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 				serviceProvisioningError.SetCreatedDateTime(&t)
@@ -1558,7 +1557,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.SignInActivity = types.ObjectNull(plan.SignInActivity.AttributeTypes(ctx))
 	}
 
-	if !plan.SignInSessionsValidFromDateTime.IsNull() {
+	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
 		requestBody.SetSignInSessionsValidFromDateTime(&t)
@@ -1611,7 +1610,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.UserPrincipalName = types.StringNull()
 	}
 
-	if !plan.UserType.IsNull() {
+	if !plan.UserType.IsUnknown() {
 		planUserType := plan.UserType.ValueString()
 		requestBody.SetUserType(&planUserType)
 	} else {
@@ -2565,7 +2564,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	var t time.Time
 	var u uuid.UUID
 
-	if !plan.Id.IsNull() {
+	if !plan.Id.IsUnknown() {
 		planId := plan.Id.ValueString()
 		requestBody.SetId(&planId)
 	} else {
@@ -2674,7 +2673,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.AssignedPlans = types.ListNull(plan.AssignedPlans.ElementType(ctx))
 	}
 
-	if !plan.AuthorizationInfo.IsNull() {
+	if !plan.AuthorizationInfo.IsUnknown() {
 		authorizationInfo := models.NewAuthorizationInfo()
 		authorizationInfoModel := userAuthorizationInfoModel{}
 		plan.AuthorizationInfo.As(ctx, &authorizationInfoModel, basetypes.ObjectAsOptions{})
@@ -2695,7 +2694,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.AuthorizationInfo = types.ObjectNull(plan.AuthorizationInfo.AttributeTypes(ctx))
 	}
 
-	if !plan.Birthday.IsNull() {
+	if !plan.Birthday.IsUnknown() {
 		planBirthday := plan.Birthday.ValueString()
 		t, _ = time.Parse(time.RFC3339, planBirthday)
 		requestBody.SetBirthday(&t)
@@ -2741,7 +2740,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.Country = types.StringNull()
 	}
 
-	if !plan.CreatedDateTime.IsNull() {
+	if !plan.CreatedDateTime.IsUnknown() {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
@@ -2854,7 +2853,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.GivenName = types.StringNull()
 	}
 
-	if !plan.HireDate.IsNull() {
+	if !plan.HireDate.IsUnknown() {
 		planHireDate := plan.HireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planHireDate)
 		requestBody.SetHireDate(&t)
@@ -3403,7 +3402,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.Schools = types.ListNull(types.StringType)
 	}
 
-	if !plan.SecurityIdentifier.IsNull() {
+	if !plan.SecurityIdentifier.IsUnknown() {
 		planSecurityIdentifier := plan.SecurityIdentifier.ValueString()
 		requestBody.SetSecurityIdentifier(&planSecurityIdentifier)
 	} else {
@@ -3417,7 +3416,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
 
-			if !serviceProvisioningErrorModel.CreatedDateTime.IsNull() {
+			if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
 				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
 				serviceProvisioningError.SetCreatedDateTime(&t)
@@ -3492,7 +3491,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.SignInActivity = types.ObjectNull(plan.SignInActivity.AttributeTypes(ctx))
 	}
 
-	if !plan.SignInSessionsValidFromDateTime.IsNull() {
+	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
 		requestBody.SetSignInSessionsValidFromDateTime(&t)
@@ -3545,7 +3544,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.UserPrincipalName = types.StringNull()
 	}
 
-	if !plan.UserType.IsNull() {
+	if !plan.UserType.IsUnknown() {
 		planUserType := plan.UserType.ValueString()
 		requestBody.SetUserType(&planUserType)
 	} else {

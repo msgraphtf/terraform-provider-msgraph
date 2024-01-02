@@ -85,7 +85,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			}
 		} else if behaviourMode == "Resource" {
 			newSchema.Optional = true
-			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) || slices.Contains(augment.ResourceExtraComputed, newSchema.AttributeName) {
+			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) || slices.Contains(augment.ResourceExtraComputed, property.Name) {
 				newSchema.Computed = true
 			}
 		}
@@ -268,6 +268,12 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		} else {
 			newCreateRequest.RequestBodyVar = "requestBody"
 			newCreateRequest.PlanVar = "plan."
+		}
+
+
+		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+property.Name) ||
+			slices.Contains(augment.ResourceExtraComputed, property.Name) {
+			newCreateRequest.IfCondition = "Unknown"
 		}
 
 		switch property.Type {
