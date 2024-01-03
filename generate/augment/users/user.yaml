@@ -14,10 +14,11 @@ resourceExtraComputed:
   - createdDateTime
   - hireDate
   - identities
-  - lastPasswordChangeDatetime
-  - onPremiseExtensionAttributes
-  - forceChangePasswordAtNextSignIn
-  - forceChangePasswordAtNextSignInWithMfa
+  - lastPasswordChangeDateTime
+  - onPremisesExtensionAttributes
+  - forceChangePasswordNextSignIn
+  - forceChangePasswordNextSignInWithMfa
+  - password
   - securityIdentifier
   - signInSessionsValidFromDateTime
   - userType

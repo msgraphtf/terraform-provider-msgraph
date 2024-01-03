@@ -11,6 +11,11 @@
 	{{- if .Computed}}
 	Computed: true,
 	{{- end}}
+	{{- if .PlanModifiers}}
+	PlanModifiers: []planmodifier.String{
+		stringplanmodifier.UseStateForUnknown(),
+	},
+	{{- end}}
 },
 {{- end }}
 
@@ -41,6 +46,11 @@
 	{{- if .Computed}}
 	Computed: true,
 	{{- end}}
+	{{- if .PlanModifiers}}
+	PlanModifiers: []planmodifier.Bool{
+		boolplanmodifier.UseStateForUnknown(),
+	},
+	{{- end}}
 },
 {{- end }}
 
@@ -55,6 +65,11 @@
 	{{- end}}
 	{{- if .Computed}}
 	Computed: true,
+	{{- end}}
+	{{- if .PlanModifiers}}
+	PlanModifiers: []planmodifier.List{
+		listplanmodifier.UseStateForUnknown(),
+	},
 	{{- end}}
 	ElementType: {{.ElementType}},
 },
@@ -71,6 +86,11 @@
 	{{- end}}
 	{{- if .Computed}}
 	Computed: true,
+	{{- end}}
+	{{- if .PlanModifiers}}
+	PlanModifiers: []planmodifier.Object{
+		objectplanmodifier.UseStateForUnknown(),
+	},
 	{{- end}}
 	Attributes: map[string]schema.Attribute{
 	{{- template "generate_schema" .Attributes}}
@@ -89,6 +109,11 @@
 	{{- end}}
 	{{- if .Computed}}
 	Computed: true,
+	{{- end}}
+	{{- if .PlanModifiers}}
+	PlanModifiers: []planmodifier.List{
+		listplanmodifier.UseStateForUnknown(),
+	},
 	{{- end}}
 	NestedObject: schema.NestedAttributeObject{
 		Attributes: map[string]schema.Attribute{

@@ -58,6 +58,7 @@ type terraformSchema struct {
 	Required      bool
 	Optional      bool
 	Computed      bool
+	PlanModifiers bool
 	ElementType   string
 	Attributes    []terraformSchema
 	NestedObject  []terraformSchema
@@ -85,6 +86,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			}
 		} else if behaviourMode == "Resource" {
 			newSchema.Optional = true
+			newSchema.PlanModifiers = true
 			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) || slices.Contains(augment.ResourceExtraComputed, property.Name) {
 				newSchema.Computed = true
 			}
