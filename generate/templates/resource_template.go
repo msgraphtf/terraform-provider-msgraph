@@ -402,7 +402,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	_, err := r.client.{{range .UpdateRequest.PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Patch(context.Background(), requestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating {{.BlockName.Snake}}",
+			"Error updating {{.BlockName.Snake}}",
 			err.Error(),
 		)
 		return

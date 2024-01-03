@@ -3940,7 +3940,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	_, err := r.client.Users().ByUserId(state.Id.ValueString()).Patch(context.Background(), requestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating user",
+			"Error updating user",
 			err.Error(),
 		)
 		return
