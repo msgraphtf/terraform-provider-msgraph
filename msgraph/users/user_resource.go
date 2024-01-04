@@ -66,6 +66,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"deleted_date_time": schema.StringAttribute{
 				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -73,6 +74,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"about_me": schema.StringAttribute{
 				Description: "A freeform text entry field for the user to describe themselves. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -80,6 +82,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"account_enabled": schema.BoolAttribute{
 				Description: "true if the account is enabled; otherwise, false. This property is required when a user is created. Returned only on $select. Supports $filter (eq, ne, not, and in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
@@ -87,6 +90,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"age_group": schema.StringAttribute{
 				Description: "Sets the age group of the user. Allowed values: null, Minor, NotAdult, and Adult. For more information, see legal age group property definitions. Returned only on $select. Supports $filter (eq, ne, not, and in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -94,6 +98,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"assigned_licenses": schema.ListNestedAttribute{
 				Description: "The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate between directly assigned and inherited licenses. Use the licenseAssignmentStates property to identify the directly assigned and inherited licenses.  Not nullable. Returned only on $select. Supports $filter (eq, not, /$count eq 0, /$count ne 0).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -102,6 +107,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"disabled_plans": schema.ListAttribute{
 							Description: "A collection of the unique identifiers for plans that have been disabled.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.List{
 								listplanmodifier.UseStateForUnknown(),
 							},
@@ -110,6 +116,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"sku_id": schema.StringAttribute{
 							Description: "The unique identifier for the SKU.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -120,6 +127,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"assigned_plans": schema.ListNestedAttribute{
 				Description: "The plans that are assigned to the user. Read-only. Not nullable. Returned only on $select. Supports $filter (eq and not).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -128,6 +136,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"assigned_date_time": schema.StringAttribute{
 							Description: "The date and time at which the plan was assigned. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -135,6 +144,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"capability_status": schema.StringAttribute{
 							Description: "Condition of the capability assignment. The possible values are Enabled, Warning, Suspended, Deleted, LockedOut. See a detailed description of each value.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -142,6 +152,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"service": schema.StringAttribute{
 							Description: "The name of the service; for example, exchange.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -149,6 +160,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"service_plan_id": schema.StringAttribute{
 							Description: "A GUID that identifies the service plan. For a complete list of GUIDs and their equivalent friendly service names, see Product names and service plan identifiers for licensing.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -167,6 +179,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"certificate_user_ids": schema.ListAttribute{
 						Description: "",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.List{
 							listplanmodifier.UseStateForUnknown(),
 						},
@@ -185,6 +198,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"business_phones": schema.ListAttribute{
 				Description: "The telephone numbers for the user. NOTE: Although it is a string collection, only one number can be set for this property. Read-only for users synced from the on-premises directory. Returned by default. Supports $filter (eq, not, ge, le, startsWith).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -193,6 +207,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"city": schema.StringAttribute{
 				Description: "The city where the user is located. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -200,6 +215,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"company_name": schema.StringAttribute{
 				Description: "The name of the company that the user is associated with. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -207,6 +223,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"consent_provided_for_minor": schema.StringAttribute{
 				Description: "Sets whether consent was obtained for minors. Allowed values: null, Granted, Denied and NotRequired. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -214,6 +231,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"country": schema.StringAttribute{
 				Description: "The country or region where the user is located; for example, US or UK. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -229,6 +247,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"creation_type": schema.StringAttribute{
 				Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by an external user signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -236,6 +255,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"department": schema.StringAttribute{
 				Description: "The name of the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -243,6 +263,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"display_name": schema.StringAttribute{
 				Description: "The name displayed in the address book for the user. This is usually the combination of the user's first name, middle initial, and last name. This property is required when a user is created and it cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values), $orderby, and $search.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -250,6 +271,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"employee_hire_date": schema.StringAttribute{
 				Description: "The date and time when the user was hired or will start work in a future hire. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -257,6 +279,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"employee_id": schema.StringAttribute{
 				Description: "The employee identifier assigned to the user by the organization. The maximum length is 16 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -264,6 +287,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"employee_leave_date_time": schema.StringAttribute{
 				Description: "The date and time when the user left or will leave the organization. To read this property, the calling app must be assigned the User-LifeCycleInfo.Read.All permission. To write this property, the calling app must be assigned the User.Read.All and User-LifeCycleInfo.ReadWrite.All permissions. To read this property in delegated scenarios, the admin needs one of the following Microsoft Entra roles: Lifecycle Workflows Administrator, Global Reader, or Global Administrator. To write this property in delegated scenarios, the admin needs the Global Administrator role. Supports $filter (eq, ne, not , ge, le, in). For more information, see Configure the employeeLeaveDateTime property for a user.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -271,6 +295,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"employee_org_data": schema.SingleNestedAttribute{
 				Description: "Represents organization data (for example, division and costCenter) associated with a user. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.UseStateForUnknown(),
 				},
@@ -278,6 +303,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"cost_center": schema.StringAttribute{
 						Description: "The cost center associated with the user. Returned only on $select. Supports $filter.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -285,6 +311,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"division": schema.StringAttribute{
 						Description: "The name of the division in which the user works. Returned only on $select. Supports $filter.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -294,6 +321,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"employee_type": schema.StringAttribute{
 				Description: "Captures enterprise worker type. For example, Employee, Contractor, Consultant, or Vendor. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -301,6 +329,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"external_user_state": schema.StringAttribute{
 				Description: "For an external user invited to the tenant using the invitation API, this property represents the invited user's invitation status. For invited users, the state can be PendingAcceptance or Accepted, or null for all other users. Returned only on $select. Supports $filter (eq, ne, not , in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -308,6 +337,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"external_user_state_change_date_time": schema.StringAttribute{
 				Description: "Shows the timestamp for the latest change to the externalUserState property. Returned only on $select. Supports $filter (eq, ne, not , in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -315,6 +345,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"fax_number": schema.StringAttribute{
 				Description: "The fax number of the user. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -322,6 +353,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"given_name": schema.StringAttribute{
 				Description: "The given name (first name) of the user. Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -346,6 +378,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"issuer": schema.StringAttribute{
 							Description: "Specifies the issuer of the identity, for example facebook.com.For local accounts (where signInType isn't federated), this property is the local B2C tenant default domain name, for example contoso.onmicrosoft.com.For guests from other Microsoft Entra organization, this is the domain of the federated organization, for example contoso.com.Supports $filter. 512 character limit.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -353,6 +386,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"issuer_assigned_id": schema.StringAttribute{
 							Description: "Specifies the unique identifier assigned to the user by the issuer. The combination of issuer and issuerAssignedId must be unique within the organization. Represents the sign-in name for the user, when signInType is set to emailAddress or userName (also known as local accounts).When signInType is set to: emailAddress, (or a custom string that starts with emailAddress like emailAddress1) issuerAssignedId must be a valid email addressuserName, issuerAssignedId must begin with alphabetical character or number, and can only contain alphanumeric characters and the following symbols: - or Supports $filter. 64 character limit.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -360,6 +394,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"sign_in_type": schema.StringAttribute{
 							Description: "Specifies the user sign-in types in your directory, such as emailAddress, userName, federated, or userPrincipalName. federated represents a unique identifier for a user from an issuer, that can be in any format chosen by the issuer. Setting or updating a userPrincipalName identity will update the value of the userPrincipalName property on the user object. The validations performed on the userPrincipalName property on the user object, for example, verified domains and acceptable characters, will be performed when setting or updating a userPrincipalName identity. Other validation is enforced on issuerAssignedId when the sign-in type is set to emailAddress or userName. This property can also be set to any custom string.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -370,6 +405,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"im_addresses": schema.ListAttribute{
 				Description: "The instant message voice-over IP (VOIP) session initiation protocol (SIP) addresses for the user. Read-only. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -378,6 +414,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"interests": schema.ListAttribute{
 				Description: "A list for the user to describe their interests. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -386,6 +423,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"is_resource_account": schema.BoolAttribute{
 				Description: "Do not use – reserved for future use.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
@@ -393,6 +431,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"job_title": schema.StringAttribute{
 				Description: "The user's job title. Maximum length is 128 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -408,6 +447,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"legal_age_group_classification": schema.StringAttribute{
 				Description: "Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, MinorWithOutParentalConsent, MinorWithParentalConsent, MinorNoParentalConsentRequired, NotAdult, and Adult. Refer to the legal age group property definitions for further information. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -415,6 +455,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"license_assignment_states": schema.ListNestedAttribute{
 				Description: "State of license assignments for this user. Also indicates licenses that are directly assigned or the user has inherited through group memberships. Read-only. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -423,6 +464,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"assigned_by_group": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -430,6 +472,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"disabled_plans": schema.ListAttribute{
 							Description: "",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.List{
 								listplanmodifier.UseStateForUnknown(),
 							},
@@ -438,6 +481,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"error": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -445,6 +489,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"last_updated_date_time": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -452,6 +497,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"sku_id": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -459,6 +505,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"state": schema.StringAttribute{
 							Description: "",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -469,6 +516,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"mail": schema.StringAttribute{
 				Description: "The SMTP address for the user, for example, jeff@contoso.onmicrosoft.com. Changes to this property update the user's proxyAddresses collection to include the value as an SMTP address. This property can't contain accent characters.  NOTE: We don't recommend updating this property for Azure AD B2C user profiles. Use the otherMails property instead. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -476,6 +524,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"mail_nickname": schema.StringAttribute{
 				Description: "The mail alias for the user. This property must be specified when a user is created. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -483,6 +532,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"mobile_phone": schema.StringAttribute{
 				Description: "The primary cellular telephone number for the user. Read-only for users synced from the on-premises directory. Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values) and $search.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -490,6 +540,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"my_site": schema.StringAttribute{
 				Description: "The URL for the user's site. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -497,6 +548,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"office_location": schema.StringAttribute{
 				Description: "The office location in the user's place of business. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -504,6 +556,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_distinguished_name": schema.StringAttribute{
 				Description: "Contains the on-premises Active Directory distinguished name or DN. The property is only populated for customers who are synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect. Read-only. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -511,6 +564,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_domain_name": schema.StringAttribute{
 				Description: "Contains the on-premises domainFQDN, also called dnsDomainName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect. Read-only. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -526,6 +580,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_1": schema.StringAttribute{
 						Description: "First customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -533,6 +588,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_10": schema.StringAttribute{
 						Description: "Tenth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -540,6 +596,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_11": schema.StringAttribute{
 						Description: "Eleventh customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -547,6 +604,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_12": schema.StringAttribute{
 						Description: "Twelfth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -554,6 +612,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_13": schema.StringAttribute{
 						Description: "Thirteenth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -561,6 +620,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_14": schema.StringAttribute{
 						Description: "Fourteenth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -568,6 +628,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_15": schema.StringAttribute{
 						Description: "Fifteenth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -575,6 +636,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_2": schema.StringAttribute{
 						Description: "Second customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -582,6 +644,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_3": schema.StringAttribute{
 						Description: "Third customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -589,6 +652,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_4": schema.StringAttribute{
 						Description: "Fourth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -596,6 +660,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_5": schema.StringAttribute{
 						Description: "Fifth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -603,6 +668,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_6": schema.StringAttribute{
 						Description: "Sixth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -610,6 +676,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_7": schema.StringAttribute{
 						Description: "Seventh customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -617,6 +684,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_8": schema.StringAttribute{
 						Description: "Eighth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -624,6 +692,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"extension_attribute_9": schema.StringAttribute{
 						Description: "Ninth customizable extension attribute.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -633,6 +702,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_immutable_id": schema.StringAttribute{
 				Description: "This property is used to associate an on-premises Active Directory user account to their Microsoft Entra user object. This property must be specified when creating a new user account in the Graph if you're using a federated domain for the user's userPrincipalName (UPN) property. NOTE: The $ and _ characters can't be used when specifying this property. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in)..",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -640,6 +710,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_last_sync_date_time": schema.StringAttribute{
 				Description: "Indicates the last time at which the object was synced with the on-premises directory; for example: 2013-02-16T03:04:54Z. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -647,6 +718,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_provisioning_errors": schema.ListNestedAttribute{
 				Description: "Errors when using Microsoft synchronization product during provisioning. Returned only on $select. Supports $filter (eq, not, ge, le).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -655,6 +727,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"category": schema.StringAttribute{
 							Description: "Category of the provisioning error. Note: Currently, there is only one possible value. Possible value: PropertyConflict - indicates a property value is not unique. Other objects contain the same value for the property.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -662,6 +735,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"occurred_date_time": schema.StringAttribute{
 							Description: "The date and time at which the error occurred.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -669,6 +743,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"property_causing_error": schema.StringAttribute{
 							Description: "Name of the directory property causing the error. Current possible values: UserPrincipalName or ProxyAddress",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -676,6 +751,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"value": schema.StringAttribute{
 							Description: "Value of the property causing the error.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -686,6 +762,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_sam_account_name": schema.StringAttribute{
 				Description: "Contains the on-premises samAccountName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect. Read-only. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -693,6 +770,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_security_identifier": schema.StringAttribute{
 				Description: "Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. Returned only on $select.  Supports $filter (eq including on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -700,6 +778,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_sync_enabled": schema.BoolAttribute{
 				Description: "true if this user object is currently being synced from an on-premises Active Directory (AD); otherwise the user isn't being synced and can be managed in Microsoft Entra ID. Read-only. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
@@ -707,6 +786,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"on_premises_user_principal_name": schema.StringAttribute{
 				Description: "Contains the on-premises userPrincipalName synchronized from the on-premises directory. The property is only populated for customers who are synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect. Read-only. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -714,6 +794,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"other_mails": schema.ListAttribute{
 				Description: "A list of additional email addresses for the user; for example: ['bob@contoso.com', 'Robert@fabrikam.com']. NOTE: This property can't contain accent characters. Returned only on $select. Supports $filter (eq, not, ge, le, in, startsWith, endsWith, /$count eq 0, /$count ne 0).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -722,6 +803,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"password_policies": schema.StringAttribute{
 				Description: "Specifies password policies for the user. This value is an enumeration with one possible value being DisableStrongPassword, which allows weaker passwords than the default policy to be specified. DisablePasswordExpiration can also be specified. The two may be specified together; for example: DisablePasswordExpiration, DisableStrongPassword. Returned only on $select. For more information on the default password policies, see Microsoft Entra password policies. Supports $filter (ne, not, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -729,6 +811,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"password_profile": schema.SingleNestedAttribute{
 				Description: "Specifies the password profile for the user. The profile contains the user's password. This property is required when a user is created. The password in the profile must satisfy minimum requirements as specified by the passwordPolicies property. By default, a strong password is required. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.UseStateForUnknown(),
 				},
@@ -762,6 +845,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"past_projects": schema.ListAttribute{
 				Description: "A list for the user to enumerate their past projects. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -770,6 +854,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"postal_code": schema.StringAttribute{
 				Description: "The postal code for the user's postal address. The postal code is specific to the user's country/region. In the United States of America, this attribute contains the ZIP code. Maximum length is 40 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -777,6 +862,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"preferred_data_location": schema.StringAttribute{
 				Description: "The preferred data location for the user. For more information, see OneDrive Online Multi-Geo.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -784,6 +870,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"preferred_language": schema.StringAttribute{
 				Description: "The preferred language for the user. The preferred language format is based on RFC 4646. The name is a combination of an ISO 639 two-letter lowercase culture code associated with the language and an ISO 3166 two-letter uppercase subculture code associated with the country or region. Example: 'en-US', or 'es-ES'. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values)",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -791,6 +878,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"preferred_name": schema.StringAttribute{
 				Description: "The preferred name for the user. Not Supported. This attribute returns an empty string.Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -798,6 +886,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"provisioned_plans": schema.ListNestedAttribute{
 				Description: "The plans that are provisioned for the user. Read-only. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -806,6 +895,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"capability_status": schema.StringAttribute{
 							Description: "For example, 'Enabled'.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -813,6 +903,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"provisioning_status": schema.StringAttribute{
 							Description: "For example, 'Success'.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -820,6 +911,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"service": schema.StringAttribute{
 							Description: "The name of the service; for example, 'AccessControlS2S'",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -830,6 +922,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"proxy_addresses": schema.ListAttribute{
 				Description: "For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. Changes to the mail property will also update this collection to include the value as an SMTP address. For more information, see mail and proxyAddresses properties. The proxy address prefixed with SMTP (capitalized) is the primary proxy address while those prefixed with smtp are the secondary proxy addresses. For Azure AD B2C accounts, this property has a limit of 10 unique addresses. Read-only in Microsoft Graph; you can update this property only through the Microsoft 365 admin center. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith, endsWith, /$count eq 0, /$count ne 0).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -838,6 +931,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"responsibilities": schema.ListAttribute{
 				Description: "A list for the user to enumerate their responsibilities. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -846,6 +940,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"schools": schema.ListAttribute{
 				Description: "A list for the user to enumerate the schools they have attended. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -862,6 +957,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"service_provisioning_errors": schema.ListNestedAttribute{
 				Description: "Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a user object .  Supports $filter (eq, not, for isResolved and serviceInstance).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -878,6 +974,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"is_resolved": schema.BoolAttribute{
 							Description: "Indicates whether the error has been attended to.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.Bool{
 								boolplanmodifier.UseStateForUnknown(),
 							},
@@ -885,6 +982,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						"service_instance": schema.StringAttribute{
 							Description: "Qualified service instance (for example, 'SharePoint/Dublin') that published the service error information.",
 							Optional:    true,
+							Computed:    true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
@@ -895,6 +993,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"show_in_address_list": schema.BoolAttribute{
 				Description: "Do not use in Microsoft Graph. Manage this property through the Microsoft 365 admin center instead. Represents whether the user should be included in the Outlook global address list. See Known issue.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
@@ -902,6 +1001,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"sign_in_activity": schema.SingleNestedAttribute{
 				Description: "Get the last signed-in date and request ID of the sign-in for a given user. Read-only.Returned only on $select. Supports $filter (eq, ne, not, ge, le) but not with any other filterable properties. Note: Details for this property require a Microsoft Entra ID P1 or P2 license and the AuditLog.Read.All permission.This property is not returned for a user who has never signed in or last signed in before April 2020.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.UseStateForUnknown(),
 				},
@@ -909,6 +1009,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"last_non_interactive_sign_in_date_time": schema.StringAttribute{
 						Description: "The last non-interactive sign-in date for a specific user. You can use this field to calculate the last time a client attempted to sign into the directory on behalf of a user. Because some users may use clients to access tenant resources rather than signing into your tenant directly, you can use the non-interactive sign-in date to along with lastSignInDateTime to identify inactive users. The timestamp represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is: '2014-01-01T00:00:00Z'. Microsoft Entra ID maintains non-interactive sign-ins going back to May 2020. For more information about using the value of this property, see Manage inactive user accounts in Microsoft Entra ID.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -916,6 +1017,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"last_non_interactive_sign_in_request_id": schema.StringAttribute{
 						Description: "Request identifier of the last non-interactive sign-in performed by this user.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -923,6 +1025,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"last_sign_in_date_time": schema.StringAttribute{
 						Description: "The last interactive sign-in date and time for a specific user. You can use this field to calculate the last time a user attempted to sign into the directory with an interactive authentication method. This field can be used to build reports, such as inactive users. The timestamp represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is: '2014-01-01T00:00:00Z'. Microsoft Entra ID maintains interactive sign-ins going back to April 2020. For more information about using the value of this property, see Manage inactive user accounts in Microsoft Entra ID.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -930,6 +1033,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					"last_sign_in_request_id": schema.StringAttribute{
 						Description: "Request identifier of the last interactive sign-in performed by this user.",
 						Optional:    true,
+						Computed:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
@@ -947,6 +1051,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"skills": schema.ListAttribute{
 				Description: "A list for the user to enumerate their skills. Returned only on $select.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
 				},
@@ -955,6 +1060,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"state": schema.StringAttribute{
 				Description: "The state or province in the user's address. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -962,6 +1068,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"street_address": schema.StringAttribute{
 				Description: "The street address of the user's place of business. Maximum length is 1024 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -969,6 +1076,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"surname": schema.StringAttribute{
 				Description: "The user's surname (family name or last name). Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -976,6 +1084,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"usage_location": schema.StringAttribute{
 				Description: "A two-letter country code (ISO standard 3166). Required for users that are assigned licenses due to legal requirements to check for availability of services in countries.  Examples include: US, JP, and GB. Not nullable. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -983,6 +1092,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"user_principal_name": schema.StringAttribute{
 				Description: "The user principal name (UPN) of the user. The UPN is an Internet-style sign-in name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where the domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the verifiedDomains property of organization.NOTE: This property can't contain accent characters. Only the following characters are allowed A - Z, a - z, 0 - 9, ' . - _ ! # ^ ~. For the complete list of allowed characters, see username policies. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith) and $orderby.",
 				Optional:    true,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -1022,7 +1132,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Id = types.StringNull()
 	}
 
-	if !plan.DeletedDateTime.IsNull() {
+	if !plan.DeletedDateTime.IsUnknown() {
 		planDeletedDateTime := plan.DeletedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
@@ -1030,21 +1140,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.DeletedDateTime = types.StringNull()
 	}
 
-	if !plan.AboutMe.IsNull() {
+	if !plan.AboutMe.IsUnknown() {
 		planAboutMe := plan.AboutMe.ValueString()
 		requestBody.SetAboutMe(&planAboutMe)
 	} else {
 		plan.AboutMe = types.StringNull()
 	}
 
-	if !plan.AccountEnabled.IsNull() {
+	if !plan.AccountEnabled.IsUnknown() {
 		planAccountEnabled := plan.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&planAccountEnabled)
 	} else {
 		plan.AccountEnabled = types.BoolNull()
 	}
 
-	if !plan.AgeGroup.IsNull() {
+	if !plan.AgeGroup.IsUnknown() {
 		planAgeGroup := plan.AgeGroup.ValueString()
 		requestBody.SetAgeGroup(&planAgeGroup)
 	} else {
@@ -1069,7 +1179,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !assignedLicenseModel.SkuId.IsNull() {
+			if !assignedLicenseModel.SkuId.IsUnknown() {
 				planSkuId := assignedLicenseModel.SkuId.ValueString()
 				u, _ = uuid.Parse(planSkuId)
 				assignedLicense.SetSkuId(&u)
@@ -1089,7 +1199,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			assignedPlanModel := userAssignedPlansModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
 
-			if !assignedPlanModel.AssignedDateTime.IsNull() {
+			if !assignedPlanModel.AssignedDateTime.IsUnknown() {
 				planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
 				assignedPlan.SetAssignedDateTime(&t)
@@ -1097,21 +1207,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				assignedPlanModel.AssignedDateTime = types.StringNull()
 			}
 
-			if !assignedPlanModel.CapabilityStatus.IsNull() {
+			if !assignedPlanModel.CapabilityStatus.IsUnknown() {
 				planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
 				assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
 			} else {
 				assignedPlanModel.CapabilityStatus = types.StringNull()
 			}
 
-			if !assignedPlanModel.Service.IsNull() {
+			if !assignedPlanModel.Service.IsUnknown() {
 				planService := assignedPlanModel.Service.ValueString()
 				assignedPlan.SetService(&planService)
 			} else {
 				assignedPlanModel.Service = types.StringNull()
 			}
 
-			if !assignedPlanModel.ServicePlanId.IsNull() {
+			if !assignedPlanModel.ServicePlanId.IsUnknown() {
 				planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
 				u, _ = uuid.Parse(planServicePlanId)
 				assignedPlan.SetServicePlanId(&u)
@@ -1163,28 +1273,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.BusinessPhones = types.ListNull(types.StringType)
 	}
 
-	if !plan.City.IsNull() {
+	if !plan.City.IsUnknown() {
 		planCity := plan.City.ValueString()
 		requestBody.SetCity(&planCity)
 	} else {
 		plan.City = types.StringNull()
 	}
 
-	if !plan.CompanyName.IsNull() {
+	if !plan.CompanyName.IsUnknown() {
 		planCompanyName := plan.CompanyName.ValueString()
 		requestBody.SetCompanyName(&planCompanyName)
 	} else {
 		plan.CompanyName = types.StringNull()
 	}
 
-	if !plan.ConsentProvidedForMinor.IsNull() {
+	if !plan.ConsentProvidedForMinor.IsUnknown() {
 		planConsentProvidedForMinor := plan.ConsentProvidedForMinor.ValueString()
 		requestBody.SetConsentProvidedForMinor(&planConsentProvidedForMinor)
 	} else {
 		plan.ConsentProvidedForMinor = types.StringNull()
 	}
 
-	if !plan.Country.IsNull() {
+	if !plan.Country.IsUnknown() {
 		planCountry := plan.Country.ValueString()
 		requestBody.SetCountry(&planCountry)
 	} else {
@@ -1199,28 +1309,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.CreatedDateTime = types.StringNull()
 	}
 
-	if !plan.CreationType.IsNull() {
+	if !plan.CreationType.IsUnknown() {
 		planCreationType := plan.CreationType.ValueString()
 		requestBody.SetCreationType(&planCreationType)
 	} else {
 		plan.CreationType = types.StringNull()
 	}
 
-	if !plan.Department.IsNull() {
+	if !plan.Department.IsUnknown() {
 		planDepartment := plan.Department.ValueString()
 		requestBody.SetDepartment(&planDepartment)
 	} else {
 		plan.Department = types.StringNull()
 	}
 
-	if !plan.DisplayName.IsNull() {
+	if !plan.DisplayName.IsUnknown() {
 		planDisplayName := plan.DisplayName.ValueString()
 		requestBody.SetDisplayName(&planDisplayName)
 	} else {
 		plan.DisplayName = types.StringNull()
 	}
 
-	if !plan.EmployeeHireDate.IsNull() {
+	if !plan.EmployeeHireDate.IsUnknown() {
 		planEmployeeHireDate := plan.EmployeeHireDate.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeHireDate)
 		requestBody.SetEmployeeHireDate(&t)
@@ -1228,14 +1338,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.EmployeeHireDate = types.StringNull()
 	}
 
-	if !plan.EmployeeId.IsNull() {
+	if !plan.EmployeeId.IsUnknown() {
 		planEmployeeId := plan.EmployeeId.ValueString()
 		requestBody.SetEmployeeId(&planEmployeeId)
 	} else {
 		plan.EmployeeId = types.StringNull()
 	}
 
-	if !plan.EmployeeLeaveDateTime.IsNull() {
+	if !plan.EmployeeLeaveDateTime.IsUnknown() {
 		planEmployeeLeaveDateTime := plan.EmployeeLeaveDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
 		requestBody.SetEmployeeLeaveDateTime(&t)
@@ -1243,19 +1353,19 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.EmployeeLeaveDateTime = types.StringNull()
 	}
 
-	if !plan.EmployeeOrgData.IsNull() {
+	if !plan.EmployeeOrgData.IsUnknown() {
 		employeeOrgData := models.NewEmployeeOrgData()
 		employeeOrgDataModel := userEmployeeOrgDataModel{}
 		plan.EmployeeOrgData.As(ctx, &employeeOrgDataModel, basetypes.ObjectAsOptions{})
 
-		if !employeeOrgDataModel.CostCenter.IsNull() {
+		if !employeeOrgDataModel.CostCenter.IsUnknown() {
 			planCostCenter := employeeOrgDataModel.CostCenter.ValueString()
 			employeeOrgData.SetCostCenter(&planCostCenter)
 		} else {
 			employeeOrgDataModel.CostCenter = types.StringNull()
 		}
 
-		if !employeeOrgDataModel.Division.IsNull() {
+		if !employeeOrgDataModel.Division.IsUnknown() {
 			planDivision := employeeOrgDataModel.Division.ValueString()
 			employeeOrgData.SetDivision(&planDivision)
 		} else {
@@ -1268,21 +1378,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.EmployeeOrgData = types.ObjectNull(plan.EmployeeOrgData.AttributeTypes(ctx))
 	}
 
-	if !plan.EmployeeType.IsNull() {
+	if !plan.EmployeeType.IsUnknown() {
 		planEmployeeType := plan.EmployeeType.ValueString()
 		requestBody.SetEmployeeType(&planEmployeeType)
 	} else {
 		plan.EmployeeType = types.StringNull()
 	}
 
-	if !plan.ExternalUserState.IsNull() {
+	if !plan.ExternalUserState.IsUnknown() {
 		planExternalUserState := plan.ExternalUserState.ValueString()
 		requestBody.SetExternalUserState(&planExternalUserState)
 	} else {
 		plan.ExternalUserState = types.StringNull()
 	}
 
-	if !plan.ExternalUserStateChangeDateTime.IsNull() {
+	if !plan.ExternalUserStateChangeDateTime.IsUnknown() {
 		planExternalUserStateChangeDateTime := plan.ExternalUserStateChangeDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
 		requestBody.SetExternalUserStateChangeDateTime(&t)
@@ -1290,14 +1400,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.ExternalUserStateChangeDateTime = types.StringNull()
 	}
 
-	if !plan.FaxNumber.IsNull() {
+	if !plan.FaxNumber.IsUnknown() {
 		planFaxNumber := plan.FaxNumber.ValueString()
 		requestBody.SetFaxNumber(&planFaxNumber)
 	} else {
 		plan.FaxNumber = types.StringNull()
 	}
 
-	if !plan.GivenName.IsNull() {
+	if !plan.GivenName.IsUnknown() {
 		planGivenName := plan.GivenName.ValueString()
 		requestBody.SetGivenName(&planGivenName)
 	} else {
@@ -1319,21 +1429,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			objectIdentityModel := userIdentitiesModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
 
-			if !objectIdentityModel.Issuer.IsNull() {
+			if !objectIdentityModel.Issuer.IsUnknown() {
 				planIssuer := objectIdentityModel.Issuer.ValueString()
 				objectIdentity.SetIssuer(&planIssuer)
 			} else {
 				objectIdentityModel.Issuer = types.StringNull()
 			}
 
-			if !objectIdentityModel.IssuerAssignedId.IsNull() {
+			if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
 				planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
 				objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
 			} else {
 				objectIdentityModel.IssuerAssignedId = types.StringNull()
 			}
 
-			if !objectIdentityModel.SignInType.IsNull() {
+			if !objectIdentityModel.SignInType.IsUnknown() {
 				planSignInType := objectIdentityModel.SignInType.ValueString()
 				objectIdentity.SetSignInType(&planSignInType)
 			} else {
@@ -1365,14 +1475,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Interests = types.ListNull(types.StringType)
 	}
 
-	if !plan.IsResourceAccount.IsNull() {
+	if !plan.IsResourceAccount.IsUnknown() {
 		planIsResourceAccount := plan.IsResourceAccount.ValueBool()
 		requestBody.SetIsResourceAccount(&planIsResourceAccount)
 	} else {
 		plan.IsResourceAccount = types.BoolNull()
 	}
 
-	if !plan.JobTitle.IsNull() {
+	if !plan.JobTitle.IsUnknown() {
 		planJobTitle := plan.JobTitle.ValueString()
 		requestBody.SetJobTitle(&planJobTitle)
 	} else {
@@ -1387,7 +1497,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.LastPasswordChangeDateTime = types.StringNull()
 	}
 
-	if !plan.LegalAgeGroupClassification.IsNull() {
+	if !plan.LegalAgeGroupClassification.IsUnknown() {
 		planLegalAgeGroupClassification := plan.LegalAgeGroupClassification.ValueString()
 		requestBody.SetLegalAgeGroupClassification(&planLegalAgeGroupClassification)
 	} else {
@@ -1401,7 +1511,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
 
-			if !licenseAssignmentStateModel.AssignedByGroup.IsNull() {
+			if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
 				planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
 				licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
 			} else {
@@ -1419,14 +1529,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !licenseAssignmentStateModel.Error.IsNull() {
+			if !licenseAssignmentStateModel.Error.IsUnknown() {
 				planError := licenseAssignmentStateModel.Error.ValueString()
 				licenseAssignmentState.SetError(&planError)
 			} else {
 				licenseAssignmentStateModel.Error = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsNull() {
+			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
 				planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
 				licenseAssignmentState.SetLastUpdatedDateTime(&t)
@@ -1434,7 +1544,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.SkuId.IsNull() {
+			if !licenseAssignmentStateModel.SkuId.IsUnknown() {
 				planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
 				u, _ = uuid.Parse(planSkuId)
 				licenseAssignmentState.SetSkuId(&u)
@@ -1442,7 +1552,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				licenseAssignmentStateModel.SkuId = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.State.IsNull() {
+			if !licenseAssignmentStateModel.State.IsUnknown() {
 				planState := licenseAssignmentStateModel.State.ValueString()
 				licenseAssignmentState.SetState(&planState)
 			} else {
@@ -1454,49 +1564,49 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.LicenseAssignmentStates = types.ListNull(plan.LicenseAssignmentStates.ElementType(ctx))
 	}
 
-	if !plan.Mail.IsNull() {
+	if !plan.Mail.IsUnknown() {
 		planMail := plan.Mail.ValueString()
 		requestBody.SetMail(&planMail)
 	} else {
 		plan.Mail = types.StringNull()
 	}
 
-	if !plan.MailNickname.IsNull() {
+	if !plan.MailNickname.IsUnknown() {
 		planMailNickname := plan.MailNickname.ValueString()
 		requestBody.SetMailNickname(&planMailNickname)
 	} else {
 		plan.MailNickname = types.StringNull()
 	}
 
-	if !plan.MobilePhone.IsNull() {
+	if !plan.MobilePhone.IsUnknown() {
 		planMobilePhone := plan.MobilePhone.ValueString()
 		requestBody.SetMobilePhone(&planMobilePhone)
 	} else {
 		plan.MobilePhone = types.StringNull()
 	}
 
-	if !plan.MySite.IsNull() {
+	if !plan.MySite.IsUnknown() {
 		planMySite := plan.MySite.ValueString()
 		requestBody.SetMySite(&planMySite)
 	} else {
 		plan.MySite = types.StringNull()
 	}
 
-	if !plan.OfficeLocation.IsNull() {
+	if !plan.OfficeLocation.IsUnknown() {
 		planOfficeLocation := plan.OfficeLocation.ValueString()
 		requestBody.SetOfficeLocation(&planOfficeLocation)
 	} else {
 		plan.OfficeLocation = types.StringNull()
 	}
 
-	if !plan.OnPremisesDistinguishedName.IsNull() {
+	if !plan.OnPremisesDistinguishedName.IsUnknown() {
 		planOnPremisesDistinguishedName := plan.OnPremisesDistinguishedName.ValueString()
 		requestBody.SetOnPremisesDistinguishedName(&planOnPremisesDistinguishedName)
 	} else {
 		plan.OnPremisesDistinguishedName = types.StringNull()
 	}
 
-	if !plan.OnPremisesDomainName.IsNull() {
+	if !plan.OnPremisesDomainName.IsUnknown() {
 		planOnPremisesDomainName := plan.OnPremisesDomainName.ValueString()
 		requestBody.SetOnPremisesDomainName(&planOnPremisesDomainName)
 	} else {
@@ -1508,105 +1618,105 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		onPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
 		plan.OnPremisesExtensionAttributes.As(ctx, &onPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
 			planExtensionAttribute1 := onPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute1(&planExtensionAttribute1)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
 			planExtensionAttribute10 := onPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute10(&planExtensionAttribute10)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
 			planExtensionAttribute11 := onPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute11(&planExtensionAttribute11)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
 			planExtensionAttribute12 := onPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute12(&planExtensionAttribute12)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
 			planExtensionAttribute13 := onPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute13(&planExtensionAttribute13)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
 			planExtensionAttribute14 := onPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute14(&planExtensionAttribute14)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
 			planExtensionAttribute15 := onPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute15(&planExtensionAttribute15)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
 			planExtensionAttribute2 := onPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute2(&planExtensionAttribute2)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
 			planExtensionAttribute3 := onPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute3(&planExtensionAttribute3)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
 			planExtensionAttribute4 := onPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute4(&planExtensionAttribute4)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
 			planExtensionAttribute5 := onPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute5(&planExtensionAttribute5)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
 			planExtensionAttribute6 := onPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute6(&planExtensionAttribute6)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
 			planExtensionAttribute7 := onPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute7(&planExtensionAttribute7)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
 			planExtensionAttribute8 := onPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute8(&planExtensionAttribute8)
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
 		}
 
-		if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsNull() {
+		if !onPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
 			planExtensionAttribute9 := onPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
 			onPremisesExtensionAttributes.SetExtensionAttribute9(&planExtensionAttribute9)
 		} else {
@@ -1619,14 +1729,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.OnPremisesExtensionAttributes = types.ObjectNull(plan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
 
-	if !plan.OnPremisesImmutableId.IsNull() {
+	if !plan.OnPremisesImmutableId.IsUnknown() {
 		planOnPremisesImmutableId := plan.OnPremisesImmutableId.ValueString()
 		requestBody.SetOnPremisesImmutableId(&planOnPremisesImmutableId)
 	} else {
 		plan.OnPremisesImmutableId = types.StringNull()
 	}
 
-	if !plan.OnPremisesLastSyncDateTime.IsNull() {
+	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
@@ -1641,14 +1751,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
 
-			if !onPremisesProvisioningErrorModel.Category.IsNull() {
+			if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
 				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
 				onPremisesProvisioningError.SetCategory(&planCategory)
 			} else {
 				onPremisesProvisioningErrorModel.Category = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsNull() {
+			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
 				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
 				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
 				onPremisesProvisioningError.SetOccurredDateTime(&t)
@@ -1656,14 +1766,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsNull() {
+			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
 				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
 				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
 			} else {
 				onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.Value.IsNull() {
+			if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
 				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
 				onPremisesProvisioningError.SetValue(&planValue)
 			} else {
@@ -1675,28 +1785,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.OnPremisesProvisioningErrors = types.ListNull(plan.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
 
-	if !plan.OnPremisesSamAccountName.IsNull() {
+	if !plan.OnPremisesSamAccountName.IsUnknown() {
 		planOnPremisesSamAccountName := plan.OnPremisesSamAccountName.ValueString()
 		requestBody.SetOnPremisesSamAccountName(&planOnPremisesSamAccountName)
 	} else {
 		plan.OnPremisesSamAccountName = types.StringNull()
 	}
 
-	if !plan.OnPremisesSecurityIdentifier.IsNull() {
+	if !plan.OnPremisesSecurityIdentifier.IsUnknown() {
 		planOnPremisesSecurityIdentifier := plan.OnPremisesSecurityIdentifier.ValueString()
 		requestBody.SetOnPremisesSecurityIdentifier(&planOnPremisesSecurityIdentifier)
 	} else {
 		plan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
-	if !plan.OnPremisesSyncEnabled.IsNull() {
+	if !plan.OnPremisesSyncEnabled.IsUnknown() {
 		planOnPremisesSyncEnabled := plan.OnPremisesSyncEnabled.ValueBool()
 		requestBody.SetOnPremisesSyncEnabled(&planOnPremisesSyncEnabled)
 	} else {
 		plan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
-	if !plan.OnPremisesUserPrincipalName.IsNull() {
+	if !plan.OnPremisesUserPrincipalName.IsUnknown() {
 		planOnPremisesUserPrincipalName := plan.OnPremisesUserPrincipalName.ValueString()
 		requestBody.SetOnPremisesUserPrincipalName(&planOnPremisesUserPrincipalName)
 	} else {
@@ -1713,14 +1823,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.OtherMails = types.ListNull(types.StringType)
 	}
 
-	if !plan.PasswordPolicies.IsNull() {
+	if !plan.PasswordPolicies.IsUnknown() {
 		planPasswordPolicies := plan.PasswordPolicies.ValueString()
 		requestBody.SetPasswordPolicies(&planPasswordPolicies)
 	} else {
 		plan.PasswordPolicies = types.StringNull()
 	}
 
-	if !plan.PasswordProfile.IsNull() {
+	if !plan.PasswordProfile.IsUnknown() {
 		passwordProfile := models.NewPasswordProfile()
 		passwordProfileModel := userPasswordProfileModel{}
 		plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})
@@ -1762,28 +1872,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.PastProjects = types.ListNull(types.StringType)
 	}
 
-	if !plan.PostalCode.IsNull() {
+	if !plan.PostalCode.IsUnknown() {
 		planPostalCode := plan.PostalCode.ValueString()
 		requestBody.SetPostalCode(&planPostalCode)
 	} else {
 		plan.PostalCode = types.StringNull()
 	}
 
-	if !plan.PreferredDataLocation.IsNull() {
+	if !plan.PreferredDataLocation.IsUnknown() {
 		planPreferredDataLocation := plan.PreferredDataLocation.ValueString()
 		requestBody.SetPreferredDataLocation(&planPreferredDataLocation)
 	} else {
 		plan.PreferredDataLocation = types.StringNull()
 	}
 
-	if !plan.PreferredLanguage.IsNull() {
+	if !plan.PreferredLanguage.IsUnknown() {
 		planPreferredLanguage := plan.PreferredLanguage.ValueString()
 		requestBody.SetPreferredLanguage(&planPreferredLanguage)
 	} else {
 		plan.PreferredLanguage = types.StringNull()
 	}
 
-	if !plan.PreferredName.IsNull() {
+	if !plan.PreferredName.IsUnknown() {
 		planPreferredName := plan.PreferredName.ValueString()
 		requestBody.SetPreferredName(&planPreferredName)
 	} else {
@@ -1797,21 +1907,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			provisionedPlanModel := userProvisionedPlansModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
 
-			if !provisionedPlanModel.CapabilityStatus.IsNull() {
+			if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
 				planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
 				provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
 			} else {
 				provisionedPlanModel.CapabilityStatus = types.StringNull()
 			}
 
-			if !provisionedPlanModel.ProvisioningStatus.IsNull() {
+			if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
 				planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
 				provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
 			} else {
 				provisionedPlanModel.ProvisioningStatus = types.StringNull()
 			}
 
-			if !provisionedPlanModel.Service.IsNull() {
+			if !provisionedPlanModel.Service.IsUnknown() {
 				planService := provisionedPlanModel.Service.ValueString()
 				provisionedPlan.SetService(&planService)
 			} else {
@@ -1875,14 +1985,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
 			}
 
-			if !serviceProvisioningErrorModel.IsResolved.IsNull() {
+			if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
 				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
 				serviceProvisioningError.SetIsResolved(&planIsResolved)
 			} else {
 				serviceProvisioningErrorModel.IsResolved = types.BoolNull()
 			}
 
-			if !serviceProvisioningErrorModel.ServiceInstance.IsNull() {
+			if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
 				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
 				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
 			} else {
@@ -1894,19 +2004,19 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.ServiceProvisioningErrors = types.ListNull(plan.ServiceProvisioningErrors.ElementType(ctx))
 	}
 
-	if !plan.ShowInAddressList.IsNull() {
+	if !plan.ShowInAddressList.IsUnknown() {
 		planShowInAddressList := plan.ShowInAddressList.ValueBool()
 		requestBody.SetShowInAddressList(&planShowInAddressList)
 	} else {
 		plan.ShowInAddressList = types.BoolNull()
 	}
 
-	if !plan.SignInActivity.IsNull() {
+	if !plan.SignInActivity.IsUnknown() {
 		signInActivity := models.NewSignInActivity()
 		signInActivityModel := userSignInActivityModel{}
 		plan.SignInActivity.As(ctx, &signInActivityModel, basetypes.ObjectAsOptions{})
 
-		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsNull() {
+		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
 			planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
 			signInActivity.SetLastNonInteractiveSignInDateTime(&t)
@@ -1914,14 +2024,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
 		}
 
-		if !signInActivityModel.LastNonInteractiveSignInRequestId.IsNull() {
+		if !signInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
 			planLastNonInteractiveSignInRequestId := signInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
 			signInActivity.SetLastNonInteractiveSignInRequestId(&planLastNonInteractiveSignInRequestId)
 		} else {
 			signInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
 		}
 
-		if !signInActivityModel.LastSignInDateTime.IsNull() {
+		if !signInActivityModel.LastSignInDateTime.IsUnknown() {
 			planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
 			t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
 			signInActivity.SetLastSignInDateTime(&t)
@@ -1929,7 +2039,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			signInActivityModel.LastSignInDateTime = types.StringNull()
 		}
 
-		if !signInActivityModel.LastSignInRequestId.IsNull() {
+		if !signInActivityModel.LastSignInRequestId.IsUnknown() {
 			planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
 			signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
 		} else {
@@ -1960,35 +2070,35 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Skills = types.ListNull(types.StringType)
 	}
 
-	if !plan.State.IsNull() {
+	if !plan.State.IsUnknown() {
 		planState := plan.State.ValueString()
 		requestBody.SetState(&planState)
 	} else {
 		plan.State = types.StringNull()
 	}
 
-	if !plan.StreetAddress.IsNull() {
+	if !plan.StreetAddress.IsUnknown() {
 		planStreetAddress := plan.StreetAddress.ValueString()
 		requestBody.SetStreetAddress(&planStreetAddress)
 	} else {
 		plan.StreetAddress = types.StringNull()
 	}
 
-	if !plan.Surname.IsNull() {
+	if !plan.Surname.IsUnknown() {
 		planSurname := plan.Surname.ValueString()
 		requestBody.SetSurname(&planSurname)
 	} else {
 		plan.Surname = types.StringNull()
 	}
 
-	if !plan.UsageLocation.IsNull() {
+	if !plan.UsageLocation.IsUnknown() {
 		planUsageLocation := plan.UsageLocation.ValueString()
 		requestBody.SetUsageLocation(&planUsageLocation)
 	} else {
 		plan.UsageLocation = types.StringNull()
 	}
 
-	if !plan.UserPrincipalName.IsNull() {
+	if !plan.UserPrincipalName.IsUnknown() {
 		planUserPrincipalName := plan.UserPrincipalName.ValueString()
 		requestBody.SetUserPrincipalName(&planUserPrincipalName)
 	} else {
@@ -3654,7 +3764,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		plan.PasswordPolicies = types.StringNull()
 	}
 
-	if !plan.PasswordProfile.IsNull() {
+	if !plan.PasswordProfile.IsUnknown() {
 		passwordProfile := models.NewPasswordProfile()
 		passwordProfileModel := userPasswordProfileModel{}
 		plan.PasswordProfile.As(ctx, &passwordProfileModel, basetypes.ObjectAsOptions{})

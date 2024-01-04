@@ -86,10 +86,8 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			}
 		} else if behaviourMode == "Resource" {
 			newSchema.Optional = true
+			newSchema.Computed = true
 			newSchema.PlanModifiers = true
-			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName) || slices.Contains(augment.ResourceExtraComputed, property.Name) {
-				newSchema.Computed = true
-			}
 		}
 
 		// Convert types from OpenAPI schema types to  attributes
@@ -257,7 +255,7 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		newCreateRequest := createRequestBody{
 			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
-			IfCondition: "Null",
+			IfCondition: "Unknown",
 		}
 
 		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {

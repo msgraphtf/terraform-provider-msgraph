@@ -16,6 +16,7 @@ resourceExtraComputed:
   - identities
   - lastPasswordChangeDateTime
   - onPremisesExtensionAttributes
+  - passwordProfile
   - forceChangePasswordNextSignIn
   - forceChangePasswordNextSignInWithMfa
   - password
