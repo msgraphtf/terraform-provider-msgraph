@@ -273,7 +273,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	var u uuid.UUID
 
 	{{- define "UpdateStringAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	} else {
@@ -282,7 +282,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateStringTimeAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	t, _ = time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&t)
@@ -292,7 +292,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateStringUuidAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	u, _ = uuid.Parse(plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&u)
@@ -302,7 +302,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateInt64Attribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	} else {
@@ -311,7 +311,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateBoolAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	} else {
@@ -320,7 +320,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateArrayStringAttribute" }}
-	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}) {
 		var {{.AttributeName.LowerCamel}} []string
 		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
 			{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
@@ -332,7 +332,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateArrayUuidAttribute" }}
-	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}) {
 		var {{.AttributeName.UpperCamel}} []uuid.UUID
 		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
 			u, _ = uuid.Parse(i.String())
@@ -345,12 +345,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateArrayObjectAttribute" }}
-	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}) {
 		var plan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
-		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
+		for k, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
 			{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 			{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
+			{{.RequestBodyVar}}State := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+			types.ListValueFrom(ctx, {{.StateVar}}{{.AttributeName.UpperCamel}}.Elements()[k].Type(ctx), &{{.RequestBodyVar}}Model)
 			{{template "generate_update" .NestedUpdate}}
 		}
 		requestBody.Set{{.AttributeName.UpperCamel}}(plan{{.AttributeName.UpperCamel}})
@@ -360,10 +362,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateObjectAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 		{{.RequestBodyVar}} := models.New{{.AttributeName.UpperCamel}}()
 		{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
 		plan.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
+		{{.RequestBodyVar}}State := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+		state.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}State, basetypes.ObjectAsOptions{})
 		{{template "generate_update" .NestedUpdate}}
 		requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
 		objectValue, _ := types.ObjectValueFrom(ctx, {{.RequestBodyVar}}Model.AttributeTypes(), {{.RequestBodyVar}}Model)
