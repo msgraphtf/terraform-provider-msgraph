@@ -358,7 +358,6 @@ type updateRequestBody struct {
 	AttributeType   string
 	BlockName       string
 	AttributeName   strWithCases
-	IfCondition     string
 	PlanVar         string
 	PlanValueMethod string
 	RequestBodyVar  string
@@ -379,7 +378,6 @@ func generateUpdateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 		newUpdateRequest := updateRequestBody{
 			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
-			IfCondition: "Null",
 		}
 
 		if parent != nil && parent.AttributeType == "UpdateObjectAttribute" {
@@ -400,7 +398,6 @@ func generateUpdateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 
 		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+property.Name) ||
 			slices.Contains(augment.ResourceExtraComputed, property.Name) {
-			newUpdateRequest.IfCondition = "Unknown"
 		}
 
 		switch property.Type {
