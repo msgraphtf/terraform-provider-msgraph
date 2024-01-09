@@ -277,8 +277,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
 	{{- end}}
 
@@ -287,8 +285,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	t, _ = time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&t)
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
 	{{- end}}
 
@@ -297,8 +293,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	u, _ = uuid.Parse(plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&u)
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
 	{{- end}}
 
@@ -306,8 +300,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.Int64Null()
 	}
 	{{- end}}
 
@@ -315,8 +307,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.BoolNull()
 	}
 	{{- end}}
 
@@ -327,8 +317,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 			{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
 		}
 		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull(types.StringType)
 	}
 	{{- end}}
 
@@ -340,8 +328,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 			{{.AttributeName.UpperCamel}} = append({{.AttributeName.UpperCamel}}, u)
 		}
 		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.UpperCamel}})
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull(types.StringType)
 	}
 	{{- end}}
 
@@ -357,8 +343,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 			{{template "generate_update" .NestedUpdate}}
 		}
 		requestBody.Set{{.AttributeName.UpperCamel}}(plan{{.AttributeName.UpperCamel}})
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.ElementType(ctx))
 	}
 	{{- end}}
 
@@ -373,8 +357,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 		requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
 		objectValue, _ := types.ObjectValueFrom(ctx, {{.RequestBodyVar}}Model.AttributeTypes(), {{.RequestBodyVar}}Model)
 		plan.{{.AttributeName.UpperCamel}} = objectValue
-	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ObjectNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.AttributeTypes(ctx))
 	}
 	{{- end}}
 
