@@ -8,17 +8,18 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/microsoftgraph/msgraph-sdk-go/users"
+
+	"terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/listplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/objectplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -60,7 +61,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"deleted_date_time": schema.StringAttribute{
@@ -68,7 +69,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"about_me": schema.StringAttribute{
@@ -76,7 +77,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"account_enabled": schema.BoolAttribute{
@@ -84,7 +85,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
+					boolplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"age_group": schema.StringAttribute{
@@ -92,7 +93,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"assigned_licenses": schema.ListNestedAttribute{
@@ -100,7 +101,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -109,7 +110,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.List{
-								listplanmodifier.UseStateForUnknown(),
+								listplanmodifiers.UseStateForUnconfigured(),
 							},
 							ElementType: types.StringType,
 						},
@@ -118,7 +119,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 					},
@@ -129,7 +130,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -138,7 +139,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"capability_status": schema.StringAttribute{
@@ -146,7 +147,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"service": schema.StringAttribute{
@@ -154,7 +155,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"service_plan_id": schema.StringAttribute{
@@ -162,7 +163,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 					},
@@ -173,7 +174,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.UseStateForUnknown(),
+					objectplanmodifiers.UseStateForUnconfigured(),
 				},
 				Attributes: map[string]schema.Attribute{
 					"certificate_user_ids": schema.ListAttribute{
@@ -181,7 +182,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
+							listplanmodifiers.UseStateForUnconfigured(),
 						},
 						ElementType: types.StringType,
 					},
@@ -192,7 +193,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"business_phones": schema.ListAttribute{
@@ -200,7 +201,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -209,7 +210,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"company_name": schema.StringAttribute{
@@ -217,7 +218,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"consent_provided_for_minor": schema.StringAttribute{
@@ -225,7 +226,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"country": schema.StringAttribute{
@@ -233,7 +234,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"created_date_time": schema.StringAttribute{
@@ -241,7 +242,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"creation_type": schema.StringAttribute{
@@ -249,7 +250,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"department": schema.StringAttribute{
@@ -257,7 +258,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"display_name": schema.StringAttribute{
@@ -265,7 +266,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"employee_hire_date": schema.StringAttribute{
@@ -273,7 +274,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"employee_id": schema.StringAttribute{
@@ -281,7 +282,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"employee_leave_date_time": schema.StringAttribute{
@@ -289,7 +290,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"employee_org_data": schema.SingleNestedAttribute{
@@ -297,7 +298,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.UseStateForUnknown(),
+					objectplanmodifiers.UseStateForUnconfigured(),
 				},
 				Attributes: map[string]schema.Attribute{
 					"cost_center": schema.StringAttribute{
@@ -305,7 +306,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"division": schema.StringAttribute{
@@ -313,7 +314,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 				},
@@ -323,7 +324,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"external_user_state": schema.StringAttribute{
@@ -331,7 +332,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"external_user_state_change_date_time": schema.StringAttribute{
@@ -339,7 +340,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"fax_number": schema.StringAttribute{
@@ -347,7 +348,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"given_name": schema.StringAttribute{
@@ -355,7 +356,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"hire_date": schema.StringAttribute{
@@ -363,7 +364,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"identities": schema.ListNestedAttribute{
@@ -371,7 +372,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -380,7 +381,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"issuer_assigned_id": schema.StringAttribute{
@@ -388,7 +389,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"sign_in_type": schema.StringAttribute{
@@ -396,7 +397,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 					},
@@ -407,7 +408,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -416,7 +417,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -425,7 +426,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
+					boolplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"job_title": schema.StringAttribute{
@@ -433,7 +434,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"last_password_change_date_time": schema.StringAttribute{
@@ -441,7 +442,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"legal_age_group_classification": schema.StringAttribute{
@@ -449,7 +450,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"license_assignment_states": schema.ListNestedAttribute{
@@ -457,7 +458,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -466,7 +467,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"disabled_plans": schema.ListAttribute{
@@ -474,7 +475,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.List{
-								listplanmodifier.UseStateForUnknown(),
+								listplanmodifiers.UseStateForUnconfigured(),
 							},
 							ElementType: types.StringType,
 						},
@@ -483,7 +484,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"last_updated_date_time": schema.StringAttribute{
@@ -491,7 +492,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"sku_id": schema.StringAttribute{
@@ -499,7 +500,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"state": schema.StringAttribute{
@@ -507,7 +508,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 					},
@@ -518,7 +519,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"mail_nickname": schema.StringAttribute{
@@ -526,7 +527,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"mobile_phone": schema.StringAttribute{
@@ -534,7 +535,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"my_site": schema.StringAttribute{
@@ -542,7 +543,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"office_location": schema.StringAttribute{
@@ -550,7 +551,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"on_premises_distinguished_name": schema.StringAttribute{
@@ -558,7 +559,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"on_premises_domain_name": schema.StringAttribute{
@@ -566,7 +567,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"on_premises_extension_attributes": schema.SingleNestedAttribute{
@@ -574,7 +575,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.UseStateForUnknown(),
+					objectplanmodifiers.UseStateForUnconfigured(),
 				},
 				Attributes: map[string]schema.Attribute{
 					"extension_attribute_1": schema.StringAttribute{
@@ -582,7 +583,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_10": schema.StringAttribute{
@@ -590,7 +591,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_11": schema.StringAttribute{
@@ -598,7 +599,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_12": schema.StringAttribute{
@@ -606,7 +607,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_13": schema.StringAttribute{
@@ -614,7 +615,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_14": schema.StringAttribute{
@@ -622,7 +623,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_15": schema.StringAttribute{
@@ -630,7 +631,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_2": schema.StringAttribute{
@@ -638,7 +639,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_3": schema.StringAttribute{
@@ -646,7 +647,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_4": schema.StringAttribute{
@@ -654,7 +655,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_5": schema.StringAttribute{
@@ -662,7 +663,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_6": schema.StringAttribute{
@@ -670,7 +671,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_7": schema.StringAttribute{
@@ -678,7 +679,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_8": schema.StringAttribute{
@@ -686,7 +687,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"extension_attribute_9": schema.StringAttribute{
@@ -694,7 +695,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 				},
@@ -704,7 +705,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"on_premises_last_sync_date_time": schema.StringAttribute{
@@ -712,7 +713,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"on_premises_provisioning_errors": schema.ListNestedAttribute{
@@ -720,7 +721,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -729,7 +730,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"occurred_date_time": schema.StringAttribute{
@@ -737,7 +738,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"property_causing_error": schema.StringAttribute{
@@ -745,7 +746,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"value": schema.StringAttribute{
@@ -753,7 +754,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 					},
@@ -764,7 +765,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"on_premises_security_identifier": schema.StringAttribute{
@@ -772,7 +773,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"on_premises_sync_enabled": schema.BoolAttribute{
@@ -780,7 +781,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
+					boolplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"on_premises_user_principal_name": schema.StringAttribute{
@@ -788,7 +789,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"other_mails": schema.ListAttribute{
@@ -796,7 +797,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -805,7 +806,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"password_profile": schema.SingleNestedAttribute{
@@ -813,7 +814,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.UseStateForUnknown(),
+					objectplanmodifiers.UseStateForUnconfigured(),
 				},
 				Attributes: map[string]schema.Attribute{
 					"force_change_password_next_sign_in": schema.BoolAttribute{
@@ -821,7 +822,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
+							boolplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"force_change_password_next_sign_in_with_mfa": schema.BoolAttribute{
@@ -829,7 +830,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
+							boolplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"password": schema.StringAttribute{
@@ -837,7 +838,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 				},
@@ -847,7 +848,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -856,7 +857,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"preferred_data_location": schema.StringAttribute{
@@ -864,7 +865,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"preferred_language": schema.StringAttribute{
@@ -872,7 +873,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"preferred_name": schema.StringAttribute{
@@ -880,7 +881,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"provisioned_plans": schema.ListNestedAttribute{
@@ -888,7 +889,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -897,7 +898,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"provisioning_status": schema.StringAttribute{
@@ -905,7 +906,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"service": schema.StringAttribute{
@@ -913,7 +914,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 					},
@@ -924,7 +925,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -933,7 +934,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -942,7 +943,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -951,7 +952,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"service_provisioning_errors": schema.ListNestedAttribute{
@@ -959,7 +960,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -968,7 +969,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"is_resolved": schema.BoolAttribute{
@@ -976,7 +977,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.Bool{
-								boolplanmodifier.UseStateForUnknown(),
+								boolplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 						"service_instance": schema.StringAttribute{
@@ -984,7 +985,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
+								stringplanmodifiers.UseStateForUnconfigured(),
 							},
 						},
 					},
@@ -995,7 +996,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
+					boolplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"sign_in_activity": schema.SingleNestedAttribute{
@@ -1003,7 +1004,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.UseStateForUnknown(),
+					objectplanmodifiers.UseStateForUnconfigured(),
 				},
 				Attributes: map[string]schema.Attribute{
 					"last_non_interactive_sign_in_date_time": schema.StringAttribute{
@@ -1011,7 +1012,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"last_non_interactive_sign_in_request_id": schema.StringAttribute{
@@ -1019,7 +1020,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"last_sign_in_date_time": schema.StringAttribute{
@@ -1027,7 +1028,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 					"last_sign_in_request_id": schema.StringAttribute{
@@ -1035,7 +1036,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
 				},
@@ -1045,7 +1046,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"skills": schema.ListAttribute{
@@ -1053,7 +1054,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
+					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
 			},
@@ -1062,7 +1063,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"street_address": schema.StringAttribute{
@@ -1070,7 +1071,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"surname": schema.StringAttribute{
@@ -1078,7 +1079,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"usage_location": schema.StringAttribute{
@@ -1086,7 +1087,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"user_principal_name": schema.StringAttribute{
@@ -1094,7 +1095,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"user_type": schema.StringAttribute{
@@ -1102,7 +1103,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 		},

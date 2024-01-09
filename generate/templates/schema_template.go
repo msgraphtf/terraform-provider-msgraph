@@ -13,7 +13,7 @@
 	{{- end}}
 	{{- if .PlanModifiers}}
 	PlanModifiers: []planmodifier.String{
-		stringplanmodifier.UseStateForUnknown(),
+		stringplanmodifiers.UseStateForUnconfigured(),
 	},
 	{{- end}}
 },
@@ -48,7 +48,7 @@
 	{{- end}}
 	{{- if .PlanModifiers}}
 	PlanModifiers: []planmodifier.Bool{
-		boolplanmodifier.UseStateForUnknown(),
+		boolplanmodifiers.UseStateForUnconfigured(),
 	},
 	{{- end}}
 },
@@ -68,7 +68,7 @@
 	{{- end}}
 	{{- if .PlanModifiers}}
 	PlanModifiers: []planmodifier.List{
-		listplanmodifier.UseStateForUnknown(),
+		listplanmodifiers.UseStateForUnconfigured(),
 	},
 	{{- end}}
 	ElementType: {{.ElementType}},
@@ -89,7 +89,7 @@
 	{{- end}}
 	{{- if .PlanModifiers}}
 	PlanModifiers: []planmodifier.Object{
-		objectplanmodifier.UseStateForUnknown(),
+		objectplanmodifiers.UseStateForUnconfigured(),
 	},
 	{{- end}}
 	Attributes: map[string]schema.Attribute{
@@ -112,7 +112,7 @@
 	{{- end}}
 	{{- if .PlanModifiers}}
 	PlanModifiers: []planmodifier.List{
-		listplanmodifier.UseStateForUnknown(),
+		listplanmodifiers.UseStateForUnconfigured(),
 	},
 	{{- end}}
 	NestedObject: schema.NestedAttributeObject{
