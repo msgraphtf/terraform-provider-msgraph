@@ -26,9 +26,16 @@ func (m useStateForUnconfiguredModifier) MarkdownDescription(_ context.Context) 
 // PlanModifyObject implements the plan modification logic.
 func (m useStateForUnconfiguredModifier) PlanModifyObject(ctx context.Context, req planmodifier.ObjectRequest, resp *planmodifier.ObjectResponse) {
 
+	// Do nothing if resource is being created
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// Do nothing if configuration is not null
 	if !req.ConfigValue.IsNull() {
 		return
 	}
 
+	// If resource is being updated, and config is null, use state value
 	resp.PlanValue = req.StateValue
 }
