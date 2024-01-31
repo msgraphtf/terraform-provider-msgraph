@@ -33,6 +33,72 @@ func (m terraformModelField) IfObjectType() bool {
 	}
 }
 
+func generateModelFieldType(property openapi.OpenAPISchemaProperty) string {
+
+	switch property.Type {
+	case "string":
+		return "types.String"
+	case "integer":
+		return "types.Int64"
+	case "boolean":
+		return "types.Bool"
+	case "object":
+		if property.ObjectOf.Type == "string" { // This is a string enum.
+			return "types.String"
+		} else {
+			return "types.Object"
+		}
+	case "array":
+		switch property.ArrayOf {
+		case "object":
+			if property.ObjectOf.Type == "string" { // This is a string enum.
+				return "types.List"
+			} else {
+				return "types.List"
+			}
+		case "string":
+			return "types.List"
+		}
+
+	}
+
+	return "UNKNOWN"
+
+}
+
+func generateModelAttributeType(property openapi.OpenAPISchemaProperty) string {
+
+	switch property.Type {
+	case "string":
+		return "types.StringType"
+	case "integer":
+		return "types.Int64Type"
+	case "boolean":
+		return "types.BoolType"
+	case "object":
+		if property.ObjectOf.Type == "string" { // This is a string enum.
+			return "types.StringType"
+		} else {
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", blockName + upperFirst(property.Name))
+		}
+	case "array":
+		switch property.ArrayOf {
+		case "object":
+			if property.ObjectOf.Type == "string" { // This is a string enum.
+				return "types.ListType{ElemType:types.StringType}"
+			} else {
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", blockName + upperFirst(property.Name))
+			}
+		case "string":
+			return "types.ListType{ElemType:types.StringType}"
+		}
+
+	}
+
+	return "UNKNOWN"
+
+}
+
 func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
 
 	newModel := terraformModel{
@@ -61,41 +127,13 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 			ModelName:     blockName + upperFirst(property.Name) + "Model",
 		}
 
-		switch property.Type {
-		case "string":
-			newModelField.FieldType = "types.String"
-			newModelField.AttributeType = "types.StringType"
-		case "integer":
-			newModelField.FieldType = "types.Int64"
-			newModelField.AttributeType = "types.Int64Type"
-		case "boolean":
-			newModelField.FieldType = "types.Bool"
-			newModelField.AttributeType = "types.BoolType"
-		case "object":
-			if property.ObjectOf.Type == "string" { // This is a string enum.
-				newModelField.FieldType = "types.String"
-				newModelField.AttributeType = "types.StringType"
-			} else {
-				newModelField.FieldType = "types.Object"
-				newModelField.AttributeType = fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", newModelField.ModelVarName)
-				nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
-			}
-		case "array":
-			switch property.ArrayOf {
-			case "object":
-				if property.ObjectOf.Type == "string" { // This is a string enum.
-					newModelField.FieldType = "types.List"
-					newModelField.AttributeType = "types.ListType{ElemType:types.StringType}"
-				} else {
-					newModelField.FieldType = "types.List"
-					newModelField.AttributeType = fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", newModelField.ModelVarName)
-					nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
-				}
-			case "string":
-				newModelField.FieldType = "types.List"
-				newModelField.AttributeType = "types.ListType{ElemType:types.StringType}"
-			}
+		newModelField.FieldType = generateModelFieldType(property)
+		newModelField.AttributeType = generateModelAttributeType(property)
 
+		if property.Type == "object" && property.ObjectOf.Type != "string" {
+			nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
+		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
+			nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
 		}
 
 		newModel.ModelFields = append(newModel.ModelFields, newModelField)
