@@ -17,25 +17,24 @@ type terraformModel struct {
 }
 
 type terraformModelField struct {
+	Property      openapi.OpenAPISchemaProperty
 	FieldName     string
-	FieldType     string
 	AttributeName string
-	AttributeType string
 	ModelVarName  string
 	ModelName     string
 }
 
 func (m terraformModelField) IfObjectType() bool {
-	if strings.Contains(m.AttributeType, "Object") {
+	if strings.Contains(m.AttributeType(), "Object") {
 		return true
 	} else {
 		return false
 	}
 }
 
-func generateModelFieldType(property openapi.OpenAPISchemaProperty) string {
+func (modelField terraformModelField) FieldType() string {
 
-	switch property.Type {
+	switch modelField.Property.Type {
 	case "string":
 		return "types.String"
 	case "integer":
@@ -43,15 +42,15 @@ func generateModelFieldType(property openapi.OpenAPISchemaProperty) string {
 	case "boolean":
 		return "types.Bool"
 	case "object":
-		if property.ObjectOf.Type == "string" { // This is a string enum.
+		if modelField.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.String"
 		} else {
 			return "types.Object"
 		}
 	case "array":
-		switch property.ArrayOf {
+		switch modelField.Property.ArrayOf {
 		case "object":
-			if property.ObjectOf.Type == "string" { // This is a string enum.
+			if modelField.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.List"
 			} else {
 				return "types.List"
@@ -66,9 +65,9 @@ func generateModelFieldType(property openapi.OpenAPISchemaProperty) string {
 
 }
 
-func generateModelAttributeType(property openapi.OpenAPISchemaProperty) string {
+func (modelField terraformModelField) AttributeType() string {
 
-	switch property.Type {
+	switch modelField.Property.Type {
 	case "string":
 		return "types.StringType"
 	case "integer":
@@ -76,18 +75,18 @@ func generateModelAttributeType(property openapi.OpenAPISchemaProperty) string {
 	case "boolean":
 		return "types.BoolType"
 	case "object":
-		if property.ObjectOf.Type == "string" { // This is a string enum.
+		if modelField.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", blockName + upperFirst(property.Name))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", blockName + upperFirst(modelField.Property.Name))
 		}
 	case "array":
-		switch property.ArrayOf {
+		switch modelField.Property.ArrayOf {
 		case "object":
-			if property.ObjectOf.Type == "string" { // This is a string enum.
+			if modelField.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", blockName + upperFirst(property.Name))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", blockName + upperFirst(modelField.Property.Name))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"
@@ -121,14 +120,12 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 		}
 
 		newModelField := terraformModelField{
+			Property:      property,
 			FieldName:     upperFirst(property.Name),
 			AttributeName: strcase.ToSnake(property.Name),
 			ModelVarName:  blockName + upperFirst(property.Name),
 			ModelName:     blockName + upperFirst(property.Name) + "Model",
 		}
-
-		newModelField.FieldType = generateModelFieldType(property)
-		newModelField.AttributeType = generateModelAttributeType(property)
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
 			nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
