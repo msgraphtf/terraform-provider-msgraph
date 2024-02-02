@@ -18,10 +18,16 @@ type terraformModel struct {
 
 type terraformModelField struct {
 	Property      openapi.OpenAPISchemaProperty
-	FieldName     string
-	AttributeName string
 	ModelVarName  string
 	ModelName     string
+}
+
+func (mf terraformModelField) FieldName() string {
+	return upperFirst(mf.Property.Name)
+}
+
+func (mf terraformModelField) AttributeName() string {
+	return strcase.ToSnake(mf.Property.Name)
 }
 
 func (m terraformModelField) IfObjectType() bool {
@@ -32,9 +38,9 @@ func (m terraformModelField) IfObjectType() bool {
 	}
 }
 
-func (modelField terraformModelField) FieldType() string {
+func (mf terraformModelField) FieldType() string {
 
-	switch modelField.Property.Type {
+	switch mf.Property.Type {
 	case "string":
 		return "types.String"
 	case "integer":
@@ -42,15 +48,15 @@ func (modelField terraformModelField) FieldType() string {
 	case "boolean":
 		return "types.Bool"
 	case "object":
-		if modelField.Property.ObjectOf.Type == "string" { // This is a string enum.
+		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.String"
 		} else {
 			return "types.Object"
 		}
 	case "array":
-		switch modelField.Property.ArrayOf {
+		switch mf.Property.ArrayOf {
 		case "object":
-			if modelField.Property.ObjectOf.Type == "string" { // This is a string enum.
+			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.List"
 			} else {
 				return "types.List"
@@ -65,9 +71,9 @@ func (modelField terraformModelField) FieldType() string {
 
 }
 
-func (modelField terraformModelField) AttributeType() string {
+func (mf terraformModelField) AttributeType() string {
 
-	switch modelField.Property.Type {
+	switch mf.Property.Type {
 	case "string":
 		return "types.StringType"
 	case "integer":
@@ -75,18 +81,18 @@ func (modelField terraformModelField) AttributeType() string {
 	case "boolean":
 		return "types.BoolType"
 	case "object":
-		if modelField.Property.ObjectOf.Type == "string" { // This is a string enum.
+		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", blockName + upperFirst(modelField.Property.Name))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", blockName + upperFirst(mf.Property.Name))
 		}
 	case "array":
-		switch modelField.Property.ArrayOf {
+		switch mf.Property.ArrayOf {
 		case "object":
-			if modelField.Property.ObjectOf.Type == "string" { // This is a string enum.
+			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", blockName + upperFirst(modelField.Property.Name))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", blockName + upperFirst(mf.Property.Name))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"
@@ -121,16 +127,14 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 		newModelField := terraformModelField{
 			Property:      property,
-			FieldName:     upperFirst(property.Name),
-			AttributeName: strcase.ToSnake(property.Name),
 			ModelVarName:  blockName + upperFirst(property.Name),
 			ModelName:     blockName + upperFirst(property.Name) + "Model",
 		}
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
+			nestedModels = generateModel(newModelField.FieldName(), nestedModels, property.ObjectOf)
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = generateModel(newModelField.FieldName, nestedModels, property.ObjectOf)
+			nestedModels = generateModel(newModelField.FieldName(), nestedModels, property.ObjectOf)
 		}
 
 		newModel.ModelFields = append(newModel.ModelFields, newModelField)
