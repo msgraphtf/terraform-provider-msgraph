@@ -10,6 +10,11 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
+type modelInput struct {
+	PackageName string
+	Model       []terraformModel
+}
+
 // Used by templates defined inside of data_source_template.go to generate the data models
 type terraformModel struct {
 	ModelName   string
@@ -152,6 +157,17 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 	}
 
 	return model
+
+}
+
+func generateModelInput(schemaObject openapi.OpenAPISchemaObject) modelInput {
+
+	input := modelInput {
+		PackageName: packageName,
+		Model: generateModel("", nil, schemaObject),
+	}
+
+	return input
 
 }
 

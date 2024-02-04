@@ -567,7 +567,6 @@ func generateDataSource(pathname string) {
 	input.PackageName = packageName
 	input.BlockName = strWithCases{blockName}
 	input.Schema = generateSchema(nil, schemaObject, "DataSource") // Generate  Schema from OpenAPI Schama properties
-	input.Model = generateModel("", nil, schemaObject)             // Generate  model from OpenAPI schema
 	input.ReadQuery = generateReadQuery()
 	input.ReadResponse = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
 
@@ -577,7 +576,7 @@ func generateDataSource(pathname string) {
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
 	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_model.go")
-	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", input)
+	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", generateModelInput(schemaObject))
 
 	// Get datasource templates
 	datasourceTmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
