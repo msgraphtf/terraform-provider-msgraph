@@ -559,7 +559,7 @@ type templateAugment struct {
 	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
 }
 
-func generateDataSource(pathname string) {
+func generateDataSource() {
 
 	input = templateInput{}
 
@@ -572,11 +572,6 @@ func generateDataSource(pathname string) {
 
 	// Create directory for package
 	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)
-
-	// Generate model
-	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
-	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_model.go")
-	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", generateModelInput(schemaObject))
 
 	// Get datasource templates
 	datasourceTmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")

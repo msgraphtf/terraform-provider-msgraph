@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"slices"
 	"strings"
+	"text/template"
 
 	"github.com/iancoleman/strcase"
 
@@ -160,14 +162,17 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 }
 
-func generateModelInput(schemaObject openapi.OpenAPISchemaObject) modelInput {
+func generateModelInput() {
 
 	input := modelInput {
 		PackageName: packageName,
 		Model: generateModel("", nil, schemaObject),
 	}
 
-	return input
+	// Generate model
+	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
+	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_model.go")
+	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", input)
 
 }
 
