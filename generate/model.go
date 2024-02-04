@@ -18,8 +18,6 @@ type terraformModel struct {
 
 type terraformModelField struct {
 	Property      openapi.OpenAPISchemaProperty
-	ModelVarName  string
-	ModelName     string
 }
 
 func (mf terraformModelField) FieldName() string {
@@ -104,6 +102,14 @@ func (mf terraformModelField) AttributeType() string {
 
 }
 
+func (mf terraformModelField) ModelVarName() string {
+	return blockName + upperFirst(mf.Property.Name)
+}
+
+func (mf terraformModelField) ModelName() string {
+	return blockName + upperFirst(mf.Property.Name) + "Model"
+}
+
 func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
 
 	newModel := terraformModel{
@@ -121,14 +127,13 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 	for _, property := range schemaObject.Properties {
 
+		// Skip excluded properties
 		if slices.Contains(augment.ExcludedProperties, property.Name) {
 			continue
 		}
 
 		newModelField := terraformModelField{
 			Property:      property,
-			ModelVarName:  blockName + upperFirst(property.Name),
-			ModelName:     blockName + upperFirst(property.Name) + "Model",
 		}
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
