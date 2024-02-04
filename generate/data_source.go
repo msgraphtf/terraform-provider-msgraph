@@ -7,7 +7,6 @@ import (
 	"text/template"
 
 	"github.com/iancoleman/strcase"
-	"gopkg.in/yaml.v3"
 
 	"terraform-provider-msgraph/generate/openapi"
 )
@@ -42,12 +41,6 @@ func pathFieldName(s string) (string, string) {
 	pLeft, pRight, _ := strings.Cut(s, "-")
 	return pLeft, pRight
 }
-
-var blockName string
-var pathObject openapi.OpenAPIPathObject
-var augment templateAugment
-var input templateInput
-var allModelNames []string
 
 // Used by templates defined inside of data_source_template.go to generate the schema
 type terraformSchema struct {
@@ -569,35 +562,6 @@ type templateAugment struct {
 func generateDataSource(pathname string) {
 
 	input = templateInput{}
-
-	pathObject = openapi.GetPath(pathname)
-	schemaObject := pathObject.Get.Response
-
-	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-	packageName := strings.ToLower(pathFields[0])
-
-	// Generate name of the terraform block
-	blockName = ""
-	if len(pathFields) > 1 {
-		for _, p := range pathFields[1:] {
-			if strings.HasPrefix(p, "{") {
-				pLeft, _ := pathFieldName(p)
-				blockName += pLeft
-			} else {
-				blockName += p
-			}
-		}
-	} else {
-		blockName = pathFields[0]
-	}
-
-	// Open augment file if available
-	var err error = nil
-	augment = templateAugment{}
-	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + blockName + ".yaml")
-	if err == nil {
-		yaml.Unmarshal(augmentFile, &augment)
-	}
 
 	// Set input values to top level template
 	input.PackageName = packageName
