@@ -8,12 +8,12 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-var blockName string
 var pathObject openapi.OpenAPIPathObject
+var schemaObject openapi.OpenAPISchemaObject
+var packageName string
+var blockName string
 var augment templateAugment
 var input templateInput
-var packageName string
-var schemaObject openapi.OpenAPISchemaObject
 
 func setGlobals(pathname string) {
 	pathObject = openapi.GetPath(pathname)
