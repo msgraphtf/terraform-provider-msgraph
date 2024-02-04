@@ -119,7 +119,7 @@ func (mf terraformModelField) ModelName() string {
 	return blockName + upperFirst(mf.Property.Name) + "Model"
 }
 
-func generateModel(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
+func generateModelInput(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
 
 	newModel := terraformModel{
 		ModelName: blockName + modelName + "Model",
@@ -146,9 +146,9 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 		}
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = generateModel(newModelField.FieldName(), nestedModels, property.ObjectOf)
+			nestedModels = generateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf)
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = generateModel(newModelField.FieldName(), nestedModels, property.ObjectOf)
+			nestedModels = generateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf)
 		}
 
 		newModel.ModelFields = append(newModel.ModelFields, newModelField)
@@ -164,11 +164,11 @@ func generateModel(modelName string, model []terraformModel, schemaObject openap
 
 }
 
-func generateModelInput() {
+func generateModel() {
 
 	input := modelInput {
 		PackageName: packageName,
-		Model: generateModel("", nil, schemaObject),
+		Model: generateModelInput("", nil, schemaObject),
 	}
 
 	// Generate model

@@ -52,7 +52,7 @@ func main() {
 	if len(os.Args) > 1 {
 		setGlobals(os.Args[1])
 		generateDataSource()
-		generateModelInput()
+		generateModel()
 	} else {
 
 		knownGoodPaths := [...]string{
@@ -74,7 +74,7 @@ func main() {
 		for _, path := range knownGoodPaths {
 			setGlobals(path)
 			generateDataSource()
-			generateModelInput()
+			generateModel()
 		}
 
 	}
