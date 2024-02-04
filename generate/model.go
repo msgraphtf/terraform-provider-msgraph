@@ -12,6 +12,8 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
+var allModelNames []string
+
 type modelInput struct {
 	PackageName string
 	Model       []terraformModel

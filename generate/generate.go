@@ -12,7 +12,6 @@ var blockName string
 var pathObject openapi.OpenAPIPathObject
 var augment templateAugment
 var input templateInput
-var allModelNames []string
 var packageName string
 var schemaObject openapi.OpenAPISchemaObject
 
