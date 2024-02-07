@@ -360,10 +360,10 @@ func generateReadQuery() readQuery {
 
 	// Generate ReadQuery.ErrorAttribute
 	for _, schema := range input.Schema {
-		if schema.Optional && rq.ErrorAttribute == "" {
-			rq.ErrorAttribute = schema.AttributeName
-		} else if schema.Optional {
-			rq.ErrorExtraAttributes = append(rq.ErrorExtraAttributes, schema.AttributeName)
+		if schema.Optional() && rq.ErrorAttribute == "" {
+			rq.ErrorAttribute = schema.AttributeName()
+		} else if schema.Optional() {
+			rq.ErrorExtraAttributes = append(rq.ErrorExtraAttributes, schema.AttributeName())
 		}
 	}
 

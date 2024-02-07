@@ -12,6 +12,8 @@ import (
 type terraformSchema struct {
 	Property      openapi.OpenAPISchemaProperty
 	BehaviourMode string
+	Optional      bool
+	PlanModifiers bool
 }
 
 func (ts terraformSchema) Description() string {
@@ -63,33 +65,9 @@ func (ts terraformSchema) Required() bool {
 	}
 }
 
-func (ts terraformSchema) Optional() bool {
-
-	if ts.BehaviourMode == "DataSource" {
-		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+ts.AttributeName()) {
-			return true
-		} else if slices.Contains(augment.DataSourceExtraOptionals, ts.AttributeName()) {
-			return true
-		}
-	} else if ts.BehaviourMode == "Resource" {
-		return true
-	}
-
-	return false
-
-}
-
 func (ts terraformSchema) Computed() bool {
 	if ts.BehaviourMode == "DataSource" {
 		return  true
-	} else { // Resource
-		return true
-	}
-}
-
-func (ts terraformSchema) PlanModifiers() bool {
-	if ts.BehaviourMode == "DataSource" {
-		return false
 	} else { // Resource
 		return true
 	}
@@ -119,12 +97,23 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 			continue
 		}
 
-		newSchema := terraformSchema{
-			Property: property,
-			BehaviourMode: behaviourMode,
+		newSchema := new(terraformSchema)
+
+		newSchema.Property = property
+		newSchema.BehaviourMode = behaviourMode
+
+		if behaviourMode == "DataSource" {
+			if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+newSchema.AttributeName()) {
+				newSchema.Optional = true
+			} else if slices.Contains(augment.DataSourceExtraOptionals, newSchema.AttributeName()) {
+				newSchema.Optional = true
+			}
+		} else if behaviourMode == "Resource" {
+			newSchema.Optional = true
+			newSchema.PlanModifiers = true
 		}
 
-		schema = append(schema, newSchema)
+		schema = append(schema, *newSchema)
 	}
 
 	return schema

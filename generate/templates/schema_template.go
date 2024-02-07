@@ -93,7 +93,7 @@
 	},
 	{{- end}}
 	Attributes: map[string]schema.Attribute{
-	{{- template "generate_schema" .Attributes}}
+	{{- template "generate_schema" .NestedAttribute}}
 	},
 },
 {{- end }}
@@ -117,7 +117,7 @@
 	{{- end}}
 	NestedObject: schema.NestedAttributeObject{
 		Attributes: map[string]schema.Attribute{
-			{{- template "generate_schema" .NestedObject}}
+			{{- template "generate_schema" .NestedAttribute}}
 		},
 	},
 },
