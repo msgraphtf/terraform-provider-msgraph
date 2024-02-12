@@ -175,7 +175,6 @@ type updateRequestBody struct {
 	BlockName       string
 	AttributeName   strWithCases
 	PlanValueMethod string
-	RequestBodyVar  string
 	NewModelMethod  string
 	NestedUpdate    []updateRequestBody
 }
@@ -183,9 +182,9 @@ type updateRequestBody struct {
 func (urb updateRequestBody) PlanVar() string {
 
 	if urb.Parent != nil && urb.Parent.AttributeType == "UpdateObjectAttribute" {
-		return urb.Parent.RequestBodyVar + "Model."
+		return urb.Parent.RequestBodyVar() + "Model."
 	} else if urb.Parent != nil && urb.Parent.AttributeType == "UpdateArrayObjectAttribute" {
-		return urb.Parent.RequestBodyVar + "Model."
+		return urb.Parent.RequestBodyVar() + "Model."
 	} else {
 		return "plan."
 	}
@@ -194,11 +193,26 @@ func (urb updateRequestBody) PlanVar() string {
 func (urb updateRequestBody) StateVar() string {
 
 	if urb.Parent != nil && urb.Parent.AttributeType == "UpdateObjectAttribute" {
-		return urb.Parent.RequestBodyVar + "State."
+		return urb.Parent.RequestBodyVar() + "State."
 	} else if urb.Parent != nil && urb.Parent.AttributeType == "UpdateArrayObjectAttribute" {
-		return urb.Parent.RequestBodyVar + "State."
+		return urb.Parent.RequestBodyVar() + "State."
 	} else {
 		return "state."
+	}
+}
+
+func (urb updateRequestBody) RequestBodyVar() string {
+
+	if urb.Parent != nil && urb.Parent.AttributeType == "UpdateObjectAttribute" {
+		return urb.Parent.RequestBodyVar()
+	} else if urb.Parent != nil && urb.Parent.AttributeType == "UpdateArrayObjectAttribute" {
+		return urb.Parent.RequestBodyVar()
+	} else if urb.Property.Type == "object" {
+		return urb.Property.Name
+	} else if urb.Property.ArrayOf == "object" {
+		return urb.Property.ObjectOf.Title
+	} else {
+		return "requestBody"
 	}
 }
 
@@ -219,12 +233,8 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 		}
 
 		if parent != nil && parent.AttributeType == "UpdateObjectAttribute" {
-			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
 		} else if parent != nil && parent.AttributeType == "UpdateArrayObjectAttribute" {
-			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
-			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
 		} else {
-			newUpdateRequest.RequestBodyVar = "requestBody"
 		}
 
 
@@ -260,12 +270,10 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 				}
 			case "object":
 				newUpdateRequest.AttributeType = "UpdateArrayObjectAttribute"
-				newUpdateRequest.RequestBodyVar = property.ObjectOf.Title
 				newUpdateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
 				newUpdateRequest.NestedUpdate = generateUpdateRequestBody(pathObject, property.ObjectOf, &newUpdateRequest)
 			}
 		case "object":
-			newUpdateRequest.RequestBodyVar = property.Name
 			newUpdateRequest.AttributeType = "UpdateObjectAttribute"
 			newUpdateRequest.NestedUpdate = generateUpdateRequestBody(pathObject, property.ObjectOf, &newUpdateRequest)
 		}
