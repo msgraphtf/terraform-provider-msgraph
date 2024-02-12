@@ -11,10 +11,10 @@ import (
 
 type createRequestBody struct {
 	Property        openapi.OpenAPISchemaProperty
+	Parent          *createRequestBody
 	BlockName       string
 	AttributeName   strWithCases
 	IfCondition     string
-	PlanVar         string
 	PlanValueMethod string
 	RequestBodyVar  string
 	NewModelMethod  string
@@ -54,6 +54,18 @@ func (crb createRequestBody) AttributeType() string {
 	return "UNKNOWN"
 }
 
+func (crb createRequestBody) PlanVar() string {
+
+	if crb.Parent != nil && crb.Parent.AttributeType() == "CreateObjectAttribute" {
+		return crb.Parent.RequestBodyVar + "Model."
+	} else if crb.Parent != nil && crb.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+		return crb.Parent.RequestBodyVar + "Model."
+	} else {
+		return "plan."
+	}
+
+}
+
 func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
 	var cr []createRequestBody
 
@@ -65,21 +77,19 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 
 		newCreateRequest := createRequestBody{
 			Property:      property,
+			Parent:        parent,
 			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
 			IfCondition: "Unknown",
 		}
 
 		if parent != nil && parent.AttributeType() == "CreateObjectAttribute" {
-			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 		} else if parent != nil && parent.AttributeType() == "CreateArrayObjectAttribute" {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 		} else {
 			newCreateRequest.RequestBodyVar = "requestBody"
-			newCreateRequest.PlanVar = "plan."
 		}
 
 
