@@ -146,14 +146,13 @@ type readResponse struct {
 	Property      openapi.OpenAPISchemaProperty
 	Parent        *readResponse
 	GetMethod     string
-	AttributeType string
 }
 
 func (rr readResponse) StateVarName() string {
 
-	if rr.Parent != nil && rr.Parent.AttributeType == "ReadSingleNestedAttribute" {
+	if rr.Parent != nil && rr.Parent.AttributeType() == "ReadSingleNestedAttribute" {
 		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
-	} else if rr.Parent != nil && rr.Parent.AttributeType == "ReadListNestedAttribute" {
+	} else if rr.Parent != nil && rr.Parent.AttributeType() == "ReadListNestedAttribute" {
 		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
 	} else {
 		return "state." + upperFirst(rr.Property.Name)
@@ -162,6 +161,47 @@ func (rr readResponse) StateVarName() string {
 
 func (rr readResponse) ModelName() string {
 	return blockName + upperFirst(rr.Property.Name) + "Model"
+}
+
+func (rr readResponse) AttributeType() string {
+
+	switch rr.Property.Type {
+	case "string":
+		if rr.Property.Format == "" {
+			return "ReadStringAttribute"
+		} else if strings.Contains(rr.Property.Format, "base64") { // TODO: base64 encoded data is probably not stored correctly
+			return "ReadStringBase64Attribute"
+		} else {
+			return "ReadStringFormattedAttribute"
+		}
+	case "integer":
+		return "ReadInt64Attribute"
+	case "boolean":
+		return "ReadBoolAttribute"
+	case "object":
+		if rr.Property.ObjectOf.Type == "string" { // This is a string enum.
+			return "ReadStringFormattedAttribute"
+		} else {
+			return "ReadSingleNestedAttribute"
+		}
+	case "array":
+		switch rr.Property.ArrayOf {
+		case "string":
+			if rr.Property.Format == "" {
+				return "ReadListStringAttribute"
+			} else {
+				return "ReadListStringFormattedAttribute"
+			}
+		case "object":
+			if rr.Property.ObjectOf.Type == "string" { // This is a string enum.
+				return "ReadListStringFormattedAttribute"
+			} else {
+				return "ReadListNestedAttribute"
+			}
+		}
+	}
+
+	return "UNKNOWN"
 }
 
 func (rr readResponse) NestedRead() []readResponse {
@@ -186,50 +226,14 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 			newReadResponse.GetMethod = "GetTypeEscaped()"
 		}
 
-		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
+		if parent != nil && parent.AttributeType() == "ReadSingleNestedAttribute" {
 			newReadResponse.GetMethod = parent.GetMethod + "." + newReadResponse.GetMethod
-		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
+		} else if parent != nil && parent.AttributeType() == "ReadListNestedAttribute" {
 			newReadResponse.GetMethod = "v." + newReadResponse.GetMethod
 		} else {
 			newReadResponse.GetMethod = "result." + newReadResponse.GetMethod
 		}
 
-		// Convert types from OpenAPI schema types to  attributes
-		switch property.Type {
-		case "string":
-			if property.Format == "" {
-				newReadResponse.AttributeType = "ReadStringAttribute"
-			} else if strings.Contains(property.Format, "base64") { // TODO: base64 encoded data is probably not stored correctly
-				newReadResponse.AttributeType = "ReadStringBase64Attribute"
-			} else {
-				newReadResponse.AttributeType = "ReadStringFormattedAttribute"
-			}
-		case "integer":
-			newReadResponse.AttributeType = "ReadInt64Attribute"
-		case "boolean":
-			newReadResponse.AttributeType = "ReadBoolAttribute"
-		case "object":
-			if property.ObjectOf.Type == "string" { // This is a string enum.
-				newReadResponse.AttributeType = "ReadStringFormattedAttribute"
-			} else {
-				newReadResponse.AttributeType = "ReadSingleNestedAttribute"
-			}
-		case "array":
-			switch property.ArrayOf {
-			case "string":
-				if property.Format == "" {
-					newReadResponse.AttributeType = "ReadListStringAttribute"
-				} else {
-					newReadResponse.AttributeType = "ReadListStringFormattedAttribute"
-				}
-			case "object":
-				if property.ObjectOf.Type == "string" { // This is a string enum.
-					newReadResponse.AttributeType = "ReadListStringFormattedAttribute"
-				} else {
-					newReadResponse.AttributeType = "ReadListNestedAttribute"
-				}
-			}
-		}
 
 		read = append(read, newReadResponse)
 	}
