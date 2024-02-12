@@ -175,7 +175,6 @@ type updateRequestBody struct {
 	AttributeType   string
 	BlockName       string
 	AttributeName   strWithCases
-	NewModelMethod  string
 }
 
 func (urb updateRequestBody) PlanVar() string {
@@ -239,6 +238,10 @@ func (urb updateRequestBody) PlanValueMethod() string {
 
 }
 
+func (urb updateRequestBody) NewModelMethod() string {
+	return upperFirst(urb.Property.ObjectOf.Title)
+}
+
 func (urb updateRequestBody) NestedUpdate() []updateRequestBody {
 	return generateUpdateRequestBody(urb.Path, urb.Property.ObjectOf, &urb)
 }
@@ -283,7 +286,6 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 				}
 			case "object":
 				newUpdateRequest.AttributeType = "UpdateArrayObjectAttribute"
-				newUpdateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
 			}
 		case "object":
 			newUpdateRequest.AttributeType = "UpdateObjectAttribute"
