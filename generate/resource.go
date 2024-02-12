@@ -10,7 +10,7 @@ import (
 )
 
 type createRequestBody struct {
-	AttributeType   string
+	Property        openapi.OpenAPISchemaProperty
 	BlockName       string
 	AttributeName   strWithCases
 	IfCondition     string
@@ -19,6 +19,39 @@ type createRequestBody struct {
 	RequestBodyVar  string
 	NewModelMethod  string
 	NestedCreate    []createRequestBody
+}
+
+func (crb createRequestBody) AttributeType() string {
+
+	switch crb.Property.Type {
+	case "string":
+		switch crb.Property.Format {
+		case "date-time":
+			return "CreateStringTimeAttribute"
+		case "uuid":
+			return "CreateStringUuidAttribute"
+		}
+		return "CreateStringAttribute"
+	case "integer":
+		return "CreateInt64Attribute"
+	case "boolean":
+		return "CreateBoolAttribute"
+	case "array":
+		switch crb.Property.ArrayOf {
+		case "string":
+			if crb.Property.Format == "uuid" {
+				return "CreateArrayUuidAttribute"
+			} else {
+				return "CreateArrayStringAttribute"
+			}
+		case "object":
+			return "CreateArrayObjectAttribute"
+		}
+	case "object":
+		return "CreateObjectAttribute"
+	}
+
+	return "UNKNOWN"
 }
 
 func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
@@ -31,15 +64,16 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 		}
 
 		newCreateRequest := createRequestBody{
+			Property:      property,
 			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
 			IfCondition: "Unknown",
 		}
 
-		if parent != nil && parent.AttributeType == "CreateObjectAttribute" {
+		if parent != nil && parent.AttributeType() == "CreateObjectAttribute" {
 			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-		} else if parent != nil && parent.AttributeType == "CreateArrayObjectAttribute" {
+		} else if parent != nil && parent.AttributeType() == "CreateArrayObjectAttribute" {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 			newCreateRequest.PlanVar = parent.RequestBodyVar + "Model."
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
@@ -56,39 +90,30 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 
 		switch property.Type {
 		case "string":
-			newCreateRequest.AttributeType = "CreateStringAttribute"
 			newCreateRequest.PlanValueMethod = "ValueString"
 			switch property.Format {
 			case "date-time":
-				newCreateRequest.AttributeType = "CreateStringTimeAttribute"
 			case "uuid":
-				newCreateRequest.AttributeType = "CreateStringUuidAttribute"
 			}
 		case "integer":
-			newCreateRequest.AttributeType = "CreateInt64Attribute"
 			newCreateRequest.PlanValueMethod = "ValueInt64"
 		case "boolean":
-			newCreateRequest.AttributeType = "CreateBoolAttribute"
 			newCreateRequest.PlanValueMethod = "ValueBool"
 		case "array":
 			switch property.ArrayOf {
 			case "string":
 				if property.Format == "uuid" {
-					newCreateRequest.AttributeType = "CreateArrayUuidAttribute"
 					newCreateRequest.PlanValueMethod = "ValueString"
 				} else {
-					newCreateRequest.AttributeType = "CreateArrayStringAttribute"
 					newCreateRequest.PlanValueMethod = "ValueString"
 				}
 			case "object":
-				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
 				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
 				newCreateRequest.NestedCreate = generateCreateRequestBody(pathObject, property.ObjectOf, &newCreateRequest)
 			}
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
-			newCreateRequest.AttributeType = "CreateObjectAttribute"
 			newCreateRequest.NestedCreate = generateCreateRequestBody(pathObject, property.ObjectOf, &newCreateRequest)
 		}
 
