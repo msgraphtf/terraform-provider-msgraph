@@ -230,6 +230,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 
 	for _, property := range schemaObject.Properties {
 
+		// Skip excluded properties
 		if slices.Contains(augment.ExcludedProperties, property.Name) {
 			continue
 		}
@@ -238,7 +239,6 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 			Property: property,
 			Parent: parent,
 		}
-
 
 		read = append(read, newReadResponse)
 	}
