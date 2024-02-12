@@ -145,7 +145,6 @@ func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 type readResponse struct {
 	Property      openapi.OpenAPISchemaProperty
 	Parent        *readResponse
-	GetMethod     string
 }
 
 func (rr readResponse) StateVarName() string {
@@ -204,6 +203,25 @@ func (rr readResponse) AttributeType() string {
 	return "UNKNOWN"
 }
 
+func (rr readResponse) GetMethod() string {
+
+	getMethod := "Get" + upperFirst(rr.Property.Name) + "()"
+	if rr.Property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
+		getMethod = "GetTypeEscaped()"
+	}
+
+	if rr.Parent != nil && rr.Parent.AttributeType() == "ReadSingleNestedAttribute" {
+		getMethod = rr.Parent.GetMethod() + "." + getMethod
+	} else if rr.Parent != nil && rr.Parent.AttributeType() == "ReadListNestedAttribute" {
+		getMethod = "v." + getMethod
+	} else {
+		getMethod = "result." + getMethod
+	}
+	
+	return getMethod
+
+}
+
 func (rr readResponse) NestedRead() []readResponse {
 	return generateReadResponse(nil, rr.Property.ObjectOf, &rr)
 }
@@ -219,19 +237,6 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 		newReadResponse := readResponse{
 			Property: property,
 			Parent: parent,
-			GetMethod:    "Get" + upperFirst(property.Name) + "()",
-		}
-
-		if property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
-			newReadResponse.GetMethod = "GetTypeEscaped()"
-		}
-
-		if parent != nil && parent.AttributeType() == "ReadSingleNestedAttribute" {
-			newReadResponse.GetMethod = parent.GetMethod + "." + newReadResponse.GetMethod
-		} else if parent != nil && parent.AttributeType() == "ReadListNestedAttribute" {
-			newReadResponse.GetMethod = "v." + newReadResponse.GetMethod
-		} else {
-			newReadResponse.GetMethod = "result." + newReadResponse.GetMethod
 		}
 
 
