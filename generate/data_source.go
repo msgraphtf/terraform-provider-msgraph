@@ -46,7 +46,6 @@ func pathFieldName(s string) (string, string) {
 type readQuery struct {
 	Path                        openapi.OpenAPIPathObject
 	BlockName                   strWithCases
-	MultipleGetMethodParameters bool
 	GetMethod                   []queryMethod
 	AltGetMethod                []map[string]string
 	ErrorAttribute              string
@@ -95,6 +94,15 @@ func (rq readQuery) SelectParameters() []string {
 	return sp
 }
 
+func (rq readQuery) MultipleGetMethodParameters() bool {
+	for _, p := range rq.PathFields()[1:] {
+		if strings.HasPrefix(p, "{") {
+			return true
+		}
+	}
+	return false
+}
+
 func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 
 	var rq readQuery
@@ -122,13 +130,6 @@ func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 
 	// Generate ReadQuery.AltMethod
 	rq.AltGetMethod = augment.AltReadMethods
-
-	// Generate ReadQuery.GetMethodParametersCount
-	for _, p := range pathFields[1:] {
-		if strings.HasPrefix(p, "{") {
-			rq.MultipleGetMethodParameters = true
-		}
-	}
 
 	// Generate ReadQuery.ErrorAttribute
 	for _, schema := range input.Schema {
