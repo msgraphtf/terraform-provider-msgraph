@@ -174,7 +174,6 @@ type updateRequestBody struct {
 	AttributeType   string
 	BlockName       string
 	AttributeName   strWithCases
-	PlanValueMethod string
 	NewModelMethod  string
 	NestedUpdate    []updateRequestBody
 }
@@ -216,6 +215,30 @@ func (urb updateRequestBody) RequestBodyVar() string {
 	}
 }
 
+func (urb updateRequestBody) PlanValueMethod() string {
+
+	switch urb.Property.Type {
+	case "string":
+		return "ValueString"
+	case "integer":
+		return "ValueInt64"
+	case "boolean":
+		return "ValueBool"
+	case "array":
+		switch urb.Property.ArrayOf {
+		case "string":
+			if urb.Property.Format == "uuid" {
+				return "ValueString"
+			} else {
+				return "ValueString"
+			}
+		}
+	}
+
+	return "UNKNOWN"
+
+}
+
 func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *updateRequestBody) []updateRequestBody {
 	var cr []updateRequestBody
 
@@ -232,20 +255,9 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			AttributeName: strWithCases{property.Name},
 		}
 
-		if parent != nil && parent.AttributeType == "UpdateObjectAttribute" {
-		} else if parent != nil && parent.AttributeType == "UpdateArrayObjectAttribute" {
-		} else {
-		}
-
-
-		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+property.Name) ||
-			slices.Contains(augment.ResourceExtraComputed, property.Name) {
-		}
-
 		switch property.Type {
 		case "string":
 			newUpdateRequest.AttributeType = "UpdateStringAttribute"
-			newUpdateRequest.PlanValueMethod = "ValueString"
 			switch property.Format {
 			case "date-time":
 				newUpdateRequest.AttributeType = "UpdateStringTimeAttribute"
@@ -254,19 +266,15 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			}
 		case "integer":
 			newUpdateRequest.AttributeType = "UpdateInt64Attribute"
-			newUpdateRequest.PlanValueMethod = "ValueInt64"
 		case "boolean":
 			newUpdateRequest.AttributeType = "UpdateBoolAttribute"
-			newUpdateRequest.PlanValueMethod = "ValueBool"
 		case "array":
 			switch property.ArrayOf {
 			case "string":
 				if property.Format == "uuid" {
 					newUpdateRequest.AttributeType = "UpdateArrayUuidAttribute"
-					newUpdateRequest.PlanValueMethod = "ValueString"
 				} else {
 					newUpdateRequest.AttributeType = "UpdateArrayStringAttribute"
-					newUpdateRequest.PlanValueMethod = "ValueString"
 				}
 			case "object":
 				newUpdateRequest.AttributeType = "UpdateArrayObjectAttribute"
