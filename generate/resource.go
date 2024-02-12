@@ -15,7 +15,6 @@ type createRequestBody struct {
 	Parent          *createRequestBody
 	BlockName       string
 	AttributeName   strWithCases
-	IfCondition     string
 	RequestBodyVar  string
 }
 
@@ -111,22 +110,14 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			Parent:        parent,
 			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
-			IfCondition: "Unknown",
 		}
 
 		if parent != nil && parent.AttributeType() == "CreateObjectAttribute" {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 		} else if parent != nil && parent.AttributeType() == "CreateArrayObjectAttribute" {
 			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
 		} else {
 			newCreateRequest.RequestBodyVar = "requestBody"
-		}
-
-
-		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+property.Name) ||
-			slices.Contains(augment.ResourceExtraComputed, property.Name) {
-			newCreateRequest.IfCondition = "Unknown"
 		}
 
 		switch property.Type {

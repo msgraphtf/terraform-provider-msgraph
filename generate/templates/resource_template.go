@@ -80,7 +80,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	} else {
@@ -89,7 +89,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateStringTimeAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	t, _ = time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&t)
@@ -99,7 +99,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateStringUuidAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	u, _ = uuid.Parse(plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&u)
@@ -109,7 +109,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	} else {
@@ -118,7 +118,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
 	} else {
@@ -167,7 +167,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Is{{.IfCondition}}(){
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 		{{.RequestBodyVar}} := models.New{{.AttributeName.UpperCamel}}()
 		{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
 		plan.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
