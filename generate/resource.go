@@ -10,13 +10,13 @@ import (
 )
 
 type createRequestBody struct {
+	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *createRequestBody
 	BlockName       string
 	AttributeName   strWithCases
 	IfCondition     string
 	RequestBodyVar  string
-	NestedCreate    []createRequestBody
 }
 
 func (crb createRequestBody) AttributeType() string {
@@ -88,6 +88,10 @@ func (crb createRequestBody) PlanValueMethod() string {
 
 }
 
+func (crb createRequestBody) NestedCreate() []createRequestBody {
+	return generateCreateRequestBody(crb.Path, crb.Property.ObjectOf, &crb)
+}
+
 func (crb createRequestBody) NewModelMethod() string {
 	return upperFirst(crb.Property.ObjectOf.Title)
 }
@@ -102,6 +106,7 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 		}
 
 		newCreateRequest := createRequestBody{
+			Path:          pathObject,
 			Property:      property,
 			Parent:        parent,
 			BlockName:     blockName,
@@ -129,11 +134,9 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			switch property.ArrayOf {
 			case "object":
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
-				newCreateRequest.NestedCreate = generateCreateRequestBody(pathObject, property.ObjectOf, &newCreateRequest)
 			}
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
-			newCreateRequest.NestedCreate = generateCreateRequestBody(pathObject, property.ObjectOf, &newCreateRequest)
 		}
 
 		cr = append(cr, newCreateRequest)
