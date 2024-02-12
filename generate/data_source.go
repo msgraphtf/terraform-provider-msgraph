@@ -60,7 +60,7 @@ type queryMethod struct {
 	Parameter  string
 }
 
-func generateReadQuery() readQuery {
+func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 
 	var rq readQuery
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
@@ -233,7 +233,7 @@ type templateAugment struct {
 	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
 }
 
-func generateDataSource() {
+func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 
 	input = templateInput{}
 
@@ -242,8 +242,8 @@ func generateDataSource() {
 	// Set input values to top level template
 	input.PackageName = packageName
 	input.BlockName = strWithCases{blockName}
-	input.Schema = generateSchema(nil, pathObject.Get.Response, "DataSource") // Generate  Schema from OpenAPI Schama properties
-	input.ReadQuery = generateReadQuery()
+	input.Schema = generateSchema(pathObject, nil, pathObject.Get.Response, "DataSource") // Generate  Schema from OpenAPI Schama properties
+	input.ReadQuery = generateReadQuery(pathObject)
 	input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil) // Generate Read Go code from OpenAPI schema
 
 	// Create directory for package
@@ -261,11 +261,11 @@ func generateDataSource() {
 
 	if pathObject.Patch.Summary != "" {
 
-		input.Schema = generateSchema(nil, pathObject.Get.Response, "Resource")
-		input.CreateRequestBody = generateCreateRequestBody(pathObject.Get.Response, nil)
-		input.CreateRequest = generateCreateRequest()
-		input.UpdateRequestBody = generateUpdateRequestBody(pathObject.Get.Response, nil)
-		input.UpdateRequest = generateUpdateRequest()
+		input.Schema = generateSchema(pathObject, nil, pathObject.Get.Response, "Resource")
+		input.CreateRequestBody = generateCreateRequestBody(pathObject, pathObject.Get.Response, nil)
+		input.CreateRequest = generateCreateRequest(pathObject)
+		input.UpdateRequestBody = generateUpdateRequestBody(pathObject, pathObject.Get.Response, nil)
+		input.UpdateRequest = generateUpdateRequest(pathObject)
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")

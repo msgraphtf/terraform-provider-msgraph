@@ -8,13 +8,12 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-var pathObject openapi.OpenAPIPathObject
 var blockName string
 var augment templateAugment
 var input templateInput
 
-func setGlobals(pathname string) {
-	pathObject = openapi.GetPath(pathname)
+func setGlobals(pathname string) openapi.OpenAPIPathObject {
+	pathObject := openapi.GetPath(pathname)
 
 	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName := strings.ToLower(pathFields[0])
@@ -42,14 +41,16 @@ func setGlobals(pathname string) {
 		yaml.Unmarshal(augmentFile, &augment)
 	}
 
+	return pathObject
+
 }
 
 func main() {
 
 	if len(os.Args) > 1 {
-		setGlobals(os.Args[1])
-		generateDataSource()
-		generateModel()
+		pathObject := setGlobals(os.Args[1])
+		generateDataSource(pathObject)
+		generateModel(pathObject)
 	} else {
 
 		knownGoodPaths := [...]string{
@@ -69,9 +70,9 @@ func main() {
 		}
 
 		for _, path := range knownGoodPaths {
-			setGlobals(path)
-			generateDataSource()
-			generateModel()
+			pathObject := setGlobals(path)
+			generateDataSource(pathObject)
+			generateModel(pathObject)
 		}
 
 	}

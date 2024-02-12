@@ -21,7 +21,7 @@ type createRequestBody struct {
 	NestedCreate    []createRequestBody
 }
 
-func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
+func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
 	var cr []createRequestBody
 
 	for _, property := range schemaObject.Properties {
@@ -84,12 +84,12 @@ func generateCreateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 				newCreateRequest.AttributeType = "CreateArrayObjectAttribute"
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
 				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
-				newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, &newCreateRequest)
+				newCreateRequest.NestedCreate = generateCreateRequestBody(pathObject, property.ObjectOf, &newCreateRequest)
 			}
 		case "object":
 			newCreateRequest.RequestBodyVar = property.Name
 			newCreateRequest.AttributeType = "CreateObjectAttribute"
-			newCreateRequest.NestedCreate = generateCreateRequestBody(property.ObjectOf, &newCreateRequest)
+			newCreateRequest.NestedCreate = generateCreateRequestBody(pathObject, property.ObjectOf, &newCreateRequest)
 		}
 
 		cr = append(cr, newCreateRequest)
@@ -103,7 +103,7 @@ type createRequest struct {
 	PostMethod []queryMethod
 }
 
-func generateCreateRequest() createRequest {
+func generateCreateRequest(pathObject openapi.OpenAPIPathObject) createRequest {
 
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
@@ -144,7 +144,7 @@ type updateRequestBody struct {
 	NestedUpdate    []updateRequestBody
 }
 
-func generateUpdateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent *updateRequestBody) []updateRequestBody {
+func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *updateRequestBody) []updateRequestBody {
 	var cr []updateRequestBody
 
 	for _, property := range schemaObject.Properties {
@@ -208,12 +208,12 @@ func generateUpdateRequestBody(schemaObject openapi.OpenAPISchemaObject, parent 
 				newUpdateRequest.AttributeType = "UpdateArrayObjectAttribute"
 				newUpdateRequest.RequestBodyVar = property.ObjectOf.Title
 				newUpdateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
-				newUpdateRequest.NestedUpdate = generateUpdateRequestBody(property.ObjectOf, &newUpdateRequest)
+				newUpdateRequest.NestedUpdate = generateUpdateRequestBody(pathObject, property.ObjectOf, &newUpdateRequest)
 			}
 		case "object":
 			newUpdateRequest.RequestBodyVar = property.Name
 			newUpdateRequest.AttributeType = "UpdateObjectAttribute"
-			newUpdateRequest.NestedUpdate = generateUpdateRequestBody(property.ObjectOf, &newUpdateRequest)
+			newUpdateRequest.NestedUpdate = generateUpdateRequestBody(pathObject, property.ObjectOf, &newUpdateRequest)
 		}
 
 		cr = append(cr, newUpdateRequest)
@@ -227,7 +227,7 @@ type updateRequest struct {
 	PostMethod []queryMethod
 }
 
-func generateUpdateRequest() updateRequest {
+func generateUpdateRequest(pathObject openapi.OpenAPIPathObject) updateRequest {
 
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 

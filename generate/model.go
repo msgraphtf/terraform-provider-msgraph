@@ -164,7 +164,7 @@ func generateModelInput(modelName string, model []terraformModel, schemaObject o
 
 }
 
-func generateModel() {
+func generateModel(pathObject openapi.OpenAPIPathObject) {
 
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 

@@ -10,6 +10,7 @@ import (
 
 // Used by templates defined inside of data_source_template.go to generate the schema
 type terraformSchema struct {
+	Path          openapi.OpenAPIPathObject
 	Property      openapi.OpenAPISchemaProperty
 	BehaviourMode string
 }
@@ -66,7 +67,7 @@ func (ts terraformSchema) Required() bool {
 func (ts terraformSchema) Optional() bool {
 
 	if ts.BehaviourMode == "DataSource" {
-		if slices.Contains(pathObject.Parameters, pathObject.Get.Response.Title+"-"+ts.AttributeName()) {
+		if slices.Contains(ts.Path.Parameters, ts.Path.Get.Response.Title+"-"+ts.AttributeName()) {
 			return true
 		} else if slices.Contains(augment.DataSourceExtraOptionals, ts.AttributeName()) {
 			return true
@@ -96,7 +97,7 @@ func (ts terraformSchema) PlanModifiers() bool {
 }
 
 func (ts terraformSchema) NestedAttribute() []terraformSchema {
-	return generateSchema(nil, ts.Property.ObjectOf, ts.BehaviourMode)
+	return generateSchema(ts.Path, nil, ts.Property.ObjectOf, ts.BehaviourMode)
 }
 
 func (ts terraformSchema) ElementType() string {
@@ -110,7 +111,7 @@ func (ts terraformSchema) ElementType() string {
 
 }
 
-func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) []terraformSchema {
+func generateSchema(pathObject openapi.OpenAPIPathObject, schema []terraformSchema, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) []terraformSchema {
 
 	for _, property := range schemaObject.Properties {
 
@@ -120,6 +121,7 @@ func generateSchema(schema []terraformSchema, schemaObject openapi.OpenAPISchema
 		}
 
 		newSchema := terraformSchema{
+			Path: pathObject,
 			Property: property,
 			BehaviourMode: behaviourMode,
 		}
