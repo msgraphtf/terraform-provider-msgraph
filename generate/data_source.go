@@ -131,7 +131,6 @@ type readResponse struct {
 	Parent        *readResponse
 	GetMethod     string
 	ModelVarName  string
-	ModelName     string
 	AttributeType string
 	NestedRead    []readResponse
 }
@@ -147,6 +146,10 @@ func (rr readResponse) StateVarName() string {
 	}
 }
 
+func (rr readResponse) ModelName() string {
+	return blockName + upperFirst(rr.Property.Name) + "Model"
+}
+
 func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
 
 	for _, property := range schemaObject.Properties {
@@ -159,7 +162,6 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 			Property: property,
 			Parent: parent,
 			GetMethod:    "Get" + upperFirst(property.Name) + "()",
-			ModelName:    blockName + upperFirst(property.Name) + "Model",
 			ModelVarName: property.Name,
 		}
 
