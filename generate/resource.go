@@ -115,6 +115,7 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 
 	for _, property := range schemaObject.Properties {
 
+		// Skip excluded properties
 		if slices.Contains(augment.ExcludedProperties, property.Name) {
 			continue
 		}
