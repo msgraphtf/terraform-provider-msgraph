@@ -168,7 +168,7 @@ func generateModel() {
 
 	input := modelInput {
 		PackageName: packageName,
-		Model: generateModelInput("", nil, schemaObject),
+		Model: generateModelInput("", nil, pathObject.Get.Response),
 	}
 
 	// Generate model

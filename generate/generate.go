@@ -9,7 +9,6 @@ import (
 )
 
 var pathObject openapi.OpenAPIPathObject
-var schemaObject openapi.OpenAPISchemaObject
 var packageName string
 var blockName string
 var augment templateAugment
@@ -17,7 +16,6 @@ var input templateInput
 
 func setGlobals(pathname string) {
 	pathObject = openapi.GetPath(pathname)
-	schemaObject = pathObject.Get.Response
 
 	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName = strings.ToLower(pathFields[0])

@@ -66,7 +66,7 @@ func (ts terraformSchema) Required() bool {
 func (ts terraformSchema) Optional() bool {
 
 	if ts.BehaviourMode == "DataSource" {
-		if slices.Contains(pathObject.Parameters, schemaObject.Title+"-"+ts.AttributeName()) {
+		if slices.Contains(pathObject.Parameters, pathObject.Get.Response.Title+"-"+ts.AttributeName()) {
 			return true
 		} else if slices.Contains(augment.DataSourceExtraOptionals, ts.AttributeName()) {
 			return true

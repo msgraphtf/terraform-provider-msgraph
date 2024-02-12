@@ -240,9 +240,9 @@ func generateDataSource() {
 	// Set input values to top level template
 	input.PackageName = packageName
 	input.BlockName = strWithCases{blockName}
-	input.Schema = generateSchema(nil, schemaObject, "DataSource") // Generate  Schema from OpenAPI Schama properties
+	input.Schema = generateSchema(nil, pathObject.Get.Response, "DataSource") // Generate  Schema from OpenAPI Schama properties
 	input.ReadQuery = generateReadQuery()
-	input.ReadResponse = generateReadResponse(nil, schemaObject, nil) // Generate Read Go code from OpenAPI schema
+	input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil) // Generate Read Go code from OpenAPI schema
 
 	// Create directory for package
 	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)
@@ -259,10 +259,10 @@ func generateDataSource() {
 
 	if pathObject.Patch.Summary != "" {
 
-		input.Schema = generateSchema(nil, schemaObject, "Resource")
-		input.CreateRequestBody = generateCreateRequestBody(schemaObject, nil)
+		input.Schema = generateSchema(nil, pathObject.Get.Response, "Resource")
+		input.CreateRequestBody = generateCreateRequestBody(pathObject.Get.Response, nil)
 		input.CreateRequest = generateCreateRequest()
-		input.UpdateRequestBody = generateUpdateRequestBody(schemaObject, nil)
+		input.UpdateRequestBody = generateUpdateRequestBody(pathObject.Get.Response, nil)
 		input.UpdateRequest = generateUpdateRequest()
 
 		// Get templates
