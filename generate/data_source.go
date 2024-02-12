@@ -147,7 +147,6 @@ type readResponse struct {
 	Parent        *readResponse
 	GetMethod     string
 	AttributeType string
-	NestedRead    []readResponse
 }
 
 func (rr readResponse) StateVarName() string {
@@ -163,6 +162,10 @@ func (rr readResponse) StateVarName() string {
 
 func (rr readResponse) ModelName() string {
 	return blockName + upperFirst(rr.Property.Name) + "Model"
+}
+
+func (rr readResponse) NestedRead() []readResponse {
+	return generateReadResponse(nil, rr.Property.ObjectOf, &rr)
 }
 
 func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
@@ -210,8 +213,6 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 				newReadResponse.AttributeType = "ReadStringFormattedAttribute"
 			} else {
 				newReadResponse.AttributeType = "ReadSingleNestedAttribute"
-				nestedRead := generateReadResponse(nil, property.ObjectOf, &newReadResponse)
-				newReadResponse.NestedRead = nestedRead
 			}
 		case "array":
 			switch property.ArrayOf {
@@ -226,8 +227,6 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 					newReadResponse.AttributeType = "ReadListStringFormattedAttribute"
 				} else {
 					newReadResponse.AttributeType = "ReadListNestedAttribute"
-					nestedRead := generateReadResponse(nil, property.ObjectOf, &newReadResponse)
-					newReadResponse.NestedRead = nestedRead
 				}
 			}
 		}
