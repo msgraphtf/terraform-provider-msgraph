@@ -16,7 +16,6 @@ type createRequestBody struct {
 	AttributeName   strWithCases
 	IfCondition     string
 	RequestBodyVar  string
-	NewModelMethod  string
 	NestedCreate    []createRequestBody
 }
 
@@ -89,6 +88,10 @@ func (crb createRequestBody) PlanValueMethod() string {
 
 }
 
+func (crb createRequestBody) NewModelMethod() string {
+	return upperFirst(crb.Property.ObjectOf.Title)
+}
+
 func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
 	var cr []createRequestBody
 
@@ -126,7 +129,6 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			switch property.ArrayOf {
 			case "object":
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
-				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
 				newCreateRequest.NestedCreate = generateCreateRequestBody(pathObject, property.ObjectOf, &newCreateRequest)
 			}
 		case "object":
