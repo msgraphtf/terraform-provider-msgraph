@@ -172,16 +172,15 @@ type updateRequestBody struct {
 	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *updateRequestBody
-	AttributeType   string
 	BlockName       string
 	AttributeName   strWithCases
 }
 
 func (urb updateRequestBody) PlanVar() string {
 
-	if urb.Parent != nil && urb.Parent.AttributeType == "UpdateObjectAttribute" {
+	if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateObjectAttribute" {
 		return urb.Parent.RequestBodyVar() + "Model."
-	} else if urb.Parent != nil && urb.Parent.AttributeType == "UpdateArrayObjectAttribute" {
+	} else if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
 		return urb.Parent.RequestBodyVar() + "Model."
 	} else {
 		return "plan."
@@ -190,9 +189,9 @@ func (urb updateRequestBody) PlanVar() string {
 
 func (urb updateRequestBody) StateVar() string {
 
-	if urb.Parent != nil && urb.Parent.AttributeType == "UpdateObjectAttribute" {
+	if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateObjectAttribute" {
 		return urb.Parent.RequestBodyVar() + "State."
-	} else if urb.Parent != nil && urb.Parent.AttributeType == "UpdateArrayObjectAttribute" {
+	} else if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
 		return urb.Parent.RequestBodyVar() + "State."
 	} else {
 		return "state."
@@ -201,9 +200,9 @@ func (urb updateRequestBody) StateVar() string {
 
 func (urb updateRequestBody) RequestBodyVar() string {
 
-	if urb.Parent != nil && urb.Parent.AttributeType == "UpdateObjectAttribute" {
+	if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateObjectAttribute" {
 		return urb.Parent.RequestBodyVar()
-	} else if urb.Parent != nil && urb.Parent.AttributeType == "UpdateArrayObjectAttribute" {
+	} else if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
 		return urb.Parent.RequestBodyVar()
 	} else if urb.Property.Type == "object" {
 		return urb.Property.Name
@@ -238,6 +237,40 @@ func (urb updateRequestBody) PlanValueMethod() string {
 
 }
 
+func (urb updateRequestBody) AttributeType() string {
+
+	switch urb.Property.Type {
+	case "string":
+		switch urb.Property.Format {
+		case "date-time":
+			return "UpdateStringTimeAttribute"
+		case "uuid":
+			return "UpdateStringUuidAttribute"
+		}
+		return "UpdateStringAttribute"
+	case "integer":
+		return "UpdateInt64Attribute"
+	case "boolean":
+		return "UpdateBoolAttribute"
+	case "array":
+		switch urb.Property.ArrayOf {
+		case "string":
+			if urb.Property.Format == "uuid" {
+				return "UpdateArrayUuidAttribute"
+			} else {
+				return "UpdateArrayStringAttribute"
+			}
+		case "object":
+			return "UpdateArrayObjectAttribute"
+		}
+	case "object":
+		return "UpdateObjectAttribute"
+	}
+
+	return "UNKNOWN"
+
+}
+
 func (urb updateRequestBody) NewModelMethod() string {
 	return upperFirst(urb.Property.ObjectOf.Title)
 }
@@ -251,6 +284,7 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 
 	for _, property := range schemaObject.Properties {
 
+		// Skip excluded properties
 		if slices.Contains(augment.ExcludedProperties, property.Name) {
 			continue
 		}
@@ -261,34 +295,6 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			Parent:        parent,
 			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
-		}
-
-		switch property.Type {
-		case "string":
-			newUpdateRequest.AttributeType = "UpdateStringAttribute"
-			switch property.Format {
-			case "date-time":
-				newUpdateRequest.AttributeType = "UpdateStringTimeAttribute"
-			case "uuid":
-				newUpdateRequest.AttributeType = "UpdateStringUuidAttribute"
-			}
-		case "integer":
-			newUpdateRequest.AttributeType = "UpdateInt64Attribute"
-		case "boolean":
-			newUpdateRequest.AttributeType = "UpdateBoolAttribute"
-		case "array":
-			switch property.ArrayOf {
-			case "string":
-				if property.Format == "uuid" {
-					newUpdateRequest.AttributeType = "UpdateArrayUuidAttribute"
-				} else {
-					newUpdateRequest.AttributeType = "UpdateArrayStringAttribute"
-				}
-			case "object":
-				newUpdateRequest.AttributeType = "UpdateArrayObjectAttribute"
-			}
-		case "object":
-			newUpdateRequest.AttributeType = "UpdateObjectAttribute"
 		}
 
 		cr = append(cr, newUpdateRequest)
