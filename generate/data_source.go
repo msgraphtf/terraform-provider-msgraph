@@ -130,7 +130,6 @@ type readResponse struct {
 	Property      openapi.OpenAPISchemaProperty
 	Parent        *readResponse
 	GetMethod     string
-	ModelVarName  string
 	AttributeType string
 	NestedRead    []readResponse
 }
@@ -138,9 +137,9 @@ type readResponse struct {
 func (rr readResponse) StateVarName() string {
 
 	if rr.Parent != nil && rr.Parent.AttributeType == "ReadSingleNestedAttribute" {
-		return rr.Parent.ModelVarName + "." + upperFirst(rr.Property.Name)
+		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
 	} else if rr.Parent != nil && rr.Parent.AttributeType == "ReadListNestedAttribute" {
-		return rr.Parent.ModelVarName + "." + upperFirst(rr.Property.Name)
+		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
 	} else {
 		return "state." + upperFirst(rr.Property.Name)
 	}
@@ -162,7 +161,6 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 			Property: property,
 			Parent: parent,
 			GetMethod:    "Get" + upperFirst(property.Name) + "()",
-			ModelVarName: property.Name,
 		}
 
 		if property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go

@@ -41,21 +41,21 @@ if {{.GetMethod}} != nil {
 
 {{- define "ReadSingleNestedAttribute" }}
 if {{.GetMethod}} != nil {
-	{{.ModelVarName}} := new({{.ModelName}})
+	{{.Property.Name}} := new({{.ModelName}})
 	{{template "generate_read" .NestedRead}}
 
-	objectValue, _ := types.ObjectValueFrom(ctx, {{.ModelVarName}}.AttributeTypes(), {{.ModelVarName}})
+	objectValue, _ := types.ObjectValueFrom(ctx, {{.Property.Name}}.AttributeTypes(), {{.Property.Name}})
 	{{.StateVarName}} = objectValue
 }
 {{- end}}
 
 {{- define "ReadListStringAttribute" }}
 if len({{.GetMethod}}) > 0 {
-	var {{.ModelVarName}} []attr.Value
+	var {{.Property.Name}} []attr.Value
 	for _, v := range {{.GetMethod}} {
-		{{.ModelVarName}} = append({{.ModelVarName}}, types.StringValue(v))
+		{{.Property.Name}} = append({{.Property.Name}}, types.StringValue(v))
 	}
-	listValue, _ := types.ListValue(types.StringType, {{.ModelVarName}})
+	listValue, _ := types.ListValue(types.StringType, {{.Property.Name}})
 	{{.StateVarName}} = listValue
 } else {
 	{{.StateVarName}} = types.ListNull(types.StringType)
@@ -64,11 +64,11 @@ if len({{.GetMethod}}) > 0 {
 
 {{- define "ReadListStringFormattedAttribute" }}
 if len({{.GetMethod}}) > 0 {
-	var {{.ModelVarName}} []attr.Value
+	var {{.Property.Name}} []attr.Value
 	for _, v := range {{.GetMethod}} {
-		{{.ModelVarName}} = append({{.ModelVarName}}, types.StringValue(v.String()))
+		{{.Property.Name}} = append({{.Property.Name}}, types.StringValue(v.String()))
 	}
-	listValue, _ := types.ListValue(types.StringType, {{.ModelVarName}})
+	listValue, _ := types.ListValue(types.StringType, {{.Property.Name}})
 	{{.StateVarName}} = listValue
 } else {
 	{{.StateVarName}} = types.ListNull(types.StringType)
@@ -79,9 +79,9 @@ if len({{.GetMethod}}) > 0 {
 if len({{.GetMethod}}) > 0 {
 	objectValues := []basetypes.ObjectValue{}
 	for _, v := range {{.GetMethod}} {
-		{{.ModelVarName}} := new({{.ModelName}})
+		{{.Property.Name}} := new({{.ModelName}})
 			{{template "generate_read" .NestedRead}}
-		objectValue, _ := types.ObjectValueFrom(ctx, {{.ModelVarName}}.AttributeTypes(), {{.ModelVarName}})
+		objectValue, _ := types.ObjectValueFrom(ctx, {{.Property.Name}}.AttributeTypes(), {{.Property.Name}})
 		objectValues = append(objectValues, objectValue)
 	}
 {{.StateVarName}}, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
