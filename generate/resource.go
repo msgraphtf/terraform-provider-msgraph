@@ -15,7 +15,6 @@ type createRequestBody struct {
 	Parent          *createRequestBody
 	BlockName       string
 	AttributeName   strWithCases
-	RequestBodyVar  string
 }
 
 func (crb createRequestBody) AttributeType() string {
@@ -54,9 +53,9 @@ func (crb createRequestBody) AttributeType() string {
 func (crb createRequestBody) PlanVar() string {
 
 	if crb.Parent != nil && crb.Parent.AttributeType() == "CreateObjectAttribute" {
-		return crb.Parent.RequestBodyVar + "Model."
+		return crb.Parent.RequestBodyVar() + "Model."
 	} else if crb.Parent != nil && crb.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return crb.Parent.RequestBodyVar + "Model."
+		return crb.Parent.RequestBodyVar() + "Model."
 	} else {
 		return "plan."
 	}
@@ -95,6 +94,22 @@ func (crb createRequestBody) NewModelMethod() string {
 	return upperFirst(crb.Property.ObjectOf.Title)
 }
 
+func (crb createRequestBody) RequestBodyVar() string {
+
+	if crb.Parent != nil && crb.Parent.AttributeType() == "CreateObjectAttribute" {
+		return crb.Parent.RequestBodyVar()
+	} else if crb.Parent != nil && crb.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+		return crb.Parent.RequestBodyVar()
+	} else if crb.Property.Type == "object" {
+		return crb.Property.Name
+	} else if crb.Property.ArrayOf == "object" {
+		return crb.Property.ObjectOf.Title
+	} else {
+		return "requestBody"
+	}
+
+}
+
 func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
 	var cr []createRequestBody
 
@@ -110,24 +125,6 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			Parent:        parent,
 			BlockName:     blockName,
 			AttributeName: strWithCases{property.Name},
-		}
-
-		if parent != nil && parent.AttributeType() == "CreateObjectAttribute" {
-			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-		} else if parent != nil && parent.AttributeType() == "CreateArrayObjectAttribute" {
-			newCreateRequest.RequestBodyVar = parent.RequestBodyVar
-		} else {
-			newCreateRequest.RequestBodyVar = "requestBody"
-		}
-
-		switch property.Type {
-		case "array":
-			switch property.ArrayOf {
-			case "object":
-				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
-			}
-		case "object":
-			newCreateRequest.RequestBodyVar = property.Name
 		}
 
 		cr = append(cr, newCreateRequest)
