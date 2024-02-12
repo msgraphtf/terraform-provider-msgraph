@@ -177,7 +177,6 @@ type updateRequestBody struct {
 	PlanValueMethod string
 	RequestBodyVar  string
 	NewModelMethod  string
-	StateVar        string
 	NestedUpdate    []updateRequestBody
 }
 
@@ -189,6 +188,17 @@ func (urb updateRequestBody) PlanVar() string {
 		return urb.Parent.RequestBodyVar + "Model."
 	} else {
 		return "plan."
+	}
+}
+
+func (urb updateRequestBody) StateVar() string {
+
+	if urb.Parent != nil && urb.Parent.AttributeType == "UpdateObjectAttribute" {
+		return urb.Parent.RequestBodyVar + "State."
+	} else if urb.Parent != nil && urb.Parent.AttributeType == "UpdateArrayObjectAttribute" {
+		return urb.Parent.RequestBodyVar + "State."
+	} else {
+		return "state."
 	}
 }
 
@@ -210,14 +220,11 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 
 		if parent != nil && parent.AttributeType == "UpdateObjectAttribute" {
 			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
-			newUpdateRequest.StateVar = parent.RequestBodyVar + "State."
 		} else if parent != nil && parent.AttributeType == "UpdateArrayObjectAttribute" {
 			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
 			newUpdateRequest.RequestBodyVar = parent.RequestBodyVar
-			newUpdateRequest.StateVar = parent.RequestBodyVar + "State."
 		} else {
 			newUpdateRequest.RequestBodyVar = "requestBody"
-			newUpdateRequest.StateVar = "state."
 		}
 
 
