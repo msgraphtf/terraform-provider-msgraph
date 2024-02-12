@@ -118,18 +118,15 @@ func (rq readQuery) GetMethod() []queryMethod {
 		getMethod = append(getMethod, *newMethod)
 	}
 	return getMethod
-
 }
 
 func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 
-	var rq readQuery
-
-	rq.Path = pathObject
-	rq.BlockName = strWithCases{blockName}
-
-	// Generate ReadQuery.AltMethod
-	rq.AltGetMethod = augment.AltReadMethods
+	rq := readQuery{
+		Path: pathObject,
+		BlockName: strWithCases{blockName},
+		AltGetMethod: augment.AltReadMethods,
+	}
 
 	// Generate ReadQuery.ErrorAttribute
 	for _, schema := range input.Schema {
