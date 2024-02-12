@@ -15,7 +15,6 @@ type createRequestBody struct {
 	BlockName       string
 	AttributeName   strWithCases
 	IfCondition     string
-	PlanValueMethod string
 	RequestBodyVar  string
 	NewModelMethod  string
 	NestedCreate    []createRequestBody
@@ -66,6 +65,30 @@ func (crb createRequestBody) PlanVar() string {
 
 }
 
+func (crb createRequestBody) PlanValueMethod() string {
+
+	switch crb.Property.Type {
+	case "string":
+		return "ValueString"
+	case "integer":
+		return "ValueInt64"
+	case "boolean":
+		return "ValueBool"
+	case "array":
+		switch crb.Property.ArrayOf {
+		case "string":
+			if crb.Property.Format == "uuid" {
+				return "ValueString"
+			} else {
+				return "ValueString"
+			}
+		}
+	}
+
+	return "UNKNOWN"
+
+}
+
 func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
 	var cr []createRequestBody
 
@@ -99,24 +122,8 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 		}
 
 		switch property.Type {
-		case "string":
-			newCreateRequest.PlanValueMethod = "ValueString"
-			switch property.Format {
-			case "date-time":
-			case "uuid":
-			}
-		case "integer":
-			newCreateRequest.PlanValueMethod = "ValueInt64"
-		case "boolean":
-			newCreateRequest.PlanValueMethod = "ValueBool"
 		case "array":
 			switch property.ArrayOf {
-			case "string":
-				if property.Format == "uuid" {
-					newCreateRequest.PlanValueMethod = "ValueString"
-				} else {
-					newCreateRequest.PlanValueMethod = "ValueString"
-				}
 			case "object":
 				newCreateRequest.RequestBodyVar = property.ObjectOf.Title
 				newCreateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
