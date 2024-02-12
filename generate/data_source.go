@@ -127,12 +127,24 @@ func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type readResponse struct {
+	Property      openapi.OpenAPISchemaProperty
+	Parent        *readResponse
 	GetMethod     string
-	StateVarName  string
 	ModelVarName  string
 	ModelName     string
 	AttributeType string
 	NestedRead    []readResponse
+}
+
+func (rr readResponse) StateVarName() string {
+
+	if rr.Parent != nil && rr.Parent.AttributeType == "ReadSingleNestedAttribute" {
+		return rr.Parent.ModelVarName + "." + upperFirst(rr.Property.Name)
+	} else if rr.Parent != nil && rr.Parent.AttributeType == "ReadListNestedAttribute" {
+		return rr.Parent.ModelVarName + "." + upperFirst(rr.Property.Name)
+	} else {
+		return "state." + upperFirst(rr.Property.Name)
+	}
 }
 
 func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
@@ -144,6 +156,8 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 		}
 
 		newReadResponse := readResponse{
+			Property: property,
+			Parent: parent,
 			GetMethod:    "Get" + upperFirst(property.Name) + "()",
 			ModelName:    blockName + upperFirst(property.Name) + "Model",
 			ModelVarName: property.Name,
@@ -155,13 +169,10 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 
 		if parent != nil && parent.AttributeType == "ReadSingleNestedAttribute" {
 			newReadResponse.GetMethod = parent.GetMethod + "." + newReadResponse.GetMethod
-			newReadResponse.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
 		} else if parent != nil && parent.AttributeType == "ReadListNestedAttribute" {
 			newReadResponse.GetMethod = "v." + newReadResponse.GetMethod
-			newReadResponse.StateVarName = parent.ModelVarName + "." + upperFirst(property.Name)
 		} else {
 			newReadResponse.GetMethod = "result." + newReadResponse.GetMethod
-			newReadResponse.StateVarName = "state." + upperFirst(property.Name)
 		}
 
 		// Convert types from OpenAPI schema types to  attributes
