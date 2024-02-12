@@ -44,8 +44,8 @@ func pathFieldName(s string) (string, string) {
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type readQuery struct {
+	Path                        openapi.OpenAPIPathObject
 	BlockName                   strWithCases
-	Configuration               string
 	SelectParameters            []string
 	MultipleGetMethodParameters bool
 	GetMethod                   []queryMethod
@@ -60,23 +60,36 @@ type queryMethod struct {
 	Parameter  string
 }
 
+func (rq readQuery) PathFields() []string {
+	return strings.Split(rq.Path.Path, "/")[1:]
+}
+
+func (rq readQuery) Configuration() string {
+
+	var config string
+
+	// Generate ReadQuery.Configuration
+	config = strings.ToLower(rq.PathFields()[0]) + "."
+	if len(rq.PathFields()) == 1 {
+		config += upperFirst(rq.PathFields()[0])
+	} else if len(rq.PathFields()) == 2 {
+		s, _ := pathFieldName(rq.PathFields()[1])
+		config += upperFirst(s) + "Item"
+	} else {
+		config += "MISSING"
+	}
+
+	return config
+
+}
+
 func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 
 	var rq readQuery
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 
+	rq.Path = pathObject
 	rq.BlockName = strWithCases{blockName}
-
-	// Generate ReadQuery.Configuration
-	rq.Configuration = strings.ToLower(pathFields[0]) + "."
-	if len(pathFields) == 1 {
-		rq.Configuration += upperFirst(pathFields[0])
-	} else if len(pathFields) == 2 {
-		s, _ := pathFieldName(pathFields[1])
-		rq.Configuration += upperFirst(s) + "Item"
-	} else {
-		rq.Configuration += "MISSING"
-	}
 
 	// Generate ReadQuery.SelectParameters
 	for _, parameter := range pathObject.Get.SelectParameters {
