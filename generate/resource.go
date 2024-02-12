@@ -169,13 +169,13 @@ func generateCreateRequest(pathObject openapi.OpenAPIPathObject) createRequest {
 }
 
 type updateRequestBody struct {
+	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *updateRequestBody
 	AttributeType   string
 	BlockName       string
 	AttributeName   strWithCases
 	NewModelMethod  string
-	NestedUpdate    []updateRequestBody
 }
 
 func (urb updateRequestBody) PlanVar() string {
@@ -239,6 +239,10 @@ func (urb updateRequestBody) PlanValueMethod() string {
 
 }
 
+func (urb updateRequestBody) NestedUpdate() []updateRequestBody {
+	return generateUpdateRequestBody(urb.Path, urb.Property.ObjectOf, &urb)
+}
+
 func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *updateRequestBody) []updateRequestBody {
 	var cr []updateRequestBody
 
@@ -249,6 +253,7 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 		}
 
 		newUpdateRequest := updateRequestBody{
+			Path:          pathObject,
 			Property:      property,
 			Parent:        parent,
 			BlockName:     blockName,
@@ -279,11 +284,9 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			case "object":
 				newUpdateRequest.AttributeType = "UpdateArrayObjectAttribute"
 				newUpdateRequest.NewModelMethod = upperFirst(property.ObjectOf.Title)
-				newUpdateRequest.NestedUpdate = generateUpdateRequestBody(pathObject, property.ObjectOf, &newUpdateRequest)
 			}
 		case "object":
 			newUpdateRequest.AttributeType = "UpdateObjectAttribute"
-			newUpdateRequest.NestedUpdate = generateUpdateRequestBody(pathObject, property.ObjectOf, &newUpdateRequest)
 		}
 
 		cr = append(cr, newUpdateRequest)
