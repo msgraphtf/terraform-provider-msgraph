@@ -9,7 +9,6 @@ import (
 )
 
 var pathObject openapi.OpenAPIPathObject
-var packageName string
 var blockName string
 var augment templateAugment
 var input templateInput
@@ -17,8 +16,8 @@ var input templateInput
 func setGlobals(pathname string) {
 	pathObject = openapi.GetPath(pathname)
 
-	pathFields := strings.Split(pathname, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-	packageName = strings.ToLower(pathFields[0])
+	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+	packageName := strings.ToLower(pathFields[0])
 
 	// Generate name of the terraform block
 	blockName = ""

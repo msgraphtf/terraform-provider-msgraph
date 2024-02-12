@@ -237,6 +237,8 @@ func generateDataSource() {
 
 	input = templateInput{}
 
+	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
+
 	// Set input values to top level template
 	input.PackageName = packageName
 	input.BlockName = strWithCases{blockName}

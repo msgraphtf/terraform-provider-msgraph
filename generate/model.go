@@ -166,6 +166,8 @@ func generateModelInput(modelName string, model []terraformModel, schemaObject o
 
 func generateModel() {
 
+	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
+
 	input := modelInput {
 		PackageName: packageName,
 		Model: generateModelInput("", nil, pathObject.Get.Response),
