@@ -2284,7 +2284,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
-			"`id` or `user_principal_name` must be supplied.",
+			"TODO: Specify required parameters",
 		)
 		return
 	}

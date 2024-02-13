@@ -47,8 +47,6 @@ type readQuery struct {
 	Path                        openapi.OpenAPIPathObject
 	BlockName                   strWithCases
 	AltGetMethod                []map[string]string
-	ErrorAttribute              string
-	ErrorExtraAttributes        []string
 }
 
 // Represents a method used to perform a query using msgraph-sdk-go
@@ -126,15 +124,6 @@ func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 		Path: pathObject,
 		BlockName: strWithCases{blockName},
 		AltGetMethod: augment.AltReadMethods,
-	}
-
-	// Generate ReadQuery.ErrorAttribute
-	for _, schema := range input.Schema {
-		if schema.Optional() && rq.ErrorAttribute == "" {
-			rq.ErrorAttribute = schema.AttributeName()
-		} else if schema.Optional() {
-			rq.ErrorExtraAttributes = append(rq.ErrorExtraAttributes, schema.AttributeName())
-		}
 	}
 
 	return rq

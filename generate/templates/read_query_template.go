@@ -23,7 +23,7 @@ if !state.Id.IsNull() {
 } {{end}}else {
 	resp.Diagnostics.AddError(
 		"Missing argument",
-		"`{{.ErrorAttribute}}` {{range .ErrorExtraAttributes}}or `{{.}}` {{end}}must be supplied.",
+		"TODO: Specify required parameters",
 	)
 	return
 }
