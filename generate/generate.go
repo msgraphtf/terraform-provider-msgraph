@@ -10,7 +10,6 @@ import (
 
 var blockName string
 var augment templateAugment
-var input templateInput
 
 func setGlobals(pathname string) openapi.OpenAPIPathObject {
 	pathObject := openapi.GetPath(pathname)

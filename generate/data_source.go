@@ -259,7 +259,7 @@ type templateAugment struct {
 
 func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 
-	input = templateInput{}
+	input := templateInput{}
 
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
