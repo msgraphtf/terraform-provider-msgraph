@@ -1,8 +1,10 @@
 package main
 
 import (
+	"os"
 	"slices"
 	"strings"
+	"text/template"
 
 	"github.com/iancoleman/strcase"
 
@@ -336,3 +338,31 @@ func generateUpdateRequest(pathObject openapi.OpenAPIPathObject) updateRequest {
 
 }
 
+func generateResource(pathObject openapi.OpenAPIPathObject) {
+
+		input := templateInput{}
+
+		packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
+
+		// Set input values to top level template
+		input.PackageName = packageName
+		input.BlockName = strWithCases{blockName}
+		input.ReadQuery = generateReadQuery(pathObject)
+		input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil) // Generate Read Go code from OpenAPI schema
+
+		input.Schema = generateSchema(pathObject, pathObject.Get.Response, "Resource")
+		input.CreateRequestBody = generateCreateRequestBody(pathObject, pathObject.Get.Response, nil)
+		input.CreateRequest = generateCreateRequest(pathObject)
+		input.UpdateRequestBody = generateUpdateRequestBody(pathObject, pathObject.Get.Response, nil)
+		input.UpdateRequest = generateUpdateRequest(pathObject)
+
+		// Get templates
+		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
+		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/schema_template.go")
+		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_query_template.go")
+		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_response_template.go")
+
+		outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_resource.go")
+		resourceTmpl.ExecuteTemplate(outfile, "resource_template.go", input)
+
+}

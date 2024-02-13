@@ -283,22 +283,5 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_data_source.go")
 	datasourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
 
-	if pathObject.Patch.Summary != "" {
-
-		input.Schema = generateSchema(pathObject, pathObject.Get.Response, "Resource")
-		input.CreateRequestBody = generateCreateRequestBody(pathObject, pathObject.Get.Response, nil)
-		input.CreateRequest = generateCreateRequest(pathObject)
-		input.UpdateRequestBody = generateUpdateRequestBody(pathObject, pathObject.Get.Response, nil)
-		input.UpdateRequest = generateUpdateRequest(pathObject)
-
-		// Get templates
-		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
-		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/schema_template.go")
-		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_query_template.go")
-		resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_response_template.go")
-
-		outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_resource.go")
-		resourceTmpl.ExecuteTemplate(outfile, "resource_template.go", input)
-	}
 
 }

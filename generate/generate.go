@@ -50,6 +50,9 @@ func main() {
 		pathObject := setGlobals(os.Args[1])
 		generateDataSource(pathObject)
 		generateModel(pathObject)
+		if pathObject.Patch.Summary != "" {
+			generateResource(pathObject)
+		}
 	} else {
 
 		knownGoodPaths := [...]string{
@@ -72,6 +75,9 @@ func main() {
 			pathObject := setGlobals(path)
 			generateDataSource(pathObject)
 			generateModel(pathObject)
+			if pathObject.Patch.Summary != "" {
+				generateResource(pathObject)
+			}
 		}
 
 	}
