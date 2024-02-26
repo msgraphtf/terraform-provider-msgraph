@@ -117,6 +117,15 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	}
 	{{- end}}
 
+	{{- define "CreateInt32Attribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
+	plan{{.AttributeName.UpperCamel}} := int32({{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}())
+	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.Int64Null()
+	}
+	{{- end}}
+
 	{{- define "CreateBoolAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
@@ -190,6 +199,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{ template "CreateStringUuidAttribute" .}}
 	{{- else if eq .AttributeType "CreateInt64Attribute"}}
 	{{ template "CreateInt64Attribute" .}}
+	{{- else if eq .AttributeType "CreateInt32Attribute"}}
+	{{ template "CreateInt32Attribute" .}}
 	{{- else if eq .AttributeType "CreateBoolAttribute"}}
 	{{ template "CreateBoolAttribute" .}}
 	{{- else if eq .AttributeType "CreateArrayStringAttribute"}}
@@ -303,6 +314,13 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 	{{- end}}
 
+	{{- define "UpdateInt32Attribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
+	plan{{.AttributeName.UpperCamel}} := int32({{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}())
+	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	}
+	{{- end}}
+
 	{{- define "UpdateBoolAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
@@ -370,6 +388,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{ template "UpdateStringUuidAttribute" .}}
 	{{- else if eq .AttributeType "UpdateInt64Attribute"}}
 	{{ template "UpdateInt64Attribute" .}}
+	{{- else if eq .AttributeType "UpdateInt32Attribute"}}
+	{{ template "UpdateInt32Attribute" .}}
 	{{- else if eq .AttributeType "UpdateBoolAttribute"}}
 	{{ template "UpdateBoolAttribute" .}}
 	{{- else if eq .AttributeType "UpdateArrayStringAttribute"}}

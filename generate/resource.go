@@ -31,7 +31,11 @@ func (crb createRequestBody) AttributeType() string {
 		}
 		return "CreateStringAttribute"
 	case "integer":
-		return "CreateInt64Attribute"
+		if crb.Property.Format == "int32" {
+			return "CreateInt32Attribute"
+		} else {
+			return "CreateInt64Attribute"
+		}
 	case "boolean":
 		return "CreateBoolAttribute"
 	case "array":
@@ -251,7 +255,11 @@ func (urb updateRequestBody) AttributeType() string {
 		}
 		return "UpdateStringAttribute"
 	case "integer":
-		return "UpdateInt64Attribute"
+		if urb.Property.Format == "int32" {
+			return "UpdateInt32Attribute"
+		} else {
+			return "UpdateInt64Attribute"
+		}
 	case "boolean":
 		return "UpdateBoolAttribute"
 	case "array":
