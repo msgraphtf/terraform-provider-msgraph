@@ -72,14 +72,6 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
-			"allow_external_senders": schema.BoolAttribute{
-				Description: "Indicates if people external to the organization can send messages to the group. The default value is false. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
 			"assigned_labels": schema.ListNestedAttribute{
 				Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select.",
 				Optional:    true,
@@ -137,14 +129,6 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					},
 				},
 			},
-			"auto_subscribe_new_members": schema.BoolAttribute{
-				Description: "Indicates if new members added to the group will be auto-subscribed to receive email notifications. You can set this property in a PATCH request for the group; do not set it in the initial POST request that creates the group. Default value is false. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
 			"classification": schema.StringAttribute{
 				Description: "Describes a classification for the group (such as low, medium or high business impact). Valid values for this property are defined by creating a ClassificationList setting value, based on the template definition.Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith).",
 				Optional:    true,
@@ -194,32 +178,8 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 				ElementType: types.StringType,
 			},
-			"hide_from_address_lists": schema.BoolAttribute{
-				Description: "True if the group is not displayed in certain parts of the Outlook UI: the Address Book, address lists for selecting message recipients, and the Browse Groups dialog for searching groups; otherwise, false. Default value is false. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
-			"hide_from_outlook_clients": schema.BoolAttribute{
-				Description: "True if the group is not displayed in Outlook clients, such as Outlook for Windows and Outlook on the web; otherwise, false. The default value is false. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
 			"is_assignable_to_role": schema.BoolAttribute{
 				Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group cannot be a dynamic group (that is, groupTypes cannot contain DynamicMembership). Only callers in Global Administrator and Privileged Role Administrator roles can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
-			"is_subscribed_by_mail": schema.BoolAttribute{
-				Description: "Indicates whether the signed-in user is subscribed to receive email conversations. The default value is true. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -469,11 +429,6 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
-			"unseen_count": schema.Int64Attribute{
-				Description: "Count of conversations that have received new posts since the signed-in user last visited the group. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Optional:    true,
-				Computed:    true,
-			},
 			"visibility": schema.StringAttribute{
 				Description: "Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value is not specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.",
 				Optional:    true,
@@ -515,13 +470,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		requestBody.SetDeletedDateTime(&t)
 	} else {
 		plan.DeletedDateTime = types.StringNull()
-	}
-
-	if !plan.AllowExternalSenders.IsUnknown() {
-		planAllowExternalSenders := plan.AllowExternalSenders.ValueBool()
-		requestBody.SetAllowExternalSenders(&planAllowExternalSenders)
-	} else {
-		plan.AllowExternalSenders = types.BoolNull()
 	}
 
 	if len(plan.AssignedLabels.Elements()) > 0 {
@@ -581,13 +529,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		plan.AssignedLicenses = types.ListNull(plan.AssignedLicenses.ElementType(ctx))
 	}
 
-	if !plan.AutoSubscribeNewMembers.IsUnknown() {
-		planAutoSubscribeNewMembers := plan.AutoSubscribeNewMembers.ValueBool()
-		requestBody.SetAutoSubscribeNewMembers(&planAutoSubscribeNewMembers)
-	} else {
-		plan.AutoSubscribeNewMembers = types.BoolNull()
-	}
-
 	if !plan.Classification.IsUnknown() {
 		planClassification := plan.Classification.ValueString()
 		requestBody.SetClassification(&planClassification)
@@ -635,32 +576,11 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		plan.GroupTypes = types.ListNull(types.StringType)
 	}
 
-	if !plan.HideFromAddressLists.IsUnknown() {
-		planHideFromAddressLists := plan.HideFromAddressLists.ValueBool()
-		requestBody.SetHideFromAddressLists(&planHideFromAddressLists)
-	} else {
-		plan.HideFromAddressLists = types.BoolNull()
-	}
-
-	if !plan.HideFromOutlookClients.IsUnknown() {
-		planHideFromOutlookClients := plan.HideFromOutlookClients.ValueBool()
-		requestBody.SetHideFromOutlookClients(&planHideFromOutlookClients)
-	} else {
-		plan.HideFromOutlookClients = types.BoolNull()
-	}
-
 	if !plan.IsAssignableToRole.IsUnknown() {
 		planIsAssignableToRole := plan.IsAssignableToRole.ValueBool()
 		requestBody.SetIsAssignableToRole(&planIsAssignableToRole)
 	} else {
 		plan.IsAssignableToRole = types.BoolNull()
-	}
-
-	if !plan.IsSubscribedByMail.IsUnknown() {
-		planIsSubscribedByMail := plan.IsSubscribedByMail.ValueBool()
-		requestBody.SetIsSubscribedByMail(&planIsSubscribedByMail)
-	} else {
-		plan.IsSubscribedByMail = types.BoolNull()
 	}
 
 	if !plan.LicenseProcessingState.IsUnknown() {
@@ -887,13 +807,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		plan.Theme = types.StringNull()
 	}
 
-	if !plan.UnseenCount.IsUnknown() {
-		planUnseenCount := int32(plan.UnseenCount.ValueInt64())
-		requestBody.SetUnseenCount(&planUnseenCount)
-	} else {
-		plan.UnseenCount = types.Int64Null()
-	}
-
 	if !plan.Visibility.IsUnknown() {
 		planVisibility := plan.Visibility.ValueString()
 		requestBody.SetVisibility(&planVisibility)
@@ -968,12 +881,6 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 				"serviceProvisioningErrors",
 				"theme",
 				"visibility",
-				"allowExternalSenders",
-				"autoSubscribeNewMembers",
-				"hideFromAddressLists",
-				"hideFromOutlookClients",
-				"isSubscribedByMail",
-				"unseenCount",
 				"appRoleAssignments",
 				"createdOnBehalfOf",
 				"memberOf",
@@ -1036,11 +943,6 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	} else {
 		state.DeletedDateTime = types.StringNull()
 	}
-	if result.GetAllowExternalSenders() != nil {
-		state.AllowExternalSenders = types.BoolValue(*result.GetAllowExternalSenders())
-	} else {
-		state.AllowExternalSenders = types.BoolNull()
-	}
 	if len(result.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLabels() {
@@ -1086,11 +988,6 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		}
 		state.AssignedLicenses, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if result.GetAutoSubscribeNewMembers() != nil {
-		state.AutoSubscribeNewMembers = types.BoolValue(*result.GetAutoSubscribeNewMembers())
-	} else {
-		state.AutoSubscribeNewMembers = types.BoolNull()
-	}
 	if result.GetClassification() != nil {
 		state.Classification = types.StringValue(*result.GetClassification())
 	} else {
@@ -1126,25 +1023,10 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	} else {
 		state.GroupTypes = types.ListNull(types.StringType)
 	}
-	if result.GetHideFromAddressLists() != nil {
-		state.HideFromAddressLists = types.BoolValue(*result.GetHideFromAddressLists())
-	} else {
-		state.HideFromAddressLists = types.BoolNull()
-	}
-	if result.GetHideFromOutlookClients() != nil {
-		state.HideFromOutlookClients = types.BoolValue(*result.GetHideFromOutlookClients())
-	} else {
-		state.HideFromOutlookClients = types.BoolNull()
-	}
 	if result.GetIsAssignableToRole() != nil {
 		state.IsAssignableToRole = types.BoolValue(*result.GetIsAssignableToRole())
 	} else {
 		state.IsAssignableToRole = types.BoolNull()
-	}
-	if result.GetIsSubscribedByMail() != nil {
-		state.IsSubscribedByMail = types.BoolValue(*result.GetIsSubscribedByMail())
-	} else {
-		state.IsSubscribedByMail = types.BoolNull()
 	}
 	if result.GetLicenseProcessingState() != nil {
 		licenseProcessingState := new(groupLicenseProcessingStateModel)
@@ -1308,11 +1190,6 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	} else {
 		state.Theme = types.StringNull()
 	}
-	if result.GetUnseenCount() != nil {
-		state.UnseenCount = types.Int64Value(int64(*result.GetUnseenCount()))
-	} else {
-		state.UnseenCount = types.Int64Null()
-	}
 	if result.GetVisibility() != nil {
 		state.Visibility = types.StringValue(*result.GetVisibility())
 	} else {
@@ -1360,11 +1237,6 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		planDeletedDateTime := plan.DeletedDateTime.ValueString()
 		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
-	}
-
-	if !plan.AllowExternalSenders.Equal(state.AllowExternalSenders) {
-		planAllowExternalSenders := plan.AllowExternalSenders.ValueBool()
-		requestBody.SetAllowExternalSenders(&planAllowExternalSenders)
 	}
 
 	if !plan.AssignedLabels.Equal(state.AssignedLabels) {
@@ -1416,11 +1288,6 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBody.SetAssignedLicenses(planAssignedLicenses)
 	}
 
-	if !plan.AutoSubscribeNewMembers.Equal(state.AutoSubscribeNewMembers) {
-		planAutoSubscribeNewMembers := plan.AutoSubscribeNewMembers.ValueBool()
-		requestBody.SetAutoSubscribeNewMembers(&planAutoSubscribeNewMembers)
-	}
-
 	if !plan.Classification.Equal(state.Classification) {
 		planClassification := plan.Classification.ValueString()
 		requestBody.SetClassification(&planClassification)
@@ -1456,24 +1323,9 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBody.SetGroupTypes(groupTypes)
 	}
 
-	if !plan.HideFromAddressLists.Equal(state.HideFromAddressLists) {
-		planHideFromAddressLists := plan.HideFromAddressLists.ValueBool()
-		requestBody.SetHideFromAddressLists(&planHideFromAddressLists)
-	}
-
-	if !plan.HideFromOutlookClients.Equal(state.HideFromOutlookClients) {
-		planHideFromOutlookClients := plan.HideFromOutlookClients.ValueBool()
-		requestBody.SetHideFromOutlookClients(&planHideFromOutlookClients)
-	}
-
 	if !plan.IsAssignableToRole.Equal(state.IsAssignableToRole) {
 		planIsAssignableToRole := plan.IsAssignableToRole.ValueBool()
 		requestBody.SetIsAssignableToRole(&planIsAssignableToRole)
-	}
-
-	if !plan.IsSubscribedByMail.Equal(state.IsSubscribedByMail) {
-		planIsSubscribedByMail := plan.IsSubscribedByMail.ValueBool()
-		requestBody.SetIsSubscribedByMail(&planIsSubscribedByMail)
 	}
 
 	if !plan.LicenseProcessingState.Equal(state.LicenseProcessingState) {
@@ -1646,11 +1498,6 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !plan.Theme.Equal(state.Theme) {
 		planTheme := plan.Theme.ValueString()
 		requestBody.SetTheme(&planTheme)
-	}
-
-	if !plan.UnseenCount.Equal(state.UnseenCount) {
-		planUnseenCount := int32(plan.UnseenCount.ValueInt64())
-		requestBody.SetUnseenCount(&planUnseenCount)
 	}
 
 	if !plan.Visibility.Equal(state.Visibility) {

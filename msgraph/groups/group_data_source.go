@@ -57,10 +57,6 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
 				Computed:    true,
 			},
-			"allow_external_senders": schema.BoolAttribute{
-				Description: "Indicates if people external to the organization can send messages to the group. The default value is false. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Computed:    true,
-			},
 			"assigned_labels": schema.ListNestedAttribute{
 				Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select.",
 				Computed:    true,
@@ -94,10 +90,6 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 					},
 				},
 			},
-			"auto_subscribe_new_members": schema.BoolAttribute{
-				Description: "Indicates if new members added to the group will be auto-subscribed to receive email notifications. You can set this property in a PATCH request for the group; do not set it in the initial POST request that creates the group. Default value is false. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Computed:    true,
-			},
 			"classification": schema.StringAttribute{
 				Description: "Describes a classification for the group (such as low, medium or high business impact). Valid values for this property are defined by creating a ClassificationList setting value, based on the template definition.Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith).",
 				Computed:    true,
@@ -123,20 +115,8 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 				ElementType: types.StringType,
 			},
-			"hide_from_address_lists": schema.BoolAttribute{
-				Description: "True if the group is not displayed in certain parts of the Outlook UI: the Address Book, address lists for selecting message recipients, and the Browse Groups dialog for searching groups; otherwise, false. Default value is false. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Computed:    true,
-			},
-			"hide_from_outlook_clients": schema.BoolAttribute{
-				Description: "True if the group is not displayed in Outlook clients, such as Outlook for Windows and Outlook on the web; otherwise, false. The default value is false. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Computed:    true,
-			},
 			"is_assignable_to_role": schema.BoolAttribute{
 				Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group cannot be a dynamic group (that is, groupTypes cannot contain DynamicMembership). Only callers in Global Administrator and Privileged Role Administrator roles can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",
-				Computed:    true,
-			},
-			"is_subscribed_by_mail": schema.BoolAttribute{
-				Description: "Indicates whether the signed-in user is subscribed to receive email conversations. The default value is true. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
 				Computed:    true,
 			},
 			"license_processing_state": schema.SingleNestedAttribute{
@@ -266,10 +246,6 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Description: "Specifies a Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange or Red. Returned by default.",
 				Computed:    true,
 			},
-			"unseen_count": schema.Int64Attribute{
-				Description: "Count of conversations that have received new posts since the signed-in user last visited the group. Returned only on $select. Supported only on the Get group API (GET /groups/{ID}).",
-				Computed:    true,
-			},
 			"visibility": schema.StringAttribute{
 				Description: "Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value is not specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.",
 				Computed:    true,
@@ -322,12 +298,6 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				"serviceProvisioningErrors",
 				"theme",
 				"visibility",
-				"allowExternalSenders",
-				"autoSubscribeNewMembers",
-				"hideFromAddressLists",
-				"hideFromOutlookClients",
-				"isSubscribedByMail",
-				"unseenCount",
 				"appRoleAssignments",
 				"createdOnBehalfOf",
 				"memberOf",
@@ -390,11 +360,6 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	} else {
 		state.DeletedDateTime = types.StringNull()
 	}
-	if result.GetAllowExternalSenders() != nil {
-		state.AllowExternalSenders = types.BoolValue(*result.GetAllowExternalSenders())
-	} else {
-		state.AllowExternalSenders = types.BoolNull()
-	}
 	if len(result.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLabels() {
@@ -440,11 +405,6 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		}
 		state.AssignedLicenses, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if result.GetAutoSubscribeNewMembers() != nil {
-		state.AutoSubscribeNewMembers = types.BoolValue(*result.GetAutoSubscribeNewMembers())
-	} else {
-		state.AutoSubscribeNewMembers = types.BoolNull()
-	}
 	if result.GetClassification() != nil {
 		state.Classification = types.StringValue(*result.GetClassification())
 	} else {
@@ -480,25 +440,10 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	} else {
 		state.GroupTypes = types.ListNull(types.StringType)
 	}
-	if result.GetHideFromAddressLists() != nil {
-		state.HideFromAddressLists = types.BoolValue(*result.GetHideFromAddressLists())
-	} else {
-		state.HideFromAddressLists = types.BoolNull()
-	}
-	if result.GetHideFromOutlookClients() != nil {
-		state.HideFromOutlookClients = types.BoolValue(*result.GetHideFromOutlookClients())
-	} else {
-		state.HideFromOutlookClients = types.BoolNull()
-	}
 	if result.GetIsAssignableToRole() != nil {
 		state.IsAssignableToRole = types.BoolValue(*result.GetIsAssignableToRole())
 	} else {
 		state.IsAssignableToRole = types.BoolNull()
-	}
-	if result.GetIsSubscribedByMail() != nil {
-		state.IsSubscribedByMail = types.BoolValue(*result.GetIsSubscribedByMail())
-	} else {
-		state.IsSubscribedByMail = types.BoolNull()
 	}
 	if result.GetLicenseProcessingState() != nil {
 		licenseProcessingState := new(groupLicenseProcessingStateModel)
@@ -661,11 +606,6 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		state.Theme = types.StringValue(*result.GetTheme())
 	} else {
 		state.Theme = types.StringNull()
-	}
-	if result.GetUnseenCount() != nil {
-		state.UnseenCount = types.Int64Value(int64(*result.GetUnseenCount()))
-	} else {
-		state.UnseenCount = types.Int64Null()
 	}
 	if result.GetVisibility() != nil {
 		state.Visibility = types.StringValue(*result.GetVisibility())
