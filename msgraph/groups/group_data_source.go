@@ -3,9 +3,11 @@ package groups
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/groups"
@@ -365,7 +367,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
-			"`id` must be supplied.",
+			"TODO: Specify required parameters",
 		)
 		return
 	}
@@ -380,165 +382,295 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 	if result.GetId() != nil {
 		state.Id = types.StringValue(*result.GetId())
+	} else {
+		state.Id = types.StringNull()
 	}
 	if result.GetDeletedDateTime() != nil {
 		state.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
+	} else {
+		state.DeletedDateTime = types.StringNull()
 	}
 	if result.GetAllowExternalSenders() != nil {
 		state.AllowExternalSenders = types.BoolValue(*result.GetAllowExternalSenders())
+	} else {
+		state.AllowExternalSenders = types.BoolNull()
 	}
-	for _, v := range result.GetAssignedLabels() {
-		assignedLabels := new(groupAssignedLabelsModel)
+	if len(result.GetAssignedLabels()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetAssignedLabels() {
+			assignedLabels := new(groupAssignedLabelsModel)
 
-		if v.GetDisplayName() != nil {
-			assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
+			if v.GetDisplayName() != nil {
+				assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
+			} else {
+				assignedLabels.DisplayName = types.StringNull()
+			}
+			if v.GetLabelId() != nil {
+				assignedLabels.LabelId = types.StringValue(*v.GetLabelId())
+			} else {
+				assignedLabels.LabelId = types.StringNull()
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, assignedLabels.AttributeTypes(), assignedLabels)
+			objectValues = append(objectValues, objectValue)
 		}
-		if v.GetLabelId() != nil {
-			assignedLabels.LabelId = types.StringValue(*v.GetLabelId())
-		}
-		state.AssignedLabels = append(state.AssignedLabels, *assignedLabels)
+		state.AssignedLabels, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	for _, v := range result.GetAssignedLicenses() {
-		assignedLicenses := new(groupAssignedLicensesModel)
+	if len(result.GetAssignedLicenses()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetAssignedLicenses() {
+			assignedLicenses := new(groupAssignedLicensesModel)
 
-		for _, v := range v.GetDisabledPlans() {
-			assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(v.String()))
+			if len(v.GetDisabledPlans()) > 0 {
+				var disabledPlans []attr.Value
+				for _, v := range v.GetDisabledPlans() {
+					disabledPlans = append(disabledPlans, types.StringValue(v.String()))
+				}
+				listValue, _ := types.ListValue(types.StringType, disabledPlans)
+				assignedLicenses.DisabledPlans = listValue
+			} else {
+				assignedLicenses.DisabledPlans = types.ListNull(types.StringType)
+			}
+			if v.GetSkuId() != nil {
+				assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
+			} else {
+				assignedLicenses.SkuId = types.StringNull()
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, assignedLicenses.AttributeTypes(), assignedLicenses)
+			objectValues = append(objectValues, objectValue)
 		}
-		if v.GetSkuId() != nil {
-			assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
-		}
-		state.AssignedLicenses = append(state.AssignedLicenses, *assignedLicenses)
+		state.AssignedLicenses, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetAutoSubscribeNewMembers() != nil {
 		state.AutoSubscribeNewMembers = types.BoolValue(*result.GetAutoSubscribeNewMembers())
+	} else {
+		state.AutoSubscribeNewMembers = types.BoolNull()
 	}
 	if result.GetClassification() != nil {
 		state.Classification = types.StringValue(*result.GetClassification())
+	} else {
+		state.Classification = types.StringNull()
 	}
 	if result.GetCreatedDateTime() != nil {
 		state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
+	} else {
+		state.CreatedDateTime = types.StringNull()
 	}
 	if result.GetDescription() != nil {
 		state.Description = types.StringValue(*result.GetDescription())
+	} else {
+		state.Description = types.StringNull()
 	}
 	if result.GetDisplayName() != nil {
 		state.DisplayName = types.StringValue(*result.GetDisplayName())
+	} else {
+		state.DisplayName = types.StringNull()
 	}
 	if result.GetExpirationDateTime() != nil {
 		state.ExpirationDateTime = types.StringValue(result.GetExpirationDateTime().String())
+	} else {
+		state.ExpirationDateTime = types.StringNull()
 	}
-	for _, v := range result.GetGroupTypes() {
-		state.GroupTypes = append(state.GroupTypes, types.StringValue(v))
+	if len(result.GetGroupTypes()) > 0 {
+		var groupTypes []attr.Value
+		for _, v := range result.GetGroupTypes() {
+			groupTypes = append(groupTypes, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, groupTypes)
+		state.GroupTypes = listValue
+	} else {
+		state.GroupTypes = types.ListNull(types.StringType)
 	}
 	if result.GetHideFromAddressLists() != nil {
 		state.HideFromAddressLists = types.BoolValue(*result.GetHideFromAddressLists())
+	} else {
+		state.HideFromAddressLists = types.BoolNull()
 	}
 	if result.GetHideFromOutlookClients() != nil {
 		state.HideFromOutlookClients = types.BoolValue(*result.GetHideFromOutlookClients())
+	} else {
+		state.HideFromOutlookClients = types.BoolNull()
 	}
 	if result.GetIsAssignableToRole() != nil {
 		state.IsAssignableToRole = types.BoolValue(*result.GetIsAssignableToRole())
+	} else {
+		state.IsAssignableToRole = types.BoolNull()
 	}
 	if result.GetIsSubscribedByMail() != nil {
 		state.IsSubscribedByMail = types.BoolValue(*result.GetIsSubscribedByMail())
+	} else {
+		state.IsSubscribedByMail = types.BoolNull()
 	}
 	if result.GetLicenseProcessingState() != nil {
-		state.LicenseProcessingState = new(groupLicenseProcessingStateModel)
+		licenseProcessingState := new(groupLicenseProcessingStateModel)
 
 		if result.GetLicenseProcessingState().GetState() != nil {
-			state.LicenseProcessingState.State = types.StringValue(*result.GetLicenseProcessingState().GetState())
+			licenseProcessingState.State = types.StringValue(*result.GetLicenseProcessingState().GetState())
+		} else {
+			licenseProcessingState.State = types.StringNull()
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, licenseProcessingState.AttributeTypes(), licenseProcessingState)
+		state.LicenseProcessingState = objectValue
 	}
 	if result.GetMail() != nil {
 		state.Mail = types.StringValue(*result.GetMail())
+	} else {
+		state.Mail = types.StringNull()
 	}
 	if result.GetMailEnabled() != nil {
 		state.MailEnabled = types.BoolValue(*result.GetMailEnabled())
+	} else {
+		state.MailEnabled = types.BoolNull()
 	}
 	if result.GetMailNickname() != nil {
 		state.MailNickname = types.StringValue(*result.GetMailNickname())
+	} else {
+		state.MailNickname = types.StringNull()
 	}
 	if result.GetMembershipRule() != nil {
 		state.MembershipRule = types.StringValue(*result.GetMembershipRule())
+	} else {
+		state.MembershipRule = types.StringNull()
 	}
 	if result.GetMembershipRuleProcessingState() != nil {
 		state.MembershipRuleProcessingState = types.StringValue(*result.GetMembershipRuleProcessingState())
+	} else {
+		state.MembershipRuleProcessingState = types.StringNull()
 	}
 	if result.GetOnPremisesDomainName() != nil {
 		state.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())
+	} else {
+		state.OnPremisesDomainName = types.StringNull()
 	}
 	if result.GetOnPremisesLastSyncDateTime() != nil {
 		state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
+	} else {
+		state.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 	if result.GetOnPremisesNetBiosName() != nil {
 		state.OnPremisesNetBiosName = types.StringValue(*result.GetOnPremisesNetBiosName())
+	} else {
+		state.OnPremisesNetBiosName = types.StringNull()
 	}
-	for _, v := range result.GetOnPremisesProvisioningErrors() {
-		onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorsModel)
+	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetOnPremisesProvisioningErrors() {
+			onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorsModel)
 
-		if v.GetCategory() != nil {
-			onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
+			if v.GetCategory() != nil {
+				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
+			} else {
+				onPremisesProvisioningErrors.Category = types.StringNull()
+			}
+			if v.GetOccurredDateTime() != nil {
+				onPremisesProvisioningErrors.OccurredDateTime = types.StringValue(v.GetOccurredDateTime().String())
+			} else {
+				onPremisesProvisioningErrors.OccurredDateTime = types.StringNull()
+			}
+			if v.GetPropertyCausingError() != nil {
+				onPremisesProvisioningErrors.PropertyCausingError = types.StringValue(*v.GetPropertyCausingError())
+			} else {
+				onPremisesProvisioningErrors.PropertyCausingError = types.StringNull()
+			}
+			if v.GetValue() != nil {
+				onPremisesProvisioningErrors.Value = types.StringValue(*v.GetValue())
+			} else {
+				onPremisesProvisioningErrors.Value = types.StringNull()
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, onPremisesProvisioningErrors.AttributeTypes(), onPremisesProvisioningErrors)
+			objectValues = append(objectValues, objectValue)
 		}
-		if v.GetOccurredDateTime() != nil {
-			onPremisesProvisioningErrors.OccurredDateTime = types.StringValue(v.GetOccurredDateTime().String())
-		}
-		if v.GetPropertyCausingError() != nil {
-			onPremisesProvisioningErrors.PropertyCausingError = types.StringValue(*v.GetPropertyCausingError())
-		}
-		if v.GetValue() != nil {
-			onPremisesProvisioningErrors.Value = types.StringValue(*v.GetValue())
-		}
-		state.OnPremisesProvisioningErrors = append(state.OnPremisesProvisioningErrors, *onPremisesProvisioningErrors)
+		state.OnPremisesProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetOnPremisesSamAccountName() != nil {
 		state.OnPremisesSamAccountName = types.StringValue(*result.GetOnPremisesSamAccountName())
+	} else {
+		state.OnPremisesSamAccountName = types.StringNull()
 	}
 	if result.GetOnPremisesSecurityIdentifier() != nil {
 		state.OnPremisesSecurityIdentifier = types.StringValue(*result.GetOnPremisesSecurityIdentifier())
+	} else {
+		state.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 	if result.GetOnPremisesSyncEnabled() != nil {
 		state.OnPremisesSyncEnabled = types.BoolValue(*result.GetOnPremisesSyncEnabled())
+	} else {
+		state.OnPremisesSyncEnabled = types.BoolNull()
 	}
 	if result.GetPreferredDataLocation() != nil {
 		state.PreferredDataLocation = types.StringValue(*result.GetPreferredDataLocation())
+	} else {
+		state.PreferredDataLocation = types.StringNull()
 	}
 	if result.GetPreferredLanguage() != nil {
 		state.PreferredLanguage = types.StringValue(*result.GetPreferredLanguage())
+	} else {
+		state.PreferredLanguage = types.StringNull()
 	}
-	for _, v := range result.GetProxyAddresses() {
-		state.ProxyAddresses = append(state.ProxyAddresses, types.StringValue(v))
+	if len(result.GetProxyAddresses()) > 0 {
+		var proxyAddresses []attr.Value
+		for _, v := range result.GetProxyAddresses() {
+			proxyAddresses = append(proxyAddresses, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, proxyAddresses)
+		state.ProxyAddresses = listValue
+	} else {
+		state.ProxyAddresses = types.ListNull(types.StringType)
 	}
 	if result.GetRenewedDateTime() != nil {
 		state.RenewedDateTime = types.StringValue(result.GetRenewedDateTime().String())
+	} else {
+		state.RenewedDateTime = types.StringNull()
 	}
 	if result.GetSecurityEnabled() != nil {
 		state.SecurityEnabled = types.BoolValue(*result.GetSecurityEnabled())
+	} else {
+		state.SecurityEnabled = types.BoolNull()
 	}
 	if result.GetSecurityIdentifier() != nil {
 		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
+	} else {
+		state.SecurityIdentifier = types.StringNull()
 	}
-	for _, v := range result.GetServiceProvisioningErrors() {
-		serviceProvisioningErrors := new(groupServiceProvisioningErrorsModel)
+	if len(result.GetServiceProvisioningErrors()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetServiceProvisioningErrors() {
+			serviceProvisioningErrors := new(groupServiceProvisioningErrorsModel)
 
-		if v.GetCreatedDateTime() != nil {
-			serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+			if v.GetCreatedDateTime() != nil {
+				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+			} else {
+				serviceProvisioningErrors.CreatedDateTime = types.StringNull()
+			}
+			if v.GetIsResolved() != nil {
+				serviceProvisioningErrors.IsResolved = types.BoolValue(*v.GetIsResolved())
+			} else {
+				serviceProvisioningErrors.IsResolved = types.BoolNull()
+			}
+			if v.GetServiceInstance() != nil {
+				serviceProvisioningErrors.ServiceInstance = types.StringValue(*v.GetServiceInstance())
+			} else {
+				serviceProvisioningErrors.ServiceInstance = types.StringNull()
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, serviceProvisioningErrors.AttributeTypes(), serviceProvisioningErrors)
+			objectValues = append(objectValues, objectValue)
 		}
-		if v.GetIsResolved() != nil {
-			serviceProvisioningErrors.IsResolved = types.BoolValue(*v.GetIsResolved())
-		}
-		if v.GetServiceInstance() != nil {
-			serviceProvisioningErrors.ServiceInstance = types.StringValue(*v.GetServiceInstance())
-		}
-		state.ServiceProvisioningErrors = append(state.ServiceProvisioningErrors, *serviceProvisioningErrors)
+		state.ServiceProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetTheme() != nil {
 		state.Theme = types.StringValue(*result.GetTheme())
+	} else {
+		state.Theme = types.StringNull()
 	}
 	if result.GetUnseenCount() != nil {
 		state.UnseenCount = types.Int64Value(int64(*result.GetUnseenCount()))
+	} else {
+		state.UnseenCount = types.Int64Null()
 	}
 	if result.GetVisibility() != nil {
 		state.Visibility = types.StringValue(*result.GetVisibility())
+	} else {
+		state.Visibility = types.StringNull()
 	}
 
 	// Overwrite items with refreshed state

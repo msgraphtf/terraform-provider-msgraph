@@ -127,5 +127,6 @@ func (p *msGraphProvider) Resources(ctx context.Context) []func() resource.Resou
 	return []func() resource.Resource{
 		// Provider specific implementation
 		users.NewUserResource,
+		groups.NewGroupResource,
 	}
 }
