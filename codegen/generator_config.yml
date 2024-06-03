@@ -1,0 +1,7 @@
+provider:
+  name: msgraph
+data_sources:
+  users:
+    read:
+      path: /users/{user-id}
+      method: GET

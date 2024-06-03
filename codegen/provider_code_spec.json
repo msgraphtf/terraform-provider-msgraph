@@ -1,0 +1,6 @@
+{
+	"provider": {
+		"name": "msgraph"
+	},
+	"version": "0.1"
+}
