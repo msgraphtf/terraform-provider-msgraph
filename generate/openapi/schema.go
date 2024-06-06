@@ -45,7 +45,7 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 
 	if len(schema.AllOf) == 0 {
 		schemaObject.Title = schema.Title
-		schemaObject.Type = schema.Type
+		schemaObject.Type = strings.Join(schema.Type.Slice(), "")
 		schemaObject.Properties = recurseDownSchemaProperties(schema)
 		for _, e := range schema.Enum {
 			schemaObject.Enum = append(schemaObject.Enum, e.(string))
@@ -53,7 +53,7 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
 		schemaObject.Title = schema.AllOf[1].Value.Title
-		schemaObject.Type = schema.AllOf[1].Value.Type
+		schemaObject.Type = strings.Join(schema.AllOf[1].Value.Type.Slice(), "")
 		schemaObject.Properties = append(schemaObject.Properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
 		schemaObject.Properties = append(schemaObject.Properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
 	}
@@ -108,11 +108,11 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 
 		newProperty.Name = k
 		newProperty.Description = property.Description
-		newProperty.Type = property.Type
+		newProperty.Type = strings.Join(property.Type.Slice(), "")
 
 		// Determines what type of data the OpenAPI schema object is
-		if property.Type == "array" { // Array
-			if property.Items.Value.Type == "object" || property.Items.Ref != "" { // Array of objects
+		if strings.Join(property.Type.Slice(), "") == "array" { // Array
+			if strings.Join(property.Items.Value.Type.Slice(), "") == "object" || property.Items.Ref != "" { // Array of objects
 				newProperty.ArrayOf = "object"
 				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Ref))
 			} else if property.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
@@ -120,12 +120,12 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Value.AnyOf[0].Ref))
 			} else { // Array of primitive type
 				newProperty.Format = property.Items.Value.Format
-				newProperty.ArrayOf = property.Items.Value.Type
+				newProperty.ArrayOf = strings.Join(property.Items.Value.Type.Slice(), "")
 			}
 		} else if property.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
 			newProperty.Type = "object"
 			newProperty.ObjectOf = getSchemaObject(property)
-		} else if property.Type != "" { // Primitive type
+		} else if strings.Join(property.Type.Slice(), "") != "" { // Primitive type
 			newProperty.Format = property.Format
 		} else if property.AnyOf != nil { // Object
 			newProperty.Type = "object"
