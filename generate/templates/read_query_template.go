@@ -1,8 +1,8 @@
 qparams := {{.Configuration}}RequestBuilderGetRequestConfiguration{
 	QueryParameters: &{{.Configuration}}RequestBuilderGetQueryParameters{
 		Select: []string {
-			{{- range .Path.Get.Response.Properties}}
-			"{{.Name}}",
+			{{- range .SelectParameters}}
+			"{{.}}",
 			{{- end }}
 		},
 	},

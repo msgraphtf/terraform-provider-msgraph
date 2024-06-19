@@ -44,10 +44,10 @@ func pathFieldName(s string) (string, string) {
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type readQuery struct {
-	Path                        openapi.OpenAPIPathObject
-	Schema                      openapi.OpenAPISchemaObject
-	BlockName                   strWithCases
-	AltGetMethod                []map[string]string
+	Path         openapi.OpenAPIPathObject
+	Schema       openapi.OpenAPISchemaObject
+	BlockName    strWithCases
+	AltGetMethod []map[string]string
 }
 
 // Represents a method used to perform a query using msgraph-sdk-go
@@ -76,6 +76,20 @@ func (rq readQuery) Configuration() string {
 	}
 
 	return config
+
+}
+
+func (rq readQuery) SelectParameters() []string {
+
+	var selectParams []string
+
+	for _, p := range rq.Path.Get.Response.Properties {
+		if !slices.Contains(augment.ExcludedProperties, p.Name) {
+			selectParams = append(selectParams, p.Name)
+		}
+	}
+
+	return selectParams
 
 }
 
@@ -109,8 +123,8 @@ func (rq readQuery) GetMethod() []queryMethod {
 func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 
 	rq := readQuery{
-		Path: pathObject,
-		BlockName: strWithCases{blockName},
+		Path:         pathObject,
+		BlockName:    strWithCases{blockName},
 		AltGetMethod: augment.AltReadMethods,
 	}
 
@@ -120,8 +134,8 @@ func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type readResponse struct {
-	Property      openapi.OpenAPISchemaProperty
-	Parent        *readResponse
+	Property openapi.OpenAPISchemaProperty
+	Parent   *readResponse
 }
 
 func (rr readResponse) StateVarName() string {
@@ -194,7 +208,7 @@ func (rr readResponse) GetMethod() string {
 	} else {
 		getMethod = "result." + getMethod
 	}
-	
+
 	return getMethod
 
 }
@@ -214,7 +228,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 
 		newReadResponse := readResponse{
 			Property: property,
-			Parent: parent,
+			Parent:   parent,
 		}
 
 		read = append(read, newReadResponse)
@@ -270,6 +284,5 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 	// Create output file, and execute datasource template
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_data_source.go")
 	datasourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
-
 
 }
