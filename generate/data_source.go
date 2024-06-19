@@ -45,6 +45,7 @@ func pathFieldName(s string) (string, string) {
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type readQuery struct {
 	Path                        openapi.OpenAPIPathObject
+	Schema                      openapi.OpenAPISchemaObject
 	BlockName                   strWithCases
 	AltGetMethod                []map[string]string
 }
@@ -76,19 +77,6 @@ func (rq readQuery) Configuration() string {
 
 	return config
 
-}
-
-func (rq readQuery) SelectParameters() []string {
-
-	var sp []string
-
-	for _, parameter := range rq.Path.Get.SelectParameters {
-		if !slices.Contains(augment.ExcludedProperties, parameter) {
-			sp = append(sp, parameter)
-		}
-	}
-
-	return sp
 }
 
 func (rq readQuery) MultipleGetMethodParameters() bool {
