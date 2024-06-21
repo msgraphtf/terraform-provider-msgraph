@@ -6,7 +6,7 @@ go 1.21
 toolchain go1.22.3
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.6.0
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.7.0
 	github.com/getkin/kin-openapi v0.125.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
