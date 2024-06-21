@@ -97,7 +97,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"assigned_licenses": schema.ListNestedAttribute{
-				Description: "The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate between directly assigned and inherited licenses. Use the licenseAssignmentStates property to identify the directly assigned and inherited licenses.  Not nullable. Returned only on $select. Supports $filter (eq, not, /$count eq 0, /$count ne 0).",
+				Description: "The licenses that are assigned to the user, including inherited (group-based) licenses. This property doesn't differentiate between directly assigned and inherited licenses. Use the licenseAssignmentStates property to identify the directly assigned and inherited licenses. Not nullable. Returned only on $select. Supports $filter (eq, not, /$count eq 0, /$count ne 0).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -197,7 +197,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"business_phones": schema.ListAttribute{
-				Description: "The telephone numbers for the user. NOTE: Although it is a string collection, only one number can be set for this property. Read-only for users synced from the on-premises directory. Returned by default. Supports $filter (eq, not, ge, le, startsWith).",
+				Description: "The telephone numbers for the user. NOTE: Although it's a string collection, only one number can be set for this property. Read-only for users synced from the on-premises directory. Returned by default. Supports $filter (eq, not, ge, le, startsWith).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -214,7 +214,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"company_name": schema.StringAttribute{
-				Description: "The name of the company that the user is associated with. This property can be useful for describing the company that an external user comes from. The maximum length is 64 characters.Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+				Description: "The name of the company that the user is associated with. This property can be useful for describing the company that a guest comes from. The maximum length is 64 characters.Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -222,7 +222,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"consent_provided_for_minor": schema.StringAttribute{
-				Description: "Sets whether consent was obtained for minors. Allowed values: null, Granted, Denied and NotRequired. Refer to the legal age group property definitions for further information. Returned only on $select. Supports $filter (eq, ne, not, and in).",
+				Description: "Sets whether consent was obtained for minors. Allowed values: null, Granted, Denied, and NotRequired. For more information, see legal age group property definitions. Returned only on $select. Supports $filter (eq, ne, not, and in).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -230,7 +230,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"country": schema.StringAttribute{
-				Description: "The country or region where the user is located; for example, US or UK. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+				Description: "The country/region where the user is located; for example, US or UK. Maximum length is 128 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -238,7 +238,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"created_date_time": schema.StringAttribute{
-				Description: "The date and time the user was created, in ISO 8601 format and UTC. The value cannot be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Microsoft Entra ID. Property is null for some users created before June 2018 and on-premises users that were synced to Microsoft Entra ID before June 2018. Read-only. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).",
+				Description: "The date and time the user was created, in ISO 8601 format and UTC. The value can't be modified and is automatically populated when the entity is created. Nullable. For on-premises users, the value represents when they were first created in Microsoft Entra ID. Property is null for some users created before June 2018 and on-premises users that were synced to Microsoft Entra ID before June 2018. Read-only. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -246,7 +246,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"creation_type": schema.StringAttribute{
-				Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by an external user signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
+				Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by a guest signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -262,7 +262,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"display_name": schema.StringAttribute{
-				Description: "The name displayed in the address book for the user. This is usually the combination of the user's first name, middle initial, and last name. This property is required when a user is created and it cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values), $orderby, and $search.",
+				Description: "The name displayed in the address book for the user. This value is usually the combination of the user's first name, middle initial, and family name. This property is required when a user is created and it can't be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values), $orderby, and $search.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -286,7 +286,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"employee_leave_date_time": schema.StringAttribute{
-				Description: "The date and time when the user left or will leave the organization. To read this property, the calling app must be assigned the User-LifeCycleInfo.Read.All permission. To write this property, the calling app must be assigned the User.Read.All and User-LifeCycleInfo.ReadWrite.All permissions. To read this property in delegated scenarios, the admin needs one of the following Microsoft Entra roles: Lifecycle Workflows Administrator, Global Reader, or Global Administrator. To write this property in delegated scenarios, the admin needs the Global Administrator role. Supports $filter (eq, ne, not , ge, le, in). For more information, see Configure the employeeLeaveDateTime property for a user.",
+				Description: "The date and time when the user left or will leave the organization. To read this property, the calling app must be assigned the User-LifeCycleInfo.Read.All permission. To write this property, the calling app must be assigned the User.Read.All and User-LifeCycleInfo.ReadWrite.All permissions. To read this property in delegated scenarios, the admin needs at least one of the following Microsoft Entra roles: Lifecycle Workflows Administrator, Global Reader. To write this property in delegated scenarios, the admin needs the Global Administrator role. Supports $filter (eq, ne, not , ge, le, in). For more information, see Configure the employeeLeaveDateTime property for a user.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -328,7 +328,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"external_user_state": schema.StringAttribute{
-				Description: "For an external user invited to the tenant using the invitation API, this property represents the invited user's invitation status. For invited users, the state can be PendingAcceptance or Accepted, or null for all other users. Returned only on $select. Supports $filter (eq, ne, not , in).",
+				Description: "For a guest invited to the tenant using the invitation API, this property represents the invited user's invitation status. For invited users, the state can be PendingAcceptance or Accepted, or null for all other users. Returned only on $select. Supports $filter (eq, ne, not , in).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -360,7 +360,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"hire_date": schema.StringAttribute{
-				Description: "The hire date of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014, is 2014-01-01T00:00:00Z. Returned only on $select.  Note: This property is specific to SharePoint Online. We recommend using the native employeeHireDate property to set and update hire date values using Microsoft Graph APIs.",
+				Description: "The hire date of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014, is 2014-01-01T00:00:00Z. Returned only on $select.  Note: This property is specific to SharePoint in Microsoft 365. We recommend using the native employeeHireDate property to set and update hire date values using Microsoft Graph APIs.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -368,7 +368,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"identities": schema.ListNestedAttribute{
-				Description: "Represents the identities that can be used to sign in to this user account. Microsoft (also known as a local account), organizations, or social identity providers such as Facebook, Google, and Microsoft can provide identity and tie it to a user account. It may contain multiple items with the same signInType value. Returned only on $select. Supports $filter (eq) including on null values, only where the signInType is not userPrincipalName.",
+				Description: "Represents the identities that can be used to sign in to this user account. Microsoft (also known as a local account), organizations, or social identity providers such as Facebook, Google, and Microsoft can provide identity and tie it to a user account. It might contain multiple items with the same signInType value. Returned only on $select.  Supports $filter (eq) with limitations.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -377,7 +377,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"issuer": schema.StringAttribute{
-							Description: "Specifies the issuer of the identity, for example facebook.com.For local accounts (where signInType isn't federated), this property is the local B2C tenant default domain name, for example contoso.onmicrosoft.com.For guests from other Microsoft Entra organization, this is the domain of the federated organization, for example contoso.com.Supports $filter. 512 character limit.",
+							Description: "Specifies the issuer of the identity, for example facebook.com. 512 character limit. For local accounts (where signInType isn't federated), this property is the local default domain name for the tenant, for example contoso.com.  For guests from other Microsoft Entra organizations, this is the domain of the federated organization, for example contoso.com. For more information about filtering behavior for this property, see Filtering on the identities property of a user.",
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
@@ -385,7 +385,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							},
 						},
 						"issuer_assigned_id": schema.StringAttribute{
-							Description: "Specifies the unique identifier assigned to the user by the issuer. The combination of issuer and issuerAssignedId must be unique within the organization. Represents the sign-in name for the user, when signInType is set to emailAddress or userName (also known as local accounts).When signInType is set to: emailAddress, (or a custom string that starts with emailAddress like emailAddress1) issuerAssignedId must be a valid email addressuserName, issuerAssignedId must begin with alphabetical character or number, and can only contain alphanumeric characters and the following symbols: - or Supports $filter. 64 character limit.",
+							Description: "Specifies the unique identifier assigned to the user by the issuer. 64 character limit. The combination of issuer and issuerAssignedId must be unique within the organization. Represents the sign-in name for the user, when signInType is set to emailAddress or userName (also known as local accounts).When signInType is set to: emailAddress (or a custom string that starts with emailAddress like emailAddress1), issuerAssignedId must be a valid email addressuserName, issuerAssignedId must begin with an alphabetical character or number, and can only contain alphanumeric characters and the following symbols: - or _  For more information about filtering behavior for this property, see Filtering on the identities property of a user.",
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
@@ -393,7 +393,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							},
 						},
 						"sign_in_type": schema.StringAttribute{
-							Description: "Specifies the user sign-in types in your directory, such as emailAddress, userName, federated, or userPrincipalName. federated represents a unique identifier for a user from an issuer, that can be in any format chosen by the issuer. Setting or updating a userPrincipalName identity will update the value of the userPrincipalName property on the user object. The validations performed on the userPrincipalName property on the user object, for example, verified domains and acceptable characters, will be performed when setting or updating a userPrincipalName identity. Other validation is enforced on issuerAssignedId when the sign-in type is set to emailAddress or userName. This property can also be set to any custom string.",
+							Description: "Specifies the user sign-in types in your directory, such as emailAddress, userName, federated, or userPrincipalName. federated represents a unique identifier for a user from an issuer that can be in any format chosen by the issuer. Setting or updating a userPrincipalName identity updates the value of the userPrincipalName property on the user object. The validations performed on the userPrincipalName property on the user object, for example, verified domains and acceptable characters, are performed when setting or updating a userPrincipalName identity. Extra validation is enforced on issuerAssignedId when the sign-in type is set to emailAddress or userName. This property can also be set to any custom string.  For more information about filtering behavior for this property, see Filtering on the identities property of a user.",
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
@@ -422,7 +422,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				ElementType: types.StringType,
 			},
 			"is_resource_account": schema.BoolAttribute{
-				Description: "Do not use – reserved for future use.",
+				Description: "Don't use – reserved for future use.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -446,7 +446,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"legal_age_group_classification": schema.StringAttribute{
-				Description: "Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, MinorWithOutParentalConsent, MinorWithParentalConsent, MinorNoParentalConsentRequired, NotAdult, and Adult. Refer to the legal age group property definitions for further information. Returned only on $select.",
+				Description: "Used by enterprise applications to determine the legal age group of the user. This property is read-only and calculated based on ageGroup and consentProvidedForMinor properties. Allowed values: null, MinorWithOutParentalConsent, MinorWithParentalConsent, MinorNoParentalConsentRequired, NotAdult, and Adult. For more information, see legal age group property definitions. Returned only on $select.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -454,7 +454,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"license_assignment_states": schema.ListNestedAttribute{
-				Description: "State of license assignments for this user. Also indicates licenses that are directly assigned or the user has inherited through group memberships. Read-only. Returned only on $select.",
+				Description: "State of license assignments for this user. Also indicates licenses that are directly assigned or the user inherited through group memberships. Read-only. Returned only on $select.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -515,7 +515,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"mail": schema.StringAttribute{
-				Description: "The SMTP address for the user, for example, jeff@contoso.onmicrosoft.com. Changes to this property update the user's proxyAddresses collection to include the value as an SMTP address. This property can't contain accent characters.  NOTE: We don't recommend updating this property for Azure AD B2C user profiles. Use the otherMails property instead. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).",
+				Description: "The SMTP address for the user, for example, jeff@contoso.com. Changes to this property update the user's proxyAddresses collection to include the value as an SMTP address. This property can't contain accent characters.  NOTE: We don't recommend updating this property for Azure AD B2C user profiles. Use the otherMails property instead. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -701,7 +701,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"on_premises_immutable_id": schema.StringAttribute{
-				Description: "This property is used to associate an on-premises Active Directory user account to their Microsoft Entra user object. This property must be specified when creating a new user account in the Graph if you're using a federated domain for the user's userPrincipalName (UPN) property. NOTE: The $ and _ characters can't be used when specifying this property. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in)..",
+				Description: "This property is used to associate an on-premises Active Directory user account to their Microsoft Entra user object. This property must be specified when creating a new user account in the Graph if you're using a federated domain for the user's userPrincipalName (UPN) property. NOTE: The $ and _ characters can't be used when specifying this property. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -769,7 +769,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"on_premises_security_identifier": schema.StringAttribute{
-				Description: "Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. Returned only on $select.  Supports $filter (eq including on null values).",
+				Description: "Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud. Read-only. Returned only on $select. Supports $filter (eq including on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -793,7 +793,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"other_mails": schema.ListAttribute{
-				Description: "A list of additional email addresses for the user; for example: ['bob@contoso.com', 'Robert@fabrikam.com']. NOTE: This property can't contain accent characters. Returned only on $select. Supports $filter (eq, not, ge, le, in, startsWith, endsWith, /$count eq 0, /$count ne 0).",
+				Description: "A list of other email addresses for the user; for example: ['bob@contoso.com', 'Robert@fabrikam.com']. NOTE: This property can't contain accent characters. Returned only on $select. Supports $filter (eq, not, ge, le, in, startsWith, endsWith, /$count eq 0, /$count ne 0).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -802,7 +802,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				ElementType: types.StringType,
 			},
 			"password_policies": schema.StringAttribute{
-				Description: "Specifies password policies for the user. This value is an enumeration with one possible value being DisableStrongPassword, which allows weaker passwords than the default policy to be specified. DisablePasswordExpiration can also be specified. The two may be specified together; for example: DisablePasswordExpiration, DisableStrongPassword. Returned only on $select. For more information on the default password policies, see Microsoft Entra password policies. Supports $filter (ne, not, and eq on null values).",
+				Description: "Specifies password policies for the user. This value is an enumeration with one possible value being DisableStrongPassword, which allows weaker passwords than the default policy to be specified. DisablePasswordExpiration can also be specified. The two might be specified together; for example: DisablePasswordExpiration, DisableStrongPassword. Returned only on $select. For more information on the default password policies, see Microsoft Entra password policies. Supports $filter (ne, not, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -818,7 +818,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 				Attributes: map[string]schema.Attribute{
 					"force_change_password_next_sign_in": schema.BoolAttribute{
-						Description: "true if the user must change her password on the next login; otherwise false.",
+						Description: "true if the user must change their password on the next sign-in; otherwise false.",
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.Bool{
@@ -826,7 +826,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						},
 					},
 					"force_change_password_next_sign_in_with_mfa": schema.BoolAttribute{
-						Description: "If true, at next sign-in, the user must perform a multi-factor authentication (MFA) before being forced to change their password. The behavior is identical to forceChangePasswordNextSignIn except that the user is required to first perform a multi-factor authentication before password change. After a password change, this property will be automatically reset to false. If not set, default is false.",
+						Description: "If true, at next sign-in, the user must perform a multifactor authentication (MFA) before being forced to change their password. The behavior is identical to forceChangePasswordNextSignIn except that the user is required to first perform a multifactor authentication before password change. After a password change, this property will be automatically reset to false. If not set, default is false.",
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.Bool{
@@ -834,7 +834,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						},
 					},
 					"password": schema.StringAttribute{
-						Description: "The password for the user. This property is required when a user is created. It can be updated, but the user will be required to change the password on the next login. The password must satisfy minimum requirements as specified by the user's passwordPolicies property. By default, a strong password is required.",
+						Description: "The password for the user. This property is required when a user is created. It can be updated, but the user will be required to change the password on the next sign-in. The password must satisfy minimum requirements as specified by the user's passwordPolicies property. By default, a strong password is required.",
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
@@ -869,7 +869,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"preferred_language": schema.StringAttribute{
-				Description: "The preferred language for the user. The preferred language format is based on RFC 4646. The name is a combination of an ISO 639 two-letter lowercase culture code associated with the language and an ISO 3166 two-letter uppercase subculture code associated with the country or region. Example: 'en-US', or 'es-ES'. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values)",
+				Description: "The preferred language for the user. The preferred language format is based on RFC 4646. The name is a combination of an ISO 639 two-letter lowercase culture code associated with the language, and an ISO 3166 two-letter uppercase subculture code associated with the country or region. Example: 'en-US', or 'es-ES'. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values)",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -921,7 +921,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"proxy_addresses": schema.ListAttribute{
-				Description: "For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. Changes to the mail property will also update this collection to include the value as an SMTP address. For more information, see mail and proxyAddresses properties. The proxy address prefixed with SMTP (capitalized) is the primary proxy address while those prefixed with smtp are the secondary proxy addresses. For Azure AD B2C accounts, this property has a limit of 10 unique addresses. Read-only in Microsoft Graph; you can update this property only through the Microsoft 365 admin center. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith, endsWith, /$count eq 0, /$count ne 0).",
+				Description: "For example: ['SMTP: bob@contoso.com', 'smtp: bob@sales.contoso.com']. Changes to the mail property update this collection to include the value as an SMTP address. For more information, see mail and proxyAddresses properties. The proxy address prefixed with SMTP (capitalized) is the primary proxy address, while those addresses prefixed with smtp are the secondary proxy addresses. For Azure AD B2C accounts, this property has a limit of 10 unique addresses. Read-only in Microsoft Graph; you can update this property only through the Microsoft 365 admin center. Not nullable. Returned only on $select. Supports $filter (eq, not, ge, le, startsWith, endsWith, /$count eq 0, /$count ne 0).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -939,7 +939,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				ElementType: types.StringType,
 			},
 			"schools": schema.ListAttribute{
-				Description: "A list for the user to enumerate the schools they have attended. Returned only on $select.",
+				Description: "A list for the user to enumerate the schools they attended. Returned only on $select.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -956,7 +956,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"service_provisioning_errors": schema.ListNestedAttribute{
-				Description: "Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a user object .  Supports $filter (eq, not, for isResolved and serviceInstance).",
+				Description: "Errors published by a federated service describing a nontransient, service-specific error regarding the properties or link from a user object.  Supports $filter (eq, not, for isResolved and serviceInstance).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -1000,7 +1000,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"sign_in_activity": schema.SingleNestedAttribute{
-				Description: "Get the last signed-in date and request ID of the sign-in for a given user. Read-only.Returned only on $select. Supports $filter (eq, ne, not, ge, le) but not with any other filterable properties. Note: Details for this property require a Microsoft Entra ID P1 or P2 license and the AuditLog.Read.All permission.This property is not returned for a user who has never signed in or last signed in before April 2020.",
+				Description: "Get the last signed-in date and request ID of the sign-in for a given user. Read-only.Returned only on $select. Supports $filter (eq, ne, not, ge, le) but not with any other filterable properties. Note: Details for this property require a Microsoft Entra ID P1 or P2 license and the AuditLog.Read.All permission.This property isn't returned for a user who never signed in or last signed in before April 2020.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
@@ -1008,7 +1008,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 				Attributes: map[string]schema.Attribute{
 					"last_non_interactive_sign_in_date_time": schema.StringAttribute{
-						Description: "The last non-interactive sign-in date for a specific user. You can use this field to calculate the last time a client attempted to sign into the directory on behalf of a user. Because some users may use clients to access tenant resources rather than signing into your tenant directly, you can use the non-interactive sign-in date to along with lastSignInDateTime to identify inactive users. The timestamp represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is: '2014-01-01T00:00:00Z'. Microsoft Entra ID maintains non-interactive sign-ins going back to May 2020. For more information about using the value of this property, see Manage inactive user accounts in Microsoft Entra ID.",
+						Description: "The last non-interactive sign-in date for a specific user. You can use this field to calculate the last time a client attempted (either successfully or unsuccessfully) to sign in to the directory on behalf of a user. Because some users may use clients to access tenant resources rather than signing into your tenant directly, you can use the non-interactive sign-in date to along with lastSignInDateTime to identify inactive users. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Microsoft Entra ID maintains non-interactive sign-ins going back to May 2020. For more information about using the value of this property, see Manage inactive user accounts in Microsoft Entra ID.",
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
@@ -1024,7 +1024,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 						},
 					},
 					"last_sign_in_date_time": schema.StringAttribute{
-						Description: "The last interactive sign-in date and time for a specific user. You can use this field to calculate the last time a user attempted to sign into the directory with an interactive authentication method. This field can be used to build reports, such as inactive users. The timestamp represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is: '2014-01-01T00:00:00Z'. Microsoft Entra ID maintains interactive sign-ins going back to April 2020. For more information about using the value of this property, see Manage inactive user accounts in Microsoft Entra ID.",
+						Description: "The last interactive sign-in date and time for a specific user. You can use this field to calculate the last time a user attempted (either successfully or unsuccessfully) to sign in to the directory with an interactive authentication method. This field can be used to build reports, such as inactive users. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Microsoft Entra ID maintains interactive sign-ins going back to April 2020. For more information about using the value of this property, see Manage inactive user accounts in Microsoft Entra ID.",
 						Optional:    true,
 						Computed:    true,
 						PlanModifiers: []planmodifier.String{
@@ -1039,10 +1039,26 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							stringplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
+					"last_successful_sign_in_date_time": schema.StringAttribute{
+						Description: "The date and time of the user's most recent successful sign-in activity. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.",
+						Optional:    true,
+						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
+					},
+					"last_successful_sign_in_request_id": schema.StringAttribute{
+						Description: "The request ID of the last successful sign-in.",
+						Optional:    true,
+						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
+					},
 				},
 			},
 			"sign_in_sessions_valid_from_date_time": schema.StringAttribute{
-				Description: "Any refresh tokens or sessions tokens (session cookies) issued before this time are invalid, and applications get an error when using an invalid refresh or sessions token to acquire a delegated access token (to access APIs such as Microsoft Graph).  If this happens, the application needs to acquire a new refresh token by requesting the authorized endpoint. Read-only. Use revokeSignInSessions to reset. Returned only on $select.",
+				Description: "Any refresh tokens or session tokens (session cookies) issued before this time are invalid. Applications get an error when using an invalid refresh or session token to acquire a delegated access token (to access APIs such as Microsoft Graph). If this happens, the application needs to acquire a new refresh token by requesting the authorized endpoint. Read-only. Use revokeSignInSessions to reset. Returned only on $select.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -1067,7 +1083,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"street_address": schema.StringAttribute{
-				Description: "The street address of the user's place of business. Maximum length is 1024 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+				Description: "The street address of the user's place of business. Maximum length is 1,024 characters. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -1083,7 +1099,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"usage_location": schema.StringAttribute{
-				Description: "A two-letter country code (ISO standard 3166). Required for users that are assigned licenses due to legal requirements to check for availability of services in countries.  Examples include: US, JP, and GB. Not nullable. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+				Description: "A two-letter country code (ISO standard 3166). Required for users that are assigned licenses due to legal requirements to check for availability of services in countries. Examples include: US, JP, and GB. Not nullable. Returned only on $select. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -1091,7 +1107,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"user_principal_name": schema.StringAttribute{
-				Description: "The user principal name (UPN) of the user. The UPN is an Internet-style sign-in name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where the domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the verifiedDomains property of organization.NOTE: This property can't contain accent characters. Only the following characters are allowed A - Z, a - z, 0 - 9, ' . - _ ! # ^ ~. For the complete list of allowed characters, see username policies. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith) and $orderby.",
+				Description: "The user principal name (UPN) of the user. The UPN is an Internet-style sign-in name for the user based on the Internet standard RFC 822. By convention, this value should map to the user's email name. The general format is alias@domain, where the domain must be present in the tenant's collection of verified domains. This property is required when a user is created. The verified domains for the tenant can be accessed from the verifiedDomains property of organization.NOTE: This property can't contain accent characters. Only the following characters are allowed A - Z, a - z, 0 - 9, ' . - _ ! # ^ ~. For the complete list of allowed characters, see username policies. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, endsWith) and $orderby.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -1099,7 +1115,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"user_type": schema.StringAttribute{
-				Description: "A string value that can be used to classify user types in your directory, such as Member and Guest. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values). NOTE: For more information about the permissions for member and guest users, see What are the default user permissions in Microsoft Entra ID?",
+				Description: "A string value that can be used to classify user types in your directory. The possible values are Member and Guest. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values). NOTE: For more information about the permissions for members and guests, see What are the default user permissions in Microsoft Entra ID?",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -2046,6 +2062,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			signInActivityModel.LastSignInRequestId = types.StringNull()
 		}
+
+		if !signInActivityModel.LastSuccessfulSignInDateTime.IsUnknown() {
+			planLastSuccessfulSignInDateTime := signInActivityModel.LastSuccessfulSignInDateTime.ValueString()
+			t, _ = time.Parse(time.RFC3339, planLastSuccessfulSignInDateTime)
+			signInActivity.SetLastSuccessfulSignInDateTime(&t)
+		} else {
+			signInActivityModel.LastSuccessfulSignInDateTime = types.StringNull()
+		}
+
+		if !signInActivityModel.LastSuccessfulSignInRequestId.IsUnknown() {
+			planLastSuccessfulSignInRequestId := signInActivityModel.LastSuccessfulSignInRequestId.ValueString()
+			signInActivity.SetLastSuccessfulSignInRequestId(&planLastSuccessfulSignInRequestId)
+		} else {
+			signInActivityModel.LastSuccessfulSignInRequestId = types.StringNull()
+		}
 		requestBody.SetSignInActivity(signInActivity)
 		objectValue, _ := types.ObjectValueFrom(ctx, signInActivityModel.AttributeTypes(), signInActivityModel)
 		plan.SignInActivity = objectValue
@@ -2149,12 +2180,13 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			Select: []string{
 				"id",
 				"deletedDateTime",
-				"signInActivity",
+				"aboutMe",
 				"accountEnabled",
 				"ageGroup",
 				"assignedLicenses",
 				"assignedPlans",
 				"authorizationInfo",
+				"birthday",
 				"businessPhones",
 				"city",
 				"companyName",
@@ -2173,8 +2205,10 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 				"externalUserStateChangeDateTime",
 				"faxNumber",
 				"givenName",
+				"hireDate",
 				"identities",
 				"imAddresses",
+				"interests",
 				"isResourceAccount",
 				"jobTitle",
 				"lastPasswordChangeDateTime",
@@ -2183,6 +2217,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 				"mail",
 				"mailNickname",
 				"mobilePhone",
+				"mySite",
 				"officeLocation",
 				"onPremisesDistinguishedName",
 				"onPremisesDomainName",
@@ -2197,79 +2232,27 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 				"otherMails",
 				"passwordPolicies",
 				"passwordProfile",
+				"pastProjects",
 				"postalCode",
 				"preferredDataLocation",
 				"preferredLanguage",
+				"preferredName",
 				"provisionedPlans",
 				"proxyAddresses",
+				"responsibilities",
+				"schools",
 				"securityIdentifier",
 				"serviceProvisioningErrors",
 				"showInAddressList",
+				"signInActivity",
 				"signInSessionsValidFromDateTime",
+				"skills",
 				"state",
 				"streetAddress",
 				"surname",
 				"usageLocation",
 				"userPrincipalName",
 				"userType",
-				"aboutMe",
-				"birthday",
-				"hireDate",
-				"interests",
-				"mySite",
-				"pastProjects",
-				"preferredName",
-				"responsibilities",
-				"schools",
-				"skills",
-				"appRoleAssignments",
-				"createdObjects",
-				"directReports",
-				"licenseDetails",
-				"manager",
-				"memberOf",
-				"oauth2PermissionGrants",
-				"ownedDevices",
-				"ownedObjects",
-				"registeredDevices",
-				"scopedRoleMemberOf",
-				"transitiveMemberOf",
-				"calendar",
-				"calendarGroups",
-				"calendars",
-				"calendarView",
-				"contactFolders",
-				"contacts",
-				"events",
-				"inferenceClassification",
-				"mailFolders",
-				"messages",
-				"outlook",
-				"people",
-				"drive",
-				"drives",
-				"followedSites",
-				"extensions",
-				"agreementAcceptances",
-				"managedDevices",
-				"managedAppRegistrations",
-				"deviceManagementTroubleshootingEvents",
-				"planner",
-				"insights",
-				"settings",
-				"onenote",
-				"photo",
-				"photos",
-				"activities",
-				"onlineMeetings",
-				"presence",
-				"authentication",
-				"chats",
-				"joinedTeams",
-				"permissionGrants",
-				"teamwork",
-				"todo",
-				"employeeExperience",
 			},
 		},
 	}
@@ -2977,6 +2960,16 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			signInActivity.LastSignInRequestId = types.StringValue(*result.GetSignInActivity().GetLastSignInRequestId())
 		} else {
 			signInActivity.LastSignInRequestId = types.StringNull()
+		}
+		if result.GetSignInActivity().GetLastSuccessfulSignInDateTime() != nil {
+			signInActivity.LastSuccessfulSignInDateTime = types.StringValue(result.GetSignInActivity().GetLastSuccessfulSignInDateTime().String())
+		} else {
+			signInActivity.LastSuccessfulSignInDateTime = types.StringNull()
+		}
+		if result.GetSignInActivity().GetLastSuccessfulSignInRequestId() != nil {
+			signInActivity.LastSuccessfulSignInRequestId = types.StringValue(*result.GetSignInActivity().GetLastSuccessfulSignInRequestId())
+		} else {
+			signInActivity.LastSuccessfulSignInRequestId = types.StringNull()
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, signInActivity.AttributeTypes(), signInActivity)
@@ -3771,6 +3764,17 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		if !signInActivityModel.LastSignInRequestId.Equal(signInActivityState.LastSignInRequestId) {
 			planLastSignInRequestId := signInActivityModel.LastSignInRequestId.ValueString()
 			signInActivity.SetLastSignInRequestId(&planLastSignInRequestId)
+		}
+
+		if !signInActivityModel.LastSuccessfulSignInDateTime.Equal(signInActivityState.LastSuccessfulSignInDateTime) {
+			planLastSuccessfulSignInDateTime := signInActivityModel.LastSuccessfulSignInDateTime.ValueString()
+			t, _ = time.Parse(time.RFC3339, planLastSuccessfulSignInDateTime)
+			signInActivity.SetLastSuccessfulSignInDateTime(&t)
+		}
+
+		if !signInActivityModel.LastSuccessfulSignInRequestId.Equal(signInActivityState.LastSuccessfulSignInRequestId) {
+			planLastSuccessfulSignInRequestId := signInActivityModel.LastSuccessfulSignInRequestId.ValueString()
+			signInActivity.SetLastSuccessfulSignInRequestId(&planLastSuccessfulSignInRequestId)
 		}
 		requestBody.SetSignInActivity(signInActivity)
 		objectValue, _ := types.ObjectValueFrom(ctx, signInActivityModel.AttributeTypes(), signInActivityModel)

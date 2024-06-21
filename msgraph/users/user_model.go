@@ -360,6 +360,8 @@ type userSignInActivityModel struct {
 	LastNonInteractiveSignInRequestId types.String `tfsdk:"last_non_interactive_sign_in_request_id"`
 	LastSignInDateTime                types.String `tfsdk:"last_sign_in_date_time"`
 	LastSignInRequestId               types.String `tfsdk:"last_sign_in_request_id"`
+	LastSuccessfulSignInDateTime      types.String `tfsdk:"last_successful_sign_in_date_time"`
+	LastSuccessfulSignInRequestId     types.String `tfsdk:"last_successful_sign_in_request_id"`
 }
 
 func (m userSignInActivityModel) AttributeTypes() map[string]attr.Type {
@@ -368,5 +370,7 @@ func (m userSignInActivityModel) AttributeTypes() map[string]attr.Type {
 		"last_non_interactive_sign_in_request_id": types.StringType,
 		"last_sign_in_date_time":                  types.StringType,
 		"last_sign_in_request_id":                 types.StringType,
+		"last_successful_sign_in_date_time":       types.StringType,
+		"last_successful_sign_in_request_id":      types.StringType,
 	}
 }
