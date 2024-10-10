@@ -15,7 +15,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
 	github.com/iancoleman/strcase v0.3.0
 	github.com/microsoft/kiota-abstractions-go v1.7.0
-	github.com/microsoftgraph/msgraph-sdk-go v1.49.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.50.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
