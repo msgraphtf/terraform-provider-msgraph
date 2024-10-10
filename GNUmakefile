@@ -8,5 +8,5 @@ testacc:
 gendocs:
 	go generate ./...
 
-genprovider:
-	go run ./generate/ $(args); gofmt -w -s -l msgraph/
+build:
+	go run ./generate/ $(args); gofmt -w -s -l msgraph/; go build

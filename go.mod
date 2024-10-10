@@ -1,8 +1,9 @@
 //module github.com/hashicorp/terraform-provider-scaffolding-framework
 module terraform-provider-msgraph
 
-go 1.21
-toolchain go1.22.5
+go 1.22.0
+
+toolchain go1.23.2
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.0
