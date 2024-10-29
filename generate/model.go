@@ -52,6 +52,12 @@ func (mf terraformModelField) FieldType() string {
 		return "types.String"
 	case "integer":
 		return "types.Int64"
+	case "number":
+		if mf.Property.Format == "int32" {
+			return "types.Int32"
+		} else if mf.Property.Format == "int64" {
+			return "types.Int64"
+		}
 	case "boolean":
 		return "types.Bool"
 	case "object":
@@ -85,6 +91,12 @@ func (mf terraformModelField) AttributeType() string {
 		return "types.StringType"
 	case "integer":
 		return "types.Int64Type"
+	case "number":
+		if mf.Property.Format == "int32" {
+			return "types.Int32Type"
+		} else if mf.Property.Format == "int64" {
+			return "types.Int64Type"
+		}
 	case "boolean":
 		return "types.BoolType"
 	case "object":
