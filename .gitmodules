@@ -1,3 +1,4 @@
 [submodule "msgraph-metadata"]
 	path = msgraph-metadata
 	url = git@github.com:microsoftgraph/msgraph-metadata.git
+	branch = schemas/metadata-publishing-2024-10-18
