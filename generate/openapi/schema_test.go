@@ -11,7 +11,7 @@ func ReadAttributes(schemaObject OpenAPISchemaObject, indent int) {
 		fmt.Print("\t")
 	}
 
-	fmt.Printf("%s: %s\n", schemaObject.Title, schemaObject.Type)
+	fmt.Printf("%s: %s: %s\n", schemaObject.Title, schemaObject.Type, schemaObject.Enum)
 
 	for _, property := range schemaObject.Properties {
 
