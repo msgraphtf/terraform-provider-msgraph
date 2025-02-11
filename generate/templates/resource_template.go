@@ -304,6 +304,15 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 	{{- end}}
 
+	{{- define "UpdateStringEnumAttribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	parsed{{.AttributeName.UpperCamel}}, _ := models.Parse{{.NewModelMethod}}(plan{{.AttributeName.UpperCamel}})
+	asserted{{.AttributeName.UpperCamel}} := parsed{{.AttributeName.UpperCamel}}.(models.{{.NewModelMethod}})
+	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&asserted{{.AttributeName.UpperCamel}})
+	}
+	{{- end}}
+
 	{{- define "UpdateStringTimeAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
@@ -395,6 +404,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- range .}}
 	{{- if eq .AttributeType "UpdateStringAttribute"}}
 	{{ template "UpdateStringAttribute" .}}
+	{{- else if eq .AttributeType "UpdateStringEnumAttribute"}}
+	{{ template "UpdateStringEnumAttribute" .}}
 	{{- else if eq .AttributeType "UpdateStringTimeAttribute"}}
 	{{ template "UpdateStringTimeAttribute" .}}
 	{{- else if eq .AttributeType "UpdateStringUuidAttribute"}}

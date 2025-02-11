@@ -114,7 +114,7 @@ func (crb createRequestBody) RequestBodyVar() string {
 		return crb.Parent.RequestBodyVar()
 	} else if crb.Parent != nil && crb.Parent.AttributeType() == "CreateArrayObjectAttribute" {
 		return crb.Parent.RequestBodyVar()
-	} else if crb.Property.Type == "object" {
+	} else if crb.Property.Type == "object" && crb.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
 		return crb.Property.Name
 	} else if crb.Property.ArrayOf == "object" {
 		return crb.Property.ObjectOf.Title
@@ -218,7 +218,7 @@ func (urb updateRequestBody) RequestBodyVar() string {
 		return urb.Parent.RequestBodyVar()
 	} else if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
 		return urb.Parent.RequestBodyVar()
-	} else if urb.Property.Type == "object" {
+	} else if urb.Property.Type == "object" && urb.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
 		return urb.Property.Name
 	} else if urb.Property.ArrayOf == "object" {
 		return urb.Property.ObjectOf.Title
@@ -244,6 +244,10 @@ func (urb updateRequestBody) PlanValueMethod() string {
 			} else {
 				return "ValueString"
 			}
+		}
+	case "object":
+		if urb.Property.ObjectOf.Type == "string" { // This is a string enum
+			return "ValueString"
 		}
 	}
 
@@ -282,7 +286,11 @@ func (urb updateRequestBody) AttributeType() string {
 			return "UpdateArrayObjectAttribute"
 		}
 	case "object":
-		return "UpdateObjectAttribute"
+		if urb.Property.ObjectOf.Type == "string" { // This is a string enum
+			return "UpdateStringEnumAttribute"
+		} else {
+			return "UpdateObjectAttribute"
+		}
 	}
 
 	return "UNKNOWN"
