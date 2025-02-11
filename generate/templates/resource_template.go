@@ -88,6 +88,17 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	}
 	{{- end}}
 
+	{{- define "CreateStringEnumAttribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	parsed{{.AttributeName.UpperCamel}}, _ := models.Parse{{.NewModelMethod}}(plan{{.AttributeName.UpperCamel}})
+	asserted{{.AttributeName.UpperCamel}} := parsed{{.AttributeName.UpperCamel}}.(models.{{.NewModelMethod}})
+	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&asserted{{.AttributeName.UpperCamel}})
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
+	}
+	{{- end}}
+
 	{{- define "CreateStringTimeAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
@@ -193,6 +204,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- range .}}
 	{{- if eq .AttributeType "CreateStringAttribute"}}
 	{{ template "CreateStringAttribute" .}}
+	{{- else if eq .AttributeType "CreateStringEnumAttribute"}}
+	{{ template "CreateStringEnumAttribute" .}}
 	{{- else if eq .AttributeType "CreateStringTimeAttribute"}}
 	{{ template "CreateStringTimeAttribute" .}}
 	{{- else if eq .AttributeType "CreateStringUuidAttribute"}}

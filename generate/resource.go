@@ -50,7 +50,11 @@ func (crb createRequestBody) AttributeType() string {
 			return "CreateArrayObjectAttribute"
 		}
 	case "object":
-		return "CreateObjectAttribute"
+		if crb.Property.ObjectOf.Type == "string" { // This is a string enum
+			return "CreateStringEnumAttribute"
+		} else {
+			return "CreateObjectAttribute"
+		}
 	}
 
 	return "UNKNOWN"
@@ -85,6 +89,10 @@ func (crb createRequestBody) PlanValueMethod() string {
 			} else {
 				return "ValueString"
 			}
+		}
+	case "object":
+		if crb.Property.ObjectOf.Type == "string" { // This is a string enum
+			return "ValueString"
 		}
 	}
 
