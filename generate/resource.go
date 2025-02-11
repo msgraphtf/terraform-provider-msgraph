@@ -190,6 +190,48 @@ type updateRequestBody struct {
 	AttributeName   strWithCases
 }
 
+func (urb updateRequestBody) AttributeType() string {
+
+	switch urb.Property.Type {
+	case "string":
+		switch urb.Property.Format {
+		case "date-time":
+			return "UpdateStringTimeAttribute"
+		case "uuid":
+			return "UpdateStringUuidAttribute"
+		}
+		return "UpdateStringAttribute"
+	case "integer":
+		if urb.Property.Format == "int32" {
+			return "UpdateInt32Attribute"
+		} else {
+			return "UpdateInt64Attribute"
+		}
+	case "boolean":
+		return "UpdateBoolAttribute"
+	case "array":
+		switch urb.Property.ArrayOf {
+		case "string":
+			if urb.Property.Format == "uuid" {
+				return "UpdateArrayUuidAttribute"
+			} else {
+				return "UpdateArrayStringAttribute"
+			}
+		case "object":
+			return "UpdateArrayObjectAttribute"
+		}
+	case "object":
+		if urb.Property.ObjectOf.Type == "string" { // This is a string enum
+			return "UpdateStringEnumAttribute"
+		} else {
+			return "UpdateObjectAttribute"
+		}
+	}
+
+	return "UNKNOWN"
+
+}
+
 func (urb updateRequestBody) PlanVar() string {
 
 	if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateObjectAttribute" {
@@ -248,48 +290,6 @@ func (urb updateRequestBody) PlanValueMethod() string {
 	case "object":
 		if urb.Property.ObjectOf.Type == "string" { // This is a string enum
 			return "ValueString"
-		}
-	}
-
-	return "UNKNOWN"
-
-}
-
-func (urb updateRequestBody) AttributeType() string {
-
-	switch urb.Property.Type {
-	case "string":
-		switch urb.Property.Format {
-		case "date-time":
-			return "UpdateStringTimeAttribute"
-		case "uuid":
-			return "UpdateStringUuidAttribute"
-		}
-		return "UpdateStringAttribute"
-	case "integer":
-		if urb.Property.Format == "int32" {
-			return "UpdateInt32Attribute"
-		} else {
-			return "UpdateInt64Attribute"
-		}
-	case "boolean":
-		return "UpdateBoolAttribute"
-	case "array":
-		switch urb.Property.ArrayOf {
-		case "string":
-			if urb.Property.Format == "uuid" {
-				return "UpdateArrayUuidAttribute"
-			} else {
-				return "UpdateArrayStringAttribute"
-			}
-		case "object":
-			return "UpdateArrayObjectAttribute"
-		}
-	case "object":
-		if urb.Property.ObjectOf.Type == "string" { // This is a string enum
-			return "UpdateStringEnumAttribute"
-		} else {
-			return "UpdateObjectAttribute"
 		}
 	}
 
