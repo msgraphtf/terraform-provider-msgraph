@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"slices"
+	//"slices"
 	"strings"
 	"text/template"
 
@@ -85,9 +85,9 @@ func (rq readQuery) SelectParameters() []string {
 	var selectParams []string
 
 	for _, p := range rq.Path.Get.Response.Properties {
-		if !slices.Contains(augment.ExcludedProperties, p.Name) {
+		//if !slices.Contains(augment.ExcludedProperties, p.Name) {
 			selectParams = append(selectParams, p.Name)
-		}
+		//}
 	}
 
 	return selectParams
@@ -126,7 +126,7 @@ func generateReadQuery(pathObject openapi.OpenAPIPathObject, blockName string) r
 	rq := readQuery{
 		Path:         pathObject,
 		BlockName:    strWithCases{blockName},
-		AltGetMethod: augment.AltReadMethods,
+		//AltGetMethod: augment.AltReadMethods,
 	}
 
 	return rq
@@ -224,9 +224,9 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 	for _, property := range schemaObject.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(augment.ExcludedProperties, property.Name) {
-			continue
-		}
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
 
 		newReadResponse := readResponse{
 			Property: property,
@@ -255,12 +255,12 @@ type templateInput struct {
 }
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
-type templateAugment struct {
-	ExcludedProperties       []string            `yaml:"excludedProperties"`
-	AltReadMethods           []map[string]string `yaml:"altReadMethods"`
-	DataSourceExtraOptionals []string            `yaml:"dataSourceExtraOptionals"`
-	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
-}
+//type templateAugment struct {
+//	ExcludedProperties       []string            `yaml:"excludedProperties"`
+//	AltReadMethods           []map[string]string `yaml:"altReadMethods"`
+//	DataSourceExtraOptionals []string            `yaml:"dataSourceExtraOptionals"`
+//	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
+//}
 
 func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string) {
 

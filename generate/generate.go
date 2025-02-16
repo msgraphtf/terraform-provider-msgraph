@@ -3,30 +3,30 @@ package main
 import (
 	"os"
 	"strings"
-	"gopkg.in/yaml.v3"
+	//"gopkg.in/yaml.v3"
 
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-var augment templateAugment
-
-func setGlobals(pathname string) openapi.OpenAPIPathObject {
-	pathObject := openapi.GetPath(pathname)
-
-	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-	packageName := strings.ToLower(pathFields[0])
-
-	// Open augment file if available
-	var err error = nil
-	augment = templateAugment{}
-	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + getBlockName(pathname) + ".yaml")
-	if err == nil {
-		yaml.Unmarshal(augmentFile, &augment)
-	}
-
-	return pathObject
-
-}
+//var augment templateAugment
+//
+//func setGlobals(pathname string) openapi.OpenAPIPathObject {
+//	pathObject := openapi.GetPath(pathname)
+//
+//	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+//	packageName := strings.ToLower(pathFields[0])
+//
+//	// Open augment file if available
+//	var err error = nil
+//	augment = templateAugment{}
+//	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + getBlockName(pathname) + ".yaml")
+//	if err == nil {
+//		yaml.Unmarshal(augmentFile, &augment)
+//	}
+//
+//	return pathObject
+//
+//}
 
 func getBlockName(pathname string) string {
 
@@ -54,7 +54,7 @@ func getBlockName(pathname string) string {
 func main() {
 
 	if len(os.Args) > 1 {
-		pathObject := setGlobals(os.Args[1])
+		pathObject := openapi.GetPath(os.Args[1])
 		blockName := getBlockName(os.Args[1])
 		generateDataSource(pathObject, blockName)
 		generateModel(pathObject, blockName)
@@ -80,7 +80,7 @@ func main() {
 		}
 
 		for _, path := range knownGoodPaths {
-			pathObject := setGlobals(path)
+			pathObject := openapi.GetPath(path)
 			blockName := getBlockName(path)
 			generateDataSource(pathObject, blockName)
 			generateModel(pathObject, blockName)

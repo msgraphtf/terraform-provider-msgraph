@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"slices"
+	//"slices"
 	"strings"
 	"text/template"
 
@@ -130,9 +130,9 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 	for _, property := range schemaObject.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(augment.ExcludedProperties, property.Name) {
-			continue
-		}
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
 
 		newCreateRequest := createRequestBody{
 			Path:          pathObject,
@@ -311,9 +311,9 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 	for _, property := range schemaObject.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(augment.ExcludedProperties, property.Name) {
-			continue
-		}
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
 
 		newUpdateRequest := updateRequestBody{
 			Path:          pathObject,

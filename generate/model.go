@@ -150,9 +150,9 @@ func generateModelInput(modelName string, model []terraformModel, schemaObject o
 	for _, property := range schemaObject.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(augment.ExcludedProperties, property.Name) {
-			continue
-		}
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
 
 		newModelField := terraformModelField{
 			Property:  property,

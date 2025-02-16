@@ -1,7 +1,7 @@
 package main
 
 import (
-	"slices"
+	//"slices"
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
@@ -14,9 +14,9 @@ func generateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.O
 	for _, property := range schemaObject.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(augment.ExcludedProperties, property.Name) {
-			continue
-		}
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
 
 		newSchema := transform.TerraformSchema{
 			Path: pathObject,
