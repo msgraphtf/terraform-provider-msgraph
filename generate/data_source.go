@@ -9,6 +9,7 @@ import (
 	"github.com/iancoleman/strcase"
 
 	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/transform"
 )
 
 type strWithCases struct {
@@ -241,7 +242,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 type templateInput struct {
 	PackageName       string
 	BlockName         strWithCases
-	Schema            []terraformSchema
+	Schema            []transform.TerraformSchema
 	Model             []terraformModel
 	CreateRequestBody []createRequestBody
 	CreateRequest     createRequest
