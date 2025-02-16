@@ -101,7 +101,7 @@ func (crb createRequestBody) PlanValueMethod() string {
 }
 
 func (crb createRequestBody) NestedCreate() []createRequestBody {
-	return generateCreateRequestBody(crb.Path, crb.Property.ObjectOf, &crb)
+	return generateCreateRequestBody(crb.Path, crb.Property.ObjectOf, &crb, crb.BlockName)
 }
 
 func (crb createRequestBody) NewModelMethod() string {
@@ -124,7 +124,7 @@ func (crb createRequestBody) RequestBodyVar() string {
 
 }
 
-func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody) []createRequestBody {
+func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody, blockName string) []createRequestBody {
 	var cr []createRequestBody
 
 	for _, property := range schemaObject.Properties {
@@ -153,7 +153,7 @@ type createRequest struct {
 	PostMethod []queryMethod
 }
 
-func generateCreateRequest(pathObject openapi.OpenAPIPathObject) createRequest {
+func generateCreateRequest(pathObject openapi.OpenAPIPathObject, blockName string) createRequest {
 
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
@@ -302,10 +302,10 @@ func (urb updateRequestBody) NewModelMethod() string {
 }
 
 func (urb updateRequestBody) NestedUpdate() []updateRequestBody {
-	return generateUpdateRequestBody(urb.Path, urb.Property.ObjectOf, &urb)
+	return generateUpdateRequestBody(urb.Path, urb.Property.ObjectOf, &urb, urb.BlockName)
 }
 
-func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *updateRequestBody) []updateRequestBody {
+func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *updateRequestBody, blockName string) []updateRequestBody {
 	var cr []updateRequestBody
 
 	for _, property := range schemaObject.Properties {
@@ -334,7 +334,7 @@ type updateRequest struct {
 	PostMethod []queryMethod
 }
 
-func generateUpdateRequest(pathObject openapi.OpenAPIPathObject) updateRequest {
+func generateUpdateRequest(pathObject openapi.OpenAPIPathObject, blockName string) updateRequest {
 
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 
@@ -362,7 +362,7 @@ func generateUpdateRequest(pathObject openapi.OpenAPIPathObject) updateRequest {
 
 }
 
-func generateResource(pathObject openapi.OpenAPIPathObject) {
+func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
 
 		input := templateInput{}
 
@@ -371,14 +371,14 @@ func generateResource(pathObject openapi.OpenAPIPathObject) {
 		// Set input values to top level template
 		input.PackageName = packageName
 		input.BlockName = strWithCases{blockName}
-		input.ReadQuery = generateReadQuery(pathObject)
-		input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil) // Generate Read Go code from OpenAPI schema
+		input.ReadQuery = generateReadQuery(pathObject, blockName)
+		input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
 
 		input.Schema = generateSchema(pathObject, pathObject.Get.Response, "Resource")
-		input.CreateRequestBody = generateCreateRequestBody(pathObject, pathObject.Get.Response, nil)
-		input.CreateRequest = generateCreateRequest(pathObject)
-		input.UpdateRequestBody = generateUpdateRequestBody(pathObject, pathObject.Get.Response, nil)
-		input.UpdateRequest = generateUpdateRequest(pathObject)
+		input.CreateRequestBody = generateCreateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)
+		input.CreateRequest = generateCreateRequest(pathObject, blockName)
+		input.UpdateRequestBody = generateUpdateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)
+		input.UpdateRequest = generateUpdateRequest(pathObject, blockName)
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")

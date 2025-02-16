@@ -8,7 +8,6 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-var blockName string
 var augment templateAugment
 
 func setGlobals(pathname string) openapi.OpenAPIPathObject {
@@ -17,8 +16,25 @@ func setGlobals(pathname string) openapi.OpenAPIPathObject {
 	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName := strings.ToLower(pathFields[0])
 
+	// Open augment file if available
+	var err error = nil
+	augment = templateAugment{}
+	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + getBlockName(pathname) + ".yaml")
+	if err == nil {
+		yaml.Unmarshal(augmentFile, &augment)
+	}
+
+	return pathObject
+
+}
+
+func getBlockName(pathname string) string {
+
+	pathObject := openapi.GetPath(pathname)
+	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+
 	// Generate name of the terraform block
-	blockName = ""
+	blockName := ""
 	if len(pathFields) > 1 {
 		for _, p := range pathFields[1:] {
 			if strings.HasPrefix(p, "{") {
@@ -32,26 +48,18 @@ func setGlobals(pathname string) openapi.OpenAPIPathObject {
 		blockName = pathFields[0]
 	}
 
-	// Open augment file if available
-	var err error = nil
-	augment = templateAugment{}
-	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + blockName + ".yaml")
-	if err == nil {
-		yaml.Unmarshal(augmentFile, &augment)
-	}
-
-	return pathObject
-
+	return blockName
 }
 
 func main() {
 
 	if len(os.Args) > 1 {
 		pathObject := setGlobals(os.Args[1])
-		generateDataSource(pathObject)
-		generateModel(pathObject)
+		blockName := getBlockName(os.Args[1])
+		generateDataSource(pathObject, blockName)
+		generateModel(pathObject, blockName)
 		if pathObject.Patch.Summary != "" {
-			generateResource(pathObject)
+			generateResource(pathObject, blockName)
 		}
 	} else {
 
@@ -73,10 +81,11 @@ func main() {
 
 		for _, path := range knownGoodPaths {
 			pathObject := setGlobals(path)
-			generateDataSource(pathObject)
-			generateModel(pathObject)
+			blockName := getBlockName(path)
+			generateDataSource(pathObject, blockName)
+			generateModel(pathObject, blockName)
 			if pathObject.Patch.Summary != "" {
-				generateResource(pathObject)
+				generateResource(pathObject, blockName)
 			}
 		}
 

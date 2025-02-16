@@ -121,7 +121,7 @@ func (rq readQuery) GetMethod() []queryMethod {
 	return getMethod
 }
 
-func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
+func generateReadQuery(pathObject openapi.OpenAPIPathObject, blockName string) readQuery {
 
 	rq := readQuery{
 		Path:         pathObject,
@@ -137,6 +137,7 @@ func generateReadQuery(pathObject openapi.OpenAPIPathObject) readQuery {
 type readResponse struct {
 	Property openapi.OpenAPISchemaProperty
 	Parent   *readResponse
+	BlockName string
 }
 
 func (rr readResponse) StateVarName() string {
@@ -151,7 +152,7 @@ func (rr readResponse) StateVarName() string {
 }
 
 func (rr readResponse) ModelName() string {
-	return blockName + upperFirst(rr.Property.Name) + "Model"
+	return rr.BlockName + upperFirst(rr.Property.Name) + "Model"
 }
 
 func (rr readResponse) AttributeType() string {
@@ -215,10 +216,10 @@ func (rr readResponse) GetMethod() string {
 }
 
 func (rr readResponse) NestedRead() []readResponse {
-	return generateReadResponse(nil, rr.Property.ObjectOf, &rr)
+	return generateReadResponse(nil, rr.Property.ObjectOf, &rr, rr.BlockName)
 }
 
-func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse) []readResponse {
+func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse, blockName string) []readResponse {
 
 	for _, property := range schemaObject.Properties {
 
@@ -230,6 +231,7 @@ func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchem
 		newReadResponse := readResponse{
 			Property: property,
 			Parent:   parent,
+			BlockName: blockName,
 		}
 
 		read = append(read, newReadResponse)
@@ -260,7 +262,7 @@ type templateAugment struct {
 	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
 }
 
-func generateDataSource(pathObject openapi.OpenAPIPathObject) {
+func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string) {
 
 	input := templateInput{}
 
@@ -270,8 +272,8 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 	input.PackageName = packageName
 	input.BlockName = strWithCases{blockName}
 	input.Schema = generateSchema(pathObject, pathObject.Get.Response, "DataSource") // Generate  Schema from OpenAPI Schama properties
-	input.ReadQuery = generateReadQuery(pathObject)
-	input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil) // Generate Read Go code from OpenAPI schema
+	input.ReadQuery = generateReadQuery(pathObject, blockName)
+	input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
 
 	// Create directory for package
 	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)

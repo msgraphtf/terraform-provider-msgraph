@@ -27,6 +27,7 @@ type terraformModel struct {
 
 type terraformModelField struct {
 	Property      openapi.OpenAPISchemaProperty
+	BlockName     string
 }
 
 func (mf terraformModelField) FieldName() string {
@@ -103,7 +104,7 @@ func (mf terraformModelField) AttributeType() string {
 		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", blockName + upperFirst(mf.Property.Name))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.BlockName + upperFirst(mf.Property.Name))
 		}
 	case "array":
 		switch mf.Property.ArrayOf {
@@ -111,7 +112,7 @@ func (mf terraformModelField) AttributeType() string {
 			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", blockName + upperFirst(mf.Property.Name))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.BlockName + upperFirst(mf.Property.Name))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"
@@ -124,14 +125,14 @@ func (mf terraformModelField) AttributeType() string {
 }
 
 func (mf terraformModelField) ModelVarName() string {
-	return blockName + upperFirst(mf.Property.Name)
+	return mf.BlockName + upperFirst(mf.Property.Name)
 }
 
 func (mf terraformModelField) ModelName() string {
-	return blockName + upperFirst(mf.Property.Name) + "Model"
+	return mf.BlockName + upperFirst(mf.Property.Name) + "Model"
 }
 
-func generateModelInput(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject) []terraformModel {
+func generateModelInput(modelName string, model []terraformModel, schemaObject openapi.OpenAPISchemaObject, blockName string) []terraformModel {
 
 	newModel := terraformModel{
 		ModelName: blockName + modelName + "Model",
@@ -154,13 +155,14 @@ func generateModelInput(modelName string, model []terraformModel, schemaObject o
 		}
 
 		newModelField := terraformModelField{
-			Property:      property,
+			Property:  property,
+			BlockName: blockName,
 		}
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = generateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf)
+			nestedModels = generateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf, blockName)
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = generateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf)
+			nestedModels = generateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf, blockName)
 		}
 
 		newModel.ModelFields = append(newModel.ModelFields, newModelField)
@@ -176,13 +178,13 @@ func generateModelInput(modelName string, model []terraformModel, schemaObject o
 
 }
 
-func generateModel(pathObject openapi.OpenAPIPathObject) {
+func generateModel(pathObject openapi.OpenAPIPathObject, blockName string) {
 
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
 	input := modelInput {
 		PackageName: packageName,
-		Model: generateModelInput("", nil, pathObject.Get.Response),
+		Model: generateModelInput("", nil, pathObject.Get.Response, blockName),
 	}
 
 	// Generate model
