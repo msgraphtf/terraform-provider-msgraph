@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/terraform-plugin-framework v1.13.0
 	github.com/hashicorp/terraform-plugin-go v0.26.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
 	github.com/iancoleman/strcase v0.3.0
 	github.com/microsoft/kiota-abstractions-go v1.8.1
 	github.com/microsoftgraph/msgraph-sdk-go v1.60.0
