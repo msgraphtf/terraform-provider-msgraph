@@ -6,182 +6,10 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/iancoleman/strcase"
-
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
 )
 
-type createRequestBody struct {
-	Path            openapi.OpenAPIPathObject
-	Property        openapi.OpenAPISchemaProperty
-	Parent          *createRequestBody
-	BlockName       string
-	AttributeName   transform.StrWithCases
-}
-
-func (crb createRequestBody) AttributeType() string {
-
-	switch crb.Property.Type {
-	case "string":
-		switch crb.Property.Format {
-		case "date-time":
-			return "CreateStringTimeAttribute"
-		case "uuid":
-			return "CreateStringUuidAttribute"
-		}
-		return "CreateStringAttribute"
-	case "integer":
-		if crb.Property.Format == "int32" {
-			return "CreateInt32Attribute"
-		} else {
-			return "CreateInt64Attribute"
-		}
-	case "boolean":
-		return "CreateBoolAttribute"
-	case "array":
-		switch crb.Property.ArrayOf {
-		case "string":
-			if crb.Property.Format == "uuid" {
-				return "CreateArrayUuidAttribute"
-			} else {
-				return "CreateArrayStringAttribute"
-			}
-		case "object":
-			return "CreateArrayObjectAttribute"
-		}
-	case "object":
-		if crb.Property.ObjectOf.Type == "string" { // This is a string enum
-			return "CreateStringEnumAttribute"
-		} else {
-			return "CreateObjectAttribute"
-		}
-	}
-
-	return "UNKNOWN"
-}
-
-func (crb createRequestBody) PlanVar() string {
-
-	if crb.Parent != nil && crb.Parent.AttributeType() == "CreateObjectAttribute" {
-		return crb.Parent.RequestBodyVar() + "Model."
-	} else if crb.Parent != nil && crb.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return crb.Parent.RequestBodyVar() + "Model."
-	} else {
-		return "plan."
-	}
-
-}
-
-func (crb createRequestBody) PlanValueMethod() string {
-
-	switch crb.Property.Type {
-	case "string":
-		return "ValueString"
-	case "integer":
-		return "ValueInt64"
-	case "boolean":
-		return "ValueBool"
-	case "array":
-		switch crb.Property.ArrayOf {
-		case "string":
-			if crb.Property.Format == "uuid" {
-				return "ValueString"
-			} else {
-				return "ValueString"
-			}
-		}
-	case "object":
-		if crb.Property.ObjectOf.Type == "string" { // This is a string enum
-			return "ValueString"
-		}
-	}
-
-	return "UNKNOWN"
-
-}
-
-func (crb createRequestBody) NestedCreate() []createRequestBody {
-	return generateCreateRequestBody(crb.Path, crb.Property.ObjectOf, &crb, crb.BlockName)
-}
-
-func (crb createRequestBody) NewModelMethod() string {
-	return upperFirst(crb.Property.ObjectOf.Title)
-}
-
-func (crb createRequestBody) RequestBodyVar() string {
-
-	if crb.Parent != nil && crb.Parent.AttributeType() == "CreateObjectAttribute" {
-		return crb.Parent.RequestBodyVar()
-	} else if crb.Parent != nil && crb.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return crb.Parent.RequestBodyVar()
-	} else if crb.Property.Type == "object" && crb.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
-		return crb.Property.Name
-	} else if crb.Property.ArrayOf == "object" {
-		return crb.Property.ObjectOf.Title
-	} else {
-		return "requestBody"
-	}
-
-}
-
-func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *createRequestBody, blockName string) []createRequestBody {
-	var cr []createRequestBody
-
-	for _, property := range schemaObject.Properties {
-
-		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
-
-		newCreateRequest := createRequestBody{
-			Path:          pathObject,
-			Property:      property,
-			Parent:        parent,
-			BlockName:     blockName,
-			AttributeName: transform.StrWithCases{String: property.Name},
-		}
-
-		cr = append(cr, newCreateRequest)
-	}
-
-	return cr
-}
-
-type createRequest struct {
-	BlockName  string
-	PostMethod []transform.QueryMethod
-}
-
-func generateCreateRequest(pathObject openapi.OpenAPIPathObject, blockName string) createRequest {
-
-	pathFields := strings.Split(pathObject.Path, "/")[1:]
-	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
-
-	var postMethod []transform.QueryMethod
-	for _, p := range pathFields {
-		newMethod := new(transform.QueryMethod)
-		if strings.HasPrefix(p, "{") {
-			pLeft, pRight := transform.PathFieldName(p)
-			pLeft = strcase.ToCamel(pLeft)
-			pRight = strcase.ToCamel(pRight)
-			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "state." + pRight + ".ValueString()"
-		} else {
-			newMethod.MethodName = strcase.ToCamel(p)
-		}
-		postMethod = append(postMethod, *newMethod)
-	}
-
-	var cr = createRequest{
-		BlockName:  blockName,
-		PostMethod: postMethod,
-	}
-
-	return cr
-
-}
 
 
 func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
@@ -197,8 +25,8 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
 		input.ReadResponse = transform.GenerateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
 
 		input.Schema = generateSchema(pathObject, pathObject.Get.Response, "Resource")
-		input.CreateRequestBody = generateCreateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)
-		input.CreateRequest = generateCreateRequest(pathObject, blockName)
+		input.CreateRequestBody = transform.GenerateCreateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)
+		input.CreateRequest = transform.GenerateCreateRequest(pathObject, blockName)
 		input.UpdateRequestBody = transform.GenerateUpdateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)
 		input.UpdateRequest = transform.GenerateUpdateRequest(pathObject, blockName)
 
