@@ -9,15 +9,15 @@ import (
 )
 
 type TerraformSchema struct {
-	Attributes []TerraformSchemaAttribute
+	Attributes    []TerraformSchemaAttribute
+	Path          openapi.OpenAPIPathObject
+	BehaviourMode string
 }
 
 // Used by templates defined inside of data_source_template.go to generate the schema
 type TerraformSchemaAttribute struct {
 	Schema        *TerraformSchema
-	Path          openapi.OpenAPIPathObject
 	Property      openapi.OpenAPISchemaProperty
-	BehaviourMode string
 }
 
 func (tsa TerraformSchemaAttribute) Description() string {
@@ -62,7 +62,7 @@ func (tsa TerraformSchemaAttribute) Type() string {
 }
 
 func (tsa TerraformSchemaAttribute) Required() bool {
-	if tsa.BehaviourMode == "DataSource" {
+	if tsa.Schema.BehaviourMode == "DataSource" {
 		return false 
 	} else { // Resource
 		return false 
@@ -71,13 +71,13 @@ func (tsa TerraformSchemaAttribute) Required() bool {
 
 func (tsa TerraformSchemaAttribute) Optional() bool {
 
-	if tsa.BehaviourMode == "DataSource" {
-		if slices.Contains(tsa.Path.Parameters, tsa.Path.Get.Response.Title+"-"+tsa.Name()) {
+	if tsa.Schema.BehaviourMode == "DataSource" {
+		if slices.Contains(tsa.Schema.Path.Parameters, tsa.Schema.Path.Get.Response.Title+"-"+tsa.Name()) {
 			return true
 		//} else if slices.Contains(augment.DataSourceExtraOptionals, tsa.AttributeName()) {
 		//	return true
 		}
-	} else if tsa.BehaviourMode == "Resource" {
+	} else if tsa.Schema.BehaviourMode == "Resource" {
 		return true
 	}
 
@@ -86,7 +86,7 @@ func (tsa TerraformSchemaAttribute) Optional() bool {
 }
 
 func (tsa TerraformSchemaAttribute) Computed() bool {
-	if tsa.BehaviourMode == "DataSource" {
+	if tsa.Schema.BehaviourMode == "DataSource" {
 		return  true
 	} else { // Resource
 		return true
@@ -94,7 +94,7 @@ func (tsa TerraformSchemaAttribute) Computed() bool {
 }
 
 func (tsa TerraformSchemaAttribute) PlanModifiers() bool {
-	if tsa.BehaviourMode == "DataSource" {
+	if tsa.Schema.BehaviourMode == "DataSource" {
 		return false
 	} else { // Resource
 		return true
@@ -102,7 +102,6 @@ func (tsa TerraformSchemaAttribute) PlanModifiers() bool {
 }
 
 func (tsa TerraformSchemaAttribute) NestedAttribute() []TerraformSchemaAttribute {
-	//return GenerateSchema(tsa.Path, tsa.Property.ObjectOf, tsa.BehaviourMode)
 	var schema []TerraformSchemaAttribute
 
 	for _, property := range tsa.Property.ObjectOf.Properties {
@@ -115,9 +114,7 @@ func (tsa TerraformSchemaAttribute) NestedAttribute() []TerraformSchemaAttribute
 
 		newSchema := TerraformSchemaAttribute{
 			Schema: tsa.Schema,
-			Path: tsa.Path,
 			Property: property,
-			BehaviourMode: tsa.BehaviourMode,
 		}
 
 		schema = append(schema, newSchema)
@@ -139,8 +136,10 @@ func (tsa TerraformSchemaAttribute) ElementType() string {
 
 func GenerateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) TerraformSchema {
 
-	//var schema []TerraformSchemaAttribute
-	var schema TerraformSchema
+	schema := TerraformSchema {
+		Path: pathObject,
+		BehaviourMode: behaviourMode,
+	}
 
 	for _, property := range schemaObject.Properties {
 
@@ -152,9 +151,7 @@ func GenerateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.O
 
 		schemaAttribute := TerraformSchemaAttribute{
 			Schema: &schema,
-			Path: pathObject,
 			Property: property,
-			BehaviourMode: behaviourMode,
 		}
 
 		schema.Attributes = append(schema.Attributes, schemaAttribute)
