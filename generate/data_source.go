@@ -46,7 +46,7 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string) 
 	// Set input values to top level template
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
-	input.Schema = generateSchema(pathObject, pathObject.Get.Response, "DataSource") // Generate  Schema from OpenAPI Schama properties
+	input.Schema = transform.GenerateSchema(pathObject, pathObject.Get.Response, "DataSource") // Generate  Schema from OpenAPI Schama properties
 	input.ReadQuery = transform.GenerateReadQuery(pathObject, blockName)
 	input.ReadResponse = transform.GenerateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
 

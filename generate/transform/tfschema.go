@@ -97,7 +97,7 @@ func (ts TerraformSchema) PlanModifiers() bool {
 }
 
 func (ts TerraformSchema) NestedAttribute() []TerraformSchema {
-	return generateSchema(ts.Path, ts.Property.ObjectOf, ts.BehaviourMode)
+	return GenerateSchema(ts.Path, ts.Property.ObjectOf, ts.BehaviourMode)
 }
 
 func (ts TerraformSchema) ElementType() string {
@@ -111,7 +111,7 @@ func (ts TerraformSchema) ElementType() string {
 
 }
 
-func generateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) []TerraformSchema {
+func GenerateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) []TerraformSchema {
 
 	var schema []TerraformSchema
 
