@@ -102,7 +102,28 @@ func (tsa TerraformSchemaAttribute) PlanModifiers() bool {
 }
 
 func (tsa TerraformSchemaAttribute) NestedAttribute() []TerraformSchemaAttribute {
-	return GenerateSchema(tsa.Path, tsa.Property.ObjectOf, tsa.BehaviourMode)
+	//return GenerateSchema(tsa.Path, tsa.Property.ObjectOf, tsa.BehaviourMode)
+	var schema []TerraformSchemaAttribute
+
+	for _, property := range tsa.Property.ObjectOf.Properties {
+
+		// Skip excluded properties
+		// NOTE: Augmenting is temporarily disabled while I refactor
+		// if slices.Contains(augment.ExcludedProperties, property.Name) {
+		// 	continue
+		// }
+
+		newSchema := TerraformSchemaAttribute{
+			Schema: tsa.Schema,
+			Path: tsa.Path,
+			Property: property,
+			BehaviourMode: tsa.BehaviourMode,
+		}
+
+		schema = append(schema, newSchema)
+	}
+
+	return schema
 }
 
 func (tsa TerraformSchemaAttribute) ElementType() string {
@@ -116,10 +137,10 @@ func (tsa TerraformSchemaAttribute) ElementType() string {
 
 }
 
-func GenerateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) []TerraformSchemaAttribute {
+func GenerateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) TerraformSchema {
 
 	//var schema []TerraformSchemaAttribute
-	var schema []TerraformSchemaAttribute
+	var schema TerraformSchema
 
 	for _, property := range schemaObject.Properties {
 
@@ -129,13 +150,14 @@ func GenerateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.O
 		// 	continue
 		// }
 
-		newSchema := TerraformSchemaAttribute{
+		schemaAttribute := TerraformSchemaAttribute{
+			Schema: &schema,
 			Path: pathObject,
 			Property: property,
 			BehaviourMode: behaviourMode,
 		}
 
-		schema = append(schema, newSchema)
+		schema.Attributes = append(schema.Attributes, schemaAttribute)
 	}
 
 	return schema

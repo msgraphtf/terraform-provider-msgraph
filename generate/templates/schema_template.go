@@ -124,7 +124,7 @@
 {{- end }}
 
 {{- /* Generate our Attributes from our defined templates above */}}
-{{- block "generate_schema" .Schema}}
+{{- block "generate_schema" .Schema.Attributes}}
 {{- range .}}
 {{- if eq .Type "StringAttribute" }}
 {{- template "StringAttribute" .}}

@@ -19,7 +19,7 @@ func upperFirst(s string) string {
 type templateInput struct {
 	PackageName       string
 	BlockName         transform.StrWithCases
-	Schema            []transform.TerraformSchemaAttribute
+	Schema            transform.TerraformSchema
 	Model             []terraformModel
 	CreateRequestBody []transform.CreateRequestBody
 	CreateRequest     transform.CreateRequest
