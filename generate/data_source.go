@@ -6,250 +6,25 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/iancoleman/strcase"
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
 )
 
-type strWithCases struct {
-	string
-}
-
-func (s strWithCases) LowerCamel() string {
-	return strcase.ToLowerCamel(s.string)
-}
-
-func (s strWithCases) UpperCamel() string {
-	return strcase.ToCamel(s.string)
-}
-
-func (s strWithCases) Snake() string {
-	return strcase.ToSnake(s.string)
-}
-
-func (s strWithCases) UpperFirst() string {
-	return strings.ToUpper(s.string[0:1]) + s.string[1:]
-}
 
 func upperFirst(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]
 }
 
-func pathFieldName(s string) (string, string) {
-	s = strings.TrimLeft(s, "{")
-	s = strings.TrimRight(s, "}")
-	pLeft, pRight, _ := strings.Cut(s, "-")
-	return pLeft, pRight
-}
-
-// Used by templates defined inside of read_query_template.go to generate the read query code
-type readQuery struct {
-	Path         openapi.OpenAPIPathObject
-	Schema       openapi.OpenAPISchemaObject
-	BlockName    strWithCases
-	AltGetMethod []map[string]string
-}
-
-// Represents a method used to perform a query using msgraph-sdk-go
-type queryMethod struct {
-	MethodName string
-	Parameter  string
-}
-
-func (rq readQuery) PathFields() []string {
-	return strings.Split(rq.Path.Path, "/")[1:]
-}
-
-func (rq readQuery) Configuration() string {
-
-	var config string
-
-	// Generate ReadQuery.Configuration
-	config = strings.ToLower(rq.PathFields()[0]) + "."
-	if len(rq.PathFields()) == 1 {
-		config += upperFirst(rq.PathFields()[0])
-	} else if len(rq.PathFields()) == 2 {
-		s, _ := pathFieldName(rq.PathFields()[1])
-		config += upperFirst(s) + "Item"
-	} else {
-		config += "MISSING"
-	}
-
-	return config
-
-}
-
-func (rq readQuery) SelectParameters() []string {
-
-	var selectParams []string
-
-	for _, p := range rq.Path.Get.Response.Properties {
-		//if !slices.Contains(augment.ExcludedProperties, p.Name) {
-			selectParams = append(selectParams, p.Name)
-		//}
-	}
-
-	return selectParams
-
-}
-
-func (rq readQuery) MultipleGetMethodParameters() bool {
-	for _, p := range rq.PathFields()[1:] {
-		if strings.HasPrefix(p, "{") {
-			return true
-		}
-	}
-	return false
-}
-
-func (rq readQuery) GetMethod() []queryMethod {
-	var getMethod []queryMethod
-	for _, p := range rq.PathFields() {
-		newMethod := new(queryMethod)
-		if strings.HasPrefix(p, "{") {
-			pLeft, pRight := pathFieldName(p)
-			pLeft = strcase.ToCamel(pLeft)
-			pRight = strcase.ToCamel(pRight)
-			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "state." + pRight + ".ValueString()"
-		} else {
-			newMethod.MethodName = strcase.ToCamel(p)
-		}
-		getMethod = append(getMethod, *newMethod)
-	}
-	return getMethod
-}
-
-func generateReadQuery(pathObject openapi.OpenAPIPathObject, blockName string) readQuery {
-
-	rq := readQuery{
-		Path:         pathObject,
-		BlockName:    strWithCases{blockName},
-		//AltGetMethod: augment.AltReadMethods,
-	}
-
-	return rq
-
-}
-
-// Used by 'read_response_template' to generate code to map the query response to the terraform model
-type readResponse struct {
-	Property openapi.OpenAPISchemaProperty
-	Parent   *readResponse
-	BlockName string
-}
-
-func (rr readResponse) StateVarName() string {
-
-	if rr.Parent != nil && rr.Parent.AttributeType() == "ReadSingleNestedAttribute" {
-		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
-	} else if rr.Parent != nil && rr.Parent.AttributeType() == "ReadListNestedAttribute" {
-		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
-	} else {
-		return "state." + upperFirst(rr.Property.Name)
-	}
-}
-
-func (rr readResponse) ModelName() string {
-	return rr.BlockName + upperFirst(rr.Property.Name) + "Model"
-}
-
-func (rr readResponse) AttributeType() string {
-
-	switch rr.Property.Type {
-	case "string":
-		if rr.Property.Format == "" {
-			return "ReadStringAttribute"
-		} else if strings.Contains(rr.Property.Format, "base64") { // TODO: base64 encoded data is probably not stored correctly
-			return "ReadStringBase64Attribute"
-		} else {
-			return "ReadStringFormattedAttribute"
-		}
-	case "integer":
-		return "ReadInt64Attribute"
-	case "boolean":
-		return "ReadBoolAttribute"
-	case "object":
-		if rr.Property.ObjectOf.Type == "string" { // This is a string enum.
-			return "ReadStringFormattedAttribute"
-		} else {
-			return "ReadSingleNestedAttribute"
-		}
-	case "array":
-		switch rr.Property.ArrayOf {
-		case "string":
-			if rr.Property.Format == "" {
-				return "ReadListStringAttribute"
-			} else {
-				return "ReadListStringFormattedAttribute"
-			}
-		case "object":
-			if rr.Property.ObjectOf.Type == "string" { // This is a string enum.
-				return "ReadListStringFormattedAttribute"
-			} else {
-				return "ReadListNestedAttribute"
-			}
-		}
-	}
-
-	return "UNKNOWN"
-}
-
-func (rr readResponse) GetMethod() string {
-
-	getMethod := "Get" + upperFirst(rr.Property.Name) + "()"
-	if rr.Property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
-		getMethod = "GetTypeEscaped()"
-	}
-
-	if rr.Parent != nil && rr.Parent.AttributeType() == "ReadSingleNestedAttribute" {
-		getMethod = rr.Parent.GetMethod() + "." + getMethod
-	} else if rr.Parent != nil && rr.Parent.AttributeType() == "ReadListNestedAttribute" {
-		getMethod = "v." + getMethod
-	} else {
-		getMethod = "result." + getMethod
-	}
-
-	return getMethod
-
-}
-
-func (rr readResponse) NestedRead() []readResponse {
-	return generateReadResponse(nil, rr.Property.ObjectOf, &rr, rr.BlockName)
-}
-
-func generateReadResponse(read []readResponse, schemaObject openapi.OpenAPISchemaObject, parent *readResponse, blockName string) []readResponse {
-
-	for _, property := range schemaObject.Properties {
-
-		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
-
-		newReadResponse := readResponse{
-			Property: property,
-			Parent:   parent,
-			BlockName: blockName,
-		}
-
-		read = append(read, newReadResponse)
-	}
-
-	return read
-
-}
-
 type templateInput struct {
 	PackageName       string
-	BlockName         strWithCases
+	BlockName         transform.StrWithCases
 	Schema            []transform.TerraformSchema
 	Model             []terraformModel
 	CreateRequestBody []createRequestBody
 	CreateRequest     createRequest
-	ReadQuery         readQuery
-	ReadResponse      []readResponse
+	ReadQuery         transform.ReadQuery
+	ReadResponse      []transform.ReadResponse
 	UpdateRequestBody []updateRequestBody
 	UpdateRequest     updateRequest
 }
@@ -270,10 +45,10 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string) 
 
 	// Set input values to top level template
 	input.PackageName = packageName
-	input.BlockName = strWithCases{blockName}
+	input.BlockName = transform.StrWithCases{String: blockName}
 	input.Schema = generateSchema(pathObject, pathObject.Get.Response, "DataSource") // Generate  Schema from OpenAPI Schama properties
-	input.ReadQuery = generateReadQuery(pathObject, blockName)
-	input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
+	input.ReadQuery = transform.GenerateReadQuery(pathObject, blockName)
+	input.ReadResponse = transform.GenerateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
 
 	// Create directory for package
 	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)

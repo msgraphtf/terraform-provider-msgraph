@@ -9,6 +9,7 @@ import (
 	"github.com/iancoleman/strcase"
 
 	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/transform"
 )
 
 type createRequestBody struct {
@@ -16,7 +17,7 @@ type createRequestBody struct {
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *createRequestBody
 	BlockName       string
-	AttributeName   strWithCases
+	AttributeName   transform.StrWithCases
 }
 
 func (crb createRequestBody) AttributeType() string {
@@ -139,7 +140,7 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			Property:      property,
 			Parent:        parent,
 			BlockName:     blockName,
-			AttributeName: strWithCases{property.Name},
+			AttributeName: transform.StrWithCases{String: property.Name},
 		}
 
 		cr = append(cr, newCreateRequest)
@@ -150,7 +151,7 @@ func generateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 
 type createRequest struct {
 	BlockName  string
-	PostMethod []queryMethod
+	PostMethod []transform.QueryMethod
 }
 
 func generateCreateRequest(pathObject openapi.OpenAPIPathObject, blockName string) createRequest {
@@ -158,11 +159,11 @@ func generateCreateRequest(pathObject openapi.OpenAPIPathObject, blockName strin
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
 
-	var postMethod []queryMethod
+	var postMethod []transform.QueryMethod
 	for _, p := range pathFields {
-		newMethod := new(queryMethod)
+		newMethod := new(transform.QueryMethod)
 		if strings.HasPrefix(p, "{") {
-			pLeft, pRight := pathFieldName(p)
+			pLeft, pRight := transform.PathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight
@@ -187,7 +188,7 @@ type updateRequestBody struct {
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *updateRequestBody
 	BlockName       string
-	AttributeName   strWithCases
+	AttributeName   transform.StrWithCases
 }
 
 func (urb updateRequestBody) AttributeType() string {
@@ -320,7 +321,7 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 			Property:      property,
 			Parent:        parent,
 			BlockName:     blockName,
-			AttributeName: strWithCases{property.Name},
+			AttributeName: transform.StrWithCases{String: property.Name},
 		}
 
 		cr = append(cr, newUpdateRequest)
@@ -331,18 +332,18 @@ func generateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 
 type updateRequest struct {
 	BlockName  string
-	PostMethod []queryMethod
+	PostMethod []transform.QueryMethod
 }
 
 func generateUpdateRequest(pathObject openapi.OpenAPIPathObject, blockName string) updateRequest {
 
 	pathFields := strings.Split(pathObject.Path, "/")[1:]
 
-	var postMethod []queryMethod
+	var postMethod []transform.QueryMethod
 	for _, p := range pathFields {
-		newMethod := new(queryMethod)
+		newMethod := new(transform.QueryMethod)
 		if strings.HasPrefix(p, "{") {
-			pLeft, pRight := pathFieldName(p)
+			pLeft, pRight := transform.PathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight
@@ -370,9 +371,9 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
 
 		// Set input values to top level template
 		input.PackageName = packageName
-		input.BlockName = strWithCases{blockName}
-		input.ReadQuery = generateReadQuery(pathObject, blockName)
-		input.ReadResponse = generateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
+		input.BlockName = transform.StrWithCases{String: blockName}
+		input.ReadQuery = transform.GenerateReadQuery(pathObject, blockName)
+		input.ReadResponse = transform.GenerateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
 
 		input.Schema = generateSchema(pathObject, pathObject.Get.Response, "Resource")
 		input.CreateRequestBody = generateCreateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)

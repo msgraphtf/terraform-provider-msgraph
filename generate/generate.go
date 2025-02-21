@@ -6,6 +6,7 @@ import (
 	//"gopkg.in/yaml.v3"
 
 	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/transform"
 )
 
 //var augment templateAugment
@@ -38,7 +39,7 @@ func getBlockName(pathname string) string {
 	if len(pathFields) > 1 {
 		for _, p := range pathFields[1:] {
 			if strings.HasPrefix(p, "{") {
-				pLeft, _ := pathFieldName(p)
+				pLeft, _ := transform.PathFieldName(p)
 				blockName += pLeft
 			} else {
 				blockName += p
