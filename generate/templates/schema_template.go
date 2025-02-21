@@ -1,6 +1,6 @@
 {{- /* Define templates for different Attribute types */}}
 {{- define "StringAttribute" }}
-"{{.AttributeName}}": schema.StringAttribute{
+"{{.Name}}": schema.StringAttribute{
 	Description: "{{.Description}}",
 	{{- if .Required}}
 	Required: true,
@@ -20,7 +20,7 @@
 {{- end }}
 
 {{- define "Int64Attribute" }}
-"{{.AttributeName}}": schema.Int64Attribute{
+"{{.Name}}": schema.Int64Attribute{
 	Description: "{{.Description}}",
 	{{- if .Required}}
 	Required: true,
@@ -35,7 +35,7 @@
 {{- end }}
 
 {{- define "BoolAttribute" }}
-"{{.AttributeName}}": schema.BoolAttribute{
+"{{.Name}}": schema.BoolAttribute{
 	Description: "{{.Description}}",
 	{{- if .Required}}
 	Required: true,
@@ -55,7 +55,7 @@
 {{- end }}
 
 {{- define "ListAttribute" }}
-"{{.AttributeName}}": schema.ListAttribute{
+"{{.Name}}": schema.ListAttribute{
 	Description: "{{.Description}}",
 	{{- if .Required}}
 	Required: true,
@@ -76,7 +76,7 @@
 {{- end }}
 
 {{- define "SingleNestedAttribute" }}
-"{{.AttributeName}}": schema.SingleNestedAttribute{
+"{{.Name}}": schema.SingleNestedAttribute{
 	Description: "{{.Description}}",
 	{{- if .Required}}
 	Required: true,
@@ -99,7 +99,7 @@
 {{- end }}
 
 {{- define "ListNestedAttribute" }}
-"{{.AttributeName}}": schema.ListNestedAttribute{
+"{{.Name}}": schema.ListNestedAttribute{
 	Description: "{{.Description}}",
 	{{- if .Required}}
 	Required: true,
@@ -126,17 +126,17 @@
 {{- /* Generate our Attributes from our defined templates above */}}
 {{- block "generate_schema" .Schema}}
 {{- range .}}
-{{- if eq .AttributeType "StringAttribute" }}
+{{- if eq .Type "StringAttribute" }}
 {{- template "StringAttribute" .}}
-{{- else if eq .AttributeType "Int64Attribute" }}
+{{- else if eq .Type "Int64Attribute" }}
 {{- template "Int64Attribute" .}}
-{{- else if eq .AttributeType "BoolAttribute" }}
+{{- else if eq .Type "BoolAttribute" }}
 {{- template "BoolAttribute" .}}
-{{- else if eq .AttributeType "ListAttribute" }}
+{{- else if eq .Type "ListAttribute" }}
 {{- template "ListAttribute" .}}
-{{- else if eq .AttributeType "SingleNestedAttribute" }}
+{{- else if eq .Type "SingleNestedAttribute" }}
 {{- template "SingleNestedAttribute" .}}
-{{- else if eq .AttributeType "ListNestedAttribute" }}
+{{- else if eq .Type "ListNestedAttribute" }}
 {{- template "ListNestedAttribute" .}}
 {{- end }}
 {{- end}}
