@@ -25,8 +25,8 @@ type templateInput struct {
 	CreateRequest     createRequest
 	ReadQuery         transform.ReadQuery
 	ReadResponse      []transform.ReadResponse
-	UpdateRequestBody []updateRequestBody
-	UpdateRequest     updateRequest
+	UpdateRequestBody []transform.UpdateRequestBody
+	UpdateRequest     transform.UpdateRequest
 }
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
