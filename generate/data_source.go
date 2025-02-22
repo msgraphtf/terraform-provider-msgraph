@@ -47,7 +47,7 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string) 
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
 	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "DataSource"} // Generate  Schema from OpenAPI Schama properties
-	input.ReadQuery = transform.GenerateReadQuery(pathObject, blockName)
+	input.ReadQuery = transform.ReadQuery{Path: pathObject, BlockName: transform.StrWithCases{String: blockName}}
 	input.ReadResponse = transform.GenerateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
 
 	// Create directory for package

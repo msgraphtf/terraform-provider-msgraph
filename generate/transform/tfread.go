@@ -11,7 +11,6 @@ import (
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type ReadQuery struct {
 	Path         openapi.OpenAPIPathObject
-	Schema       openapi.OpenAPISchemaObject
 	BlockName    StrWithCases
 	AltGetMethod []map[string]string
 }
@@ -84,18 +83,6 @@ func (rq ReadQuery) GetMethod() []QueryMethod {
 		getMethod = append(getMethod, *newMethod)
 	}
 	return getMethod
-}
-
-func GenerateReadQuery(pathObject openapi.OpenAPIPathObject, blockName string) ReadQuery {
-
-	rq := ReadQuery{
-		Path:         pathObject,
-		BlockName:    StrWithCases{blockName},
-		//AltGetMethod: augment.AltReadMethods,
-	}
-
-	return rq
-
 }
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
