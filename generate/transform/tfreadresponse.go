@@ -6,6 +6,10 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
+type ReadResponse struct {
+
+}
+
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type ReadResponseAttribute struct {
 	Property openapi.OpenAPISchemaProperty
@@ -89,7 +93,26 @@ func (rr ReadResponseAttribute) GetMethod() string {
 }
 
 func (rr ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
-	return GenerateReadResponse(nil, rr.Property.ObjectOf, &rr, rr.BlockName)
+
+	var read []ReadResponseAttribute
+
+	for _, property := range rr.Property.ObjectOf.Properties {
+
+		// Skip excluded properties
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
+
+		newReadResponseAttribute := ReadResponseAttribute{
+			Property: property,
+			Parent:   &rr,
+			BlockName: rr.BlockName,
+		}
+
+		read = append(read, newReadResponseAttribute)
+	}
+
+	return read
 }
 
 func GenerateReadResponse(read []ReadResponseAttribute, schemaObject openapi.OpenAPISchemaObject, parent *ReadResponseAttribute, blockName string) []ReadResponseAttribute {
