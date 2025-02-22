@@ -24,7 +24,6 @@ type templateInput struct {
 	CreateRequest     transform.CreateRequest
 	ReadQuery         transform.ReadQuery
 	ReadResponse      transform.ReadResponse
-	UpdateRequestBody []transform.UpdateRequestBody
 	UpdateRequest     transform.UpdateRequest
 }
 

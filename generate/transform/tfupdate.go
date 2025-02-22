@@ -36,6 +36,31 @@ func (ur UpdateRequest) PostMethod() []QueryMethod {
 	return postMethod
 }
 
+func (ur UpdateRequest) Body() []UpdateRequestBody {
+
+	var urb []UpdateRequestBody
+
+	for _, property := range ur.OpenAPIPath.Get.Response.Properties {
+
+		// Skip excluded properties
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
+
+		newUpdateRequest := UpdateRequestBody{
+			Path:          ur.OpenAPIPath,
+			Property:      property,
+			Parent:        nil,
+			BlockName:     ur.BlockName,
+			AttributeName: StrWithCases{String: property.Name},
+		}
+
+		urb = append(urb, newUpdateRequest)
+	}
+
+	return urb
+}
+
 type UpdateRequestBody struct {
 	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
@@ -156,13 +181,11 @@ func (urb UpdateRequestBody) NewModelMethod() string {
 }
 
 func (urb UpdateRequestBody) NestedUpdate() []UpdateRequestBody {
-	return GenerateUpdateRequestBody(urb.Path, urb.Property.ObjectOf, &urb, urb.BlockName)
-}
+	//return GenerateUpdateRequestBody(urb.Path, urb.Property.ObjectOf, &urb, urb.BlockName)
 
-func GenerateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *UpdateRequestBody, blockName string) []UpdateRequestBody {
 	var cr []UpdateRequestBody
 
-	for _, property := range schemaObject.Properties {
+	for _, property := range urb.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
 		//if slices.Contains(augment.ExcludedProperties, property.Name) {
@@ -170,10 +193,10 @@ func GenerateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 		//}
 
 		newUpdateRequest := UpdateRequestBody{
-			Path:          pathObject,
+			Path:          urb.Path,
 			Property:      property,
-			Parent:        parent,
-			BlockName:     blockName,
+			Parent:        &urb,
+			BlockName:     urb.BlockName,
 			AttributeName: StrWithCases{String: property.Name},
 		}
 

@@ -400,7 +400,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 	{{- end}}
 
-	{{- block "generate_update" .UpdateRequestBody}}
+	{{- block "generate_update" .UpdateRequest.Body}}
 	{{- range .}}
 	{{- if eq .AttributeType "UpdateStringAttribute"}}
 	{{ template "UpdateStringAttribute" .}}
