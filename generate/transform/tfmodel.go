@@ -11,14 +11,14 @@ import (
 )
 
 // Used by templates defined inside of data_source_template.go to generate the data models
-type Model struct {
+type ModelDefinition struct {
 	ModelName   string
 	ModelFields []ModelField
 	BlockName   string
 }
 
 type ModelField struct {
-	Model     *Model
+	ModelDefinition     *ModelDefinition
 	Property  openapi.OpenAPISchemaProperty
 }
 
@@ -96,7 +96,7 @@ func (mf ModelField) AttributeType() string {
 		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.Model.BlockName + upperFirst(mf.Property.Name))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.ModelDefinition.BlockName + upperFirst(mf.Property.Name))
 		}
 	case "array":
 		switch mf.Property.ArrayOf {
@@ -104,7 +104,7 @@ func (mf ModelField) AttributeType() string {
 			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.Model.BlockName + upperFirst(mf.Property.Name))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.ModelDefinition.BlockName + upperFirst(mf.Property.Name))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"
@@ -117,18 +117,18 @@ func (mf ModelField) AttributeType() string {
 }
 
 func (mf ModelField) ModelVarName() string {
-	return mf.Model.BlockName + upperFirst(mf.Property.Name)
+	return mf.ModelDefinition.BlockName + upperFirst(mf.Property.Name)
 }
 
 func (mf ModelField) ModelName() string {
-	return mf.Model.BlockName + upperFirst(mf.Property.Name) + "Model"
+	return mf.ModelDefinition.BlockName + upperFirst(mf.Property.Name) + "Model"
 }
 
 var allModelNames []string
 
-func GenerateModelInput(modelName string, model []Model, schemaObject openapi.OpenAPISchemaObject, blockName string) []Model {
+func GenerateModelInput(modelName string, model []ModelDefinition, schemaObject openapi.OpenAPISchemaObject, blockName string) []ModelDefinition {
 
-	newModel := Model{
+	newModel := ModelDefinition{
 		ModelName: blockName + modelName + "Model",
 		BlockName: blockName,
 	}
@@ -140,7 +140,7 @@ func GenerateModelInput(modelName string, model []Model, schemaObject openapi.Op
 		allModelNames = append(allModelNames, newModel.ModelName)
 	}
 
-	var nestedModels []Model
+	var nestedModels []ModelDefinition
 
 	for _, property := range schemaObject.Properties {
 
@@ -150,7 +150,7 @@ func GenerateModelInput(modelName string, model []Model, schemaObject openapi.Op
 		//}
 
 		newModelField := ModelField{
-			Model:     &newModel,
+			ModelDefinition:     &newModel,
 			Property:  property,
 		}
 

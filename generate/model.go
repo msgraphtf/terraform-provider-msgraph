@@ -13,7 +13,7 @@ import (
 
 type modelInput struct {
 	PackageName string
-	Model       []transform.Model
+	Model       []transform.ModelDefinition
 }
 
 
