@@ -38,9 +38,9 @@ func (cr CreateRequest) PostMethod() []QueryMethod {
 	return postMethod
 }
 
-func (cr CreateRequest) Attributes() []CreateRequestBody {
+func (cr CreateRequest) Attributes() []createRequestAttribute {
 
-	var crb []CreateRequestBody
+	var cra []createRequestAttribute
 
 	for _, property := range cr.OpenAPIPath.Get.Response.Properties {
 
@@ -49,30 +49,30 @@ func (cr CreateRequest) Attributes() []CreateRequestBody {
 		//	continue
 		//}
 
-		newCreateRequest := CreateRequestBody{
+		newCreateRequest := createRequestAttribute{
 			CreateRequest: cr,
 			Property:      property,
 			AttributeName: StrWithCases{String: property.Name},
 		}
 
-		crb = append(crb, newCreateRequest)
+		cra = append(cra, newCreateRequest)
 	}
 
-	return crb
+	return cra
 }
 
-type CreateRequestBody struct {
+type createRequestAttribute struct {
 	CreateRequest   CreateRequest
 	Property        openapi.OpenAPISchemaProperty
-	Parent          *CreateRequestBody
+	Parent          *createRequestAttribute
 	AttributeName   StrWithCases
 }
 
-func (crb CreateRequestBody) AttributeType() string {
+func (cra createRequestAttribute) AttributeType() string {
 
-	switch crb.Property.Type {
+	switch cra.Property.Type {
 	case "string":
-		switch crb.Property.Format {
+		switch cra.Property.Format {
 		case "date-time":
 			return "CreateStringTimeAttribute"
 		case "uuid":
@@ -80,7 +80,7 @@ func (crb CreateRequestBody) AttributeType() string {
 		}
 		return "CreateStringAttribute"
 	case "integer":
-		if crb.Property.Format == "int32" {
+		if cra.Property.Format == "int32" {
 			return "CreateInt32Attribute"
 		} else {
 			return "CreateInt64Attribute"
@@ -88,9 +88,9 @@ func (crb CreateRequestBody) AttributeType() string {
 	case "boolean":
 		return "CreateBoolAttribute"
 	case "array":
-		switch crb.Property.ArrayOf {
+		switch cra.Property.ArrayOf {
 		case "string":
-			if crb.Property.Format == "uuid" {
+			if cra.Property.Format == "uuid" {
 				return "CreateArrayUuidAttribute"
 			} else {
 				return "CreateArrayStringAttribute"
@@ -99,7 +99,7 @@ func (crb CreateRequestBody) AttributeType() string {
 			return "CreateArrayObjectAttribute"
 		}
 	case "object":
-		if crb.Property.ObjectOf.Type == "string" { // This is a string enum
+		if cra.Property.ObjectOf.Type == "string" { // This is a string enum
 			return "CreateStringEnumAttribute"
 		} else {
 			return "CreateObjectAttribute"
@@ -109,21 +109,21 @@ func (crb CreateRequestBody) AttributeType() string {
 	return "UNKNOWN"
 }
 
-func (crb CreateRequestBody) PlanVar() string {
+func (cra createRequestAttribute) PlanVar() string {
 
-	if crb.Parent != nil && crb.Parent.AttributeType() == "CreateObjectAttribute" {
-		return crb.Parent.RequestBodyVar() + "Model."
-	} else if crb.Parent != nil && crb.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return crb.Parent.RequestBodyVar() + "Model."
+	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+		return cra.Parent.RequestBodyVar() + "Model."
+	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+		return cra.Parent.RequestBodyVar() + "Model."
 	} else {
 		return "plan."
 	}
 
 }
 
-func (crb CreateRequestBody) PlanValueMethod() string {
+func (cra createRequestAttribute) PlanValueMethod() string {
 
-	switch crb.Property.Type {
+	switch cra.Property.Type {
 	case "string":
 		return "ValueString"
 	case "integer":
@@ -131,16 +131,16 @@ func (crb CreateRequestBody) PlanValueMethod() string {
 	case "boolean":
 		return "ValueBool"
 	case "array":
-		switch crb.Property.ArrayOf {
+		switch cra.Property.ArrayOf {
 		case "string":
-			if crb.Property.Format == "uuid" {
+			if cra.Property.Format == "uuid" {
 				return "ValueString"
 			} else {
 				return "ValueString"
 			}
 		}
 	case "object":
-		if crb.Property.ObjectOf.Type == "string" { // This is a string enum
+		if cra.Property.ObjectOf.Type == "string" { // This is a string enum
 			return "ValueString"
 		}
 	}
@@ -149,19 +149,19 @@ func (crb CreateRequestBody) PlanValueMethod() string {
 
 }
 
-func (crb CreateRequestBody) NestedCreate() []CreateRequestBody {
-	var cr []CreateRequestBody
+func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
+	var cr []createRequestAttribute
 
-	for _, property := range crb.Property.ObjectOf.Properties {
+	for _, property := range cra.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
 		//if slices.Contains(augment.ExcludedProperties, property.Name) {
 		//	continue
 		//}
 
-		newCreateRequest := CreateRequestBody{
+		newCreateRequest := createRequestAttribute{
 			Property:      property,
-			Parent:        &crb,
+			Parent:        &cra,
 			AttributeName: StrWithCases{String: property.Name},
 		}
 
@@ -171,20 +171,20 @@ func (crb CreateRequestBody) NestedCreate() []CreateRequestBody {
 	return cr
 }
 
-func (crb CreateRequestBody) NewModelMethod() string {
-	return upperFirst(crb.Property.ObjectOf.Title)
+func (cra createRequestAttribute) NewModelMethod() string {
+	return upperFirst(cra.Property.ObjectOf.Title)
 }
 
-func (crb CreateRequestBody) RequestBodyVar() string {
+func (cra createRequestAttribute) RequestBodyVar() string {
 
-	if crb.Parent != nil && crb.Parent.AttributeType() == "CreateObjectAttribute" {
-		return crb.Parent.RequestBodyVar()
-	} else if crb.Parent != nil && crb.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return crb.Parent.RequestBodyVar()
-	} else if crb.Property.Type == "object" && crb.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
-		return crb.Property.Name
-	} else if crb.Property.ArrayOf == "object" {
-		return crb.Property.ObjectOf.Title
+	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+		return cra.Parent.RequestBodyVar()
+	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+		return cra.Parent.RequestBodyVar()
+	} else if cra.Property.Type == "object" && cra.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
+		return cra.Property.Name
+	} else if cra.Property.ArrayOf == "object" {
+		return cra.Property.ObjectOf.Title
 	} else {
 		return "requestBody"
 	}
