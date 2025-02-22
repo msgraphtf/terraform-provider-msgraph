@@ -90,7 +90,7 @@ if len({{.GetMethod}}) > 0 {
 
 
 {{/* Generate statements to map response to state */}}
-{{- block "generate_read" .}}
+{{- block "generate_read" .Attributes}}
 {{- range .}}
 {{- if eq .AttributeType "ReadStringAttribute"}}
 {{- template "ReadStringAttribute" .}}

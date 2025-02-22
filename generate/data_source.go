@@ -24,7 +24,7 @@ type templateInput struct {
 	CreateRequestBody []transform.CreateRequestBody
 	CreateRequest     transform.CreateRequest
 	ReadQuery         transform.ReadQuery
-	ReadResponse      []transform.ReadResponseAttribute
+	ReadResponse      transform.ReadResponse
 	UpdateRequestBody []transform.UpdateRequestBody
 	UpdateRequest     transform.UpdateRequest
 }
@@ -48,7 +48,7 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string) 
 	input.BlockName = transform.StrWithCases{String: blockName}
 	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "DataSource"} // Generate  Schema from OpenAPI Schama properties
 	input.ReadQuery = transform.ReadQuery{Path: pathObject, BlockName: transform.StrWithCases{String: blockName}}
-	input.ReadResponse = transform.GenerateReadResponse(nil, pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
+	input.ReadResponse = transform.GenerateReadResponse(pathObject.Get.Response, nil, blockName) // Generate Read Go code from OpenAPI schema
 
 	// Create directory for package
 	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)

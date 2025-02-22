@@ -7,14 +7,15 @@ import (
 )
 
 type ReadResponse struct {
-
+	Attributes []ReadResponseAttribute
+	BlockName  string
 }
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type ReadResponseAttribute struct {
-	Property openapi.OpenAPISchemaProperty
-	Parent   *ReadResponseAttribute
-	BlockName string
+	ReadResponse *ReadResponse
+	Property     openapi.OpenAPISchemaProperty
+	Parent       *ReadResponseAttribute
 }
 
 func (rra ReadResponseAttribute) StateVarName() string {
@@ -29,7 +30,7 @@ func (rra ReadResponseAttribute) StateVarName() string {
 }
 
 func (rra ReadResponseAttribute) ModelName() string {
-	return rra.BlockName + upperFirst(rra.Property.Name) + "Model"
+	return rra.ReadResponse.BlockName + upperFirst(rra.Property.Name) + "Model"
 }
 
 func (rra ReadResponseAttribute) AttributeType() string {
@@ -104,9 +105,9 @@ func (rra ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 		//}
 
 		newReadResponseAttribute := ReadResponseAttribute{
-			Property: property,
-			Parent:   &rra,
-			BlockName: rra.BlockName,
+			ReadResponse: rra.ReadResponse,
+			Property:     property,
+			Parent:       &rra,
 		}
 
 		read = append(read, newReadResponseAttribute)
@@ -115,7 +116,11 @@ func (rra ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 	return read
 }
 
-func GenerateReadResponse(read []ReadResponseAttribute, schemaObject openapi.OpenAPISchemaObject, parent *ReadResponseAttribute, blockName string) []ReadResponseAttribute {
+func GenerateReadResponse(schemaObject openapi.OpenAPISchemaObject, parent *ReadResponseAttribute, blockName string) ReadResponse {
+
+	readResponse := ReadResponse{
+		BlockName: blockName,
+	}
 
 	for _, property := range schemaObject.Properties {
 
@@ -125,14 +130,14 @@ func GenerateReadResponse(read []ReadResponseAttribute, schemaObject openapi.Ope
 		//}
 
 		newReadResponseAttribute := ReadResponseAttribute{
-			Property: property,
-			Parent:   parent,
-			BlockName: blockName,
+			ReadResponse: &readResponse,
+			Property:     property,
+			Parent:       parent,
 		}
 
-		read = append(read, newReadResponseAttribute)
+		readResponse.Attributes = append(readResponse.Attributes, newReadResponseAttribute)
 	}
 
-	return read
+	return readResponse
 
 }
