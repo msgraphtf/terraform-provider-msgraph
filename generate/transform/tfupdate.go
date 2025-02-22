@@ -36,9 +36,9 @@ func (ur UpdateRequest) PostMethod() []QueryMethod {
 	return postMethod
 }
 
-func (ur UpdateRequest) Body() []UpdateRequestBody {
+func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 
-	var urb []UpdateRequestBody
+	var ura []updateRequestAttribute
 
 	for _, property := range ur.OpenAPIPath.Get.Response.Properties {
 
@@ -47,7 +47,7 @@ func (ur UpdateRequest) Body() []UpdateRequestBody {
 		//	continue
 		//}
 
-		newUpdateRequest := UpdateRequestBody{
+		newUpdateRequest := updateRequestAttribute{
 			Path:          ur.OpenAPIPath,
 			Property:      property,
 			Parent:        nil,
@@ -55,25 +55,25 @@ func (ur UpdateRequest) Body() []UpdateRequestBody {
 			AttributeName: StrWithCases{String: property.Name},
 		}
 
-		urb = append(urb, newUpdateRequest)
+		ura = append(ura, newUpdateRequest)
 	}
 
-	return urb
+	return ura
 }
 
-type UpdateRequestBody struct {
+type updateRequestAttribute struct {
 	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
-	Parent          *UpdateRequestBody
+	Parent          *updateRequestAttribute
 	BlockName       string
 	AttributeName   StrWithCases
 }
 
-func (urb UpdateRequestBody) AttributeType() string {
+func (ura updateRequestAttribute) AttributeType() string {
 
-	switch urb.Property.Type {
+	switch ura.Property.Type {
 	case "string":
-		switch urb.Property.Format {
+		switch ura.Property.Format {
 		case "date-time":
 			return "UpdateStringTimeAttribute"
 		case "uuid":
@@ -81,7 +81,7 @@ func (urb UpdateRequestBody) AttributeType() string {
 		}
 		return "UpdateStringAttribute"
 	case "integer":
-		if urb.Property.Format == "int32" {
+		if ura.Property.Format == "int32" {
 			return "UpdateInt32Attribute"
 		} else {
 			return "UpdateInt64Attribute"
@@ -89,9 +89,9 @@ func (urb UpdateRequestBody) AttributeType() string {
 	case "boolean":
 		return "UpdateBoolAttribute"
 	case "array":
-		switch urb.Property.ArrayOf {
+		switch ura.Property.ArrayOf {
 		case "string":
-			if urb.Property.Format == "uuid" {
+			if ura.Property.Format == "uuid" {
 				return "UpdateArrayUuidAttribute"
 			} else {
 				return "UpdateArrayStringAttribute"
@@ -100,7 +100,7 @@ func (urb UpdateRequestBody) AttributeType() string {
 			return "UpdateArrayObjectAttribute"
 		}
 	case "object":
-		if urb.Property.ObjectOf.Type == "string" { // This is a string enum
+		if ura.Property.ObjectOf.Type == "string" { // This is a string enum
 			return "UpdateStringEnumAttribute"
 		} else {
 			return "UpdateObjectAttribute"
@@ -111,46 +111,46 @@ func (urb UpdateRequestBody) AttributeType() string {
 
 }
 
-func (urb UpdateRequestBody) PlanVar() string {
+func (ura updateRequestAttribute) PlanVar() string {
 
-	if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return urb.Parent.RequestBodyVar() + "Model."
-	} else if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
-		return urb.Parent.RequestBodyVar() + "Model."
+	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Parent.RequestBodyVar() + "Model."
+	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
+		return ura.Parent.RequestBodyVar() + "Model."
 	} else {
 		return "plan."
 	}
 }
 
-func (urb UpdateRequestBody) StateVar() string {
+func (ura updateRequestAttribute) StateVar() string {
 
-	if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return urb.Parent.RequestBodyVar() + "State."
-	} else if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
-		return urb.Parent.RequestBodyVar() + "State."
+	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Parent.RequestBodyVar() + "State."
+	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
+		return ura.Parent.RequestBodyVar() + "State."
 	} else {
 		return "state."
 	}
 }
 
-func (urb UpdateRequestBody) RequestBodyVar() string {
+func (ura updateRequestAttribute) RequestBodyVar() string {
 
-	if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return urb.Parent.RequestBodyVar()
-	} else if urb.Parent != nil && urb.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
-		return urb.Parent.RequestBodyVar()
-	} else if urb.Property.Type == "object" && urb.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
-		return urb.Property.Name
-	} else if urb.Property.ArrayOf == "object" {
-		return urb.Property.ObjectOf.Title
+	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Parent.RequestBodyVar()
+	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
+		return ura.Parent.RequestBodyVar()
+	} else if ura.Property.Type == "object" && ura.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
+		return ura.Property.Name
+	} else if ura.Property.ArrayOf == "object" {
+		return ura.Property.ObjectOf.Title
 	} else {
 		return "requestBody"
 	}
 }
 
-func (urb UpdateRequestBody) PlanValueMethod() string {
+func (ura updateRequestAttribute) PlanValueMethod() string {
 
-	switch urb.Property.Type {
+	switch ura.Property.Type {
 	case "string":
 		return "ValueString"
 	case "integer":
@@ -158,16 +158,16 @@ func (urb UpdateRequestBody) PlanValueMethod() string {
 	case "boolean":
 		return "ValueBool"
 	case "array":
-		switch urb.Property.ArrayOf {
+		switch ura.Property.ArrayOf {
 		case "string":
-			if urb.Property.Format == "uuid" {
+			if ura.Property.Format == "uuid" {
 				return "ValueString"
 			} else {
 				return "ValueString"
 			}
 		}
 	case "object":
-		if urb.Property.ObjectOf.Type == "string" { // This is a string enum
+		if ura.Property.ObjectOf.Type == "string" { // This is a string enum
 			return "ValueString"
 		}
 	}
@@ -176,27 +176,26 @@ func (urb UpdateRequestBody) PlanValueMethod() string {
 
 }
 
-func (urb UpdateRequestBody) NewModelMethod() string {
-	return upperFirst(urb.Property.ObjectOf.Title)
+func (ura updateRequestAttribute) NewModelMethod() string {
+	return upperFirst(ura.Property.ObjectOf.Title)
 }
 
-func (urb UpdateRequestBody) NestedUpdate() []UpdateRequestBody {
-	//return GenerateUpdateRequestBody(urb.Path, urb.Property.ObjectOf, &urb, urb.BlockName)
+func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 
-	var cr []UpdateRequestBody
+	var cr []updateRequestAttribute
 
-	for _, property := range urb.Property.ObjectOf.Properties {
+	for _, property := range ura.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
 		//if slices.Contains(augment.ExcludedProperties, property.Name) {
 		//	continue
 		//}
 
-		newUpdateRequest := UpdateRequestBody{
-			Path:          urb.Path,
+		newUpdateRequest := updateRequestAttribute{
+			Path:          ura.Path,
 			Property:      property,
-			Parent:        &urb,
-			BlockName:     urb.BlockName,
+			Parent:        &ura,
+			BlockName:     ura.BlockName,
 			AttributeName: StrWithCases{String: property.Name},
 		}
 
