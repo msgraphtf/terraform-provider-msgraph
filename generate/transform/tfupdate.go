@@ -14,13 +14,13 @@ type UpdateRequest struct {
 	BlockName  string
 }
 
-func (ur UpdateRequest) PostMethod() []QueryMethod {
+func (ur UpdateRequest) PostMethod() []queryMethod {
 
 	pathFields := strings.Split(ur.OpenAPIPath.Path, "/")[1:]
 
-	var postMethod []QueryMethod
+	var postMethod []queryMethod
 	for _, p := range pathFields {
-		newMethod := new(QueryMethod)
+		newMethod := new(queryMethod)
 		if strings.HasPrefix(p, "{") {
 			pLeft, pRight := PathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)

@@ -15,14 +15,14 @@ type CreateRequest struct {
 	BlockName   string
 }
 
-func (cr CreateRequest) PostMethod() []QueryMethod {
+func (cr CreateRequest) PostMethod() []queryMethod {
 
 	pathFields := strings.Split(cr.OpenAPIPath.Path, "/")[1:]
 	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
 
-	var postMethod []QueryMethod
+	var postMethod []queryMethod
 	for _, p := range pathFields {
-		newMethod := new(QueryMethod)
+		newMethod := new(queryMethod)
 		if strings.HasPrefix(p, "{") {
 			pLeft, pRight := PathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)

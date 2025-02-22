@@ -35,3 +35,9 @@ func (s StrWithCases) Snake() string {
 func (s StrWithCases) UpperFirst() string {
 	return strings.ToUpper(s.String[0:1]) + s.String[1:]
 }
+
+// Represents a method used to perform a query using msgraph-sdk-go
+type queryMethod struct {
+	MethodName string
+	Parameter  string
+}

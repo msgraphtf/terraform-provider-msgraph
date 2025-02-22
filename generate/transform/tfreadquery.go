@@ -15,12 +15,6 @@ type ReadQuery struct {
 	AltGetMethod []map[string]string
 }
 
-// Represents a method used to perform a query using msgraph-sdk-go
-type QueryMethod struct {
-	MethodName string
-	Parameter  string
-}
-
 func (rq ReadQuery) PathFields() []string {
 	return strings.Split(rq.OpenAPIPath.Path, "/")[1:]
 }
@@ -67,10 +61,10 @@ func (rq ReadQuery) MultipleGetMethodParameters() bool {
 	return false
 }
 
-func (rq ReadQuery) GetMethod() []QueryMethod {
-	var getMethod []QueryMethod
+func (rq ReadQuery) GetMethod() []queryMethod {
+	var getMethod []queryMethod
 	for _, p := range rq.PathFields() {
-		newMethod := new(QueryMethod)
+		newMethod := new(queryMethod)
 		if strings.HasPrefix(p, "{") {
 			pLeft, pRight := PathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)
