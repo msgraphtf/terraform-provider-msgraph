@@ -22,7 +22,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
 		input.PackageName = packageName
 		input.BlockName = transform.StrWithCases{String: blockName}
 		input.ReadQuery = transform.ReadQuery{Path: pathObject, BlockName: transform.StrWithCases{String: blockName}}
-		input.ReadResponse = transform.GenerateReadResponse(pathObject, blockName) // Generate Read Go code from OpenAPI schema
+		input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: blockName} // Generate Read Go code from OpenAPI schema
 
 		input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource"}
 		input.CreateRequestBody = transform.GenerateCreateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)

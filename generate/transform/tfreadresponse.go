@@ -7,8 +7,8 @@ import (
 )
 
 type ReadResponse struct {
-	BlockName  string
 	OpenAPIPathObject openapi.OpenAPIPathObject
+	BlockName  string
 }
 
 func (rr ReadResponse) Attributes() []ReadResponseAttribute {
@@ -139,13 +139,3 @@ func (rra ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 	return read
 }
 
-func GenerateReadResponse(schemaObject openapi.OpenAPIPathObject, blockName string) ReadResponse {
-
-	readResponse := ReadResponse{
-		OpenAPIPathObject: schemaObject,
-		BlockName: blockName,
-	}
-
-	return readResponse
-
-}
