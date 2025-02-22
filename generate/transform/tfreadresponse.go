@@ -7,8 +7,31 @@ import (
 )
 
 type ReadResponse struct {
-	Attributes []ReadResponseAttribute
 	BlockName  string
+	OpenAPIPathObject openapi.OpenAPIPathObject
+}
+
+func (rr ReadResponse) Attributes() []ReadResponseAttribute {
+
+	var readResponseAttributes []ReadResponseAttribute
+
+	for _, property := range rr.OpenAPIPathObject.Get.Response.Properties {
+
+		// Skip excluded properties
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
+
+		newReadResponseAttribute := ReadResponseAttribute{
+			ReadResponse: &rr,
+			Property:     property,
+		}
+
+		readResponseAttributes = append(readResponseAttributes, newReadResponseAttribute)
+	}
+
+	return readResponseAttributes
+
 }
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
@@ -116,25 +139,11 @@ func (rra ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 	return read
 }
 
-func GenerateReadResponse(schemaObject openapi.OpenAPISchemaObject, blockName string) ReadResponse {
+func GenerateReadResponse(schemaObject openapi.OpenAPIPathObject, blockName string) ReadResponse {
 
 	readResponse := ReadResponse{
+		OpenAPIPathObject: schemaObject,
 		BlockName: blockName,
-	}
-
-	for _, property := range schemaObject.Properties {
-
-		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
-
-		newReadResponseAttribute := ReadResponseAttribute{
-			ReadResponse: &readResponse,
-			Property:     property,
-		}
-
-		readResponse.Attributes = append(readResponse.Attributes, newReadResponseAttribute)
 	}
 
 	return readResponse
