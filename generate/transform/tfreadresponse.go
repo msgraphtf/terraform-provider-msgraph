@@ -116,7 +116,7 @@ func (rra ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 	return read
 }
 
-func GenerateReadResponse(schemaObject openapi.OpenAPISchemaObject, parent *ReadResponseAttribute, blockName string) ReadResponse {
+func GenerateReadResponse(schemaObject openapi.OpenAPISchemaObject, blockName string) ReadResponse {
 
 	readResponse := ReadResponse{
 		BlockName: blockName,
@@ -132,7 +132,6 @@ func GenerateReadResponse(schemaObject openapi.OpenAPISchemaObject, parent *Read
 		newReadResponseAttribute := ReadResponseAttribute{
 			ReadResponse: &readResponse,
 			Property:     property,
-			Parent:       parent,
 		}
 
 		readResponse.Attributes = append(readResponse.Attributes, newReadResponseAttribute)
