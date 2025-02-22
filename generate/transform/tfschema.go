@@ -134,14 +134,14 @@ func (tsa TerraformSchemaAttribute) ElementType() string {
 
 }
 
-func GenerateSchema(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, behaviourMode string) TerraformSchema {
+func GenerateSchema(pathObject openapi.OpenAPIPathObject, behaviourMode string) TerraformSchema {
 
 	schema := TerraformSchema {
 		OpenAPIPath: pathObject,
 		BehaviourMode: behaviourMode,
 	}
 
-	for _, property := range schemaObject.Properties {
+	for _, property := range pathObject.Get.Response.Properties {
 
 		// Skip excluded properties
 		// NOTE: Augmenting is temporarily disabled while I refactor
