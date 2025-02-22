@@ -14,11 +14,12 @@ import (
 type Model struct {
 	ModelName   string
 	ModelFields []ModelField
+	BlockName   string
 }
 
 type ModelField struct {
-	Property      openapi.OpenAPISchemaProperty
-	BlockName     string
+	Model     *Model
+	Property  openapi.OpenAPISchemaProperty
 }
 
 func (mf ModelField) FieldName() string {
@@ -95,7 +96,7 @@ func (mf ModelField) AttributeType() string {
 		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.BlockName + upperFirst(mf.Property.Name))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.Model.BlockName + upperFirst(mf.Property.Name))
 		}
 	case "array":
 		switch mf.Property.ArrayOf {
@@ -103,7 +104,7 @@ func (mf ModelField) AttributeType() string {
 			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.BlockName + upperFirst(mf.Property.Name))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.Model.BlockName + upperFirst(mf.Property.Name))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"
@@ -116,11 +117,11 @@ func (mf ModelField) AttributeType() string {
 }
 
 func (mf ModelField) ModelVarName() string {
-	return mf.BlockName + upperFirst(mf.Property.Name)
+	return mf.Model.BlockName + upperFirst(mf.Property.Name)
 }
 
 func (mf ModelField) ModelName() string {
-	return mf.BlockName + upperFirst(mf.Property.Name) + "Model"
+	return mf.Model.BlockName + upperFirst(mf.Property.Name) + "Model"
 }
 
 var allModelNames []string
@@ -129,6 +130,7 @@ func GenerateModelInput(modelName string, model []Model, schemaObject openapi.Op
 
 	newModel := Model{
 		ModelName: blockName + modelName + "Model",
+		BlockName: blockName,
 	}
 
 	// Skip duplicate models
@@ -148,8 +150,8 @@ func GenerateModelInput(modelName string, model []Model, schemaObject openapi.Op
 		//}
 
 		newModelField := ModelField{
+			Model:     &newModel,
 			Property:  property,
-			BlockName: blockName,
 		}
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
