@@ -376,9 +376,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 		var plan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
 		for k, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
 			{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
-			{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+			{{.RequestBodyVar}}Model := {{.UpdateRequest.BlockName}}{{.AttributeName.UpperCamel}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
-			{{.RequestBodyVar}}State := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+			{{.RequestBodyVar}}State := {{.UpdateRequest.BlockName}}{{.AttributeName.UpperCamel}}Model{}
 			types.ListValueFrom(ctx, {{.StateVar}}{{.AttributeName.UpperCamel}}.Elements()[k].Type(ctx), &{{.RequestBodyVar}}Model)
 			{{template "generate_update" .NestedUpdate}}
 		}
@@ -389,9 +389,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- define "UpdateObjectAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
-		{{.RequestBodyVar}}Model := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+		{{.RequestBodyVar}}Model := {{.UpdateRequest.BlockName}}{{.AttributeName.UpperCamel}}Model{}
 		plan.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
-		{{.RequestBodyVar}}State := {{.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+		{{.RequestBodyVar}}State := {{.UpdateRequest.BlockName}}{{.AttributeName.UpperCamel}}Model{}
 		state.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}State, basetypes.ObjectAsOptions{})
 		{{template "generate_update" .NestedUpdate}}
 		requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})

@@ -48,10 +48,10 @@ func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 		//}
 
 		newUpdateRequest := updateRequestAttribute{
+			UpdateRequest: &ur,
 			Path:          ur.OpenAPIPath,
 			Property:      property,
 			Parent:        nil,
-			BlockName:     ur.BlockName,
 			AttributeName: StrWithCases{String: property.Name},
 		}
 
@@ -62,10 +62,10 @@ func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 }
 
 type updateRequestAttribute struct {
+	UpdateRequest   *UpdateRequest
 	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *updateRequestAttribute
-	BlockName       string
 	AttributeName   StrWithCases
 }
 
@@ -192,10 +192,10 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 		//}
 
 		newUpdateRequest := updateRequestAttribute{
+			UpdateRequest: ura.UpdateRequest,
 			Path:          ura.Path,
 			Property:      property,
 			Parent:        &ura,
-			BlockName:     ura.BlockName,
 			AttributeName: StrWithCases{String: property.Name},
 		}
 
