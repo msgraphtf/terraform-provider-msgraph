@@ -50,7 +50,7 @@ func (cr CreateRequest) Body() []CreateRequestBody {
 		//}
 
 		newCreateRequest := CreateRequestBody{
-			Path:          cr.OpenAPIPath,
+			CreateRequest: cr,
 			Property:      property,
 			Parent:        nil,
 			BlockName:     cr.BlockName,
@@ -64,7 +64,7 @@ func (cr CreateRequest) Body() []CreateRequestBody {
 }
 
 type CreateRequestBody struct {
-	Path            openapi.OpenAPIPathObject
+	CreateRequest   CreateRequest
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *CreateRequestBody
 	BlockName       string
@@ -153,7 +153,27 @@ func (crb CreateRequestBody) PlanValueMethod() string {
 }
 
 func (crb CreateRequestBody) NestedCreate() []CreateRequestBody {
-	return GenerateCreateRequestBody(crb.Path, crb.Property.ObjectOf, &crb, crb.BlockName)
+	//return GenerateCreateRequestBody(crb.Path, crb.Property.ObjectOf, &crb, crb.BlockName)
+	var cr []CreateRequestBody
+
+	for _, property := range crb.Property.ObjectOf.Properties {
+
+		// Skip excluded properties
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
+
+		newCreateRequest := CreateRequestBody{
+			Property:      property,
+			Parent:        &crb,
+			BlockName:     crb.BlockName,
+			AttributeName: StrWithCases{String: property.Name},
+		}
+
+		cr = append(cr, newCreateRequest)
+	}
+
+	return cr
 }
 
 func (crb CreateRequestBody) NewModelMethod() string {
@@ -176,26 +196,3 @@ func (crb CreateRequestBody) RequestBodyVar() string {
 
 }
 
-func GenerateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObject openapi.OpenAPISchemaObject, parent *CreateRequestBody, blockName string) []CreateRequestBody {
-	var cr []CreateRequestBody
-
-	for _, property := range schemaObject.Properties {
-
-		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
-
-		newCreateRequest := CreateRequestBody{
-			Path:          pathObject,
-			Property:      property,
-			Parent:        parent,
-			BlockName:     blockName,
-			AttributeName: StrWithCases{String: property.Name},
-		}
-
-		cr = append(cr, newCreateRequest)
-	}
-
-	return cr
-}
