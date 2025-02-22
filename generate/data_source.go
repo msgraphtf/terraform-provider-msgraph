@@ -20,7 +20,6 @@ type templateInput struct {
 	PackageName       string
 	BlockName         transform.StrWithCases
 	Schema            transform.TerraformSchema
-	Model             []terraformModel
 	CreateRequest     transform.CreateRequest
 	ReadQuery         transform.ReadQuery
 	ReadResponse      transform.ReadResponse
