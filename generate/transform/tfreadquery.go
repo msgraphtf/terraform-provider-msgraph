@@ -10,7 +10,7 @@ import (
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type ReadQuery struct {
-	Path         openapi.OpenAPIPathObject
+	OpenAPIPath         openapi.OpenAPIPathObject
 	BlockName    StrWithCases
 	AltGetMethod []map[string]string
 }
@@ -22,7 +22,7 @@ type QueryMethod struct {
 }
 
 func (rq ReadQuery) PathFields() []string {
-	return strings.Split(rq.Path.Path, "/")[1:]
+	return strings.Split(rq.OpenAPIPath.Path, "/")[1:]
 }
 
 func (rq ReadQuery) Configuration() string {
@@ -48,7 +48,7 @@ func (rq ReadQuery) SelectParameters() []string {
 
 	var selectParams []string
 
-	for _, p := range rq.Path.Get.Response.Properties {
+	for _, p := range rq.OpenAPIPath.Get.Response.Properties {
 		//if !slices.Contains(augment.ExcludedProperties, p.Name) {
 			selectParams = append(selectParams, p.Name)
 		//}
