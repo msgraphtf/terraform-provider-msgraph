@@ -9,6 +9,34 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
+
+type CreateRequest struct {
+	OpenAPIPath openapi.OpenAPIPathObject
+}
+
+func (cr CreateRequest) PostMethod() []QueryMethod {
+
+	pathFields := strings.Split(cr.OpenAPIPath.Path, "/")[1:]
+	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
+
+	var postMethod []QueryMethod
+	for _, p := range pathFields {
+		newMethod := new(QueryMethod)
+		if strings.HasPrefix(p, "{") {
+			pLeft, pRight := PathFieldName(p)
+			pLeft = strcase.ToCamel(pLeft)
+			pRight = strcase.ToCamel(pRight)
+			newMethod.MethodName = "By" + pLeft + pRight
+			newMethod.Parameter = "state." + pRight + ".ValueString()"
+		} else {
+			newMethod.MethodName = strcase.ToCamel(p)
+		}
+		postMethod = append(postMethod, *newMethod)
+	}
+
+	return postMethod
+}
+
 type CreateRequestBody struct {
 	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
@@ -144,38 +172,4 @@ func GenerateCreateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 	}
 
 	return cr
-}
-
-type CreateRequest struct {
-	BlockName  string
-	PostMethod []QueryMethod
-}
-
-func GenerateCreateRequest(pathObject openapi.OpenAPIPathObject, blockName string) CreateRequest {
-
-	pathFields := strings.Split(pathObject.Path, "/")[1:]
-	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
-
-	var postMethod []QueryMethod
-	for _, p := range pathFields {
-		newMethod := new(QueryMethod)
-		if strings.HasPrefix(p, "{") {
-			pLeft, pRight := PathFieldName(p)
-			pLeft = strcase.ToCamel(pLeft)
-			pRight = strcase.ToCamel(pRight)
-			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "state." + pRight + ".ValueString()"
-		} else {
-			newMethod.MethodName = strcase.ToCamel(p)
-		}
-		postMethod = append(postMethod, *newMethod)
-	}
-
-	var cr = CreateRequest{
-		BlockName:  blockName,
-		PostMethod: postMethod,
-	}
-
-	return cr
-
 }

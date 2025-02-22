@@ -26,7 +26,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
 
 		input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource"}
 		input.CreateRequestBody = transform.GenerateCreateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)
-		input.CreateRequest = transform.GenerateCreateRequest(pathObject, blockName)
+		input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject}
 		input.UpdateRequestBody = transform.GenerateUpdateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)
 		input.UpdateRequest = transform.GenerateUpdateRequest(pathObject, blockName)
 
