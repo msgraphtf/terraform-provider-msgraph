@@ -200,7 +200,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	}
 	{{- end}}
 
-	{{- block "generate_create" .CreateRequestBody}}
+	{{- block "generate_create" .CreateRequest.Body}}
 	{{- range .}}
 	{{- if eq .AttributeType "CreateStringAttribute"}}
 	{{ template "CreateStringAttribute" .}}

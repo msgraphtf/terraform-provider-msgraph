@@ -21,7 +21,6 @@ type templateInput struct {
 	BlockName         transform.StrWithCases
 	Schema            transform.TerraformSchema
 	Model             []terraformModel
-	CreateRequestBody []transform.CreateRequestBody
 	CreateRequest     transform.CreateRequest
 	ReadQuery         transform.ReadQuery
 	ReadResponse      transform.ReadResponse

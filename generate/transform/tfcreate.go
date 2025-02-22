@@ -12,6 +12,7 @@ import (
 
 type CreateRequest struct {
 	OpenAPIPath openapi.OpenAPIPathObject
+	BlockName   string
 }
 
 func (cr CreateRequest) PostMethod() []QueryMethod {
@@ -35,6 +36,31 @@ func (cr CreateRequest) PostMethod() []QueryMethod {
 	}
 
 	return postMethod
+}
+
+func (cr CreateRequest) Body() []CreateRequestBody {
+
+	var crb []CreateRequestBody
+
+	for _, property := range cr.OpenAPIPath.Get.Response.Properties {
+
+		// Skip excluded properties
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
+
+		newCreateRequest := CreateRequestBody{
+			Path:          cr.OpenAPIPath,
+			Property:      property,
+			Parent:        nil,
+			BlockName:     cr.BlockName,
+			AttributeName: StrWithCases{String: property.Name},
+		}
+
+		crb = append(crb, newCreateRequest)
+	}
+
+	return crb
 }
 
 type CreateRequestBody struct {
