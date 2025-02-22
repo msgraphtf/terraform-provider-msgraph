@@ -38,7 +38,7 @@ func (cr CreateRequest) PostMethod() []QueryMethod {
 	return postMethod
 }
 
-func (cr CreateRequest) Body() []CreateRequestBody {
+func (cr CreateRequest) Attributes() []CreateRequestBody {
 
 	var crb []CreateRequestBody
 
@@ -52,8 +52,6 @@ func (cr CreateRequest) Body() []CreateRequestBody {
 		newCreateRequest := CreateRequestBody{
 			CreateRequest: cr,
 			Property:      property,
-			Parent:        nil,
-			BlockName:     cr.BlockName,
 			AttributeName: StrWithCases{String: property.Name},
 		}
 
@@ -67,7 +65,6 @@ type CreateRequestBody struct {
 	CreateRequest   CreateRequest
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *CreateRequestBody
-	BlockName       string
 	AttributeName   StrWithCases
 }
 
@@ -153,7 +150,6 @@ func (crb CreateRequestBody) PlanValueMethod() string {
 }
 
 func (crb CreateRequestBody) NestedCreate() []CreateRequestBody {
-	//return GenerateCreateRequestBody(crb.Path, crb.Property.ObjectOf, &crb, crb.BlockName)
 	var cr []CreateRequestBody
 
 	for _, property := range crb.Property.ObjectOf.Properties {
@@ -166,7 +162,6 @@ func (crb CreateRequestBody) NestedCreate() []CreateRequestBody {
 		newCreateRequest := CreateRequestBody{
 			Property:      property,
 			Parent:        &crb,
-			BlockName:     crb.BlockName,
 			AttributeName: StrWithCases{String: property.Name},
 		}
 
