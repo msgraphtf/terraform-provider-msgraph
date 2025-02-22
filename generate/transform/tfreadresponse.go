@@ -17,28 +17,28 @@ type ReadResponseAttribute struct {
 	BlockName string
 }
 
-func (rr ReadResponseAttribute) StateVarName() string {
+func (rra ReadResponseAttribute) StateVarName() string {
 
-	if rr.Parent != nil && rr.Parent.AttributeType() == "ReadSingleNestedAttribute" {
-		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
-	} else if rr.Parent != nil && rr.Parent.AttributeType() == "ReadListNestedAttribute" {
-		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
+	if rra.Parent != nil && rra.Parent.AttributeType() == "ReadSingleNestedAttribute" {
+		return rra.Parent.Property.Name + "." + upperFirst(rra.Property.Name)
+	} else if rra.Parent != nil && rra.Parent.AttributeType() == "ReadListNestedAttribute" {
+		return rra.Parent.Property.Name + "." + upperFirst(rra.Property.Name)
 	} else {
-		return "state." + upperFirst(rr.Property.Name)
+		return "state." + upperFirst(rra.Property.Name)
 	}
 }
 
-func (rr ReadResponseAttribute) ModelName() string {
-	return rr.BlockName + upperFirst(rr.Property.Name) + "Model"
+func (rra ReadResponseAttribute) ModelName() string {
+	return rra.BlockName + upperFirst(rra.Property.Name) + "Model"
 }
 
-func (rr ReadResponseAttribute) AttributeType() string {
+func (rra ReadResponseAttribute) AttributeType() string {
 
-	switch rr.Property.Type {
+	switch rra.Property.Type {
 	case "string":
-		if rr.Property.Format == "" {
+		if rra.Property.Format == "" {
 			return "ReadStringAttribute"
-		} else if strings.Contains(rr.Property.Format, "base64") { // TODO: base64 encoded data is probably not stored correctly
+		} else if strings.Contains(rra.Property.Format, "base64") { // TODO: base64 encoded data is probably not stored correctly
 			return "ReadStringBase64Attribute"
 		} else {
 			return "ReadStringFormattedAttribute"
@@ -48,21 +48,21 @@ func (rr ReadResponseAttribute) AttributeType() string {
 	case "boolean":
 		return "ReadBoolAttribute"
 	case "object":
-		if rr.Property.ObjectOf.Type == "string" { // This is a string enum.
+		if rra.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "ReadStringFormattedAttribute"
 		} else {
 			return "ReadSingleNestedAttribute"
 		}
 	case "array":
-		switch rr.Property.ArrayOf {
+		switch rra.Property.ArrayOf {
 		case "string":
-			if rr.Property.Format == "" {
+			if rra.Property.Format == "" {
 				return "ReadListStringAttribute"
 			} else {
 				return "ReadListStringFormattedAttribute"
 			}
 		case "object":
-			if rr.Property.ObjectOf.Type == "string" { // This is a string enum.
+			if rra.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "ReadListStringFormattedAttribute"
 			} else {
 				return "ReadListNestedAttribute"
@@ -73,16 +73,16 @@ func (rr ReadResponseAttribute) AttributeType() string {
 	return "UNKNOWN"
 }
 
-func (rr ReadResponseAttribute) GetMethod() string {
+func (rra ReadResponseAttribute) GetMethod() string {
 
-	getMethod := "Get" + upperFirst(rr.Property.Name) + "()"
-	if rr.Property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
+	getMethod := "Get" + upperFirst(rra.Property.Name) + "()"
+	if rra.Property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
 		getMethod = "GetTypeEscaped()"
 	}
 
-	if rr.Parent != nil && rr.Parent.AttributeType() == "ReadSingleNestedAttribute" {
-		getMethod = rr.Parent.GetMethod() + "." + getMethod
-	} else if rr.Parent != nil && rr.Parent.AttributeType() == "ReadListNestedAttribute" {
+	if rra.Parent != nil && rra.Parent.AttributeType() == "ReadSingleNestedAttribute" {
+		getMethod = rra.Parent.GetMethod() + "." + getMethod
+	} else if rra.Parent != nil && rra.Parent.AttributeType() == "ReadListNestedAttribute" {
 		getMethod = "v." + getMethod
 	} else {
 		getMethod = "result." + getMethod
@@ -92,11 +92,11 @@ func (rr ReadResponseAttribute) GetMethod() string {
 
 }
 
-func (rr ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
+func (rra ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 
 	var read []ReadResponseAttribute
 
-	for _, property := range rr.Property.ObjectOf.Properties {
+	for _, property := range rra.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
 		//if slices.Contains(augment.ExcludedProperties, property.Name) {
@@ -105,8 +105,8 @@ func (rr ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 
 		newReadResponseAttribute := ReadResponseAttribute{
 			Property: property,
-			Parent:   &rr,
-			BlockName: rr.BlockName,
+			Parent:   &rra,
+			BlockName: rra.BlockName,
 		}
 
 		read = append(read, newReadResponseAttribute)
