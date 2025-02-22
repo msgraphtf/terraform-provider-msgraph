@@ -9,6 +9,33 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
+type UpdateRequest struct {
+	OpenAPIPath openapi.OpenAPIPathObject
+	BlockName  string
+}
+
+func (ur UpdateRequest) PostMethod() []QueryMethod {
+
+	pathFields := strings.Split(ur.OpenAPIPath.Path, "/")[1:]
+
+	var postMethod []QueryMethod
+	for _, p := range pathFields {
+		newMethod := new(QueryMethod)
+		if strings.HasPrefix(p, "{") {
+			pLeft, pRight := PathFieldName(p)
+			pLeft = strcase.ToCamel(pLeft)
+			pRight = strcase.ToCamel(pRight)
+			newMethod.MethodName = "By" + pLeft + pRight
+			newMethod.Parameter = "state." + pRight + ".ValueString()"
+		} else {
+			newMethod.MethodName = strcase.ToCamel(p)
+		}
+		postMethod = append(postMethod, *newMethod)
+	}
+
+	return postMethod
+}
+
 type UpdateRequestBody struct {
 	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
@@ -156,35 +183,3 @@ func GenerateUpdateRequestBody(pathObject openapi.OpenAPIPathObject, schemaObjec
 	return cr
 }
 
-type UpdateRequest struct {
-	BlockName  string
-	PostMethod []QueryMethod
-}
-
-func GenerateUpdateRequest(pathObject openapi.OpenAPIPathObject, blockName string) UpdateRequest {
-
-	pathFields := strings.Split(pathObject.Path, "/")[1:]
-
-	var postMethod []QueryMethod
-	for _, p := range pathFields {
-		newMethod := new(QueryMethod)
-		if strings.HasPrefix(p, "{") {
-			pLeft, pRight := PathFieldName(p)
-			pLeft = strcase.ToCamel(pLeft)
-			pRight = strcase.ToCamel(pRight)
-			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "state." + pRight + ".ValueString()"
-		} else {
-			newMethod.MethodName = strcase.ToCamel(p)
-		}
-		postMethod = append(postMethod, *newMethod)
-	}
-
-	var ur = UpdateRequest{
-		BlockName:  blockName,
-		PostMethod: postMethod,
-	}
-
-	return ur
-
-}

@@ -27,7 +27,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
 		input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource"}
 		input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject, BlockName: blockName}
 		input.UpdateRequestBody = transform.GenerateUpdateRequestBody(pathObject, pathObject.Get.Response, nil, blockName)
-		input.UpdateRequest = transform.GenerateUpdateRequest(pathObject, blockName)
+		input.UpdateRequest = transform.UpdateRequest{OpenAPIPath: pathObject, BlockName: blockName}
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
