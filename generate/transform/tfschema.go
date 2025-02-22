@@ -9,26 +9,49 @@ import (
 )
 
 type TerraformSchema struct {
-	Attributes    []TerraformSchemaAttribute
 	OpenAPIPath   openapi.OpenAPIPathObject
 	BehaviourMode string
 }
 
+func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
+
+	var attributes []terraformSchemaAttribute
+
+	for _, property := range ts.OpenAPIPath.Get.Response.Properties {
+
+		// Skip excluded properties
+		// NOTE: Augmenting is temporarily disabled while I refactor
+		// if slices.Contains(augment.ExcludedProperties, property.Name) {
+		// 	continue
+		// }
+
+		newAttribute := terraformSchemaAttribute{
+			Schema: &ts,
+			OpenAPISchemaProperty: property,
+		}
+
+		attributes = append(attributes, newAttribute)
+	}
+
+	return attributes
+
+}
+
 // Used by templates defined inside of data_source_template.go to generate the schema
-type TerraformSchemaAttribute struct {
+type terraformSchemaAttribute struct {
 	Schema          *TerraformSchema
 	OpenAPISchemaProperty openapi.OpenAPISchemaProperty
 }
 
-func (tsa TerraformSchemaAttribute) Description() string {
+func (tsa terraformSchemaAttribute) Description() string {
 	return tsa.OpenAPISchemaProperty.Description
 }
 
-func (tsa TerraformSchemaAttribute) Name() string {
+func (tsa terraformSchemaAttribute) Name() string {
 	return strcase.ToSnake(tsa.OpenAPISchemaProperty.Name)
 }
 
-func (tsa TerraformSchemaAttribute) Type() string {
+func (tsa terraformSchemaAttribute) Type() string {
 
 	// Convert types from OpenAPI schema types to  attributes
 	switch tsa.OpenAPISchemaProperty.Type {
@@ -61,7 +84,7 @@ func (tsa TerraformSchemaAttribute) Type() string {
 
 }
 
-func (tsa TerraformSchemaAttribute) Required() bool {
+func (tsa terraformSchemaAttribute) Required() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
 		return false 
 	} else { // Resource
@@ -69,7 +92,7 @@ func (tsa TerraformSchemaAttribute) Required() bool {
 	}
 }
 
-func (tsa TerraformSchemaAttribute) Optional() bool {
+func (tsa terraformSchemaAttribute) Optional() bool {
 
 	if tsa.Schema.BehaviourMode == "DataSource" {
 		if slices.Contains(tsa.Schema.OpenAPIPath.Parameters, tsa.Schema.OpenAPIPath.Get.Response.Title+"-"+tsa.Name()) {
@@ -85,7 +108,7 @@ func (tsa TerraformSchemaAttribute) Optional() bool {
 
 }
 
-func (tsa TerraformSchemaAttribute) Computed() bool {
+func (tsa terraformSchemaAttribute) Computed() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
 		return  true
 	} else { // Resource
@@ -93,7 +116,7 @@ func (tsa TerraformSchemaAttribute) Computed() bool {
 	}
 }
 
-func (tsa TerraformSchemaAttribute) PlanModifiers() bool {
+func (tsa terraformSchemaAttribute) PlanModifiers() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
 		return false
 	} else { // Resource
@@ -101,8 +124,8 @@ func (tsa TerraformSchemaAttribute) PlanModifiers() bool {
 	}
 }
 
-func (tsa TerraformSchemaAttribute) NestedAttribute() []TerraformSchemaAttribute {
-	var schema []TerraformSchemaAttribute
+func (tsa terraformSchemaAttribute) NestedAttribute() []terraformSchemaAttribute {
+	var attributes []terraformSchemaAttribute
 
 	for _, property := range tsa.OpenAPISchemaProperty.ObjectOf.Properties {
 
@@ -112,18 +135,18 @@ func (tsa TerraformSchemaAttribute) NestedAttribute() []TerraformSchemaAttribute
 		// 	continue
 		// }
 
-		newSchema := TerraformSchemaAttribute{
+		newAttribute := terraformSchemaAttribute{
 			Schema: tsa.Schema,
 			OpenAPISchemaProperty: property,
 		}
 
-		schema = append(schema, newSchema)
+		attributes = append(attributes, newAttribute)
 	}
 
-	return schema
+	return attributes
 }
 
-func (tsa TerraformSchemaAttribute) ElementType() string {
+func (tsa terraformSchemaAttribute) ElementType() string {
 	if tsa.OpenAPISchemaProperty.Type == "array" && tsa.OpenAPISchemaProperty.ArrayOf == "string" {
 		return "types.StringType"
 	} else if tsa.OpenAPISchemaProperty.Type == "array" && tsa.OpenAPISchemaProperty.ArrayOf == "object" && tsa.OpenAPISchemaProperty.ObjectOf.Type == "string" {
@@ -134,30 +157,4 @@ func (tsa TerraformSchemaAttribute) ElementType() string {
 
 }
 
-func GenerateSchema(pathObject openapi.OpenAPIPathObject, behaviourMode string) TerraformSchema {
-
-	schema := TerraformSchema {
-		OpenAPIPath: pathObject,
-		BehaviourMode: behaviourMode,
-	}
-
-	for _, property := range pathObject.Get.Response.Properties {
-
-		// Skip excluded properties
-		// NOTE: Augmenting is temporarily disabled while I refactor
-		// if slices.Contains(augment.ExcludedProperties, property.Name) {
-		// 	continue
-		// }
-
-		schemaAttribute := TerraformSchemaAttribute{
-			Schema: &schema,
-			OpenAPISchemaProperty: property,
-		}
-
-		schema.Attributes = append(schema.Attributes, schemaAttribute)
-	}
-
-	return schema
-
-}
 
