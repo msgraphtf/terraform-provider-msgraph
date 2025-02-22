@@ -7,13 +7,13 @@ import (
 )
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
-type ReadResponse struct {
+type ReadResponseAttribute struct {
 	Property openapi.OpenAPISchemaProperty
-	Parent   *ReadResponse
+	Parent   *ReadResponseAttribute
 	BlockName string
 }
 
-func (rr ReadResponse) StateVarName() string {
+func (rr ReadResponseAttribute) StateVarName() string {
 
 	if rr.Parent != nil && rr.Parent.AttributeType() == "ReadSingleNestedAttribute" {
 		return rr.Parent.Property.Name + "." + upperFirst(rr.Property.Name)
@@ -24,11 +24,11 @@ func (rr ReadResponse) StateVarName() string {
 	}
 }
 
-func (rr ReadResponse) ModelName() string {
+func (rr ReadResponseAttribute) ModelName() string {
 	return rr.BlockName + upperFirst(rr.Property.Name) + "Model"
 }
 
-func (rr ReadResponse) AttributeType() string {
+func (rr ReadResponseAttribute) AttributeType() string {
 
 	switch rr.Property.Type {
 	case "string":
@@ -69,7 +69,7 @@ func (rr ReadResponse) AttributeType() string {
 	return "UNKNOWN"
 }
 
-func (rr ReadResponse) GetMethod() string {
+func (rr ReadResponseAttribute) GetMethod() string {
 
 	getMethod := "Get" + upperFirst(rr.Property.Name) + "()"
 	if rr.Property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
@@ -88,11 +88,11 @@ func (rr ReadResponse) GetMethod() string {
 
 }
 
-func (rr ReadResponse) NestedRead() []ReadResponse {
+func (rr ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 	return GenerateReadResponse(nil, rr.Property.ObjectOf, &rr, rr.BlockName)
 }
 
-func GenerateReadResponse(read []ReadResponse, schemaObject openapi.OpenAPISchemaObject, parent *ReadResponse, blockName string) []ReadResponse {
+func GenerateReadResponse(read []ReadResponseAttribute, schemaObject openapi.OpenAPISchemaObject, parent *ReadResponseAttribute, blockName string) []ReadResponseAttribute {
 
 	for _, property := range schemaObject.Properties {
 
@@ -101,13 +101,13 @@ func GenerateReadResponse(read []ReadResponse, schemaObject openapi.OpenAPISchem
 		//	continue
 		//}
 
-		newReadResponse := ReadResponse{
+		newReadResponseAttribute := ReadResponseAttribute{
 			Property: property,
 			Parent:   parent,
 			BlockName: blockName,
 		}
 
-		read = append(read, newReadResponse)
+		read = append(read, newReadResponseAttribute)
 	}
 
 	return read
