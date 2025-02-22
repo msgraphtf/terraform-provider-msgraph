@@ -11,25 +11,25 @@ import (
 )
 
 // Used by templates defined inside of data_source_template.go to generate the data models
-type TerraformModel struct {
+type Model struct {
 	ModelName   string
-	ModelFields []TerraformModelField
+	ModelFields []ModelField
 }
 
-type TerraformModelField struct {
+type ModelField struct {
 	Property      openapi.OpenAPISchemaProperty
 	BlockName     string
 }
 
-func (mf TerraformModelField) FieldName() string {
+func (mf ModelField) FieldName() string {
 	return upperFirst(mf.Property.Name)
 }
 
-func (mf TerraformModelField) AttributeName() string {
+func (mf ModelField) AttributeName() string {
 	return strcase.ToSnake(mf.Property.Name)
 }
 
-func (m TerraformModelField) IfObjectType() bool {
+func (m ModelField) IfObjectType() bool {
 	if strings.Contains(m.AttributeType(), "Object") {
 		return true
 	} else {
@@ -37,7 +37,7 @@ func (m TerraformModelField) IfObjectType() bool {
 	}
 }
 
-func (mf TerraformModelField) FieldType() string {
+func (mf ModelField) FieldType() string {
 
 	switch mf.Property.Type {
 	case "string":
@@ -76,7 +76,7 @@ func (mf TerraformModelField) FieldType() string {
 
 }
 
-func (mf TerraformModelField) AttributeType() string {
+func (mf ModelField) AttributeType() string {
 
 	switch mf.Property.Type {
 	case "string":
@@ -115,19 +115,19 @@ func (mf TerraformModelField) AttributeType() string {
 
 }
 
-func (mf TerraformModelField) ModelVarName() string {
+func (mf ModelField) ModelVarName() string {
 	return mf.BlockName + upperFirst(mf.Property.Name)
 }
 
-func (mf TerraformModelField) ModelName() string {
+func (mf ModelField) ModelName() string {
 	return mf.BlockName + upperFirst(mf.Property.Name) + "Model"
 }
 
 var allModelNames []string
 
-func GenerateModelInput(modelName string, model []TerraformModel, schemaObject openapi.OpenAPISchemaObject, blockName string) []TerraformModel {
+func GenerateModelInput(modelName string, model []Model, schemaObject openapi.OpenAPISchemaObject, blockName string) []Model {
 
-	newModel := TerraformModel{
+	newModel := Model{
 		ModelName: blockName + modelName + "Model",
 	}
 
@@ -138,7 +138,7 @@ func GenerateModelInput(modelName string, model []TerraformModel, schemaObject o
 		allModelNames = append(allModelNames, newModel.ModelName)
 	}
 
-	var nestedModels []TerraformModel
+	var nestedModels []Model
 
 	for _, property := range schemaObject.Properties {
 
@@ -147,7 +147,7 @@ func GenerateModelInput(modelName string, model []TerraformModel, schemaObject o
 		//	continue
 		//}
 
-		newModelField := TerraformModelField{
+		newModelField := ModelField{
 			Property:  property,
 			BlockName: blockName,
 		}
