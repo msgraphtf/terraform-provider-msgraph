@@ -11,9 +11,9 @@ type ReadResponse struct {
 	BlockName  string
 }
 
-func (rr ReadResponse) Attributes() []ReadResponseAttribute {
+func (rr ReadResponse) Attributes() []readResponseAttribute {
 
-	var readResponseAttributes []ReadResponseAttribute
+	var readResponseAttributes []readResponseAttribute
 
 	for _, property := range rr.OpenAPIPathObject.Get.Response.Properties {
 
@@ -22,7 +22,7 @@ func (rr ReadResponse) Attributes() []ReadResponseAttribute {
 		//	continue
 		//}
 
-		newReadResponseAttribute := ReadResponseAttribute{
+		newReadResponseAttribute := readResponseAttribute{
 			ReadResponse: &rr,
 			Property:     property,
 		}
@@ -35,13 +35,13 @@ func (rr ReadResponse) Attributes() []ReadResponseAttribute {
 }
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
-type ReadResponseAttribute struct {
+type readResponseAttribute struct {
 	ReadResponse *ReadResponse
 	Property     openapi.OpenAPISchemaProperty
-	Parent       *ReadResponseAttribute
+	Parent       *readResponseAttribute
 }
 
-func (rra ReadResponseAttribute) StateVarName() string {
+func (rra readResponseAttribute) StateVarName() string {
 
 	if rra.Parent != nil && rra.Parent.AttributeType() == "ReadSingleNestedAttribute" {
 		return rra.Parent.Property.Name + "." + upperFirst(rra.Property.Name)
@@ -52,11 +52,11 @@ func (rra ReadResponseAttribute) StateVarName() string {
 	}
 }
 
-func (rra ReadResponseAttribute) ModelName() string {
+func (rra readResponseAttribute) ModelName() string {
 	return rra.ReadResponse.BlockName + upperFirst(rra.Property.Name) + "Model"
 }
 
-func (rra ReadResponseAttribute) AttributeType() string {
+func (rra readResponseAttribute) AttributeType() string {
 
 	switch rra.Property.Type {
 	case "string":
@@ -97,7 +97,7 @@ func (rra ReadResponseAttribute) AttributeType() string {
 	return "UNKNOWN"
 }
 
-func (rra ReadResponseAttribute) GetMethod() string {
+func (rra readResponseAttribute) GetMethod() string {
 
 	getMethod := "Get" + upperFirst(rra.Property.Name) + "()"
 	if rra.Property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
@@ -116,9 +116,9 @@ func (rra ReadResponseAttribute) GetMethod() string {
 
 }
 
-func (rra ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
+func (rra readResponseAttribute) NestedRead() []readResponseAttribute {
 
-	var read []ReadResponseAttribute
+	var read []readResponseAttribute
 
 	for _, property := range rra.Property.ObjectOf.Properties {
 
@@ -127,7 +127,7 @@ func (rra ReadResponseAttribute) NestedRead() []ReadResponseAttribute {
 		//	continue
 		//}
 
-		newReadResponseAttribute := ReadResponseAttribute{
+		newReadResponseAttribute := readResponseAttribute{
 			ReadResponse: rra.ReadResponse,
 			Property:     property,
 			Parent:       &rra,
