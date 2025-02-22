@@ -38,7 +38,7 @@ func (ur UpdateRequest) PostMethod() []QueryMethod {
 
 func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 
-	var ura []updateRequestAttribute
+	var newAttributes []updateRequestAttribute
 
 	for _, property := range ur.OpenAPIPath.Get.Response.Properties {
 
@@ -49,24 +49,26 @@ func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 
 		newUpdateRequest := updateRequestAttribute{
 			UpdateRequest: &ur,
-			Path:          ur.OpenAPIPath,
 			Property:      property,
 			Parent:        nil,
-			AttributeName: StrWithCases{String: property.Name},
 		}
 
-		ura = append(ura, newUpdateRequest)
+		newAttributes = append(newAttributes, newUpdateRequest)
 	}
 
-	return ura
+	return newAttributes
 }
 
 type updateRequestAttribute struct {
 	UpdateRequest   *UpdateRequest
-	Path            openapi.OpenAPIPathObject
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *updateRequestAttribute
-	AttributeName   StrWithCases
+}
+
+func (ura updateRequestAttribute) AttributeName() StrWithCases {
+
+	return StrWithCases{ura.Property.Name}
+
 }
 
 func (ura updateRequestAttribute) AttributeType() string {
@@ -182,7 +184,7 @@ func (ura updateRequestAttribute) NewModelMethod() string {
 
 func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 
-	var cr []updateRequestAttribute
+	var newAttributes []updateRequestAttribute
 
 	for _, property := range ura.Property.ObjectOf.Properties {
 
@@ -193,15 +195,13 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 
 		newUpdateRequest := updateRequestAttribute{
 			UpdateRequest: ura.UpdateRequest,
-			Path:          ura.Path,
 			Property:      property,
 			Parent:        &ura,
-			AttributeName: StrWithCases{String: property.Name},
 		}
 
-		cr = append(cr, newUpdateRequest)
+		newAttributes = append(newAttributes, newUpdateRequest)
 	}
 
-	return cr
+	return newAttributes
 }
 

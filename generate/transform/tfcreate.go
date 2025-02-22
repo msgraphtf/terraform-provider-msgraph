@@ -52,7 +52,6 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 		newCreateRequest := createRequestAttribute{
 			CreateRequest: cr,
 			Property:      property,
-			AttributeName: StrWithCases{String: property.Name},
 		}
 
 		cra = append(cra, newCreateRequest)
@@ -65,7 +64,10 @@ type createRequestAttribute struct {
 	CreateRequest   CreateRequest
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *createRequestAttribute
-	AttributeName   StrWithCases
+}
+
+func (cra createRequestAttribute) AttributeName() StrWithCases {
+	return StrWithCases{cra.Property.Name}
 }
 
 func (cra createRequestAttribute) AttributeType() string {
@@ -162,7 +164,6 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 		newCreateRequest := createRequestAttribute{
 			Property:      property,
 			Parent:        &cra,
-			AttributeName: StrWithCases{String: property.Name},
 		}
 
 		cr = append(cr, newCreateRequest)
