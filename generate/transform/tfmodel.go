@@ -12,9 +12,14 @@ import (
 
 // Used by templates defined inside of data_source_template.go to generate the data models
 type ModelDefinition struct {
-	ModelName     string
 	BlockName     string
 	OpenAPISchema openapi.OpenAPISchemaObject
+}
+
+func (md ModelDefinition) ModelName() string {
+
+	return md.BlockName + upperFirst(md.OpenAPISchema.Title) + "Model"
+
 }
 
 func (md ModelDefinition) ModelFields() []ModelField {
@@ -153,16 +158,15 @@ var allModelNames []string
 func GenerateModelInput(model []ModelDefinition, schemaObject openapi.OpenAPISchemaObject, blockName string) []ModelDefinition {
 
 	newModel := ModelDefinition{
-		ModelName: blockName + upperFirst(schemaObject.Title) + "Model",
 		BlockName: blockName,
 		OpenAPISchema: schemaObject,
 	}
 
 	// Skip duplicate models
-	if slices.Contains(allModelNames, newModel.ModelName) {
+	if slices.Contains(allModelNames, newModel.ModelName()) {
 		return model
 	} else {
-		allModelNames = append(allModelNames, newModel.ModelName)
+		allModelNames = append(allModelNames, newModel.ModelName())
 	}
 
 	var nestedModels []ModelDefinition
