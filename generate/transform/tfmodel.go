@@ -21,7 +21,7 @@ func (m Model) Definitions() []ModelDefinition {
 	var definitions []ModelDefinition
 
 	newDefinition := ModelDefinition{
-		BlockName: m.BlockName,
+		Model:     &m,
 		OpenAPISchema: m.OpenAPISchema,
 	}
 
@@ -60,16 +60,16 @@ func (m Model) Definitions() []ModelDefinition {
 
 // Used by templates defined inside of data_source_template.go to generate the data models
 type ModelDefinition struct {
-	BlockName     string
+	Model         *Model
 	OpenAPISchema openapi.OpenAPISchemaObject
 }
 
 func (md ModelDefinition) ModelName() string {
 
-	if len(md.OpenAPISchema.Title) > 0 && strings.ToLower(md.BlockName) != strings.ToLower(md.OpenAPISchema.Title) {
-		return md.BlockName + upperFirst(md.OpenAPISchema.Title) + "Model"
+	if len(md.OpenAPISchema.Title) > 0 && strings.ToLower(md.Model.BlockName) != strings.ToLower(md.OpenAPISchema.Title) {
+		return md.Model.BlockName + upperFirst(md.OpenAPISchema.Title) + "Model"
 	} else {
-		return md.BlockName + "Model"
+		return md.Model.BlockName + "Model"
 	}
 
 }
@@ -177,7 +177,7 @@ func (mf ModelField) AttributeType() string {
 		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.Definition.BlockName + upperFirst(mf.Property.Name))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.Definition.Model.BlockName + upperFirst(mf.Property.Name))
 		}
 	case "array":
 		switch mf.Property.ArrayOf {
@@ -185,7 +185,7 @@ func (mf ModelField) AttributeType() string {
 			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.Definition.BlockName + upperFirst(mf.Property.Name))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.Definition.Model.BlockName + upperFirst(mf.Property.Name))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"
@@ -198,10 +198,10 @@ func (mf ModelField) AttributeType() string {
 }
 
 func (mf ModelField) ModelVarName() string {
-	return mf.Definition.BlockName + upperFirst(mf.Property.Name)
+	return mf.Definition.Model.BlockName + upperFirst(mf.Property.Name)
 }
 
 func (mf ModelField) ModelName() string {
-	return mf.Definition.BlockName + upperFirst(mf.Property.Name) + "Model"
+	return mf.Definition.Model.BlockName + upperFirst(mf.Property.Name) + "Model"
 }
 
