@@ -12,9 +12,33 @@ import (
 
 // Used by templates defined inside of data_source_template.go to generate the data models
 type ModelDefinition struct {
-	ModelName   string
-	ModelFields []ModelField
-	BlockName   string
+	ModelName     string
+	BlockName     string
+	OpenAPISchema openapi.OpenAPISchemaObject
+}
+
+func (md ModelDefinition) ModelFields() []ModelField {
+
+	var newModelFields []ModelField
+
+	for _, property := range md.OpenAPISchema.Properties {
+
+		// Skip excluded properties
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
+
+		newModelField := ModelField{
+			ModelDefinition: &md,
+			Property:        property,
+		}
+
+		newModelFields = append(newModelFields, newModelField)
+
+	}
+
+	return newModelFields
+
 }
 
 type ModelField struct {
@@ -131,6 +155,7 @@ func GenerateModelInput(modelName string, model []ModelDefinition, schemaObject 
 	newModel := ModelDefinition{
 		ModelName: blockName + modelName + "Model",
 		BlockName: blockName,
+		OpenAPISchema: schemaObject,
 	}
 
 	// Skip duplicate models
@@ -150,8 +175,8 @@ func GenerateModelInput(modelName string, model []ModelDefinition, schemaObject 
 		//}
 
 		newModelField := ModelField{
-			ModelDefinition:     &newModel,
-			Property:  property,
+			ModelDefinition: &newModel,
+			Property:        property,
 		}
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
@@ -159,8 +184,6 @@ func GenerateModelInput(modelName string, model []ModelDefinition, schemaObject 
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
 			nestedModels = GenerateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf, blockName)
 		}
-
-		newModel.ModelFields = append(newModel.ModelFields, newModelField)
 
 	}
 
