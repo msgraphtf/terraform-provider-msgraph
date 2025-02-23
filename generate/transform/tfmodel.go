@@ -10,6 +10,54 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
+type Model struct {
+	AllModelNames []string
+	BlockName     string
+	OpenAPISchema openapi.OpenAPISchemaObject
+}
+
+func (m Model) Definitions() []ModelDefinition {
+
+	var definitions []ModelDefinition
+
+	newDefinition := ModelDefinition{
+		BlockName: m.BlockName,
+		OpenAPISchema: m.OpenAPISchema,
+	}
+
+	// Skip duplicate definitions
+	if slices.Contains(m.AllModelNames, newDefinition.ModelName()) {
+		return definitions
+	} else {
+		m.AllModelNames = append(m.AllModelNames, newDefinition.ModelName())
+	}
+
+	var nestedDefinitions []ModelDefinition
+
+	for _, property := range m.OpenAPISchema.Properties {
+
+		// Skip excluded properties
+		//if slices.Contains(augment.ExcludedProperties, property.Name) {
+		//	continue
+		//}
+
+		if property.Type == "object" && property.ObjectOf.Type != "string" {
+			nestedDefinitions = Model{AllModelNames: m.AllModelNames, BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
+		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
+			nestedDefinitions = Model{AllModelNames: m.AllModelNames, BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
+		}
+
+	}
+
+	definitions = append(definitions, newDefinition)
+	if len(nestedDefinitions) != 0 {
+		definitions = append(definitions, nestedDefinitions...)
+	}
+
+	return definitions
+
+}
+
 // Used by templates defined inside of data_source_template.go to generate the data models
 type ModelDefinition struct {
 	BlockName     string
@@ -18,7 +66,11 @@ type ModelDefinition struct {
 
 func (md ModelDefinition) ModelName() string {
 
-	return md.BlockName + upperFirst(md.OpenAPISchema.Title) + "Model"
+	if len(md.OpenAPISchema.Title) > 0 {
+		return md.BlockName + upperFirst(md.OpenAPISchema.Title) + "Model"
+	} else {
+		return md.BlockName + "Model"
+	}
 
 }
 
@@ -153,45 +205,3 @@ func (mf ModelField) ModelName() string {
 	return mf.Definition.BlockName + upperFirst(mf.Property.Name) + "Model"
 }
 
-var allModelNames []string
-
-func GenerateModelInput(model []ModelDefinition, schemaObject openapi.OpenAPISchemaObject, blockName string) []ModelDefinition {
-
-	newModel := ModelDefinition{
-		BlockName: blockName,
-		OpenAPISchema: schemaObject,
-	}
-
-	// Skip duplicate models
-	if slices.Contains(allModelNames, newModel.ModelName()) {
-		return model
-	} else {
-		allModelNames = append(allModelNames, newModel.ModelName())
-	}
-
-	var nestedModels []ModelDefinition
-
-	for _, property := range schemaObject.Properties {
-
-		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
-
-
-		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = GenerateModelInput(nestedModels, property.ObjectOf, blockName)
-		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = GenerateModelInput(nestedModels, property.ObjectOf, blockName)
-		}
-
-	}
-
-	model = append(model, newModel)
-	if len(nestedModels) != 0 {
-		model = append(model, nestedModels...)
-	}
-
-	return model
-
-}

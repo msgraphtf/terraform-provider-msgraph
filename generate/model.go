@@ -24,7 +24,7 @@ func generateModel(pathObject openapi.OpenAPIPathObject, blockName string) {
 
 	input := modelInput {
 		PackageName: packageName,
-		Model: transform.GenerateModelInput(nil, pathObject.Get.Response, blockName),
+		Model: transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName}.Definitions(),
 	}
 
 	// Generate model
