@@ -29,7 +29,7 @@ func (md ModelDefinition) ModelFields() []ModelField {
 		//}
 
 		newModelField := ModelField{
-			ModelDefinition: &md,
+			Definition: &md,
 			Property:        property,
 		}
 
@@ -42,8 +42,8 @@ func (md ModelDefinition) ModelFields() []ModelField {
 }
 
 type ModelField struct {
-	ModelDefinition     *ModelDefinition
-	Property  openapi.OpenAPISchemaProperty
+	Definition *ModelDefinition
+	Property   openapi.OpenAPISchemaProperty
 }
 
 func (mf ModelField) FieldName() string {
@@ -120,7 +120,7 @@ func (mf ModelField) AttributeType() string {
 		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.ModelDefinition.BlockName + upperFirst(mf.Property.Name))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.Definition.BlockName + upperFirst(mf.Property.Name))
 		}
 	case "array":
 		switch mf.Property.ArrayOf {
@@ -128,7 +128,7 @@ func (mf ModelField) AttributeType() string {
 			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.ModelDefinition.BlockName + upperFirst(mf.Property.Name))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.Definition.BlockName + upperFirst(mf.Property.Name))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"
@@ -141,11 +141,11 @@ func (mf ModelField) AttributeType() string {
 }
 
 func (mf ModelField) ModelVarName() string {
-	return mf.ModelDefinition.BlockName + upperFirst(mf.Property.Name)
+	return mf.Definition.BlockName + upperFirst(mf.Property.Name)
 }
 
 func (mf ModelField) ModelName() string {
-	return mf.ModelDefinition.BlockName + upperFirst(mf.Property.Name) + "Model"
+	return mf.Definition.BlockName + upperFirst(mf.Property.Name) + "Model"
 }
 
 var allModelNames []string
@@ -175,7 +175,7 @@ func GenerateModelInput(modelName string, model []ModelDefinition, schemaObject 
 		//}
 
 		newModelField := ModelField{
-			ModelDefinition: &newModel,
+			Definition: &newModel,
 			Property:        property,
 		}
 
