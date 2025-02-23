@@ -66,7 +66,7 @@ type ModelDefinition struct {
 
 func (md ModelDefinition) ModelName() string {
 
-	if len(md.OpenAPISchema.Title) > 0 {
+	if len(md.OpenAPISchema.Title) > 0 && strings.ToLower(md.BlockName) != strings.ToLower(md.OpenAPISchema.Title) {
 		return md.BlockName + upperFirst(md.OpenAPISchema.Title) + "Model"
 	} else {
 		return md.BlockName + "Model"
