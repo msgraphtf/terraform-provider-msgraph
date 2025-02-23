@@ -150,10 +150,10 @@ func (mf ModelField) ModelName() string {
 
 var allModelNames []string
 
-func GenerateModelInput(modelName string, model []ModelDefinition, schemaObject openapi.OpenAPISchemaObject, blockName string) []ModelDefinition {
+func GenerateModelInput(model []ModelDefinition, schemaObject openapi.OpenAPISchemaObject, blockName string) []ModelDefinition {
 
 	newModel := ModelDefinition{
-		ModelName: blockName + modelName + "Model",
+		ModelName: blockName + upperFirst(schemaObject.Title) + "Model",
 		BlockName: blockName,
 		OpenAPISchema: schemaObject,
 	}
@@ -174,15 +174,11 @@ func GenerateModelInput(modelName string, model []ModelDefinition, schemaObject 
 		//	continue
 		//}
 
-		newModelField := ModelField{
-			Definition: &newModel,
-			Property:        property,
-		}
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = GenerateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf, blockName)
+			nestedModels = GenerateModelInput(nestedModels, property.ObjectOf, blockName)
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedModels = GenerateModelInput(newModelField.FieldName(), nestedModels, property.ObjectOf, blockName)
+			nestedModels = GenerateModelInput(nestedModels, property.ObjectOf, blockName)
 		}
 
 	}
