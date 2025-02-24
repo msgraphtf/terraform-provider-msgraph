@@ -5,7 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-{{- range .Model}}
+{{- range .Model.Definitions}}
 type {{.ModelName}} struct {
 {{- range .ModelFields}}
 {{.FieldName}} {{.FieldType}} `tfsdk:"{{.AttributeName}}"`

@@ -13,7 +13,7 @@ import (
 
 type modelInput struct {
 	PackageName string
-	Model       []transform.ModelDefinition
+	Model       transform.Model
 }
 
 
@@ -24,7 +24,7 @@ func generateModel(pathObject openapi.OpenAPIPathObject, blockName string) {
 
 	input := modelInput {
 		PackageName: packageName,
-		Model: transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName}.Definitions(),
+		Model: transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName},
 	}
 
 	// Generate model
