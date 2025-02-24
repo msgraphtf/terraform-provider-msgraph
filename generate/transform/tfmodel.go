@@ -2,8 +2,8 @@ package transform
 
 import (
 	"fmt"
-	"strings"
 	"slices"
+	"strings"
 
 	"github.com/iancoleman/strcase"
 
@@ -11,7 +11,6 @@ import (
 )
 
 type Model struct {
-	AllModelNames []string
 	BlockName     string
 	OpenAPISchema openapi.OpenAPISchemaObject
 }
@@ -21,17 +20,11 @@ func (m Model) Definitions() []ModelDefinition {
 	var definitions []ModelDefinition
 
 	newDefinition := ModelDefinition{
-		Model:     &m,
+		Model:         &m,
 		OpenAPISchema: m.OpenAPISchema,
 	}
 
-	// Skip duplicate definitions
-	if slices.Contains(m.AllModelNames, newDefinition.ModelName()) {
-		return definitions
-	} else {
-		m.AllModelNames = append(m.AllModelNames, newDefinition.ModelName())
-	}
-
+	// Get Model Definitions for OpenAPI properties of objects
 	var nestedDefinitions []ModelDefinition
 
 	for _, property := range m.OpenAPISchema.Properties {
@@ -44,22 +37,32 @@ func (m Model) Definitions() []ModelDefinition {
 		var nestedDefinition []ModelDefinition
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinition = Model{AllModelNames: m.AllModelNames, BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
+			nestedDefinition = Model{BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinition = Model{AllModelNames: m.AllModelNames, BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
+			nestedDefinition = Model{BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
 		}
 
 		nestedDefinitions = append(nestedDefinitions, nestedDefinition...)
 
 	}
 
-
 	definitions = append(definitions, newDefinition)
 	if len(nestedDefinitions) != 0 {
 		definitions = append(definitions, nestedDefinitions...)
 	}
 
-	return definitions
+	// Deduplicate definitions
+	var modelDefinitionNames []string
+	var deDupedDefinitions []ModelDefinition
+
+	for _, definition := range definitions {
+		if !slices.Contains(modelDefinitionNames, definition.ModelName()) {
+			deDupedDefinitions = append(deDupedDefinitions, definition)
+			modelDefinitionNames = append(modelDefinitionNames, definition.ModelName())
+		}
+	}
+
+	return deDupedDefinitions
 
 }
 
