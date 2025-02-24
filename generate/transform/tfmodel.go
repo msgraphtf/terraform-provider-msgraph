@@ -41,13 +41,18 @@ func (m Model) Definitions() []ModelDefinition {
 		//	continue
 		//}
 
+		var nestedDefinition []ModelDefinition
+
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinitions = Model{AllModelNames: m.AllModelNames, BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
+			nestedDefinition = Model{AllModelNames: m.AllModelNames, BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinitions = Model{AllModelNames: m.AllModelNames, BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
+			nestedDefinition = Model{AllModelNames: m.AllModelNames, BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
 		}
 
+		nestedDefinitions = append(nestedDefinitions, nestedDefinition...)
+
 	}
+
 
 	definitions = append(definitions, newDefinition)
 	if len(nestedDefinitions) != 0 {
