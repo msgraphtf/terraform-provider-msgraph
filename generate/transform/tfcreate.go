@@ -176,6 +176,10 @@ func (cra createRequestAttribute) NewModelMethod() string {
 	return upperFirst(cra.Property.ObjectOf.Title)
 }
 
+func (cra createRequestAttribute) ModelName() string {
+	return cra.CreateRequest.BlockName + upperFirst(cra.Property.ObjectOf.Title) + "Model"
+}
+
 func (cra createRequestAttribute) RequestBodyVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {

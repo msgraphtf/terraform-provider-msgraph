@@ -53,7 +53,7 @@ func (rra readResponseAttribute) StateVarName() string {
 }
 
 func (rra readResponseAttribute) ModelName() string {
-	return rra.ReadResponse.BlockName + upperFirst(rra.Property.Name) + "Model"
+	return rra.ReadResponse.BlockName + upperFirst(rra.Property.ObjectOf.Title) + "Model"
 }
 
 func (rra readResponseAttribute) AttributeType() string {

@@ -57,6 +57,7 @@ func (m Model) Definitions() []ModelDefinition {
 
 	for _, definition := range definitions {
 		if !slices.Contains(modelDefinitionNames, definition.ModelName()) {
+			definition.Model = &m
 			deDupedDefinitions = append(deDupedDefinitions, definition)
 			modelDefinitionNames = append(modelDefinitionNames, definition.ModelName())
 		}

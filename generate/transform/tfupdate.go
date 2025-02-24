@@ -182,6 +182,10 @@ func (ura updateRequestAttribute) NewModelMethod() string {
 	return upperFirst(ura.Property.ObjectOf.Title)
 }
 
+func (ura updateRequestAttribute) ModelName() string {
+	return ura.UpdateRequest.BlockName + upperFirst(ura.Property.ObjectOf.Title) + "Model"
+}
+
 func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 
 	var newAttributes []updateRequestAttribute
