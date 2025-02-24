@@ -207,6 +207,6 @@ func (mf ModelField) ModelVarName() string {
 }
 
 func (mf ModelField) ModelName() string {
-	return mf.Definition.Model.BlockName + upperFirst(mf.Property.Name) + "Model"
+	return mf.Definition.Model.BlockName + upperFirst(mf.Property.ObjectOf.Title) + "Model"
 }
 
