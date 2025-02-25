@@ -1,8 +1,8 @@
 package transform
 
 import (
-	"strings"
 	"github.com/iancoleman/strcase"
+	"strings"
 )
 
 func upperFirst(s string) string {

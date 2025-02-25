@@ -61,9 +61,9 @@ func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 }
 
 type updateRequestAttribute struct {
-	UpdateRequest   *UpdateRequest
-	Property        openapi.OpenAPISchemaProperty
-	Parent          *updateRequestAttribute
+	UpdateRequest *UpdateRequest
+	Property      openapi.OpenAPISchemaProperty
+	Parent        *updateRequestAttribute
 }
 
 func (ura updateRequestAttribute) AttributeName() StrWithCases {
@@ -209,4 +209,3 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 
 	return newAttributes
 }
-

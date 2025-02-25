@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"testing"
 	"terraform-provider-msgraph/generate/openapi"
+	"testing"
 )
 
 func ReadModel(modelInput []terraformModel) {

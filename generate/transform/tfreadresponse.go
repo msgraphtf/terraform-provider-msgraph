@@ -1,8 +1,8 @@
 package transform
 
 import (
-	"strings"
 	"slices"
+	"strings"
 
 	"terraform-provider-msgraph/generate/openapi"
 )
@@ -140,4 +140,3 @@ func (rra readResponseAttribute) NestedRead() []readResponseAttribute {
 
 	return read
 }
-

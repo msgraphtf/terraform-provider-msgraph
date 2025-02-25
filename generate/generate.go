@@ -1,14 +1,13 @@
 package main
 
 import (
+	"gopkg.in/yaml.v3"
 	"os"
 	"strings"
-	"gopkg.in/yaml.v3"
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
 )
-
 
 func getAugment(pathname string) transform.TemplateAugment {
 	pathObject := openapi.GetPath(pathname)
@@ -55,8 +54,8 @@ func main() {
 
 	if len(os.Args) > 1 {
 		pathObject := openapi.GetPath(os.Args[1])
-		blockName  := getBlockName(os.Args[1])
-		augment    := getAugment(os.Args[1])
+		blockName := getBlockName(os.Args[1])
+		augment := getAugment(os.Args[1])
 		generateDataSource(pathObject, blockName, augment)
 		generateModel(pathObject, blockName, augment)
 		if pathObject.Patch.Summary != "" {
@@ -82,8 +81,8 @@ func main() {
 
 		for _, path := range knownGoodPaths {
 			pathObject := openapi.GetPath(path)
-			blockName  := getBlockName(path)
-			augment    := getAugment(path)
+			blockName := getBlockName(path)
+			augment := getAugment(path)
 			generateDataSource(pathObject, blockName, augment)
 			generateModel(pathObject, blockName, augment)
 			if pathObject.Patch.Summary != "" {

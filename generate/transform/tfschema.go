@@ -26,7 +26,7 @@ func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
 		}
 
 		newAttribute := terraformSchemaAttribute{
-			Schema: &ts,
+			Schema:                &ts,
 			OpenAPISchemaProperty: property,
 		}
 
@@ -39,7 +39,7 @@ func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
 
 // Used by templates defined inside of data_source_template.go to generate the schema
 type terraformSchemaAttribute struct {
-	Schema          *TerraformSchema
+	Schema                *TerraformSchema
 	OpenAPISchemaProperty openapi.OpenAPISchemaProperty
 }
 
@@ -86,9 +86,9 @@ func (tsa terraformSchemaAttribute) Type() string {
 
 func (tsa terraformSchemaAttribute) Required() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
-		return false 
+		return false
 	} else { // Resource
-		return false 
+		return false
 	}
 }
 
@@ -110,7 +110,7 @@ func (tsa terraformSchemaAttribute) Optional() bool {
 
 func (tsa terraformSchemaAttribute) Computed() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
-		return  true
+		return true
 	} else { // Resource
 		return true
 	}
@@ -135,7 +135,7 @@ func (tsa terraformSchemaAttribute) NestedAttribute() []terraformSchemaAttribute
 		}
 
 		newAttribute := terraformSchemaAttribute{
-			Schema: tsa.Schema,
+			Schema:                tsa.Schema,
 			OpenAPISchemaProperty: property,
 		}
 
@@ -155,5 +155,3 @@ func (tsa terraformSchemaAttribute) ElementType() string {
 	return "UNKNOWN"
 
 }
-
-

@@ -1,8 +1,8 @@
 package transform
 
 import (
-	"strings"
 	"slices"
+	"strings"
 
 	"github.com/iancoleman/strcase"
 
@@ -11,7 +11,7 @@ import (
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type ReadQuery struct {
-	OpenAPIPath         openapi.OpenAPIPathObject
+	OpenAPIPath  openapi.OpenAPIPathObject
 	BlockName    StrWithCases
 	AltGetMethod []map[string]string
 	Augment      TemplateAugment

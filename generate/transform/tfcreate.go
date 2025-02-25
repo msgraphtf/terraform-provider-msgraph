@@ -9,7 +9,6 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-
 type CreateRequest struct {
 	OpenAPIPath openapi.OpenAPIPathObject
 	BlockName   string
@@ -63,9 +62,9 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 }
 
 type createRequestAttribute struct {
-	CreateRequest   *CreateRequest
-	Property        openapi.OpenAPISchemaProperty
-	Parent          *createRequestAttribute
+	CreateRequest *CreateRequest
+	Property      openapi.OpenAPISchemaProperty
+	Parent        *createRequestAttribute
 }
 
 func (cra createRequestAttribute) AttributeName() StrWithCases {
@@ -198,4 +197,3 @@ func (cra createRequestAttribute) RequestBodyVar() string {
 	}
 
 }
-

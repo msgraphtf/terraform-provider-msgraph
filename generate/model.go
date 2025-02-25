@@ -7,24 +7,20 @@ import (
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
-
 )
-
 
 type modelInput struct {
 	PackageName string
 	Model       transform.Model
 }
 
-
-
 func generateModel(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
 
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
-	input := modelInput {
+	input := modelInput{
 		PackageName: packageName,
-		Model: transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName, Augment: augment},
+		Model:       transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName, Augment: augment},
 	}
 
 	// Generate model
@@ -33,4 +29,3 @@ func generateModel(pathObject openapi.OpenAPIPathObject, blockName string, augme
 	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", input)
 
 }
-

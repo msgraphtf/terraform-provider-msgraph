@@ -29,7 +29,7 @@ func GetPath(pathname string) OpenAPIPathObject {
 		pathObject.Parameters = append(pathObject.Parameters, param.Value.Name)
 	}
 
-	for name, _ := range path.Operations() {
+	for name := range path.Operations() {
 		if name == "GET" {
 			pathObject.Get.Summary = path.Get.Summary
 			pathObject.Get.Description = path.Get.Description

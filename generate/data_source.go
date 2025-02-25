@@ -6,26 +6,23 @@ import (
 	"strings"
 	"text/template"
 
-
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
 )
-
 
 func upperFirst(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]
 }
 
 type templateInput struct {
-	PackageName       string
-	BlockName         transform.StrWithCases
-	Schema            transform.TerraformSchema
-	CreateRequest     transform.CreateRequest
-	ReadQuery         transform.ReadQuery
-	ReadResponse      transform.ReadResponse
-	UpdateRequest     transform.UpdateRequest
+	PackageName   string
+	BlockName     transform.StrWithCases
+	Schema        transform.TerraformSchema
+	CreateRequest transform.CreateRequest
+	ReadQuery     transform.ReadQuery
+	ReadResponse  transform.ReadResponse
+	UpdateRequest transform.UpdateRequest
 }
-
 
 func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
 
