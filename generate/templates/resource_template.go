@@ -378,7 +378,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 			{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 			{{.RequestBodyVar}}Model := {{.ModelName}}{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
-			{{.RequestBodyVar}}State := {{.UpdateRequest.BlockName}}{{.AttributeName.UpperCamel}}Model{}
+			{{.RequestBodyVar}}State := {{.ModelName}}{}
 			types.ListValueFrom(ctx, {{.StateVar}}{{.AttributeName.UpperCamel}}.Elements()[k].Type(ctx), &{{.RequestBodyVar}}Model)
 			{{template "generate_update" .NestedUpdate}}
 		}
