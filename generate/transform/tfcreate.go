@@ -50,8 +50,9 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 		//}
 
 		newCreateRequest := createRequestAttribute{
-			CreateRequest: cr,
+			CreateRequest: &cr,
 			Property:      property,
+			Parent:        nil,
 		}
 
 		cra = append(cra, newCreateRequest)
@@ -61,7 +62,7 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 }
 
 type createRequestAttribute struct {
-	CreateRequest   CreateRequest
+	CreateRequest   *CreateRequest
 	Property        openapi.OpenAPISchemaProperty
 	Parent          *createRequestAttribute
 }
@@ -162,6 +163,7 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 		//}
 
 		newCreateRequest := createRequestAttribute{
+			CreateRequest: cra.CreateRequest,
 			Property:      property,
 			Parent:        &cra,
 		}
