@@ -12,7 +12,7 @@ import (
 
 
 
-func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
+func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
 
 		input := templateInput{}
 
@@ -21,12 +21,12 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string) {
 		// Set input values to top level template
 		input.PackageName = packageName
 		input.BlockName = transform.StrWithCases{String: blockName}
-		input.ReadQuery = transform.ReadQuery{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}}
-		input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: blockName} // Generate Read Go code from OpenAPI schema
+		input.ReadQuery = transform.ReadQuery{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
+		input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: blockName, Augment: augment} // Generate Read Go code from OpenAPI schema
 
-		input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource"}
-		input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject, BlockName: blockName}
-		input.UpdateRequest = transform.UpdateRequest{OpenAPIPath: pathObject, BlockName: blockName}
+		input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource", Augment: augment}
+		input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject, BlockName: blockName, Augment: augment}
+		input.UpdateRequest = transform.UpdateRequest{OpenAPIPath: pathObject, BlockName: blockName, Augment: augment}
 
 		// Get templates
 		resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")

@@ -2,6 +2,7 @@ package transform
 
 import (
 	"strings"
+	"slices"
 
 	"github.com/iancoleman/strcase"
 
@@ -13,6 +14,7 @@ type ReadQuery struct {
 	OpenAPIPath         openapi.OpenAPIPathObject
 	BlockName    StrWithCases
 	AltGetMethod []map[string]string
+	Augment      TemplateAugment
 }
 
 func (rq ReadQuery) PathFields() []string {
@@ -43,9 +45,9 @@ func (rq ReadQuery) SelectParameters() []string {
 	var selectParams []string
 
 	for _, p := range rq.OpenAPIPath.Get.Response.Properties {
-		//if !slices.Contains(augment.ExcludedProperties, p.Name) {
+		if !slices.Contains(rq.Augment.ExcludedProperties, p.Name) {
 			selectParams = append(selectParams, p.Name)
-		//}
+		}
 	}
 
 	return selectParams

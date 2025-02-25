@@ -1,7 +1,7 @@
 package transform
 
 import (
-	//"slices"
+	"slices"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -13,6 +13,7 @@ import (
 type CreateRequest struct {
 	OpenAPIPath openapi.OpenAPIPathObject
 	BlockName   string
+	Augment     TemplateAugment
 }
 
 func (cr CreateRequest) PostMethod() []queryMethod {
@@ -45,9 +46,9 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 	for _, property := range cr.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
+		if slices.Contains(cr.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newCreateRequest := createRequestAttribute{
 			CreateRequest: &cr,
@@ -158,9 +159,9 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	for _, property := range cra.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
+		if slices.Contains(cra.CreateRequest.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newCreateRequest := createRequestAttribute{
 			CreateRequest: cra.CreateRequest,

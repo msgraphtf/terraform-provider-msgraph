@@ -18,13 +18,13 @@ type modelInput struct {
 
 
 
-func generateModel(pathObject openapi.OpenAPIPathObject, blockName string) {
+func generateModel(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
 
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
 	input := modelInput {
 		PackageName: packageName,
-		Model: transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName},
+		Model: transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName, Augment: augment},
 	}
 
 	// Generate model

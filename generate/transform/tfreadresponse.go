@@ -2,13 +2,15 @@ package transform
 
 import (
 	"strings"
+	"slices"
 
 	"terraform-provider-msgraph/generate/openapi"
 )
 
 type ReadResponse struct {
 	OpenAPIPathObject openapi.OpenAPIPathObject
-	BlockName  string
+	BlockName         string
+	Augment           TemplateAugment
 }
 
 func (rr ReadResponse) Attributes() []readResponseAttribute {
@@ -18,9 +20,9 @@ func (rr ReadResponse) Attributes() []readResponseAttribute {
 	for _, property := range rr.OpenAPIPathObject.Get.Response.Properties {
 
 		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
+		if slices.Contains(rr.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newReadResponseAttribute := readResponseAttribute{
 			ReadResponse: &rr,
@@ -123,9 +125,9 @@ func (rra readResponseAttribute) NestedRead() []readResponseAttribute {
 	for _, property := range rra.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
+		if slices.Contains(rra.ReadResponse.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newReadResponseAttribute := readResponseAttribute{
 			ReadResponse: rra.ReadResponse,

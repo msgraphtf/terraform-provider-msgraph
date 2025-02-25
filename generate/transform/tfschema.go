@@ -11,6 +11,7 @@ import (
 type TerraformSchema struct {
 	OpenAPIPath   openapi.OpenAPIPathObject
 	BehaviourMode string
+	Augment       TemplateAugment
 }
 
 func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
@@ -20,10 +21,9 @@ func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
 	for _, property := range ts.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
-		// NOTE: Augmenting is temporarily disabled while I refactor
-		// if slices.Contains(augment.ExcludedProperties, property.Name) {
-		// 	continue
-		// }
+		if slices.Contains(ts.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newAttribute := terraformSchemaAttribute{
 			Schema: &ts,
@@ -97,8 +97,8 @@ func (tsa terraformSchemaAttribute) Optional() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
 		if slices.Contains(tsa.Schema.OpenAPIPath.Parameters, tsa.Schema.OpenAPIPath.Get.Response.Title+"-"+tsa.Name()) {
 			return true
-		//} else if slices.Contains(augment.DataSourceExtraOptionals, tsa.AttributeName()) {
-		//	return true
+		} else if slices.Contains(tsa.Schema.Augment.DataSourceExtraOptionals, tsa.Name()) {
+			return true
 		}
 	} else if tsa.Schema.BehaviourMode == "Resource" {
 		return true
@@ -130,10 +130,9 @@ func (tsa terraformSchemaAttribute) NestedAttribute() []terraformSchemaAttribute
 	for _, property := range tsa.OpenAPISchemaProperty.ObjectOf.Properties {
 
 		// Skip excluded properties
-		// NOTE: Augmenting is temporarily disabled while I refactor
-		// if slices.Contains(augment.ExcludedProperties, property.Name) {
-		// 	continue
-		// }
+		if slices.Contains(tsa.Schema.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newAttribute := terraformSchemaAttribute{
 			Schema: tsa.Schema,

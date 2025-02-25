@@ -1,7 +1,7 @@
 package transform
 
 import (
-	//"slices"
+	"slices"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -11,7 +11,8 @@ import (
 
 type UpdateRequest struct {
 	OpenAPIPath openapi.OpenAPIPathObject
-	BlockName  string
+	BlockName   string
+	Augment     TemplateAugment
 }
 
 func (ur UpdateRequest) PostMethod() []queryMethod {
@@ -43,9 +44,9 @@ func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 	for _, property := range ur.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
+		if slices.Contains(ur.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newUpdateRequest := updateRequestAttribute{
 			UpdateRequest: &ur,
@@ -193,9 +194,9 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 	for _, property := range ura.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
+		if slices.Contains(ura.UpdateRequest.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newUpdateRequest := updateRequestAttribute{
 			UpdateRequest: ura.UpdateRequest,

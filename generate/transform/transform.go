@@ -41,3 +41,11 @@ type queryMethod struct {
 	MethodName string
 	Parameter  string
 }
+
+// Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
+type TemplateAugment struct {
+	ExcludedProperties       []string            `yaml:"excludedProperties"`
+	AltReadMethods           []map[string]string `yaml:"altReadMethods"`
+	DataSourceExtraOptionals []string            `yaml:"dataSourceExtraOptionals"`
+	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
+}

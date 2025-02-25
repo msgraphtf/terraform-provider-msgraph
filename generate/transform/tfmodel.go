@@ -13,6 +13,7 @@ import (
 type Model struct {
 	BlockName     string
 	OpenAPISchema openapi.OpenAPISchemaObject
+	Augment       TemplateAugment
 }
 
 func (m Model) Definitions() []ModelDefinition {

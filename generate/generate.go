@@ -3,31 +3,30 @@ package main
 import (
 	"os"
 	"strings"
-	//"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v3"
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
 )
 
-//var augment templateAugment
-//
-//func setGlobals(pathname string) openapi.OpenAPIPathObject {
-//	pathObject := openapi.GetPath(pathname)
-//
-//	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-//	packageName := strings.ToLower(pathFields[0])
-//
-//	// Open augment file if available
-//	var err error = nil
-//	augment = templateAugment{}
-//	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + getBlockName(pathname) + ".yaml")
-//	if err == nil {
-//		yaml.Unmarshal(augmentFile, &augment)
-//	}
-//
-//	return pathObject
-//
-//}
+
+func getAugment(pathname string) transform.TemplateAugment {
+	pathObject := openapi.GetPath(pathname)
+
+	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+	packageName := strings.ToLower(pathFields[0])
+
+	// Open augment file if available
+	var err error = nil
+	augment := transform.TemplateAugment{}
+	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + getBlockName(pathname) + ".yaml")
+	if err == nil {
+		yaml.Unmarshal(augmentFile, &augment)
+	}
+
+	return augment
+
+}
 
 func getBlockName(pathname string) string {
 
@@ -56,11 +55,12 @@ func main() {
 
 	if len(os.Args) > 1 {
 		pathObject := openapi.GetPath(os.Args[1])
-		blockName := getBlockName(os.Args[1])
-		generateDataSource(pathObject, blockName)
-		generateModel(pathObject, blockName)
+		blockName  := getBlockName(os.Args[1])
+		augment    := getAugment(os.Args[1])
+		generateDataSource(pathObject, blockName, augment)
+		generateModel(pathObject, blockName, augment)
 		if pathObject.Patch.Summary != "" {
-			generateResource(pathObject, blockName)
+			generateResource(pathObject, blockName, augment)
 		}
 	} else {
 
@@ -82,11 +82,12 @@ func main() {
 
 		for _, path := range knownGoodPaths {
 			pathObject := openapi.GetPath(path)
-			blockName := getBlockName(path)
-			generateDataSource(pathObject, blockName)
-			generateModel(pathObject, blockName)
+			blockName  := getBlockName(path)
+			augment    := getAugment(path)
+			generateDataSource(pathObject, blockName, augment)
+			generateModel(pathObject, blockName, augment)
 			if pathObject.Patch.Summary != "" {
-				generateResource(pathObject, blockName)
+				generateResource(pathObject, blockName, augment)
 			}
 		}
 
