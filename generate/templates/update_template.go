@@ -18,8 +18,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	// Generate API request body from plan
 	requestBody := models.New{{.BlockName.UpperCamel}}()
-	var t time.Time
-	var u uuid.UUID
 
 	{{- define "UpdateStringAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
@@ -40,7 +38,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- define "UpdateStringTimeAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	t, _ = time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
+	t, _ := time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&t)
 	}
 	{{- end}}
@@ -48,7 +46,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- define "UpdateStringUuidAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	u, _ = uuid.Parse(plan{{.AttributeName.UpperCamel}})
+	u, _ := uuid.Parse(plan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&u)
 	}
 	{{- end}}
@@ -88,7 +86,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}) {
 		var {{.AttributeName.UpperCamel}} []uuid.UUID
 		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
-			u, _ = uuid.Parse(i.String())
+			u, _ := uuid.Parse(i.String())
 			{{.AttributeName.UpperCamel}} = append({{.AttributeName.UpperCamel}}, u)
 		}
 		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.UpperCamel}})
