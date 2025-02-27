@@ -11,7 +11,7 @@ import (
 
 type UpdateRequest struct {
 	OpenAPIPath openapi.OpenAPIPathObject
-	BlockName   string
+	BlockName   StrWithCases
 	Augment     TemplateAugment
 }
 
@@ -184,7 +184,7 @@ func (ura updateRequestAttribute) NewModelMethod() string {
 }
 
 func (ura updateRequestAttribute) ModelName() string {
-	return ura.UpdateRequest.BlockName + upperFirst(ura.Property.ObjectOf.Title) + "Model"
+	return ura.UpdateRequest.BlockName.LowerCamel() + upperFirst(ura.Property.ObjectOf.Title) + "Model"
 }
 
 func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
