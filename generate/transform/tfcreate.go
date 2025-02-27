@@ -11,7 +11,7 @@ import (
 
 type CreateRequest struct {
 	OpenAPIPath openapi.OpenAPIPathObject
-	BlockName   string
+	BlockName   StrWithCases
 	Augment     TemplateAugment
 }
 
@@ -179,7 +179,7 @@ func (cra createRequestAttribute) NewModelMethod() string {
 }
 
 func (cra createRequestAttribute) ModelName() string {
-	return cra.CreateRequest.BlockName + upperFirst(cra.Property.ObjectOf.Title) + "Model"
+	return cra.CreateRequest.BlockName.LowerCamel() + upperFirst(cra.Property.ObjectOf.Title) + "Model"
 }
 
 func (cra createRequestAttribute) RequestBodyVar() string {

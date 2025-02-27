@@ -23,7 +23,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: blockName, Augment: augment} // Generate Read Go code from OpenAPI schema
 
 	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource", Augment: augment}
-	input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject, BlockName: blockName, Augment: augment}
+	input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
 	input.UpdateRequest = transform.UpdateRequest{OpenAPIPath: pathObject, BlockName: blockName, Augment: augment}
 
 	// Get templates
@@ -31,6 +31,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/schema_template.go")
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_query_template.go")
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_response_template.go")
+	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/create_template.go")
 
 	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_resource.go")
 	resourceTmpl.ExecuteTemplate(outfile, "resource_template.go", input)
