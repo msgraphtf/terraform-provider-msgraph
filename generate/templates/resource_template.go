@@ -20,7 +20,9 @@ import (
 
 	"terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
 	"terraform-provider-msgraph/planmodifiers/listplanmodifiers"
+	{{- if .Schema.IfSingleNestedAttributeUsed nil }}
 	"terraform-provider-msgraph/planmodifiers/objectplanmodifiers"
+	{{- end}}
 	"terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
 )
 

@@ -37,6 +37,26 @@ func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
 
 }
 
+func (ts TerraformSchema) IfSingleNestedAttributeUsed(attributes []terraformSchemaAttribute) bool {
+
+	result := false
+
+	if attributes == nil {
+		attributes = ts.Attributes()
+	}
+
+	for _, attribute := range attributes {
+		if attribute.Type() == "SingleNestedAttribute" {
+			return true
+		} else if attribute.Type() == "ListNestedAttribute" {
+			result = ts.IfSingleNestedAttributeUsed(attribute.NestedAttribute())
+		}
+	}
+
+	return result
+
+}
+
 // Used by templates defined inside of data_source_template.go to generate the schema
 type terraformSchemaAttribute struct {
 	Schema                *TerraformSchema
