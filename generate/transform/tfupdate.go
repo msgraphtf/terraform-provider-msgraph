@@ -138,12 +138,12 @@ func (ura updateRequestAttribute) StateVar() string {
 
 func (ura updateRequestAttribute) RequestBodyVar() string {
 
-	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+	if ura.Property.Type == "object" && ura.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
+		return ura.Property.Name
+	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
 		return ura.Parent.RequestBodyVar()
 	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
 		return ura.Parent.RequestBodyVar()
-	} else if ura.Property.Type == "object" && ura.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
-		return ura.Property.Name
 	} else if ura.Property.ArrayOf == "object" {
 		return ura.Property.ObjectOf.Title
 	} else {
@@ -179,6 +179,26 @@ func (ura updateRequestAttribute) PlanValueMethod() string {
 
 }
 
+func (ura updateRequestAttribute) NestedPlan() string {
+
+	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Parent.RequestBodyVar() + "Model." + ura.AttributeName().UpperCamel()
+	} else {
+		return "plan." + ura.AttributeName().UpperCamel()
+	}
+
+}
+
+func (ura updateRequestAttribute) NestedState() string {
+
+	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Parent.RequestBodyVar() + "State." + ura.AttributeName().UpperCamel()
+	} else {
+		return "state." + ura.AttributeName().UpperCamel()
+	}
+
+}
+
 func (ura updateRequestAttribute) NewModelMethod() string {
 	return upperFirst(ura.Property.ObjectOf.Title)
 }
@@ -208,4 +228,24 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 	}
 
 	return newAttributes
+}
+
+func (ura updateRequestAttribute) ParentRequestBodyVar() string {
+
+	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Parent.RequestBodyVar()
+	} else {
+		return "requestBody"
+	}
+
+}
+
+func (ura updateRequestAttribute) ParentPlanVar() string {
+
+	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Parent.RequestBodyVar() + "Model." + ura.AttributeName().UpperCamel()
+	} else {
+		return "plan." + ura.AttributeName().UpperCamel()
+	}
+
 }

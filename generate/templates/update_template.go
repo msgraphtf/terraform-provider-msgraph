@@ -112,13 +112,13 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 		{{.RequestBodyVar}}Model := {{.ModelName}}{}
-		plan.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
+		{{.NestedPlan}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
 		{{.RequestBodyVar}}State := {{.ModelName}}{}
-		state.{{.AttributeName.UpperCamel}}.As(ctx, &{{.RequestBodyVar}}State, basetypes.ObjectAsOptions{})
+		{{.NestedState}}.As(ctx, &{{.RequestBodyVar}}State, basetypes.ObjectAsOptions{})
 		{{template "generate_update" .NestedUpdate}}
-		requestBody.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
+		{{.ParentRequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.RequestBodyVar}})
 		objectValue, _ := types.ObjectValueFrom(ctx, {{.RequestBodyVar}}Model.AttributeTypes(), {{.RequestBodyVar}}Model)
-		plan.{{.AttributeName.UpperCamel}} = objectValue
+		{{.ParentPlanVar}} = objectValue
 	}
 	{{- end}}
 

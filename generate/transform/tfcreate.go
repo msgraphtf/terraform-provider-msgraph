@@ -152,6 +152,16 @@ func (cra createRequestAttribute) PlanValueMethod() string {
 
 }
 
+func (cra createRequestAttribute) NestedPlan() string {
+
+	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+		return cra.Parent.RequestBodyVar() + "Model." + cra.AttributeName().UpperCamel()
+	} else {
+		return "plan." + cra.AttributeName().UpperCamel()
+	}
+
+}
+
 func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	var cr []createRequestAttribute
 
@@ -184,16 +194,36 @@ func (cra createRequestAttribute) ModelName() string {
 
 func (cra createRequestAttribute) RequestBodyVar() string {
 
-	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+	if cra.Property.Type == "object" && cra.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
+		return cra.Property.Name
+	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
 		return cra.Parent.RequestBodyVar()
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
 		return cra.Parent.RequestBodyVar()
-	} else if cra.Property.Type == "object" && cra.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
-		return cra.Property.Name
 	} else if cra.Property.ArrayOf == "object" {
 		return cra.Property.ObjectOf.Title
 	} else {
 		return "requestBody"
+	}
+
+}
+
+func (cra createRequestAttribute) ParentRequestBodyVar() string {
+
+	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+		return cra.Parent.RequestBodyVar()
+	} else {
+		return "requestBody"
+	}
+
+}
+
+func (cra createRequestAttribute) ParentPlanVar() string {
+
+	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+		return cra.Parent.RequestBodyVar() + "Model." + cra.AttributeName().UpperCamel()
+	} else {
+		return "plan." + cra.AttributeName().UpperCamel()
 	}
 
 }
