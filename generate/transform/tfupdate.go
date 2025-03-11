@@ -138,7 +138,9 @@ func (ura updateRequestAttribute) StateVar() string {
 
 func (ura updateRequestAttribute) RequestBodyVar() string {
 
-	if ura.Property.Type == "object" && ura.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
+	if ura.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Property.Name
+	} else if ura.AttributeType() == "UpdateArrayObjectAttribute" {
 		return ura.Property.Name
 	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
 		return ura.Parent.RequestBodyVar()
@@ -233,6 +235,8 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 func (ura updateRequestAttribute) ParentRequestBodyVar() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+		return ura.Parent.RequestBodyVar()
+	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
 		return ura.Parent.RequestBodyVar()
 	} else {
 		return "requestBody"

@@ -194,7 +194,9 @@ func (cra createRequestAttribute) ModelName() string {
 
 func (cra createRequestAttribute) RequestBodyVar() string {
 
-	if cra.Property.Type == "object" && cra.Property.ObjectOf.Type != "string" { // 2nd half prevents this catching string enums
+	if cra.AttributeType() == "CreateObjectAttribute" {
+		return cra.Property.Name
+	} else if cra.AttributeType() == "CreateArrayObjectAttribute" {
 		return cra.Property.Name
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
 		return cra.Parent.RequestBodyVar()
@@ -211,6 +213,8 @@ func (cra createRequestAttribute) RequestBodyVar() string {
 func (cra createRequestAttribute) ParentRequestBodyVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+		return cra.Parent.RequestBodyVar()
+	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
 		return cra.Parent.RequestBodyVar()
 	} else {
 		return "requestBody"
