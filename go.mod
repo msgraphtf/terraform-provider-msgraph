@@ -15,12 +15,12 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
 	github.com/iancoleman/strcase v0.3.0
 	github.com/microsoft/kiota-abstractions-go v1.9.1
-	github.com/microsoftgraph/msgraph-sdk-go v1.66.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.17.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.17.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.3.3 // indirect
 	github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c // indirect
@@ -72,13 +72,13 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
-	github.com/microsoft/kiota-authentication-azure-go v1.2.0 // indirect
-	github.com/microsoft/kiota-http-go v1.5.0 // indirect
-	github.com/microsoft/kiota-serialization-form-go v1.1.0 // indirect
-	github.com/microsoft/kiota-serialization-json-go v1.1.0 // indirect
-	github.com/microsoft/kiota-serialization-multipart-go v1.1.0 // indirect
-	github.com/microsoft/kiota-serialization-text-go v1.1.0 // indirect
-	github.com/microsoftgraph/msgraph-sdk-go-core v1.3.0 // indirect
+	github.com/microsoft/kiota-authentication-azure-go v1.2.1 // indirect
+	github.com/microsoft/kiota-http-go v1.5.1 // indirect
+	github.com/microsoft/kiota-serialization-form-go v1.1.1 // indirect
+	github.com/microsoft/kiota-serialization-json-go v1.1.1 // indirect
+	github.com/microsoft/kiota-serialization-multipart-go v1.1.1 // indirect
+	github.com/microsoft/kiota-serialization-text-go v1.1.1 // indirect
+	github.com/microsoftgraph/msgraph-sdk-go-core v1.3.1 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
