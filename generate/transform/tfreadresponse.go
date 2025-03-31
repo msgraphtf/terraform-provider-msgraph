@@ -67,6 +67,18 @@ func (rr ReadResponse) IfAttrImportNeeded() bool {
 	return false
 }
 
+// Determines if a terraform datasource or resource needs to import terraform-plugin-framework/types/basetypes
+func (rr ReadResponse) IfBasetypesImportNeeded() bool {
+
+	for _, rra := range rr.AllAttributes() {
+		if rra.AttributeType() == "ReadListNestedAttribute" {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type readResponseAttribute struct {
 	ReadResponse *ReadResponse

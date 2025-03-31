@@ -10,7 +10,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	{{- if .ReadResponse.IfBasetypesImportNeeded }}
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	{{- end}}
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	{{- if .ReadQuery.MultipleGetMethodParameters }}

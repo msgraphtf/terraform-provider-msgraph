@@ -23,7 +23,9 @@ import (
 	"github.com/microsoftgraph/msgraph-sdk-go/{{.PackageName}}"
 
 	"terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
+	{{- if .Schema.IfListPlanModifiersImportNeeded }}
 	"terraform-provider-msgraph/planmodifiers/listplanmodifiers"
+	{{- end}}
 	{{- if .Schema.IfSingleNestedAttributeUsed nil }}
 	"terraform-provider-msgraph/planmodifiers/objectplanmodifiers"
 	{{- end}}

@@ -37,6 +37,38 @@ func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
 
 }
 
+// AllAttributes returns an array of all terraformSchemaAttribute in the TerraformSchema instance, including all nested/child attributes
+func (ts TerraformSchema) AllAttributes() []terraformSchemaAttribute {
+
+	var recurseAttributes func(attributes []terraformSchemaAttribute) []terraformSchemaAttribute
+	recurseAttributes = func(attributes []terraformSchemaAttribute) []terraformSchemaAttribute{
+
+		for _, tsa := range attributes {
+			if tsa.Type() == "SingleNestedAttribute" || tsa.Type() == "ListNestedAttribute" {
+				attributes = append(attributes, recurseAttributes(tsa.NestedAttribute())...)
+			}
+		}
+
+		return attributes
+	}
+
+	return recurseAttributes(ts.Attributes())
+
+}
+
+// Determines if a terraform resource needs to import terraform-provider-msgraph/planmodifiers/listplanmodifiers
+func (ts TerraformSchema) IfListPlanModifiersImportNeeded() bool {
+
+	for _, tsa := range ts.AllAttributes() {
+		if tsa.Type() == "ListAttribute" || tsa.Type() == "ListNestedAttribute" {
+			return true
+		}
+	}
+
+	return false
+
+}
+
 func (ts TerraformSchema) IfSingleNestedAttributeUsed(attributes []terraformSchemaAttribute) bool {
 
 	result := false
