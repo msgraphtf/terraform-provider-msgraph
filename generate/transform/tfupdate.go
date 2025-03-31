@@ -253,3 +253,11 @@ func (ura updateRequestAttribute) ParentPlanVar() string {
 	}
 
 }
+
+func (ura updateRequestAttribute) SetModelMethod() string {
+	if ura.AttributeName().UpperCamel() == "Type" {
+		return "TypeEscaped"
+	} else {
+		return ura.AttributeName().UpperCamel()
+	}
+}

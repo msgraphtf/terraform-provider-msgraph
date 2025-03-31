@@ -231,3 +231,11 @@ func (cra createRequestAttribute) ParentPlanVar() string {
 	}
 
 }
+
+func (cra createRequestAttribute) SetModelMethod() string {
+	if cra.AttributeName().UpperCamel() == "Type" {
+		return "TypeEscaped"
+	} else {
+		return cra.AttributeName().UpperCamel()
+	}
+}

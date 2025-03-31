@@ -14,7 +14,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateStringAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&plan{{.AttributeName.UpperCamel}})
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
