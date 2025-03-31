@@ -36,6 +36,37 @@ func (rr ReadResponse) Attributes() []readResponseAttribute {
 
 }
 
+// AllAttributes returns an array of all readResponseAttributes in the ReadResponse instance, including all nested/child attributes
+func (rr ReadResponse) AllAttributes() []readResponseAttribute {
+
+	var recurseAttributes func(attributes []readResponseAttribute) []readResponseAttribute
+	recurseAttributes = func(attributes []readResponseAttribute) []readResponseAttribute{
+
+		for _, rra := range attributes {
+			if rra.AttributeType() == "ReadSingleNestedAttribute" || rra.AttributeType() == "ReadListNestedAttribute" {
+				attributes = append(attributes, recurseAttributes(rra.NestedRead())...)
+			}
+		}
+
+		return attributes
+	}
+
+	return recurseAttributes(rr.Attributes())
+
+}
+
+// Determines if a terraform datasource or resource needs to import terraform-plugin-framework/attr
+func (rr ReadResponse) IfAttrImportNeeded() bool {
+
+	for _, rra := range rr.AllAttributes() {
+		if rra.AttributeType() == "ReadListStringAttribute" || rra.AttributeType() == "ReadListStringFormattedAttribute" {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type readResponseAttribute struct {
 	ReadResponse *ReadResponse

@@ -7,7 +7,9 @@ import (
 	{{- end}}
 	"time"
 
+	{{- if .ReadResponse.IfAttrImportNeeded }}
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	{{- end}}
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
