@@ -81,6 +81,8 @@ func (ura updateRequestAttribute) AttributeType() string {
 			return "UpdateStringTimeAttribute"
 		case "uuid":
 			return "UpdateStringUuidAttribute"
+		case "base64url":
+			return "UpdateStringBase64UrlAttribute"
 		}
 		return "UpdateStringAttribute"
 	case "integer":

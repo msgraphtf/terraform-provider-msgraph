@@ -80,6 +80,8 @@ func (cra createRequestAttribute) AttributeType() string {
 			return "CreateStringTimeAttribute"
 		case "uuid":
 			return "CreateStringUuidAttribute"
+		case "base64url":
+			return "CreateStringBase64UrlAttribute"
 		}
 		return "CreateStringAttribute"
 	case "integer":

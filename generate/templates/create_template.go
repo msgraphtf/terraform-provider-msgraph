@@ -51,6 +51,15 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	}
 	{{- end}}
 
+	{{- define "CreateStringBase64UrlAttribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(plan{{.AttributeName.UpperCamel}}))
+	} else {
+		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
+	}
+	{{- end}}
+
 	{{- define "CreateInt64Attribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
@@ -142,6 +151,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{ template "CreateStringTimeAttribute" .}}
 	{{- else if eq .AttributeType "CreateStringUuidAttribute"}}
 	{{ template "CreateStringUuidAttribute" .}}
+	{{- else if eq .AttributeType "CreateStringBase64UrlAttribute"}}
+	{{ template "CreateStringBase64UrlAttribute" .}}
 	{{- else if eq .AttributeType "CreateInt64Attribute"}}
 	{{ template "CreateInt64Attribute" .}}
 	{{- else if eq .AttributeType "CreateInt32Attribute"}}

@@ -51,6 +51,13 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 	{{- end}}
 
+	{{- define "UpdateStringBase64UrlAttribute" }}
+	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
+	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(plan{{.AttributeName.UpperCamel}}))
+	}
+	{{- end}}
+
 	{{- define "UpdateInt64Attribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}){
 	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
@@ -132,6 +139,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{ template "UpdateStringTimeAttribute" .}}
 	{{- else if eq .AttributeType "UpdateStringUuidAttribute"}}
 	{{ template "UpdateStringUuidAttribute" .}}
+	{{- else if eq .AttributeType "UpdateStringBase64UrlAttribute"}}
+	{{ template "UpdateStringBase64UrlAttribute" .}}
 	{{- else if eq .AttributeType "UpdateInt64Attribute"}}
 	{{ template "UpdateInt64Attribute" .}}
 	{{- else if eq .AttributeType "UpdateInt32Attribute"}}
