@@ -1,9 +1,10 @@
 package main
 
 import (
-	"gopkg.in/yaml.v3"
 	"os"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
@@ -85,7 +86,7 @@ func main() {
 			augment := getAugment(path)
 			generateDataSource(pathObject, blockName, augment)
 			generateModel(pathObject, blockName, augment)
-			if pathObject.Patch.Summary != "" {
+			if pathObject.Patch.Summary != "" && pathObject.Delete.Summary != "" {
 				generateResource(pathObject, blockName, augment)
 			}
 		}
