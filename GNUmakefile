@@ -9,4 +9,4 @@ gendocs:
 	go generate ./...
 
 build:
-	go run ./generate/ $(args); gofmt -w -s -l msgraph/; go build
+	git clean -f msgraph/; go run ./generate/ $(args); gofmt -w -s -l msgraph/; go build
