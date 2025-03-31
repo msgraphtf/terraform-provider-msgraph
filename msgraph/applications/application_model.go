@@ -1,70 +1,162 @@
 package applications
 
 import (
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 type applicationModel struct {
-	Id                                types.String                                       `tfsdk:"id"`
-	DeletedDateTime                   types.String                                       `tfsdk:"deleted_date_time"`
-	AddIns                            []applicationAddInsModel                           `tfsdk:"add_ins"`
-	Api                               *applicationApiModel                               `tfsdk:"api"`
-	AppId                             types.String                                       `tfsdk:"app_id"`
-	AppRoles                          []applicationAppRolesModel                         `tfsdk:"app_roles"`
-	ApplicationTemplateId             types.String                                       `tfsdk:"application_template_id"`
-	Certification                     *applicationCertificationModel                     `tfsdk:"certification"`
-	CreatedDateTime                   types.String                                       `tfsdk:"created_date_time"`
-	DefaultRedirectUri                types.String                                       `tfsdk:"default_redirect_uri"`
-	Description                       types.String                                       `tfsdk:"description"`
-	DisabledByMicrosoftStatus         types.String                                       `tfsdk:"disabled_by_microsoft_status"`
-	DisplayName                       types.String                                       `tfsdk:"display_name"`
-	GroupMembershipClaims             types.String                                       `tfsdk:"group_membership_claims"`
-	IdentifierUris                    []types.String                                     `tfsdk:"identifier_uris"`
-	Info                              *applicationInfoModel                              `tfsdk:"info"`
-	IsDeviceOnlyAuthSupported         types.Bool                                         `tfsdk:"is_device_only_auth_supported"`
-	IsFallbackPublicClient            types.Bool                                         `tfsdk:"is_fallback_public_client"`
-	KeyCredentials                    []applicationKeyCredentialsModel                   `tfsdk:"key_credentials"`
-	Logo                              types.String                                       `tfsdk:"logo"`
-	Notes                             types.String                                       `tfsdk:"notes"`
-	Oauth2RequirePostResponse         types.Bool                                         `tfsdk:"oauth_2_require_post_response"`
-	OptionalClaims                    *applicationOptionalClaimsModel                    `tfsdk:"optional_claims"`
-	ParentalControlSettings           *applicationParentalControlSettingsModel           `tfsdk:"parental_control_settings"`
-	PasswordCredentials               []applicationPasswordCredentialsModel              `tfsdk:"password_credentials"`
-	PublicClient                      *applicationPublicClientModel                      `tfsdk:"public_client"`
-	PublisherDomain                   types.String                                       `tfsdk:"publisher_domain"`
-	RequestSignatureVerification      *applicationRequestSignatureVerificationModel      `tfsdk:"request_signature_verification"`
-	RequiredResourceAccess            []applicationRequiredResourceAccessModel           `tfsdk:"required_resource_access"`
-	SamlMetadataUrl                   types.String                                       `tfsdk:"saml_metadata_url"`
-	ServiceManagementReference        types.String                                       `tfsdk:"service_management_reference"`
-	ServicePrincipalLockConfiguration *applicationServicePrincipalLockConfigurationModel `tfsdk:"service_principal_lock_configuration"`
-	SignInAudience                    types.String                                       `tfsdk:"sign_in_audience"`
-	Spa                               *applicationSpaModel                               `tfsdk:"spa"`
-	Tags                              []types.String                                     `tfsdk:"tags"`
-	TokenEncryptionKeyId              types.String                                       `tfsdk:"token_encryption_key_id"`
-	VerifiedPublisher                 *applicationVerifiedPublisherModel                 `tfsdk:"verified_publisher"`
-	Web                               *applicationWebModel                               `tfsdk:"web"`
+	Id                                types.String `tfsdk:"id"`
+	DeletedDateTime                   types.String `tfsdk:"deleted_date_time"`
+	AddIns                            types.List   `tfsdk:"add_ins"`
+	Api                               types.Object `tfsdk:"api"`
+	AppId                             types.String `tfsdk:"app_id"`
+	AppRoles                          types.List   `tfsdk:"app_roles"`
+	ApplicationTemplateId             types.String `tfsdk:"application_template_id"`
+	Certification                     types.Object `tfsdk:"certification"`
+	CreatedDateTime                   types.String `tfsdk:"created_date_time"`
+	DefaultRedirectUri                types.String `tfsdk:"default_redirect_uri"`
+	Description                       types.String `tfsdk:"description"`
+	DisabledByMicrosoftStatus         types.String `tfsdk:"disabled_by_microsoft_status"`
+	DisplayName                       types.String `tfsdk:"display_name"`
+	GroupMembershipClaims             types.String `tfsdk:"group_membership_claims"`
+	IdentifierUris                    types.List   `tfsdk:"identifier_uris"`
+	Info                              types.Object `tfsdk:"info"`
+	IsDeviceOnlyAuthSupported         types.Bool   `tfsdk:"is_device_only_auth_supported"`
+	IsFallbackPublicClient            types.Bool   `tfsdk:"is_fallback_public_client"`
+	KeyCredentials                    types.List   `tfsdk:"key_credentials"`
+	Logo                              types.String `tfsdk:"logo"`
+	NativeAuthenticationApisEnabled   types.String `tfsdk:"native_authentication_apis_enabled"`
+	Notes                             types.String `tfsdk:"notes"`
+	Oauth2RequirePostResponse         types.Bool   `tfsdk:"oauth_2_require_post_response"`
+	OptionalClaims                    types.Object `tfsdk:"optional_claims"`
+	ParentalControlSettings           types.Object `tfsdk:"parental_control_settings"`
+	PasswordCredentials               types.List   `tfsdk:"password_credentials"`
+	PublicClient                      types.Object `tfsdk:"public_client"`
+	PublisherDomain                   types.String `tfsdk:"publisher_domain"`
+	RequestSignatureVerification      types.Object `tfsdk:"request_signature_verification"`
+	RequiredResourceAccess            types.List   `tfsdk:"required_resource_access"`
+	SamlMetadataUrl                   types.String `tfsdk:"saml_metadata_url"`
+	ServiceManagementReference        types.String `tfsdk:"service_management_reference"`
+	ServicePrincipalLockConfiguration types.Object `tfsdk:"service_principal_lock_configuration"`
+	SignInAudience                    types.String `tfsdk:"sign_in_audience"`
+	Spa                               types.Object `tfsdk:"spa"`
+	Tags                              types.List   `tfsdk:"tags"`
+	TokenEncryptionKeyId              types.String `tfsdk:"token_encryption_key_id"`
+	UniqueName                        types.String `tfsdk:"unique_name"`
+	VerifiedPublisher                 types.Object `tfsdk:"verified_publisher"`
+	Web                               types.Object `tfsdk:"web"`
 }
 
-type applicationAddInsModel struct {
-	Id         types.String                 `tfsdk:"id"`
-	Properties []applicationPropertiesModel `tfsdk:"properties"`
-	Type       types.String                 `tfsdk:"type"`
+func (m applicationModel) AttributeTypes() map[string]attr.Type {
+	applicationAddIns := applicationAddInModel{}
+	applicationApi := applicationApiApplicationModel{}
+	applicationAppRoles := applicationAppRoleModel{}
+	applicationCertification := applicationCertificationModel{}
+	applicationInfo := applicationInformationalUrlModel{}
+	applicationKeyCredentials := applicationKeyCredentialModel{}
+	applicationOptionalClaims := applicationOptionalClaimsModel{}
+	applicationParentalControlSettings := applicationParentalControlSettingsModel{}
+	applicationPasswordCredentials := applicationPasswordCredentialModel{}
+	applicationPublicClient := applicationPublicClientApplicationModel{}
+	applicationRequestSignatureVerification := applicationRequestSignatureVerificationModel{}
+	applicationRequiredResourceAccess := applicationRequiredResourceAccessModel{}
+	applicationServicePrincipalLockConfiguration := applicationServicePrincipalLockConfigurationModel{}
+	applicationSpa := applicationSpaApplicationModel{}
+	applicationVerifiedPublisher := applicationVerifiedPublisherModel{}
+	applicationWeb := applicationWebApplicationModel{}
+	return map[string]attr.Type{
+		"id":                                   types.StringType,
+		"deleted_date_time":                    types.StringType,
+		"add_ins":                              types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAddIns.AttributeTypes()}},
+		"api":                                  types.ObjectType{AttrTypes: applicationApi.AttributeTypes()},
+		"app_id":                               types.StringType,
+		"app_roles":                            types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAppRoles.AttributeTypes()}},
+		"application_template_id":              types.StringType,
+		"certification":                        types.ObjectType{AttrTypes: applicationCertification.AttributeTypes()},
+		"created_date_time":                    types.StringType,
+		"default_redirect_uri":                 types.StringType,
+		"description":                          types.StringType,
+		"disabled_by_microsoft_status":         types.StringType,
+		"display_name":                         types.StringType,
+		"group_membership_claims":              types.StringType,
+		"identifier_uris":                      types.ListType{ElemType: types.StringType},
+		"info":                                 types.ObjectType{AttrTypes: applicationInfo.AttributeTypes()},
+		"is_device_only_auth_supported":        types.BoolType,
+		"is_fallback_public_client":            types.BoolType,
+		"key_credentials":                      types.ListType{ElemType: types.ObjectType{AttrTypes: applicationKeyCredentials.AttributeTypes()}},
+		"logo":                                 types.StringType,
+		"native_authentication_apis_enabled":   types.StringType,
+		"notes":                                types.StringType,
+		"oauth_2_require_post_response":        types.BoolType,
+		"optional_claims":                      types.ObjectType{AttrTypes: applicationOptionalClaims.AttributeTypes()},
+		"parental_control_settings":            types.ObjectType{AttrTypes: applicationParentalControlSettings.AttributeTypes()},
+		"password_credentials":                 types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPasswordCredentials.AttributeTypes()}},
+		"public_client":                        types.ObjectType{AttrTypes: applicationPublicClient.AttributeTypes()},
+		"publisher_domain":                     types.StringType,
+		"request_signature_verification":       types.ObjectType{AttrTypes: applicationRequestSignatureVerification.AttributeTypes()},
+		"required_resource_access":             types.ListType{ElemType: types.ObjectType{AttrTypes: applicationRequiredResourceAccess.AttributeTypes()}},
+		"saml_metadata_url":                    types.StringType,
+		"service_management_reference":         types.StringType,
+		"service_principal_lock_configuration": types.ObjectType{AttrTypes: applicationServicePrincipalLockConfiguration.AttributeTypes()},
+		"sign_in_audience":                     types.StringType,
+		"spa":                                  types.ObjectType{AttrTypes: applicationSpa.AttributeTypes()},
+		"tags":                                 types.ListType{ElemType: types.StringType},
+		"token_encryption_key_id":              types.StringType,
+		"unique_name":                          types.StringType,
+		"verified_publisher":                   types.ObjectType{AttrTypes: applicationVerifiedPublisher.AttributeTypes()},
+		"web":                                  types.ObjectType{AttrTypes: applicationWeb.AttributeTypes()},
+	}
 }
 
-type applicationPropertiesModel struct {
+type applicationAddInModel struct {
+	Id         types.String `tfsdk:"id"`
+	Properties types.List   `tfsdk:"properties"`
+	Type       types.String `tfsdk:"type"`
+}
+
+func (m applicationAddInModel) AttributeTypes() map[string]attr.Type {
+	applicationProperties := applicationKeyValueModel{}
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"properties": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationProperties.AttributeTypes()}},
+		"type":       types.StringType,
+	}
+}
+
+type applicationKeyValueModel struct {
 	Key   types.String `tfsdk:"key"`
 	Value types.String `tfsdk:"value"`
 }
 
-type applicationApiModel struct {
-	AcceptMappedClaims          types.Bool                                  `tfsdk:"accept_mapped_claims"`
-	KnownClientApplications     []types.String                              `tfsdk:"known_client_applications"`
-	Oauth2PermissionScopes      []applicationOauth2PermissionScopesModel    `tfsdk:"oauth_2_permission_scopes"`
-	PreAuthorizedApplications   []applicationPreAuthorizedApplicationsModel `tfsdk:"pre_authorized_applications"`
-	RequestedAccessTokenVersion types.Int64                                 `tfsdk:"requested_access_token_version"`
+func (m applicationKeyValueModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
 }
 
-type applicationOauth2PermissionScopesModel struct {
+type applicationApiApplicationModel struct {
+	AcceptMappedClaims          types.Bool  `tfsdk:"accept_mapped_claims"`
+	KnownClientApplications     types.List  `tfsdk:"known_client_applications"`
+	Oauth2PermissionScopes      types.List  `tfsdk:"oauth_2_permission_scopes"`
+	PreAuthorizedApplications   types.List  `tfsdk:"pre_authorized_applications"`
+	RequestedAccessTokenVersion types.Int32 `tfsdk:"requested_access_token_version"`
+}
+
+func (m applicationApiApplicationModel) AttributeTypes() map[string]attr.Type {
+	applicationOauth2PermissionScopes := applicationPermissionScopeModel{}
+	applicationPreAuthorizedApplications := applicationPreAuthorizedApplicationModel{}
+	return map[string]attr.Type{
+		"accept_mapped_claims":           types.BoolType,
+		"known_client_applications":      types.ListType{ElemType: types.StringType},
+		"oauth_2_permission_scopes":      types.ListType{ElemType: types.ObjectType{AttrTypes: applicationOauth2PermissionScopes.AttributeTypes()}},
+		"pre_authorized_applications":    types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPreAuthorizedApplications.AttributeTypes()}},
+		"requested_access_token_version": types.Int32Type,
+	}
+}
+
+type applicationPermissionScopeModel struct {
 	AdminConsentDescription types.String `tfsdk:"admin_consent_description"`
 	AdminConsentDisplayName types.String `tfsdk:"admin_consent_display_name"`
 	Id                      types.String `tfsdk:"id"`
@@ -76,19 +168,52 @@ type applicationOauth2PermissionScopesModel struct {
 	Value                   types.String `tfsdk:"value"`
 }
 
-type applicationPreAuthorizedApplicationsModel struct {
-	AppId                  types.String   `tfsdk:"app_id"`
-	DelegatedPermissionIds []types.String `tfsdk:"delegated_permission_ids"`
+func (m applicationPermissionScopeModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"admin_consent_description":  types.StringType,
+		"admin_consent_display_name": types.StringType,
+		"id":                         types.StringType,
+		"is_enabled":                 types.BoolType,
+		"origin":                     types.StringType,
+		"type":                       types.StringType,
+		"user_consent_description":   types.StringType,
+		"user_consent_display_name":  types.StringType,
+		"value":                      types.StringType,
+	}
 }
 
-type applicationAppRolesModel struct {
-	AllowedMemberTypes []types.String `tfsdk:"allowed_member_types"`
-	Description        types.String   `tfsdk:"description"`
-	DisplayName        types.String   `tfsdk:"display_name"`
-	Id                 types.String   `tfsdk:"id"`
-	IsEnabled          types.Bool     `tfsdk:"is_enabled"`
-	Origin             types.String   `tfsdk:"origin"`
-	Value              types.String   `tfsdk:"value"`
+type applicationPreAuthorizedApplicationModel struct {
+	AppId                  types.String `tfsdk:"app_id"`
+	DelegatedPermissionIds types.List   `tfsdk:"delegated_permission_ids"`
+}
+
+func (m applicationPreAuthorizedApplicationModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"app_id":                   types.StringType,
+		"delegated_permission_ids": types.ListType{ElemType: types.StringType},
+	}
+}
+
+type applicationAppRoleModel struct {
+	AllowedMemberTypes types.List   `tfsdk:"allowed_member_types"`
+	Description        types.String `tfsdk:"description"`
+	DisplayName        types.String `tfsdk:"display_name"`
+	Id                 types.String `tfsdk:"id"`
+	IsEnabled          types.Bool   `tfsdk:"is_enabled"`
+	Origin             types.String `tfsdk:"origin"`
+	Value              types.String `tfsdk:"value"`
+}
+
+func (m applicationAppRoleModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"allowed_member_types": types.ListType{ElemType: types.StringType},
+		"description":          types.StringType,
+		"display_name":         types.StringType,
+		"id":                   types.StringType,
+		"is_enabled":           types.BoolType,
+		"origin":               types.StringType,
+		"value":                types.StringType,
+	}
 }
 
 type applicationCertificationModel struct {
@@ -99,7 +224,17 @@ type applicationCertificationModel struct {
 	LastCertificationDateTime       types.String `tfsdk:"last_certification_date_time"`
 }
 
-type applicationInfoModel struct {
+func (m applicationCertificationModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"certification_details_url":          types.StringType,
+		"certification_expiration_date_time": types.StringType,
+		"is_certified_by_microsoft":          types.BoolType,
+		"is_publisher_attested":              types.BoolType,
+		"last_certification_date_time":       types.StringType,
+	}
+}
+
+type applicationInformationalUrlModel struct {
 	LogoUrl             types.String `tfsdk:"logo_url"`
 	MarketingUrl        types.String `tfsdk:"marketing_url"`
 	PrivacyStatementUrl types.String `tfsdk:"privacy_statement_url"`
@@ -107,7 +242,17 @@ type applicationInfoModel struct {
 	TermsOfServiceUrl   types.String `tfsdk:"terms_of_service_url"`
 }
 
-type applicationKeyCredentialsModel struct {
+func (m applicationInformationalUrlModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"logo_url":              types.StringType,
+		"marketing_url":         types.StringType,
+		"privacy_statement_url": types.StringType,
+		"support_url":           types.StringType,
+		"terms_of_service_url":  types.StringType,
+	}
+}
+
+type applicationKeyCredentialModel struct {
 	CustomKeyIdentifier types.String `tfsdk:"custom_key_identifier"`
 	DisplayName         types.String `tfsdk:"display_name"`
 	EndDateTime         types.String `tfsdk:"end_date_time"`
@@ -118,39 +263,65 @@ type applicationKeyCredentialsModel struct {
 	Usage               types.String `tfsdk:"usage"`
 }
 
+func (m applicationKeyCredentialModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"custom_key_identifier": types.StringType,
+		"display_name":          types.StringType,
+		"end_date_time":         types.StringType,
+		"key":                   types.StringType,
+		"key_id":                types.StringType,
+		"start_date_time":       types.StringType,
+		"type":                  types.StringType,
+		"usage":                 types.StringType,
+	}
+}
+
 type applicationOptionalClaimsModel struct {
-	AccessToken []applicationAccessTokenModel `tfsdk:"access_token"`
-	IdToken     []applicationIdTokenModel     `tfsdk:"id_token"`
-	Saml2Token  []applicationSaml2TokenModel  `tfsdk:"saml_2_token"`
+	AccessToken types.List `tfsdk:"access_token"`
+	IdToken     types.List `tfsdk:"id_token"`
+	Saml2Token  types.List `tfsdk:"saml_2_token"`
 }
 
-type applicationAccessTokenModel struct {
-	AdditionalProperties []types.String `tfsdk:"additional_properties"`
-	Essential            types.Bool     `tfsdk:"essential"`
-	Name                 types.String   `tfsdk:"name"`
-	Source               types.String   `tfsdk:"source"`
+func (m applicationOptionalClaimsModel) AttributeTypes() map[string]attr.Type {
+	applicationAccessToken := applicationOptionalClaimModel{}
+	applicationIdToken := applicationOptionalClaimModel{}
+	applicationSaml2Token := applicationOptionalClaimModel{}
+	return map[string]attr.Type{
+		"access_token": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAccessToken.AttributeTypes()}},
+		"id_token":     types.ListType{ElemType: types.ObjectType{AttrTypes: applicationIdToken.AttributeTypes()}},
+		"saml_2_token": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationSaml2Token.AttributeTypes()}},
+	}
 }
 
-type applicationIdTokenModel struct {
-	AdditionalProperties []types.String `tfsdk:"additional_properties"`
-	Essential            types.Bool     `tfsdk:"essential"`
-	Name                 types.String   `tfsdk:"name"`
-	Source               types.String   `tfsdk:"source"`
+type applicationOptionalClaimModel struct {
+	AdditionalProperties types.List   `tfsdk:"additional_properties"`
+	Essential            types.Bool   `tfsdk:"essential"`
+	Name                 types.String `tfsdk:"name"`
+	Source               types.String `tfsdk:"source"`
 }
 
-type applicationSaml2TokenModel struct {
-	AdditionalProperties []types.String `tfsdk:"additional_properties"`
-	Essential            types.Bool     `tfsdk:"essential"`
-	Name                 types.String   `tfsdk:"name"`
-	Source               types.String   `tfsdk:"source"`
+func (m applicationOptionalClaimModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"additional_properties": types.ListType{ElemType: types.StringType},
+		"essential":             types.BoolType,
+		"name":                  types.StringType,
+		"source":                types.StringType,
+	}
 }
 
 type applicationParentalControlSettingsModel struct {
-	CountriesBlockedForMinors []types.String `tfsdk:"countries_blocked_for_minors"`
-	LegalAgeGroupRule         types.String   `tfsdk:"legal_age_group_rule"`
+	CountriesBlockedForMinors types.List   `tfsdk:"countries_blocked_for_minors"`
+	LegalAgeGroupRule         types.String `tfsdk:"legal_age_group_rule"`
 }
 
-type applicationPasswordCredentialsModel struct {
+func (m applicationParentalControlSettingsModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"countries_blocked_for_minors": types.ListType{ElemType: types.StringType},
+		"legal_age_group_rule":         types.StringType,
+	}
+}
+
+type applicationPasswordCredentialModel struct {
 	CustomKeyIdentifier types.String `tfsdk:"custom_key_identifier"`
 	DisplayName         types.String `tfsdk:"display_name"`
 	EndDateTime         types.String `tfsdk:"end_date_time"`
@@ -160,8 +331,26 @@ type applicationPasswordCredentialsModel struct {
 	StartDateTime       types.String `tfsdk:"start_date_time"`
 }
 
-type applicationPublicClientModel struct {
-	RedirectUris []types.String `tfsdk:"redirect_uris"`
+func (m applicationPasswordCredentialModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"custom_key_identifier": types.StringType,
+		"display_name":          types.StringType,
+		"end_date_time":         types.StringType,
+		"hint":                  types.StringType,
+		"key_id":                types.StringType,
+		"secret_text":           types.StringType,
+		"start_date_time":       types.StringType,
+	}
+}
+
+type applicationPublicClientApplicationModel struct {
+	RedirectUris types.List `tfsdk:"redirect_uris"`
+}
+
+func (m applicationPublicClientApplicationModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"redirect_uris": types.ListType{ElemType: types.StringType},
+	}
 }
 
 type applicationRequestSignatureVerificationModel struct {
@@ -169,14 +358,36 @@ type applicationRequestSignatureVerificationModel struct {
 	IsSignedRequestRequired types.Bool   `tfsdk:"is_signed_request_required"`
 }
 
+func (m applicationRequestSignatureVerificationModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"allowed_weak_algorithms":    types.StringType,
+		"is_signed_request_required": types.BoolType,
+	}
+}
+
 type applicationRequiredResourceAccessModel struct {
-	ResourceAccess []applicationResourceAccessModel `tfsdk:"resource_access"`
-	ResourceAppId  types.String                     `tfsdk:"resource_app_id"`
+	ResourceAccess types.List   `tfsdk:"resource_access"`
+	ResourceAppId  types.String `tfsdk:"resource_app_id"`
+}
+
+func (m applicationRequiredResourceAccessModel) AttributeTypes() map[string]attr.Type {
+	applicationResourceAccess := applicationResourceAccessModel{}
+	return map[string]attr.Type{
+		"resource_access": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationResourceAccess.AttributeTypes()}},
+		"resource_app_id": types.StringType,
+	}
 }
 
 type applicationResourceAccessModel struct {
 	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
+}
+
+func (m applicationResourceAccessModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":   types.StringType,
+		"type": types.StringType,
+	}
 }
 
 type applicationServicePrincipalLockConfigurationModel struct {
@@ -187,8 +398,24 @@ type applicationServicePrincipalLockConfigurationModel struct {
 	TokenEncryptionKeyId       types.Bool `tfsdk:"token_encryption_key_id"`
 }
 
-type applicationSpaModel struct {
-	RedirectUris []types.String `tfsdk:"redirect_uris"`
+func (m applicationServicePrincipalLockConfigurationModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"all_properties":                types.BoolType,
+		"credentials_with_usage_sign":   types.BoolType,
+		"credentials_with_usage_verify": types.BoolType,
+		"is_enabled":                    types.BoolType,
+		"token_encryption_key_id":       types.BoolType,
+	}
+}
+
+type applicationSpaApplicationModel struct {
+	RedirectUris types.List `tfsdk:"redirect_uris"`
+}
+
+func (m applicationSpaApplicationModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"redirect_uris": types.ListType{ElemType: types.StringType},
+	}
 }
 
 type applicationVerifiedPublisherModel struct {
@@ -197,12 +424,32 @@ type applicationVerifiedPublisherModel struct {
 	VerifiedPublisherId types.String `tfsdk:"verified_publisher_id"`
 }
 
-type applicationWebModel struct {
-	HomePageUrl           types.String                           `tfsdk:"home_page_url"`
-	ImplicitGrantSettings *applicationImplicitGrantSettingsModel `tfsdk:"implicit_grant_settings"`
-	LogoutUrl             types.String                           `tfsdk:"logout_url"`
-	RedirectUriSettings   []applicationRedirectUriSettingsModel  `tfsdk:"redirect_uri_settings"`
-	RedirectUris          []types.String                         `tfsdk:"redirect_uris"`
+func (m applicationVerifiedPublisherModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"added_date_time":       types.StringType,
+		"display_name":          types.StringType,
+		"verified_publisher_id": types.StringType,
+	}
+}
+
+type applicationWebApplicationModel struct {
+	HomePageUrl           types.String `tfsdk:"home_page_url"`
+	ImplicitGrantSettings types.Object `tfsdk:"implicit_grant_settings"`
+	LogoutUrl             types.String `tfsdk:"logout_url"`
+	RedirectUriSettings   types.List   `tfsdk:"redirect_uri_settings"`
+	RedirectUris          types.List   `tfsdk:"redirect_uris"`
+}
+
+func (m applicationWebApplicationModel) AttributeTypes() map[string]attr.Type {
+	applicationImplicitGrantSettings := applicationImplicitGrantSettingsModel{}
+	applicationRedirectUriSettings := applicationRedirectUriSettingsModel{}
+	return map[string]attr.Type{
+		"home_page_url":           types.StringType,
+		"implicit_grant_settings": types.ObjectType{AttrTypes: applicationImplicitGrantSettings.AttributeTypes()},
+		"logout_url":              types.StringType,
+		"redirect_uri_settings":   types.ListType{ElemType: types.ObjectType{AttrTypes: applicationRedirectUriSettings.AttributeTypes()}},
+		"redirect_uris":           types.ListType{ElemType: types.StringType},
+	}
 }
 
 type applicationImplicitGrantSettingsModel struct {
@@ -210,7 +457,21 @@ type applicationImplicitGrantSettingsModel struct {
 	EnableIdTokenIssuance     types.Bool `tfsdk:"enable_id_token_issuance"`
 }
 
+func (m applicationImplicitGrantSettingsModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"enable_access_token_issuance": types.BoolType,
+		"enable_id_token_issuance":     types.BoolType,
+	}
+}
+
 type applicationRedirectUriSettingsModel struct {
-	Index types.Int64  `tfsdk:"index"`
+	Index types.Int32  `tfsdk:"index"`
 	Uri   types.String `tfsdk:"uri"`
+}
+
+func (m applicationRedirectUriSettingsModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"index": types.Int32Type,
+		"uri":   types.StringType,
+	}
 }

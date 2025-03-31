@@ -1,64 +1,109 @@
 package sites
 
 import (
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 type siteModel struct {
-	Id                   types.String              `tfsdk:"id"`
-	CreatedBy            *siteCreatedByModel       `tfsdk:"created_by"`
-	CreatedDateTime      types.String              `tfsdk:"created_date_time"`
-	Description          types.String              `tfsdk:"description"`
-	ETag                 types.String              `tfsdk:"e_tag"`
-	LastModifiedBy       *siteLastModifiedByModel  `tfsdk:"last_modified_by"`
-	LastModifiedDateTime types.String              `tfsdk:"last_modified_date_time"`
-	Name                 types.String              `tfsdk:"name"`
-	ParentReference      *siteParentReferenceModel `tfsdk:"parent_reference"`
-	WebUrl               types.String              `tfsdk:"web_url"`
-	DisplayName          types.String              `tfsdk:"display_name"`
-	Error                *siteErrorModel           `tfsdk:"error"`
-	IsPersonalSite       types.Bool                `tfsdk:"is_personal_site"`
-	Root                 *siteRootModel            `tfsdk:"root"`
-	SharepointIds        *siteSharepointIdsModel   `tfsdk:"sharepoint_ids"`
-	SiteCollection       *siteSiteCollectionModel  `tfsdk:"site_collection"`
+	Id                   types.String `tfsdk:"id"`
+	CreatedBy            types.Object `tfsdk:"created_by"`
+	CreatedDateTime      types.String `tfsdk:"created_date_time"`
+	Description          types.String `tfsdk:"description"`
+	ETag                 types.String `tfsdk:"e_tag"`
+	LastModifiedBy       types.Object `tfsdk:"last_modified_by"`
+	LastModifiedDateTime types.String `tfsdk:"last_modified_date_time"`
+	Name                 types.String `tfsdk:"name"`
+	ParentReference      types.Object `tfsdk:"parent_reference"`
+	WebUrl               types.String `tfsdk:"web_url"`
+	DisplayName          types.String `tfsdk:"display_name"`
+	Error                types.Object `tfsdk:"error"`
+	IsPersonalSite       types.Bool   `tfsdk:"is_personal_site"`
+	Root                 types.Object `tfsdk:"root"`
+	SharepointIds        types.Object `tfsdk:"sharepoint_ids"`
+	SiteCollection       types.Object `tfsdk:"site_collection"`
 }
 
-type siteCreatedByModel struct {
-	Application *siteApplicationModel `tfsdk:"application"`
-	Device      *siteDeviceModel      `tfsdk:"device"`
-	User        *siteUserModel        `tfsdk:"user"`
+func (m siteModel) AttributeTypes() map[string]attr.Type {
+	siteCreatedBy := siteIdentitySetModel{}
+	siteLastModifiedBy := siteIdentitySetModel{}
+	siteParentReference := siteItemReferenceModel{}
+	siteError := sitePublicErrorModel{}
+	siteRoot := siteRootModel{}
+	siteSharepointIds := siteSharepointIdsModel{}
+	siteSiteCollection := siteSiteCollectionModel{}
+	return map[string]attr.Type{
+		"id":                      types.StringType,
+		"created_by":              types.ObjectType{AttrTypes: siteCreatedBy.AttributeTypes()},
+		"created_date_time":       types.StringType,
+		"description":             types.StringType,
+		"e_tag":                   types.StringType,
+		"last_modified_by":        types.ObjectType{AttrTypes: siteLastModifiedBy.AttributeTypes()},
+		"last_modified_date_time": types.StringType,
+		"name":                    types.StringType,
+		"parent_reference":        types.ObjectType{AttrTypes: siteParentReference.AttributeTypes()},
+		"web_url":                 types.StringType,
+		"display_name":            types.StringType,
+		"error":                   types.ObjectType{AttrTypes: siteError.AttributeTypes()},
+		"is_personal_site":        types.BoolType,
+		"root":                    types.ObjectType{AttrTypes: siteRoot.AttributeTypes()},
+		"sharepoint_ids":          types.ObjectType{AttrTypes: siteSharepointIds.AttributeTypes()},
+		"site_collection":         types.ObjectType{AttrTypes: siteSiteCollection.AttributeTypes()},
+	}
 }
 
-type siteApplicationModel struct {
+type siteIdentitySetModel struct {
+	Application types.Object `tfsdk:"application"`
+	Device      types.Object `tfsdk:"device"`
+	User        types.Object `tfsdk:"user"`
+}
+
+func (m siteIdentitySetModel) AttributeTypes() map[string]attr.Type {
+	siteApplication := siteIdentityModel{}
+	siteDevice := siteIdentityModel{}
+	siteUser := siteIdentityModel{}
+	return map[string]attr.Type{
+		"application": types.ObjectType{AttrTypes: siteApplication.AttributeTypes()},
+		"device":      types.ObjectType{AttrTypes: siteDevice.AttributeTypes()},
+		"user":        types.ObjectType{AttrTypes: siteUser.AttributeTypes()},
+	}
+}
+
+type siteIdentityModel struct {
 	DisplayName types.String `tfsdk:"display_name"`
 	Id          types.String `tfsdk:"id"`
 }
 
-type siteDeviceModel struct {
-	DisplayName types.String `tfsdk:"display_name"`
-	Id          types.String `tfsdk:"id"`
+func (m siteIdentityModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"display_name": types.StringType,
+		"id":           types.StringType,
+	}
 }
 
-type siteUserModel struct {
-	DisplayName types.String `tfsdk:"display_name"`
-	Id          types.String `tfsdk:"id"`
+type siteItemReferenceModel struct {
+	DriveId       types.String `tfsdk:"drive_id"`
+	DriveType     types.String `tfsdk:"drive_type"`
+	Id            types.String `tfsdk:"id"`
+	Name          types.String `tfsdk:"name"`
+	Path          types.String `tfsdk:"path"`
+	ShareId       types.String `tfsdk:"share_id"`
+	SharepointIds types.Object `tfsdk:"sharepoint_ids"`
+	SiteId        types.String `tfsdk:"site_id"`
 }
 
-type siteLastModifiedByModel struct {
-	Application *siteApplicationModel `tfsdk:"application"`
-	Device      *siteDeviceModel      `tfsdk:"device"`
-	User        *siteUserModel        `tfsdk:"user"`
-}
-
-type siteParentReferenceModel struct {
-	DriveId       types.String            `tfsdk:"drive_id"`
-	DriveType     types.String            `tfsdk:"drive_type"`
-	Id            types.String            `tfsdk:"id"`
-	Name          types.String            `tfsdk:"name"`
-	Path          types.String            `tfsdk:"path"`
-	ShareId       types.String            `tfsdk:"share_id"`
-	SharepointIds *siteSharepointIdsModel `tfsdk:"sharepoint_ids"`
-	SiteId        types.String            `tfsdk:"site_id"`
+func (m siteItemReferenceModel) AttributeTypes() map[string]attr.Type {
+	siteSharepointIds := siteSharepointIdsModel{}
+	return map[string]attr.Type{
+		"drive_id":       types.StringType,
+		"drive_type":     types.StringType,
+		"id":             types.StringType,
+		"name":           types.StringType,
+		"path":           types.StringType,
+		"share_id":       types.StringType,
+		"sharepoint_ids": types.ObjectType{AttrTypes: siteSharepointIds.AttributeTypes()},
+		"site_id":        types.StringType,
+	}
 }
 
 type siteSharepointIdsModel struct {
@@ -71,32 +116,100 @@ type siteSharepointIdsModel struct {
 	WebId            types.String `tfsdk:"web_id"`
 }
 
-type siteErrorModel struct {
-	Code       types.String         `tfsdk:"code"`
-	Details    []siteDetailsModel   `tfsdk:"details"`
-	InnerError *siteInnerErrorModel `tfsdk:"inner_error"`
-	Message    types.String         `tfsdk:"message"`
-	Target     types.String         `tfsdk:"target"`
+func (m siteSharepointIdsModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"list_id":             types.StringType,
+		"list_item_id":        types.StringType,
+		"list_item_unique_id": types.StringType,
+		"site_id":             types.StringType,
+		"site_url":            types.StringType,
+		"tenant_id":           types.StringType,
+		"web_id":              types.StringType,
+	}
 }
 
-type siteDetailsModel struct {
+type sitePublicErrorModel struct {
+	Code       types.String `tfsdk:"code"`
+	Details    types.List   `tfsdk:"details"`
+	InnerError types.Object `tfsdk:"inner_error"`
+	Message    types.String `tfsdk:"message"`
+	Target     types.String `tfsdk:"target"`
+}
+
+func (m sitePublicErrorModel) AttributeTypes() map[string]attr.Type {
+	siteDetails := sitePublicErrorDetailModel{}
+	siteInnerError := sitePublicInnerErrorModel{}
+	return map[string]attr.Type{
+		"code":        types.StringType,
+		"details":     types.ListType{ElemType: types.ObjectType{AttrTypes: siteDetails.AttributeTypes()}},
+		"inner_error": types.ObjectType{AttrTypes: siteInnerError.AttributeTypes()},
+		"message":     types.StringType,
+		"target":      types.StringType,
+	}
+}
+
+type sitePublicErrorDetailModel struct {
 	Code    types.String `tfsdk:"code"`
 	Message types.String `tfsdk:"message"`
 	Target  types.String `tfsdk:"target"`
 }
 
-type siteInnerErrorModel struct {
-	Code    types.String       `tfsdk:"code"`
-	Details []siteDetailsModel `tfsdk:"details"`
-	Message types.String       `tfsdk:"message"`
-	Target  types.String       `tfsdk:"target"`
+func (m sitePublicErrorDetailModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"code":    types.StringType,
+		"message": types.StringType,
+		"target":  types.StringType,
+	}
+}
+
+type sitePublicInnerErrorModel struct {
+	Code    types.String `tfsdk:"code"`
+	Details types.List   `tfsdk:"details"`
+	Message types.String `tfsdk:"message"`
+	Target  types.String `tfsdk:"target"`
+}
+
+func (m sitePublicInnerErrorModel) AttributeTypes() map[string]attr.Type {
+	siteDetails := sitePublicErrorDetailModel{}
+	return map[string]attr.Type{
+		"code":    types.StringType,
+		"details": types.ListType{ElemType: types.ObjectType{AttrTypes: siteDetails.AttributeTypes()}},
+		"message": types.StringType,
+		"target":  types.StringType,
+	}
 }
 
 type siteRootModel struct {
 }
 
+func (m siteRootModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+
 type siteSiteCollectionModel struct {
-	DataLocationCode types.String   `tfsdk:"data_location_code"`
-	Hostname         types.String   `tfsdk:"hostname"`
-	Root             *siteRootModel `tfsdk:"root"`
+	ArchivalDetails  types.Object `tfsdk:"archival_details"`
+	DataLocationCode types.String `tfsdk:"data_location_code"`
+	Hostname         types.String `tfsdk:"hostname"`
+	Root             types.Object `tfsdk:"root"`
+}
+
+func (m siteSiteCollectionModel) AttributeTypes() map[string]attr.Type {
+	siteArchivalDetails := siteSiteArchivalDetailsModel{}
+	siteRoot := siteRootModel{}
+	return map[string]attr.Type{
+		"archival_details":   types.ObjectType{AttrTypes: siteArchivalDetails.AttributeTypes()},
+		"data_location_code": types.StringType,
+		"hostname":           types.StringType,
+		"root":               types.ObjectType{AttrTypes: siteRoot.AttributeTypes()},
+	}
+}
+
+type siteSiteArchivalDetailsModel struct {
+	ArchiveStatus types.String `tfsdk:"archive_status"`
+}
+
+func (m siteSiteArchivalDetailsModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"archive_status": types.StringType,
+	}
 }

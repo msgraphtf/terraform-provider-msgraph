@@ -2,10 +2,11 @@ package devices
 
 import (
 	"context"
-
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/devices"
@@ -59,7 +60,7 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 							Computed:    true,
 						},
 						"account_enabled": schema.BoolAttribute{
-							Description: "true if the account is enabled; otherwise, false. Required. Default is true.  Supports $filter (eq, ne, not, in). Only callers in Global Administrator and Cloud Device Administrator roles can set this property.",
+							Description: "true if the account is enabled; otherwise, false. Required. Default is true.  Supports $filter (eq, ne, not, in). Only callers with at least the Cloud Device Administrator role can set this property.",
 							Computed:    true,
 						},
 						"alternative_security_ids": schema.ListNestedAttribute{
@@ -72,10 +73,6 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 										Computed:    true,
 									},
 									"key": schema.StringAttribute{
-										Description: "For internal use only.",
-										Computed:    true,
-									},
-									"type": schema.Int64Attribute{
 										Description: "For internal use only.",
 										Computed:    true,
 									},
@@ -95,7 +92,7 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 							Computed:    true,
 						},
 						"device_id": schema.StringAttribute{
-							Description: "Unique identifier set by Azure Device Registration Service at the time of registration. This is an alternate key that can be used to reference the device object. Supports $filter (eq, ne, not, startsWith).",
+							Description: "Unique identifier set by Azure Device Registration Service at the time of registration. This alternate key can be used to reference the device object. Supports $filter (eq, ne, not, startsWith).",
 							Computed:    true,
 						},
 						"device_metadata": schema.StringAttribute{
@@ -103,11 +100,7 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 							Computed:    true,
 						},
 						"device_ownership": schema.StringAttribute{
-							Description: "Ownership of the device. This property is set by Intune. Possible values are: unknown, company, personal.",
-							Computed:    true,
-						},
-						"device_version": schema.Int64Attribute{
-							Description: "For internal use only.",
+							Description: "Ownership of the device. Intune sets this property. Possible values are: unknown, company, personal.",
 							Computed:    true,
 						},
 						"display_name": schema.StringAttribute{
@@ -118,6 +111,10 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 							Description: "Enrollment profile applied to the device. For example, Apple Device Enrollment Profile, Device enrollment - Corporate device identifiers, or Windows Autopilot profile name. This property is set by Intune.",
 							Computed:    true,
 						},
+						"enrollment_type": schema.StringAttribute{
+							Description: "Enrollment type of the device. Intune sets this property. Possible values are: unknown, userEnrollment, deviceEnrollmentManager, appleBulkWithUser, appleBulkWithoutUser, windowsAzureADJoin, windowsBulkUserless, windowsAutoEnrollment, windowsBulkAzureDomainJoin, windowsCoManagement, windowsAzureADJoinUsingDeviceAuth,appleUserEnrollment, appleUserEnrollmentWithServiceAccount. NOTE: This property might return other values apart from those listed.",
+							Computed:    true,
+						},
 						"is_compliant": schema.BoolAttribute{
 							Description: "true if the device complies with Mobile Device Management (MDM) policies; otherwise, false. Read-only. This can only be updated by Intune for any device OS type or by an approved MDM app for Windows OS devices. Supports $filter (eq, ne, not).",
 							Computed:    true,
@@ -126,12 +123,36 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 							Description: "true if the device is managed by a Mobile Device Management (MDM) app; otherwise, false. This can only be updated by Intune for any device OS type or by an approved MDM app for Windows OS devices. Supports $filter (eq, ne, not).",
 							Computed:    true,
 						},
+						"is_management_restricted": schema.BoolAttribute{
+							Description: "",
+							Computed:    true,
+						},
+						"is_rooted": schema.BoolAttribute{
+							Description: "true if the device is rooted or jail-broken. This property can only be updated by Intune.",
+							Computed:    true,
+						},
+						"management_type": schema.StringAttribute{
+							Description: "The management channel of the device. This property is set by Intune. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController.",
+							Computed:    true,
+						},
+						"manufacturer": schema.StringAttribute{
+							Description: "Manufacturer of the device. Read-only.",
+							Computed:    true,
+						},
 						"mdm_app_id": schema.StringAttribute{
 							Description: "Application identifier used to register device into MDM. Read-only. Supports $filter (eq, ne, not, startsWith).",
 							Computed:    true,
 						},
+						"model": schema.StringAttribute{
+							Description: "Model of the device. Read-only.",
+							Computed:    true,
+						},
 						"on_premises_last_sync_date_time": schema.StringAttribute{
 							Description: "The last time at which the object was synced with the on-premises directory. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z Read-only. Supports $filter (eq, ne, not, ge, le, in).",
+							Computed:    true,
+						},
+						"on_premises_security_identifier": schema.StringAttribute{
+							Description: "The on-premises security identifier (SID) for the user who was synchronized from on-premises to the cloud. Read-only. Returned only on $select. Supports $filter (eq).",
 							Computed:    true,
 						},
 						"on_premises_sync_enabled": schema.BoolAttribute{
@@ -165,7 +186,7 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 							ElementType: types.StringType,
 						},
 						"trust_type": schema.StringAttribute{
-							Description: "Type of trust for the joined device. Read-only. Possible values:  Workplace (indicates bring your own personal devices), AzureAd (Cloud only joined devices), ServerAd (on-premises domain joined devices joined to Microsoft Entra ID). For more details, see Introduction to device management in Microsoft Entra ID.",
+							Description: "Type of trust for the joined device. Read-only. Possible values:  Workplace (indicates bring your own personal devices), AzureAd (Cloud-only joined devices), ServerAd (on-premises domain joined devices joined to Microsoft Entra ID). For more information, see Introduction to device management in Microsoft Entra ID.",
 							Computed:    true,
 						},
 					},
@@ -186,36 +207,7 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	qparams := devices.DevicesRequestBuilderGetRequestConfiguration{
 		QueryParameters: &devices.DevicesRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
-				"accountEnabled",
-				"alternativeSecurityIds",
-				"approximateLastSignInDateTime",
-				"complianceExpirationDateTime",
-				"deviceCategory",
-				"deviceId",
-				"deviceMetadata",
-				"deviceOwnership",
-				"deviceVersion",
-				"displayName",
-				"enrollmentProfileName",
-				"isCompliant",
-				"isManaged",
-				"mdmAppId",
-				"onPremisesLastSyncDateTime",
-				"onPremisesSyncEnabled",
-				"operatingSystem",
-				"operatingSystemVersion",
-				"physicalIds",
-				"profileType",
-				"registrationDateTime",
-				"systemLabels",
-				"trustType",
-				"memberOf",
-				"registeredOwners",
-				"registeredUsers",
-				"transitiveMemberOf",
-				"extensions",
+				"value",
 			},
 		},
 	}
@@ -230,96 +222,195 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	for _, v := range result.GetValue() {
-		value := new(devicesValueModel)
+	if len(result.GetValue()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetValue() {
+			value := new(devicesDeviceModel)
 
-		if v.GetId() != nil {
-			value.Id = types.StringValue(*v.GetId())
-		}
-		if v.GetDeletedDateTime() != nil {
-			value.DeletedDateTime = types.StringValue(v.GetDeletedDateTime().String())
-		}
-		if v.GetAccountEnabled() != nil {
-			value.AccountEnabled = types.BoolValue(*v.GetAccountEnabled())
-		}
-		for _, v := range v.GetAlternativeSecurityIds() {
-			alternativeSecurityIds := new(devicesAlternativeSecurityIdsModel)
+			if v.GetId() != nil {
+				value.Id = types.StringValue(*v.GetId())
+			} else {
+				value.Id = types.StringNull()
+			}
+			if v.GetDeletedDateTime() != nil {
+				value.DeletedDateTime = types.StringValue(v.GetDeletedDateTime().String())
+			} else {
+				value.DeletedDateTime = types.StringNull()
+			}
+			if v.GetAccountEnabled() != nil {
+				value.AccountEnabled = types.BoolValue(*v.GetAccountEnabled())
+			} else {
+				value.AccountEnabled = types.BoolNull()
+			}
+			if len(v.GetAlternativeSecurityIds()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetAlternativeSecurityIds() {
+					alternativeSecurityIds := new(devicesAlternativeSecurityIdModel)
 
-			if v.GetIdentityProvider() != nil {
-				alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
+					if v.GetIdentityProvider() != nil {
+						alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
+					} else {
+						alternativeSecurityIds.IdentityProvider = types.StringNull()
+					}
+					if v.GetKey() != nil {
+						alternativeSecurityIds.Key = types.StringValue(string(v.GetKey()[:]))
+					} else {
+						alternativeSecurityIds.Key = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, alternativeSecurityIds.AttributeTypes(), alternativeSecurityIds)
+					objectValues = append(objectValues, objectValue)
+				}
+				value.AlternativeSecurityIds, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
-			if v.GetKey() != nil {
-				alternativeSecurityIds.Key = types.StringValue(string(v.GetKey()[:]))
+			if v.GetApproximateLastSignInDateTime() != nil {
+				value.ApproximateLastSignInDateTime = types.StringValue(v.GetApproximateLastSignInDateTime().String())
+			} else {
+				value.ApproximateLastSignInDateTime = types.StringNull()
 			}
-			if v.GetTypeEscaped() != nil {
-				alternativeSecurityIds.Type = types.Int64Value(int64(*v.GetTypeEscaped()))
+			if v.GetComplianceExpirationDateTime() != nil {
+				value.ComplianceExpirationDateTime = types.StringValue(v.GetComplianceExpirationDateTime().String())
+			} else {
+				value.ComplianceExpirationDateTime = types.StringNull()
 			}
-			value.AlternativeSecurityIds = append(value.AlternativeSecurityIds, *alternativeSecurityIds)
+			if v.GetDeviceCategory() != nil {
+				value.DeviceCategory = types.StringValue(*v.GetDeviceCategory())
+			} else {
+				value.DeviceCategory = types.StringNull()
+			}
+			if v.GetDeviceId() != nil {
+				value.DeviceId = types.StringValue(*v.GetDeviceId())
+			} else {
+				value.DeviceId = types.StringNull()
+			}
+			if v.GetDeviceMetadata() != nil {
+				value.DeviceMetadata = types.StringValue(*v.GetDeviceMetadata())
+			} else {
+				value.DeviceMetadata = types.StringNull()
+			}
+			if v.GetDeviceOwnership() != nil {
+				value.DeviceOwnership = types.StringValue(*v.GetDeviceOwnership())
+			} else {
+				value.DeviceOwnership = types.StringNull()
+			}
+			if v.GetDisplayName() != nil {
+				value.DisplayName = types.StringValue(*v.GetDisplayName())
+			} else {
+				value.DisplayName = types.StringNull()
+			}
+			if v.GetEnrollmentProfileName() != nil {
+				value.EnrollmentProfileName = types.StringValue(*v.GetEnrollmentProfileName())
+			} else {
+				value.EnrollmentProfileName = types.StringNull()
+			}
+			if v.GetEnrollmentType() != nil {
+				value.EnrollmentType = types.StringValue(*v.GetEnrollmentType())
+			} else {
+				value.EnrollmentType = types.StringNull()
+			}
+			if v.GetIsCompliant() != nil {
+				value.IsCompliant = types.BoolValue(*v.GetIsCompliant())
+			} else {
+				value.IsCompliant = types.BoolNull()
+			}
+			if v.GetIsManaged() != nil {
+				value.IsManaged = types.BoolValue(*v.GetIsManaged())
+			} else {
+				value.IsManaged = types.BoolNull()
+			}
+			if v.GetIsManagementRestricted() != nil {
+				value.IsManagementRestricted = types.BoolValue(*v.GetIsManagementRestricted())
+			} else {
+				value.IsManagementRestricted = types.BoolNull()
+			}
+			if v.GetIsRooted() != nil {
+				value.IsRooted = types.BoolValue(*v.GetIsRooted())
+			} else {
+				value.IsRooted = types.BoolNull()
+			}
+			if v.GetManagementType() != nil {
+				value.ManagementType = types.StringValue(*v.GetManagementType())
+			} else {
+				value.ManagementType = types.StringNull()
+			}
+			if v.GetManufacturer() != nil {
+				value.Manufacturer = types.StringValue(*v.GetManufacturer())
+			} else {
+				value.Manufacturer = types.StringNull()
+			}
+			if v.GetMdmAppId() != nil {
+				value.MdmAppId = types.StringValue(*v.GetMdmAppId())
+			} else {
+				value.MdmAppId = types.StringNull()
+			}
+			if v.GetModel() != nil {
+				value.Model = types.StringValue(*v.GetModel())
+			} else {
+				value.Model = types.StringNull()
+			}
+			if v.GetOnPremisesLastSyncDateTime() != nil {
+				value.OnPremisesLastSyncDateTime = types.StringValue(v.GetOnPremisesLastSyncDateTime().String())
+			} else {
+				value.OnPremisesLastSyncDateTime = types.StringNull()
+			}
+			if v.GetOnPremisesSecurityIdentifier() != nil {
+				value.OnPremisesSecurityIdentifier = types.StringValue(*v.GetOnPremisesSecurityIdentifier())
+			} else {
+				value.OnPremisesSecurityIdentifier = types.StringNull()
+			}
+			if v.GetOnPremisesSyncEnabled() != nil {
+				value.OnPremisesSyncEnabled = types.BoolValue(*v.GetOnPremisesSyncEnabled())
+			} else {
+				value.OnPremisesSyncEnabled = types.BoolNull()
+			}
+			if v.GetOperatingSystem() != nil {
+				value.OperatingSystem = types.StringValue(*v.GetOperatingSystem())
+			} else {
+				value.OperatingSystem = types.StringNull()
+			}
+			if v.GetOperatingSystemVersion() != nil {
+				value.OperatingSystemVersion = types.StringValue(*v.GetOperatingSystemVersion())
+			} else {
+				value.OperatingSystemVersion = types.StringNull()
+			}
+			if len(v.GetPhysicalIds()) > 0 {
+				var physicalIds []attr.Value
+				for _, v := range v.GetPhysicalIds() {
+					physicalIds = append(physicalIds, types.StringValue(v))
+				}
+				listValue, _ := types.ListValue(types.StringType, physicalIds)
+				value.PhysicalIds = listValue
+			} else {
+				value.PhysicalIds = types.ListNull(types.StringType)
+			}
+			if v.GetProfileType() != nil {
+				value.ProfileType = types.StringValue(*v.GetProfileType())
+			} else {
+				value.ProfileType = types.StringNull()
+			}
+			if v.GetRegistrationDateTime() != nil {
+				value.RegistrationDateTime = types.StringValue(v.GetRegistrationDateTime().String())
+			} else {
+				value.RegistrationDateTime = types.StringNull()
+			}
+			if len(v.GetSystemLabels()) > 0 {
+				var systemLabels []attr.Value
+				for _, v := range v.GetSystemLabels() {
+					systemLabels = append(systemLabels, types.StringValue(v))
+				}
+				listValue, _ := types.ListValue(types.StringType, systemLabels)
+				value.SystemLabels = listValue
+			} else {
+				value.SystemLabels = types.ListNull(types.StringType)
+			}
+			if v.GetTrustType() != nil {
+				value.TrustType = types.StringValue(*v.GetTrustType())
+			} else {
+				value.TrustType = types.StringNull()
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
+			objectValues = append(objectValues, objectValue)
 		}
-		if v.GetApproximateLastSignInDateTime() != nil {
-			value.ApproximateLastSignInDateTime = types.StringValue(v.GetApproximateLastSignInDateTime().String())
-		}
-		if v.GetComplianceExpirationDateTime() != nil {
-			value.ComplianceExpirationDateTime = types.StringValue(v.GetComplianceExpirationDateTime().String())
-		}
-		if v.GetDeviceCategory() != nil {
-			value.DeviceCategory = types.StringValue(*v.GetDeviceCategory())
-		}
-		if v.GetDeviceId() != nil {
-			value.DeviceId = types.StringValue(*v.GetDeviceId())
-		}
-		if v.GetDeviceMetadata() != nil {
-			value.DeviceMetadata = types.StringValue(*v.GetDeviceMetadata())
-		}
-		if v.GetDeviceOwnership() != nil {
-			value.DeviceOwnership = types.StringValue(*v.GetDeviceOwnership())
-		}
-		if v.GetDeviceVersion() != nil {
-			value.DeviceVersion = types.Int64Value(int64(*v.GetDeviceVersion()))
-		}
-		if v.GetDisplayName() != nil {
-			value.DisplayName = types.StringValue(*v.GetDisplayName())
-		}
-		if v.GetEnrollmentProfileName() != nil {
-			value.EnrollmentProfileName = types.StringValue(*v.GetEnrollmentProfileName())
-		}
-		if v.GetIsCompliant() != nil {
-			value.IsCompliant = types.BoolValue(*v.GetIsCompliant())
-		}
-		if v.GetIsManaged() != nil {
-			value.IsManaged = types.BoolValue(*v.GetIsManaged())
-		}
-		if v.GetMdmAppId() != nil {
-			value.MdmAppId = types.StringValue(*v.GetMdmAppId())
-		}
-		if v.GetOnPremisesLastSyncDateTime() != nil {
-			value.OnPremisesLastSyncDateTime = types.StringValue(v.GetOnPremisesLastSyncDateTime().String())
-		}
-		if v.GetOnPremisesSyncEnabled() != nil {
-			value.OnPremisesSyncEnabled = types.BoolValue(*v.GetOnPremisesSyncEnabled())
-		}
-		if v.GetOperatingSystem() != nil {
-			value.OperatingSystem = types.StringValue(*v.GetOperatingSystem())
-		}
-		if v.GetOperatingSystemVersion() != nil {
-			value.OperatingSystemVersion = types.StringValue(*v.GetOperatingSystemVersion())
-		}
-		for _, v := range v.GetPhysicalIds() {
-			value.PhysicalIds = append(value.PhysicalIds, types.StringValue(v))
-		}
-		if v.GetProfileType() != nil {
-			value.ProfileType = types.StringValue(*v.GetProfileType())
-		}
-		if v.GetRegistrationDateTime() != nil {
-			value.RegistrationDateTime = types.StringValue(v.GetRegistrationDateTime().String())
-		}
-		for _, v := range v.GetSystemLabels() {
-			value.SystemLabels = append(value.SystemLabels, types.StringValue(v))
-		}
-		if v.GetTrustType() != nil {
-			value.TrustType = types.StringValue(*v.GetTrustType())
-		}
-		state.Value = append(state.Value, *value)
+		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state

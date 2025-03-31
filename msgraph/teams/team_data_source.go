@@ -2,7 +2,6 @@ package teams
 
 import (
 	"context"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -174,20 +173,7 @@ func (d *teamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"summary": schema.SingleNestedAttribute{
 				Description: "Contains summary information about the team, including number of owners, members, and guests.",
 				Computed:    true,
-				Attributes: map[string]schema.Attribute{
-					"guests_count": schema.Int64Attribute{
-						Description: "Count of guests in a team.",
-						Computed:    true,
-					},
-					"members_count": schema.Int64Attribute{
-						Description: "Count of members in a team.",
-						Computed:    true,
-					},
-					"owners_count": schema.Int64Attribute{
-						Description: "Count of owners in a team.",
-						Computed:    true,
-					},
-				},
+				Attributes:  map[string]schema.Attribute{},
 			},
 			"tenant_id": schema.StringAttribute{
 				Description: "The ID of the Microsoft Entra tenant.",
@@ -232,19 +218,6 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				"tenantId",
 				"visibility",
 				"webUrl",
-				"allChannels",
-				"channels",
-				"group",
-				"incomingChannels",
-				"installedApps",
-				"members",
-				"operations",
-				"permissionGrants",
-				"photo",
-				"primaryChannel",
-				"tags",
-				"template",
-				"schedule",
 			},
 		},
 	}
@@ -257,7 +230,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
-			"`id` must be supplied.",
+			"TODO: Specify required parameters",
 		)
 		return
 	}
@@ -272,116 +245,177 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	if result.GetId() != nil {
 		state.Id = types.StringValue(*result.GetId())
+	} else {
+		state.Id = types.StringNull()
 	}
 	if result.GetClassification() != nil {
 		state.Classification = types.StringValue(*result.GetClassification())
+	} else {
+		state.Classification = types.StringNull()
 	}
 	if result.GetCreatedDateTime() != nil {
 		state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
+	} else {
+		state.CreatedDateTime = types.StringNull()
 	}
 	if result.GetDescription() != nil {
 		state.Description = types.StringValue(*result.GetDescription())
+	} else {
+		state.Description = types.StringNull()
 	}
 	if result.GetDisplayName() != nil {
 		state.DisplayName = types.StringValue(*result.GetDisplayName())
+	} else {
+		state.DisplayName = types.StringNull()
 	}
 	if result.GetFunSettings() != nil {
-		state.FunSettings = new(teamFunSettingsModel)
+		funSettings := new(teamTeamFunSettingsModel)
 
 		if result.GetFunSettings().GetAllowCustomMemes() != nil {
-			state.FunSettings.AllowCustomMemes = types.BoolValue(*result.GetFunSettings().GetAllowCustomMemes())
+			funSettings.AllowCustomMemes = types.BoolValue(*result.GetFunSettings().GetAllowCustomMemes())
+		} else {
+			funSettings.AllowCustomMemes = types.BoolNull()
 		}
 		if result.GetFunSettings().GetAllowGiphy() != nil {
-			state.FunSettings.AllowGiphy = types.BoolValue(*result.GetFunSettings().GetAllowGiphy())
+			funSettings.AllowGiphy = types.BoolValue(*result.GetFunSettings().GetAllowGiphy())
+		} else {
+			funSettings.AllowGiphy = types.BoolNull()
 		}
 		if result.GetFunSettings().GetAllowStickersAndMemes() != nil {
-			state.FunSettings.AllowStickersAndMemes = types.BoolValue(*result.GetFunSettings().GetAllowStickersAndMemes())
+			funSettings.AllowStickersAndMemes = types.BoolValue(*result.GetFunSettings().GetAllowStickersAndMemes())
+		} else {
+			funSettings.AllowStickersAndMemes = types.BoolNull()
 		}
 		if result.GetFunSettings().GetGiphyContentRating() != nil {
-			state.FunSettings.GiphyContentRating = types.StringValue(result.GetFunSettings().GetGiphyContentRating().String())
+			funSettings.GiphyContentRating = types.StringValue(result.GetFunSettings().GetGiphyContentRating().String())
+		} else {
+			funSettings.GiphyContentRating = types.StringNull()
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, funSettings.AttributeTypes(), funSettings)
+		state.FunSettings = objectValue
 	}
 	if result.GetGuestSettings() != nil {
-		state.GuestSettings = new(teamGuestSettingsModel)
+		guestSettings := new(teamTeamGuestSettingsModel)
 
 		if result.GetGuestSettings().GetAllowCreateUpdateChannels() != nil {
-			state.GuestSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetGuestSettings().GetAllowCreateUpdateChannels())
+			guestSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetGuestSettings().GetAllowCreateUpdateChannels())
+		} else {
+			guestSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
 		if result.GetGuestSettings().GetAllowDeleteChannels() != nil {
-			state.GuestSettings.AllowDeleteChannels = types.BoolValue(*result.GetGuestSettings().GetAllowDeleteChannels())
+			guestSettings.AllowDeleteChannels = types.BoolValue(*result.GetGuestSettings().GetAllowDeleteChannels())
+		} else {
+			guestSettings.AllowDeleteChannels = types.BoolNull()
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, guestSettings.AttributeTypes(), guestSettings)
+		state.GuestSettings = objectValue
 	}
 	if result.GetInternalId() != nil {
 		state.InternalId = types.StringValue(*result.GetInternalId())
+	} else {
+		state.InternalId = types.StringNull()
 	}
 	if result.GetIsArchived() != nil {
 		state.IsArchived = types.BoolValue(*result.GetIsArchived())
+	} else {
+		state.IsArchived = types.BoolNull()
 	}
 	if result.GetMemberSettings() != nil {
-		state.MemberSettings = new(teamMemberSettingsModel)
+		memberSettings := new(teamTeamMemberSettingsModel)
 
 		if result.GetMemberSettings().GetAllowAddRemoveApps() != nil {
-			state.MemberSettings.AllowAddRemoveApps = types.BoolValue(*result.GetMemberSettings().GetAllowAddRemoveApps())
+			memberSettings.AllowAddRemoveApps = types.BoolValue(*result.GetMemberSettings().GetAllowAddRemoveApps())
+		} else {
+			memberSettings.AllowAddRemoveApps = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowCreatePrivateChannels() != nil {
-			state.MemberSettings.AllowCreatePrivateChannels = types.BoolValue(*result.GetMemberSettings().GetAllowCreatePrivateChannels())
+			memberSettings.AllowCreatePrivateChannels = types.BoolValue(*result.GetMemberSettings().GetAllowCreatePrivateChannels())
+		} else {
+			memberSettings.AllowCreatePrivateChannels = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowCreateUpdateChannels() != nil {
-			state.MemberSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateChannels())
+			memberSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateChannels())
+		} else {
+			memberSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowCreateUpdateRemoveConnectors() != nil {
-			state.MemberSettings.AllowCreateUpdateRemoveConnectors = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateRemoveConnectors())
+			memberSettings.AllowCreateUpdateRemoveConnectors = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateRemoveConnectors())
+		} else {
+			memberSettings.AllowCreateUpdateRemoveConnectors = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowCreateUpdateRemoveTabs() != nil {
-			state.MemberSettings.AllowCreateUpdateRemoveTabs = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateRemoveTabs())
+			memberSettings.AllowCreateUpdateRemoveTabs = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateRemoveTabs())
+		} else {
+			memberSettings.AllowCreateUpdateRemoveTabs = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowDeleteChannels() != nil {
-			state.MemberSettings.AllowDeleteChannels = types.BoolValue(*result.GetMemberSettings().GetAllowDeleteChannels())
+			memberSettings.AllowDeleteChannels = types.BoolValue(*result.GetMemberSettings().GetAllowDeleteChannels())
+		} else {
+			memberSettings.AllowDeleteChannels = types.BoolNull()
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, memberSettings.AttributeTypes(), memberSettings)
+		state.MemberSettings = objectValue
 	}
 	if result.GetMessagingSettings() != nil {
-		state.MessagingSettings = new(teamMessagingSettingsModel)
+		messagingSettings := new(teamTeamMessagingSettingsModel)
 
 		if result.GetMessagingSettings().GetAllowChannelMentions() != nil {
-			state.MessagingSettings.AllowChannelMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowChannelMentions())
+			messagingSettings.AllowChannelMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowChannelMentions())
+		} else {
+			messagingSettings.AllowChannelMentions = types.BoolNull()
 		}
 		if result.GetMessagingSettings().GetAllowOwnerDeleteMessages() != nil {
-			state.MessagingSettings.AllowOwnerDeleteMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowOwnerDeleteMessages())
+			messagingSettings.AllowOwnerDeleteMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowOwnerDeleteMessages())
+		} else {
+			messagingSettings.AllowOwnerDeleteMessages = types.BoolNull()
 		}
 		if result.GetMessagingSettings().GetAllowTeamMentions() != nil {
-			state.MessagingSettings.AllowTeamMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowTeamMentions())
+			messagingSettings.AllowTeamMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowTeamMentions())
+		} else {
+			messagingSettings.AllowTeamMentions = types.BoolNull()
 		}
 		if result.GetMessagingSettings().GetAllowUserDeleteMessages() != nil {
-			state.MessagingSettings.AllowUserDeleteMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowUserDeleteMessages())
+			messagingSettings.AllowUserDeleteMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowUserDeleteMessages())
+		} else {
+			messagingSettings.AllowUserDeleteMessages = types.BoolNull()
 		}
 		if result.GetMessagingSettings().GetAllowUserEditMessages() != nil {
-			state.MessagingSettings.AllowUserEditMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowUserEditMessages())
+			messagingSettings.AllowUserEditMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowUserEditMessages())
+		} else {
+			messagingSettings.AllowUserEditMessages = types.BoolNull()
 		}
+
+		objectValue, _ := types.ObjectValueFrom(ctx, messagingSettings.AttributeTypes(), messagingSettings)
+		state.MessagingSettings = objectValue
 	}
 	if result.GetSpecialization() != nil {
 		state.Specialization = types.StringValue(result.GetSpecialization().String())
+	} else {
+		state.Specialization = types.StringNull()
 	}
 	if result.GetSummary() != nil {
-		state.Summary = new(teamSummaryModel)
+		summary := new(teamTeamSummaryModel)
 
-		if result.GetSummary().GetGuestsCount() != nil {
-			state.Summary.GuestsCount = types.Int64Value(int64(*result.GetSummary().GetGuestsCount()))
-		}
-		if result.GetSummary().GetMembersCount() != nil {
-			state.Summary.MembersCount = types.Int64Value(int64(*result.GetSummary().GetMembersCount()))
-		}
-		if result.GetSummary().GetOwnersCount() != nil {
-			state.Summary.OwnersCount = types.Int64Value(int64(*result.GetSummary().GetOwnersCount()))
-		}
+		objectValue, _ := types.ObjectValueFrom(ctx, summary.AttributeTypes(), summary)
+		state.Summary = objectValue
 	}
 	if result.GetTenantId() != nil {
 		state.TenantId = types.StringValue(*result.GetTenantId())
+	} else {
+		state.TenantId = types.StringNull()
 	}
 	if result.GetVisibility() != nil {
 		state.Visibility = types.StringValue(result.GetVisibility().String())
+	} else {
+		state.Visibility = types.StringNull()
 	}
 	if result.GetWebUrl() != nil {
 		state.WebUrl = types.StringValue(*result.GetWebUrl())
+	} else {
+		state.WebUrl = types.StringNull()
 	}
 
 	// Overwrite items with refreshed state

@@ -2,10 +2,10 @@ package sites
 
 import (
 	"context"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/sites"
@@ -63,11 +63,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 									Computed:    true,
 									Attributes: map[string]schema.Attribute{
 										"display_name": schema.StringAttribute{
-											Description: "The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.",
+											Description: "The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.",
 											Computed:    true,
 										},
 										"id": schema.StringAttribute{
-											Description: "Unique identifier for the identity.",
+											Description: "Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.",
 											Computed:    true,
 										},
 									},
@@ -77,11 +77,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 									Computed:    true,
 									Attributes: map[string]schema.Attribute{
 										"display_name": schema.StringAttribute{
-											Description: "The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.",
+											Description: "The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.",
 											Computed:    true,
 										},
 										"id": schema.StringAttribute{
-											Description: "Unique identifier for the identity.",
+											Description: "Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.",
 											Computed:    true,
 										},
 									},
@@ -91,11 +91,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 									Computed:    true,
 									Attributes: map[string]schema.Attribute{
 										"display_name": schema.StringAttribute{
-											Description: "The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.",
+											Description: "The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.",
 											Computed:    true,
 										},
 										"id": schema.StringAttribute{
-											Description: "Unique identifier for the identity.",
+											Description: "Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.",
 											Computed:    true,
 										},
 									},
@@ -123,11 +123,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 									Computed:    true,
 									Attributes: map[string]schema.Attribute{
 										"display_name": schema.StringAttribute{
-											Description: "The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.",
+											Description: "The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.",
 											Computed:    true,
 										},
 										"id": schema.StringAttribute{
-											Description: "Unique identifier for the identity.",
+											Description: "Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.",
 											Computed:    true,
 										},
 									},
@@ -137,11 +137,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 									Computed:    true,
 									Attributes: map[string]schema.Attribute{
 										"display_name": schema.StringAttribute{
-											Description: "The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.",
+											Description: "The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.",
 											Computed:    true,
 										},
 										"id": schema.StringAttribute{
-											Description: "Unique identifier for the identity.",
+											Description: "Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.",
 											Computed:    true,
 										},
 									},
@@ -151,11 +151,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 									Computed:    true,
 									Attributes: map[string]schema.Attribute{
 										"display_name": schema.StringAttribute{
-											Description: "The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.",
+											Description: "The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.",
 											Computed:    true,
 										},
 										"id": schema.StringAttribute{
-											Description: "Unique identifier for the identity.",
+											Description: "Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.",
 											Computed:    true,
 										},
 									},
@@ -175,11 +175,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 							Computed:    true,
 							Attributes: map[string]schema.Attribute{
 								"drive_id": schema.StringAttribute{
-									Description: "Unique identifier of the drive instance that contains the driveItem. Only returned if the item is located in a [drive][]. Read-only.",
+									Description: "Unique identifier of the drive instance that contains the driveItem. Only returned if the item is located in a drive. Read-only.",
 									Computed:    true,
 								},
 								"drive_type": schema.StringAttribute{
-									Description: "Identifies the type of drive. Only returned if the item is located in a [drive][]. See [drive][] resource for values.",
+									Description: "Identifies the type of drive. Only returned if the item is located in a drive. See drive resource for values.",
 									Computed:    true,
 								},
 								"id": schema.StringAttribute{
@@ -191,11 +191,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 									Computed:    true,
 								},
 								"path": schema.StringAttribute{
-									Description: "Path that can be used to navigate to the item. Read-only.",
+									Description: "Percent-encoded path that can be used to navigate to the item. Read-only.",
 									Computed:    true,
 								},
 								"share_id": schema.StringAttribute{
-									Description: "A unique identifier for a shared resource that can be accessed via the [Shares][] API.",
+									Description: "A unique identifier for a shared resource that can be accessed via the Shares API.",
 									Computed:    true,
 								},
 								"sharepoint_ids": schema.SingleNestedAttribute{
@@ -233,7 +233,7 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 									},
 								},
 								"site_id": schema.StringAttribute{
-									Description: "For OneDrive for Business and SharePoint, this property represents the ID of the site that contains the parent document library of the driveItem resource or the parent list of the listItem resource. The value is the same as the id property of that [site][] resource. It is an opaque string that consists of three identifiers of the site. For OneDrive, this property is not populated.",
+									Description: "For OneDrive for Business and SharePoint, this property represents the ID of the site that contains the parent document library of the driveItem resource or the parent list of the listItem resource. The value is the same as the id property of that site resource. It is an opaque string that consists of three identifiers of the site. For OneDrive, this property is not populated.",
 									Computed:    true,
 								},
 							},
@@ -323,11 +323,11 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 							},
 						},
 						"is_personal_site": schema.BoolAttribute{
-							Description: "",
+							Description: "Identifies whether the site is personal or not. Read-only.",
 							Computed:    true,
 						},
 						"root": schema.SingleNestedAttribute{
-							Description: "If present, indicates that this is the root site in the site collection. Read-only.",
+							Description: "If present, provides the root site in the site collection. Read-only.",
 							Computed:    true,
 							Attributes:  map[string]schema.Attribute{},
 						},
@@ -369,8 +369,18 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 							Description: "Provides details about the site's site collection. Available only on the root site. Read-only.",
 							Computed:    true,
 							Attributes: map[string]schema.Attribute{
+								"archival_details": schema.SingleNestedAttribute{
+									Description: "Represents whether the site collection is recently archived, fully archived, or reactivating. Possible values are: recentlyArchived, fullyArchived, reactivating, unknownFutureValue.",
+									Computed:    true,
+									Attributes: map[string]schema.Attribute{
+										"archive_status": schema.StringAttribute{
+											Description: "Represents the current archive status of the site collection. Returned only on $select. The possible values are: recentlyArchived, fullyArchived, reactivating, unknownFutureValue.",
+											Computed:    true,
+										},
+									},
+								},
 								"data_location_code": schema.StringAttribute{
-									Description: "The geographic region code for where this site collection resides. Read-only.",
+									Description: "The geographic region code for where this site collection resides. Only present for multi-geo tenants. Read-only.",
 									Computed:    true,
 								},
 								"hostname": schema.StringAttribute{
@@ -402,38 +412,7 @@ func (d *sitesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	qparams := sites.SitesRequestBuilderGetRequestConfiguration{
 		QueryParameters: &sites.SitesRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"createdBy",
-				"createdDateTime",
-				"description",
-				"eTag",
-				"lastModifiedBy",
-				"lastModifiedDateTime",
-				"name",
-				"parentReference",
-				"webUrl",
-				"displayName",
-				"error",
-				"isPersonalSite",
-				"root",
-				"sharepointIds",
-				"siteCollection",
-				"createdByUser",
-				"lastModifiedByUser",
-				"analytics",
-				"columns",
-				"contentTypes",
-				"drive",
-				"drives",
-				"externalColumns",
-				"items",
-				"lists",
-				"operations",
-				"permissions",
-				"sites",
-				"termStore",
-				"termStores",
-				"onenote",
+				"value",
 			},
 		},
 	}
@@ -448,252 +427,437 @@ func (d *sitesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	for _, v := range result.GetValue() {
-		value := new(sitesValueModel)
+	if len(result.GetValue()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetValue() {
+			value := new(sitesSiteModel)
 
-		if v.GetId() != nil {
-			value.Id = types.StringValue(*v.GetId())
-		}
-		if v.GetCreatedBy() != nil {
-			value.CreatedBy = new(sitesCreatedByModel)
+			if v.GetId() != nil {
+				value.Id = types.StringValue(*v.GetId())
+			} else {
+				value.Id = types.StringNull()
+			}
+			if v.GetCreatedBy() != nil {
+				createdBy := new(sitesIdentitySetModel)
 
-			if v.GetCreatedBy().GetApplication() != nil {
-				value.CreatedBy.Application = new(sitesApplicationModel)
+				if v.GetCreatedBy().GetApplication() != nil {
+					application := new(sitesIdentityModel)
 
-				if v.GetCreatedBy().GetApplication().GetDisplayName() != nil {
-					value.CreatedBy.Application.DisplayName = types.StringValue(*v.GetCreatedBy().GetApplication().GetDisplayName())
-				}
-				if v.GetCreatedBy().GetApplication().GetId() != nil {
-					value.CreatedBy.Application.Id = types.StringValue(*v.GetCreatedBy().GetApplication().GetId())
-				}
-			}
-			if v.GetCreatedBy().GetDevice() != nil {
-				value.CreatedBy.Device = new(sitesDeviceModel)
-
-				if v.GetCreatedBy().GetDevice().GetDisplayName() != nil {
-					value.CreatedBy.Device.DisplayName = types.StringValue(*v.GetCreatedBy().GetDevice().GetDisplayName())
-				}
-				if v.GetCreatedBy().GetDevice().GetId() != nil {
-					value.CreatedBy.Device.Id = types.StringValue(*v.GetCreatedBy().GetDevice().GetId())
-				}
-			}
-			if v.GetCreatedBy().GetUser() != nil {
-				value.CreatedBy.User = new(sitesUserModel)
-
-				if v.GetCreatedBy().GetUser().GetDisplayName() != nil {
-					value.CreatedBy.User.DisplayName = types.StringValue(*v.GetCreatedBy().GetUser().GetDisplayName())
-				}
-				if v.GetCreatedBy().GetUser().GetId() != nil {
-					value.CreatedBy.User.Id = types.StringValue(*v.GetCreatedBy().GetUser().GetId())
-				}
-			}
-		}
-		if v.GetCreatedDateTime() != nil {
-			value.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
-		}
-		if v.GetDescription() != nil {
-			value.Description = types.StringValue(*v.GetDescription())
-		}
-		if v.GetETag() != nil {
-			value.ETag = types.StringValue(*v.GetETag())
-		}
-		if v.GetLastModifiedBy() != nil {
-			value.LastModifiedBy = new(sitesLastModifiedByModel)
-
-			if v.GetLastModifiedBy().GetApplication() != nil {
-				value.LastModifiedBy.Application = new(sitesApplicationModel)
-
-				if v.GetLastModifiedBy().GetApplication().GetDisplayName() != nil {
-					value.LastModifiedBy.Application.DisplayName = types.StringValue(*v.GetLastModifiedBy().GetApplication().GetDisplayName())
-				}
-				if v.GetLastModifiedBy().GetApplication().GetId() != nil {
-					value.LastModifiedBy.Application.Id = types.StringValue(*v.GetLastModifiedBy().GetApplication().GetId())
-				}
-			}
-			if v.GetLastModifiedBy().GetDevice() != nil {
-				value.LastModifiedBy.Device = new(sitesDeviceModel)
-
-				if v.GetLastModifiedBy().GetDevice().GetDisplayName() != nil {
-					value.LastModifiedBy.Device.DisplayName = types.StringValue(*v.GetLastModifiedBy().GetDevice().GetDisplayName())
-				}
-				if v.GetLastModifiedBy().GetDevice().GetId() != nil {
-					value.LastModifiedBy.Device.Id = types.StringValue(*v.GetLastModifiedBy().GetDevice().GetId())
-				}
-			}
-			if v.GetLastModifiedBy().GetUser() != nil {
-				value.LastModifiedBy.User = new(sitesUserModel)
-
-				if v.GetLastModifiedBy().GetUser().GetDisplayName() != nil {
-					value.LastModifiedBy.User.DisplayName = types.StringValue(*v.GetLastModifiedBy().GetUser().GetDisplayName())
-				}
-				if v.GetLastModifiedBy().GetUser().GetId() != nil {
-					value.LastModifiedBy.User.Id = types.StringValue(*v.GetLastModifiedBy().GetUser().GetId())
-				}
-			}
-		}
-		if v.GetLastModifiedDateTime() != nil {
-			value.LastModifiedDateTime = types.StringValue(v.GetLastModifiedDateTime().String())
-		}
-		if v.GetName() != nil {
-			value.Name = types.StringValue(*v.GetName())
-		}
-		if v.GetParentReference() != nil {
-			value.ParentReference = new(sitesParentReferenceModel)
-
-			if v.GetParentReference().GetDriveId() != nil {
-				value.ParentReference.DriveId = types.StringValue(*v.GetParentReference().GetDriveId())
-			}
-			if v.GetParentReference().GetDriveType() != nil {
-				value.ParentReference.DriveType = types.StringValue(*v.GetParentReference().GetDriveType())
-			}
-			if v.GetParentReference().GetId() != nil {
-				value.ParentReference.Id = types.StringValue(*v.GetParentReference().GetId())
-			}
-			if v.GetParentReference().GetName() != nil {
-				value.ParentReference.Name = types.StringValue(*v.GetParentReference().GetName())
-			}
-			if v.GetParentReference().GetPath() != nil {
-				value.ParentReference.Path = types.StringValue(*v.GetParentReference().GetPath())
-			}
-			if v.GetParentReference().GetShareId() != nil {
-				value.ParentReference.ShareId = types.StringValue(*v.GetParentReference().GetShareId())
-			}
-			if v.GetParentReference().GetSharepointIds() != nil {
-				value.ParentReference.SharepointIds = new(sitesSharepointIdsModel)
-
-				if v.GetParentReference().GetSharepointIds().GetListId() != nil {
-					value.ParentReference.SharepointIds.ListId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetListId())
-				}
-				if v.GetParentReference().GetSharepointIds().GetListItemId() != nil {
-					value.ParentReference.SharepointIds.ListItemId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetListItemId())
-				}
-				if v.GetParentReference().GetSharepointIds().GetListItemUniqueId() != nil {
-					value.ParentReference.SharepointIds.ListItemUniqueId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetListItemUniqueId())
-				}
-				if v.GetParentReference().GetSharepointIds().GetSiteId() != nil {
-					value.ParentReference.SharepointIds.SiteId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetSiteId())
-				}
-				if v.GetParentReference().GetSharepointIds().GetSiteUrl() != nil {
-					value.ParentReference.SharepointIds.SiteUrl = types.StringValue(*v.GetParentReference().GetSharepointIds().GetSiteUrl())
-				}
-				if v.GetParentReference().GetSharepointIds().GetTenantId() != nil {
-					value.ParentReference.SharepointIds.TenantId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetTenantId())
-				}
-				if v.GetParentReference().GetSharepointIds().GetWebId() != nil {
-					value.ParentReference.SharepointIds.WebId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetWebId())
-				}
-			}
-			if v.GetParentReference().GetSiteId() != nil {
-				value.ParentReference.SiteId = types.StringValue(*v.GetParentReference().GetSiteId())
-			}
-		}
-		if v.GetWebUrl() != nil {
-			value.WebUrl = types.StringValue(*v.GetWebUrl())
-		}
-		if v.GetDisplayName() != nil {
-			value.DisplayName = types.StringValue(*v.GetDisplayName())
-		}
-		if v.GetError() != nil {
-			value.Error = new(sitesErrorModel)
-
-			if v.GetError().GetCode() != nil {
-				value.Error.Code = types.StringValue(*v.GetError().GetCode())
-			}
-			for _, v := range v.GetError().GetDetails() {
-				details := new(sitesDetailsModel)
-
-				if v.GetCode() != nil {
-					details.Code = types.StringValue(*v.GetCode())
-				}
-				if v.GetMessage() != nil {
-					details.Message = types.StringValue(*v.GetMessage())
-				}
-				if v.GetTarget() != nil {
-					details.Target = types.StringValue(*v.GetTarget())
-				}
-				value.Error.Details = append(value.Error.Details, *details)
-			}
-			if v.GetError().GetInnerError() != nil {
-				value.Error.InnerError = new(sitesInnerErrorModel)
-
-				if v.GetError().GetInnerError().GetCode() != nil {
-					value.Error.InnerError.Code = types.StringValue(*v.GetError().GetInnerError().GetCode())
-				}
-				for _, v := range v.GetError().GetInnerError().GetDetails() {
-					details := new(sitesDetailsModel)
-
-					if v.GetCode() != nil {
-						details.Code = types.StringValue(*v.GetCode())
+					if v.GetCreatedBy().GetApplication().GetDisplayName() != nil {
+						application.DisplayName = types.StringValue(*v.GetCreatedBy().GetApplication().GetDisplayName())
+					} else {
+						application.DisplayName = types.StringNull()
 					}
-					if v.GetMessage() != nil {
-						details.Message = types.StringValue(*v.GetMessage())
+					if v.GetCreatedBy().GetApplication().GetId() != nil {
+						application.Id = types.StringValue(*v.GetCreatedBy().GetApplication().GetId())
+					} else {
+						application.Id = types.StringNull()
 					}
-					if v.GetTarget() != nil {
-						details.Target = types.StringValue(*v.GetTarget())
+
+					objectValue, _ := types.ObjectValueFrom(ctx, application.AttributeTypes(), application)
+					createdBy.Application = objectValue
+				}
+				if v.GetCreatedBy().GetDevice() != nil {
+					device := new(sitesIdentityModel)
+
+					if v.GetCreatedBy().GetDevice().GetDisplayName() != nil {
+						device.DisplayName = types.StringValue(*v.GetCreatedBy().GetDevice().GetDisplayName())
+					} else {
+						device.DisplayName = types.StringNull()
 					}
-					value.Error.InnerError.Details = append(value.Error.InnerError.Details, *details)
+					if v.GetCreatedBy().GetDevice().GetId() != nil {
+						device.Id = types.StringValue(*v.GetCreatedBy().GetDevice().GetId())
+					} else {
+						device.Id = types.StringNull()
+					}
+
+					objectValue, _ := types.ObjectValueFrom(ctx, device.AttributeTypes(), device)
+					createdBy.Device = objectValue
 				}
-				if v.GetError().GetInnerError().GetMessage() != nil {
-					value.Error.InnerError.Message = types.StringValue(*v.GetError().GetInnerError().GetMessage())
+				if v.GetCreatedBy().GetUser() != nil {
+					user := new(sitesIdentityModel)
+
+					if v.GetCreatedBy().GetUser().GetDisplayName() != nil {
+						user.DisplayName = types.StringValue(*v.GetCreatedBy().GetUser().GetDisplayName())
+					} else {
+						user.DisplayName = types.StringNull()
+					}
+					if v.GetCreatedBy().GetUser().GetId() != nil {
+						user.Id = types.StringValue(*v.GetCreatedBy().GetUser().GetId())
+					} else {
+						user.Id = types.StringNull()
+					}
+
+					objectValue, _ := types.ObjectValueFrom(ctx, user.AttributeTypes(), user)
+					createdBy.User = objectValue
 				}
-				if v.GetError().GetInnerError().GetTarget() != nil {
-					value.Error.InnerError.Target = types.StringValue(*v.GetError().GetInnerError().GetTarget())
+
+				objectValue, _ := types.ObjectValueFrom(ctx, createdBy.AttributeTypes(), createdBy)
+				value.CreatedBy = objectValue
+			}
+			if v.GetCreatedDateTime() != nil {
+				value.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+			} else {
+				value.CreatedDateTime = types.StringNull()
+			}
+			if v.GetDescription() != nil {
+				value.Description = types.StringValue(*v.GetDescription())
+			} else {
+				value.Description = types.StringNull()
+			}
+			if v.GetETag() != nil {
+				value.ETag = types.StringValue(*v.GetETag())
+			} else {
+				value.ETag = types.StringNull()
+			}
+			if v.GetLastModifiedBy() != nil {
+				lastModifiedBy := new(sitesIdentitySetModel)
+
+				if v.GetLastModifiedBy().GetApplication() != nil {
+					application := new(sitesIdentityModel)
+
+					if v.GetLastModifiedBy().GetApplication().GetDisplayName() != nil {
+						application.DisplayName = types.StringValue(*v.GetLastModifiedBy().GetApplication().GetDisplayName())
+					} else {
+						application.DisplayName = types.StringNull()
+					}
+					if v.GetLastModifiedBy().GetApplication().GetId() != nil {
+						application.Id = types.StringValue(*v.GetLastModifiedBy().GetApplication().GetId())
+					} else {
+						application.Id = types.StringNull()
+					}
+
+					objectValue, _ := types.ObjectValueFrom(ctx, application.AttributeTypes(), application)
+					lastModifiedBy.Application = objectValue
 				}
-			}
-			if v.GetError().GetMessage() != nil {
-				value.Error.Message = types.StringValue(*v.GetError().GetMessage())
-			}
-			if v.GetError().GetTarget() != nil {
-				value.Error.Target = types.StringValue(*v.GetError().GetTarget())
-			}
-		}
-		if v.GetIsPersonalSite() != nil {
-			value.IsPersonalSite = types.BoolValue(*v.GetIsPersonalSite())
-		}
-		if v.GetRoot() != nil {
-			value.Root = new(sitesRootModel)
+				if v.GetLastModifiedBy().GetDevice() != nil {
+					device := new(sitesIdentityModel)
 
-		}
-		if v.GetSharepointIds() != nil {
-			value.SharepointIds = new(sitesSharepointIdsModel)
+					if v.GetLastModifiedBy().GetDevice().GetDisplayName() != nil {
+						device.DisplayName = types.StringValue(*v.GetLastModifiedBy().GetDevice().GetDisplayName())
+					} else {
+						device.DisplayName = types.StringNull()
+					}
+					if v.GetLastModifiedBy().GetDevice().GetId() != nil {
+						device.Id = types.StringValue(*v.GetLastModifiedBy().GetDevice().GetId())
+					} else {
+						device.Id = types.StringNull()
+					}
 
-			if v.GetSharepointIds().GetListId() != nil {
-				value.SharepointIds.ListId = types.StringValue(*v.GetSharepointIds().GetListId())
-			}
-			if v.GetSharepointIds().GetListItemId() != nil {
-				value.SharepointIds.ListItemId = types.StringValue(*v.GetSharepointIds().GetListItemId())
-			}
-			if v.GetSharepointIds().GetListItemUniqueId() != nil {
-				value.SharepointIds.ListItemUniqueId = types.StringValue(*v.GetSharepointIds().GetListItemUniqueId())
-			}
-			if v.GetSharepointIds().GetSiteId() != nil {
-				value.SharepointIds.SiteId = types.StringValue(*v.GetSharepointIds().GetSiteId())
-			}
-			if v.GetSharepointIds().GetSiteUrl() != nil {
-				value.SharepointIds.SiteUrl = types.StringValue(*v.GetSharepointIds().GetSiteUrl())
-			}
-			if v.GetSharepointIds().GetTenantId() != nil {
-				value.SharepointIds.TenantId = types.StringValue(*v.GetSharepointIds().GetTenantId())
-			}
-			if v.GetSharepointIds().GetWebId() != nil {
-				value.SharepointIds.WebId = types.StringValue(*v.GetSharepointIds().GetWebId())
-			}
-		}
-		if v.GetSiteCollection() != nil {
-			value.SiteCollection = new(sitesSiteCollectionModel)
+					objectValue, _ := types.ObjectValueFrom(ctx, device.AttributeTypes(), device)
+					lastModifiedBy.Device = objectValue
+				}
+				if v.GetLastModifiedBy().GetUser() != nil {
+					user := new(sitesIdentityModel)
 
-			if v.GetSiteCollection().GetDataLocationCode() != nil {
-				value.SiteCollection.DataLocationCode = types.StringValue(*v.GetSiteCollection().GetDataLocationCode())
-			}
-			if v.GetSiteCollection().GetHostname() != nil {
-				value.SiteCollection.Hostname = types.StringValue(*v.GetSiteCollection().GetHostname())
-			}
-			if v.GetSiteCollection().GetRoot() != nil {
-				value.SiteCollection.Root = new(sitesRootModel)
+					if v.GetLastModifiedBy().GetUser().GetDisplayName() != nil {
+						user.DisplayName = types.StringValue(*v.GetLastModifiedBy().GetUser().GetDisplayName())
+					} else {
+						user.DisplayName = types.StringNull()
+					}
+					if v.GetLastModifiedBy().GetUser().GetId() != nil {
+						user.Id = types.StringValue(*v.GetLastModifiedBy().GetUser().GetId())
+					} else {
+						user.Id = types.StringNull()
+					}
 
+					objectValue, _ := types.ObjectValueFrom(ctx, user.AttributeTypes(), user)
+					lastModifiedBy.User = objectValue
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, lastModifiedBy.AttributeTypes(), lastModifiedBy)
+				value.LastModifiedBy = objectValue
 			}
+			if v.GetLastModifiedDateTime() != nil {
+				value.LastModifiedDateTime = types.StringValue(v.GetLastModifiedDateTime().String())
+			} else {
+				value.LastModifiedDateTime = types.StringNull()
+			}
+			if v.GetName() != nil {
+				value.Name = types.StringValue(*v.GetName())
+			} else {
+				value.Name = types.StringNull()
+			}
+			if v.GetParentReference() != nil {
+				parentReference := new(sitesItemReferenceModel)
+
+				if v.GetParentReference().GetDriveId() != nil {
+					parentReference.DriveId = types.StringValue(*v.GetParentReference().GetDriveId())
+				} else {
+					parentReference.DriveId = types.StringNull()
+				}
+				if v.GetParentReference().GetDriveType() != nil {
+					parentReference.DriveType = types.StringValue(*v.GetParentReference().GetDriveType())
+				} else {
+					parentReference.DriveType = types.StringNull()
+				}
+				if v.GetParentReference().GetId() != nil {
+					parentReference.Id = types.StringValue(*v.GetParentReference().GetId())
+				} else {
+					parentReference.Id = types.StringNull()
+				}
+				if v.GetParentReference().GetName() != nil {
+					parentReference.Name = types.StringValue(*v.GetParentReference().GetName())
+				} else {
+					parentReference.Name = types.StringNull()
+				}
+				if v.GetParentReference().GetPath() != nil {
+					parentReference.Path = types.StringValue(*v.GetParentReference().GetPath())
+				} else {
+					parentReference.Path = types.StringNull()
+				}
+				if v.GetParentReference().GetShareId() != nil {
+					parentReference.ShareId = types.StringValue(*v.GetParentReference().GetShareId())
+				} else {
+					parentReference.ShareId = types.StringNull()
+				}
+				if v.GetParentReference().GetSharepointIds() != nil {
+					sharepointIds := new(sitesSharepointIdsModel)
+
+					if v.GetParentReference().GetSharepointIds().GetListId() != nil {
+						sharepointIds.ListId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetListId())
+					} else {
+						sharepointIds.ListId = types.StringNull()
+					}
+					if v.GetParentReference().GetSharepointIds().GetListItemId() != nil {
+						sharepointIds.ListItemId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetListItemId())
+					} else {
+						sharepointIds.ListItemId = types.StringNull()
+					}
+					if v.GetParentReference().GetSharepointIds().GetListItemUniqueId() != nil {
+						sharepointIds.ListItemUniqueId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetListItemUniqueId())
+					} else {
+						sharepointIds.ListItemUniqueId = types.StringNull()
+					}
+					if v.GetParentReference().GetSharepointIds().GetSiteId() != nil {
+						sharepointIds.SiteId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetSiteId())
+					} else {
+						sharepointIds.SiteId = types.StringNull()
+					}
+					if v.GetParentReference().GetSharepointIds().GetSiteUrl() != nil {
+						sharepointIds.SiteUrl = types.StringValue(*v.GetParentReference().GetSharepointIds().GetSiteUrl())
+					} else {
+						sharepointIds.SiteUrl = types.StringNull()
+					}
+					if v.GetParentReference().GetSharepointIds().GetTenantId() != nil {
+						sharepointIds.TenantId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetTenantId())
+					} else {
+						sharepointIds.TenantId = types.StringNull()
+					}
+					if v.GetParentReference().GetSharepointIds().GetWebId() != nil {
+						sharepointIds.WebId = types.StringValue(*v.GetParentReference().GetSharepointIds().GetWebId())
+					} else {
+						sharepointIds.WebId = types.StringNull()
+					}
+
+					objectValue, _ := types.ObjectValueFrom(ctx, sharepointIds.AttributeTypes(), sharepointIds)
+					parentReference.SharepointIds = objectValue
+				}
+				if v.GetParentReference().GetSiteId() != nil {
+					parentReference.SiteId = types.StringValue(*v.GetParentReference().GetSiteId())
+				} else {
+					parentReference.SiteId = types.StringNull()
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, parentReference.AttributeTypes(), parentReference)
+				value.ParentReference = objectValue
+			}
+			if v.GetWebUrl() != nil {
+				value.WebUrl = types.StringValue(*v.GetWebUrl())
+			} else {
+				value.WebUrl = types.StringNull()
+			}
+			if v.GetDisplayName() != nil {
+				value.DisplayName = types.StringValue(*v.GetDisplayName())
+			} else {
+				value.DisplayName = types.StringNull()
+			}
+			if v.GetError() != nil {
+				error := new(sitesPublicErrorModel)
+
+				if v.GetError().GetCode() != nil {
+					error.Code = types.StringValue(*v.GetError().GetCode())
+				} else {
+					error.Code = types.StringNull()
+				}
+				if len(v.GetError().GetDetails()) > 0 {
+					objectValues := []basetypes.ObjectValue{}
+					for _, v := range v.GetError().GetDetails() {
+						details := new(sitesPublicErrorDetailModel)
+
+						if v.GetCode() != nil {
+							details.Code = types.StringValue(*v.GetCode())
+						} else {
+							details.Code = types.StringNull()
+						}
+						if v.GetMessage() != nil {
+							details.Message = types.StringValue(*v.GetMessage())
+						} else {
+							details.Message = types.StringNull()
+						}
+						if v.GetTarget() != nil {
+							details.Target = types.StringValue(*v.GetTarget())
+						} else {
+							details.Target = types.StringNull()
+						}
+						objectValue, _ := types.ObjectValueFrom(ctx, details.AttributeTypes(), details)
+						objectValues = append(objectValues, objectValue)
+					}
+					error.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+				}
+				if v.GetError().GetInnerError() != nil {
+					innerError := new(sitesPublicInnerErrorModel)
+
+					if v.GetError().GetInnerError().GetCode() != nil {
+						innerError.Code = types.StringValue(*v.GetError().GetInnerError().GetCode())
+					} else {
+						innerError.Code = types.StringNull()
+					}
+					if len(v.GetError().GetInnerError().GetDetails()) > 0 {
+						objectValues := []basetypes.ObjectValue{}
+						for _, v := range v.GetError().GetInnerError().GetDetails() {
+							details := new(sitesPublicErrorDetailModel)
+
+							if v.GetCode() != nil {
+								details.Code = types.StringValue(*v.GetCode())
+							} else {
+								details.Code = types.StringNull()
+							}
+							if v.GetMessage() != nil {
+								details.Message = types.StringValue(*v.GetMessage())
+							} else {
+								details.Message = types.StringNull()
+							}
+							if v.GetTarget() != nil {
+								details.Target = types.StringValue(*v.GetTarget())
+							} else {
+								details.Target = types.StringNull()
+							}
+							objectValue, _ := types.ObjectValueFrom(ctx, details.AttributeTypes(), details)
+							objectValues = append(objectValues, objectValue)
+						}
+						innerError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+					}
+					if v.GetError().GetInnerError().GetMessage() != nil {
+						innerError.Message = types.StringValue(*v.GetError().GetInnerError().GetMessage())
+					} else {
+						innerError.Message = types.StringNull()
+					}
+					if v.GetError().GetInnerError().GetTarget() != nil {
+						innerError.Target = types.StringValue(*v.GetError().GetInnerError().GetTarget())
+					} else {
+						innerError.Target = types.StringNull()
+					}
+
+					objectValue, _ := types.ObjectValueFrom(ctx, innerError.AttributeTypes(), innerError)
+					error.InnerError = objectValue
+				}
+				if v.GetError().GetMessage() != nil {
+					error.Message = types.StringValue(*v.GetError().GetMessage())
+				} else {
+					error.Message = types.StringNull()
+				}
+				if v.GetError().GetTarget() != nil {
+					error.Target = types.StringValue(*v.GetError().GetTarget())
+				} else {
+					error.Target = types.StringNull()
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, error.AttributeTypes(), error)
+				value.Error = objectValue
+			}
+			if v.GetIsPersonalSite() != nil {
+				value.IsPersonalSite = types.BoolValue(*v.GetIsPersonalSite())
+			} else {
+				value.IsPersonalSite = types.BoolNull()
+			}
+			if v.GetRoot() != nil {
+				root := new(sitesRootModel)
+
+				objectValue, _ := types.ObjectValueFrom(ctx, root.AttributeTypes(), root)
+				value.Root = objectValue
+			}
+			if v.GetSharepointIds() != nil {
+				sharepointIds := new(sitesSharepointIdsModel)
+
+				if v.GetSharepointIds().GetListId() != nil {
+					sharepointIds.ListId = types.StringValue(*v.GetSharepointIds().GetListId())
+				} else {
+					sharepointIds.ListId = types.StringNull()
+				}
+				if v.GetSharepointIds().GetListItemId() != nil {
+					sharepointIds.ListItemId = types.StringValue(*v.GetSharepointIds().GetListItemId())
+				} else {
+					sharepointIds.ListItemId = types.StringNull()
+				}
+				if v.GetSharepointIds().GetListItemUniqueId() != nil {
+					sharepointIds.ListItemUniqueId = types.StringValue(*v.GetSharepointIds().GetListItemUniqueId())
+				} else {
+					sharepointIds.ListItemUniqueId = types.StringNull()
+				}
+				if v.GetSharepointIds().GetSiteId() != nil {
+					sharepointIds.SiteId = types.StringValue(*v.GetSharepointIds().GetSiteId())
+				} else {
+					sharepointIds.SiteId = types.StringNull()
+				}
+				if v.GetSharepointIds().GetSiteUrl() != nil {
+					sharepointIds.SiteUrl = types.StringValue(*v.GetSharepointIds().GetSiteUrl())
+				} else {
+					sharepointIds.SiteUrl = types.StringNull()
+				}
+				if v.GetSharepointIds().GetTenantId() != nil {
+					sharepointIds.TenantId = types.StringValue(*v.GetSharepointIds().GetTenantId())
+				} else {
+					sharepointIds.TenantId = types.StringNull()
+				}
+				if v.GetSharepointIds().GetWebId() != nil {
+					sharepointIds.WebId = types.StringValue(*v.GetSharepointIds().GetWebId())
+				} else {
+					sharepointIds.WebId = types.StringNull()
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, sharepointIds.AttributeTypes(), sharepointIds)
+				value.SharepointIds = objectValue
+			}
+			if v.GetSiteCollection() != nil {
+				siteCollection := new(sitesSiteCollectionModel)
+
+				if v.GetSiteCollection().GetArchivalDetails() != nil {
+					archivalDetails := new(sitesSiteArchivalDetailsModel)
+
+					if v.GetSiteCollection().GetArchivalDetails().GetArchiveStatus() != nil {
+						archivalDetails.ArchiveStatus = types.StringValue(v.GetSiteCollection().GetArchivalDetails().GetArchiveStatus().String())
+					} else {
+						archivalDetails.ArchiveStatus = types.StringNull()
+					}
+
+					objectValue, _ := types.ObjectValueFrom(ctx, archivalDetails.AttributeTypes(), archivalDetails)
+					siteCollection.ArchivalDetails = objectValue
+				}
+				if v.GetSiteCollection().GetDataLocationCode() != nil {
+					siteCollection.DataLocationCode = types.StringValue(*v.GetSiteCollection().GetDataLocationCode())
+				} else {
+					siteCollection.DataLocationCode = types.StringNull()
+				}
+				if v.GetSiteCollection().GetHostname() != nil {
+					siteCollection.Hostname = types.StringValue(*v.GetSiteCollection().GetHostname())
+				} else {
+					siteCollection.Hostname = types.StringNull()
+				}
+				if v.GetSiteCollection().GetRoot() != nil {
+					root := new(sitesRootModel)
+
+					objectValue, _ := types.ObjectValueFrom(ctx, root.AttributeTypes(), root)
+					siteCollection.Root = objectValue
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, siteCollection.AttributeTypes(), siteCollection)
+				value.SiteCollection = objectValue
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
+			objectValues = append(objectValues, objectValue)
 		}
-		state.Value = append(state.Value, *value)
+		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state

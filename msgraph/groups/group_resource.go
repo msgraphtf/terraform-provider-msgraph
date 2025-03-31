@@ -3,14 +3,13 @@ package groups
 import (
 	"context"
 	"github.com/google/uuid"
-	"time"
-
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"time"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/groups"
@@ -73,7 +72,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"assigned_labels": schema.ListNestedAttribute{
-				Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select.",
+				Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select. This property can be updated only in delegated scenarios where the caller requires both the Microsoft Graph permission and a supported administrator role.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -110,7 +109,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"disabled_plans": schema.ListAttribute{
-							Description: "A collection of the unique identifiers for plans that have been disabled.",
+							Description: "A collection of the unique identifiers for plans that have been disabled. IDs are available in servicePlans > servicePlanId in the tenant's subscribedSkus or serviceStatus > servicePlanId in the tenant's companySubscription.",
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.List{
@@ -119,7 +118,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 							ElementType: types.StringType,
 						},
 						"sku_id": schema.StringAttribute{
-							Description: "The unique identifier for the SKU.",
+							Description: "The unique identifier for the SKU. Corresponds to the skuId from subscribedSkus or companySubscription.",
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
@@ -130,7 +129,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"classification": schema.StringAttribute{
-				Description: "Describes a classification for the group (such as low, medium or high business impact). Valid values for this property are defined by creating a ClassificationList setting value, based on the template definition.Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith).",
+				Description: "Describes a classification for the group (such as low, medium, or high business impact). Valid values for this property are defined by creating a ClassificationList setting value, based on the template definition.Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -138,7 +137,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"created_date_time": schema.StringAttribute{
-				Description: "Timestamp of when the group was created. The value cannot be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only.",
+				Description: "Timestamp of when the group was created. The value can't be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -154,7 +153,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"display_name": schema.StringAttribute{
-				Description: "The display name for the group. This property is required when a group is created and cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
+				Description: "The display name for the group. This property is required when a group is created and can't be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -162,7 +161,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"expiration_date_time": schema.StringAttribute{
-				Description: "Timestamp of when the group is set to expire. It is null for security groups, but for Microsoft 365 groups, it represents when the group is set to expire as defined in the groupLifecyclePolicy. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
+				Description: "Timestamp of when the group is set to expire. It's null for security groups, but for Microsoft 365 groups, it represents when the group is set to expire as defined in the groupLifecyclePolicy. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -179,7 +178,15 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				ElementType: types.StringType,
 			},
 			"is_assignable_to_role": schema.BoolAttribute{
-				Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group cannot be a dynamic group (that is, groupTypes cannot contain DynamicMembership). Only callers in Global Administrator and Privileged Role Administrator roles can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",
+				Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group can't be a dynamic group (that is, groupTypes can't contain DynamicMembership). Only callers with at least the Privileged Role Administrator role can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"is_management_restricted": schema.BoolAttribute{
+				Description: "",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -205,7 +212,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"mail": schema.StringAttribute{
-				Description: "The SMTP address for the group, for example, 'serviceadmins@contoso.onmicrosoft.com'. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+				Description: "The SMTP address for the group, for example, 'serviceadmins@contoso.com'. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -221,7 +228,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"mail_nickname": schema.StringAttribute{
-				Description: "The mail alias for the group, unique for Microsoft 365 groups in the organization. Maximum length is 64 characters. This property can contain only characters in the ASCII character set 0 - 127 except the following: @ () / [] ' ; : <> , SPACE. Required. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+				Description: "The mail alias for the group, unique for Microsoft 365 groups in the organization. Maximum length is 64 characters. This property can contain only characters in the ASCII character set 0 - 127 except the following characters: @ () / [] ' ; : <> , SPACE. Required. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -245,7 +252,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"on_premises_domain_name": schema.StringAttribute{
-				Description: "",
+				Description: "Contains the on-premises domain FQDN, also called dnsDomainName synchronized from the on-premises directory. The property is only populated for customers synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect.Returned by default. Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -253,7 +260,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"on_premises_last_sync_date_time": schema.StringAttribute{
-				Description: "Indicates the last time at which the group was synced with the on-premises directory.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in).",
+				Description: "Indicates the last time at which the group was synced with the on-premises directory. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -261,7 +268,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"on_premises_net_bios_name": schema.StringAttribute{
-				Description: "",
+				Description: "Contains the on-premises netBios name synchronized from the on-premises directory. The property is only populated for customers synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect.Returned by default. Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -321,7 +328,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"on_premises_security_identifier": schema.StringAttribute{
-				Description: "Contains the on-premises security identifier (SID) for the group synchronized from on-premises to the cloud. Returned by default. Supports $filter (eq including on null values). Read-only.",
+				Description: "Contains the on-premises security identifier (SID) for the group synchronized from on-premises to the cloud. Read-only. Returned by default. Supports $filter (eq including on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -329,7 +336,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"on_premises_sync_enabled": schema.BoolAttribute{
-				Description: "true if this group is synced from an on-premises directory; false if this group was originally synced from an on-premises directory but is no longer synced; null if this object has never been synced from an on-premises directory (default). Returned by default. Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
+				Description: "true if this group is synced from an on-premises directory; false if this group was originally synced from an on-premises directory but is no longer synced; null if this object has never synced from an on-premises directory (default). Returned by default. Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -337,7 +344,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"preferred_data_location": schema.StringAttribute{
-				Description: "The preferred data location for the Microsoft 365 group. By default, the group inherits the group creator's preferred data location. To set this property, the calling app must be granted the Directory.ReadWrite.All permission and the user be assigned one of the following Microsoft Entra roles:  Global Administrator  User Account Administrator Directory Writer  Exchange Administrator  SharePoint Administrator  For more information about this property, see OneDrive Online Multi-Geo. Nullable. Returned by default.",
+				Description: "The preferred data location for the Microsoft 365 group. By default, the group inherits the group creator's preferred data location. To set this property, the calling app must be granted the Directory.ReadWrite.All permission and the user be assigned at least one of the following Microsoft Entra roles: User Account Administrator Directory Writer  Exchange Administrator  SharePoint Administrator  For more information about this property, see OneDrive Online Multi-Geo. Nullable. Returned by default.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -362,7 +369,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				ElementType: types.StringType,
 			},
 			"renewed_date_time": schema.StringAttribute{
-				Description: "Timestamp of when the group was last renewed. This cannot be modified directly and is only updated via the renew service action. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
+				Description: "Timestamp of when the group was last renewed. This value can't be modified directly and is only updated via the renew service action. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -378,7 +385,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"security_identifier": schema.StringAttribute{
-				Description: "Security identifier of the group, used in Windows scenarios. Returned by default.",
+				Description: "Security identifier of the group, used in Windows scenarios. Read-only. Returned by default.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -386,7 +393,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"service_provisioning_errors": schema.ListNestedAttribute{
-				Description: "Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a group object .  Supports $filter (eq, not, for isResolved and serviceInstance).",
+				Description: "Errors published by a federated service describing a nontransient, service-specific error regarding the properties or link from a group object.  Supports $filter (eq, not, for isResolved and serviceInstance).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.List{
@@ -422,7 +429,15 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"theme": schema.StringAttribute{
-				Description: "Specifies a Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange or Red. Returned by default.",
+				Description: "Specifies a Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange, or Red. Returned by default.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"unique_name": schema.StringAttribute{
+				Description: "The unique identifier that can be assigned to a group and used as an alternate key. Immutable. Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -430,7 +445,7 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				},
 			},
 			"visibility": schema.StringAttribute{
-				Description: "Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value is not specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.",
+				Description: "Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value isn't specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -451,9 +466,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	var t time.Time
-	var u uuid.UUID
-
 	// Generate API request body from Plan
 	requestBody := models.NewGroup()
 
@@ -466,7 +478,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	if !plan.DeletedDateTime.IsUnknown() {
 		planDeletedDateTime := plan.DeletedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
+		t, _ := time.Parse(time.RFC3339, planDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
 	} else {
 		plan.DeletedDateTime = types.StringNull()
@@ -475,22 +487,22 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if len(plan.AssignedLabels.Elements()) > 0 {
 		var planAssignedLabels []models.AssignedLabelable
 		for _, i := range plan.AssignedLabels.Elements() {
-			assignedLabel := models.NewAssignedLabel()
-			assignedLabelModel := groupAssignedLabelsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedLabelModel)
+			assignedLabels := models.NewAssignedLabel()
+			assignedLabelsModel := groupAssignedLabelModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedLabelsModel)
 
-			if !assignedLabelModel.DisplayName.IsUnknown() {
-				planDisplayName := assignedLabelModel.DisplayName.ValueString()
-				assignedLabel.SetDisplayName(&planDisplayName)
+			if !assignedLabelsModel.DisplayName.IsUnknown() {
+				planDisplayName := assignedLabelsModel.DisplayName.ValueString()
+				assignedLabels.SetDisplayName(&planDisplayName)
 			} else {
-				assignedLabelModel.DisplayName = types.StringNull()
+				assignedLabelsModel.DisplayName = types.StringNull()
 			}
 
-			if !assignedLabelModel.LabelId.IsUnknown() {
-				planLabelId := assignedLabelModel.LabelId.ValueString()
-				assignedLabel.SetLabelId(&planLabelId)
+			if !assignedLabelsModel.LabelId.IsUnknown() {
+				planLabelId := assignedLabelsModel.LabelId.ValueString()
+				assignedLabels.SetLabelId(&planLabelId)
 			} else {
-				assignedLabelModel.LabelId = types.StringNull()
+				assignedLabelsModel.LabelId = types.StringNull()
 			}
 		}
 		requestBody.SetAssignedLabels(planAssignedLabels)
@@ -501,27 +513,27 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if len(plan.AssignedLicenses.Elements()) > 0 {
 		var planAssignedLicenses []models.AssignedLicenseable
 		for _, i := range plan.AssignedLicenses.Elements() {
-			assignedLicense := models.NewAssignedLicense()
-			assignedLicenseModel := groupAssignedLicensesModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicenseModel)
+			assignedLicenses := models.NewAssignedLicense()
+			assignedLicensesModel := groupAssignedLicenseModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicensesModel)
 
-			if len(assignedLicenseModel.DisabledPlans.Elements()) > 0 {
+			if len(assignedLicensesModel.DisabledPlans.Elements()) > 0 {
 				var DisabledPlans []uuid.UUID
-				for _, i := range assignedLicenseModel.DisabledPlans.Elements() {
-					u, _ = uuid.Parse(i.String())
+				for _, i := range assignedLicensesModel.DisabledPlans.Elements() {
+					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
-				assignedLicense.SetDisabledPlans(DisabledPlans)
+				assignedLicenses.SetDisabledPlans(DisabledPlans)
 			} else {
-				assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
+				assignedLicensesModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !assignedLicenseModel.SkuId.IsUnknown() {
-				planSkuId := assignedLicenseModel.SkuId.ValueString()
-				u, _ = uuid.Parse(planSkuId)
-				assignedLicense.SetSkuId(&u)
+			if !assignedLicensesModel.SkuId.IsUnknown() {
+				planSkuId := assignedLicensesModel.SkuId.ValueString()
+				u, _ := uuid.Parse(planSkuId)
+				assignedLicenses.SetSkuId(&u)
 			} else {
-				assignedLicenseModel.SkuId = types.StringNull()
+				assignedLicensesModel.SkuId = types.StringNull()
 			}
 		}
 		requestBody.SetAssignedLicenses(planAssignedLicenses)
@@ -538,7 +550,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	if !plan.CreatedDateTime.IsUnknown() {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
+		t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	} else {
 		plan.CreatedDateTime = types.StringNull()
@@ -560,7 +572,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	if !plan.ExpirationDateTime.IsUnknown() {
 		planExpirationDateTime := plan.ExpirationDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planExpirationDateTime)
+		t, _ := time.Parse(time.RFC3339, planExpirationDateTime)
 		requestBody.SetExpirationDateTime(&t)
 	} else {
 		plan.ExpirationDateTime = types.StringNull()
@@ -581,6 +593,13 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		requestBody.SetIsAssignableToRole(&planIsAssignableToRole)
 	} else {
 		plan.IsAssignableToRole = types.BoolNull()
+	}
+
+	if !plan.IsManagementRestricted.IsUnknown() {
+		planIsManagementRestricted := plan.IsManagementRestricted.ValueBool()
+		requestBody.SetIsManagementRestricted(&planIsManagementRestricted)
+	} else {
+		plan.IsManagementRestricted = types.BoolNull()
 	}
 
 	if !plan.LicenseProcessingState.IsUnknown() {
@@ -645,7 +664,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
+		t, _ := time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
 	} else {
 		plan.OnPremisesLastSyncDateTime = types.StringNull()
@@ -661,37 +680,37 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if len(plan.OnPremisesProvisioningErrors.Elements()) > 0 {
 		var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for _, i := range plan.OnPremisesProvisioningErrors.Elements() {
-			onPremisesProvisioningError := models.NewOnPremisesProvisioningError()
-			onPremisesProvisioningErrorModel := groupOnPremisesProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
+			onPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
+			onPremisesProvisioningErrorsModel := groupOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorsModel)
 
-			if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
-				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
-				onPremisesProvisioningError.SetCategory(&planCategory)
+			if !onPremisesProvisioningErrorsModel.Category.IsUnknown() {
+				planCategory := onPremisesProvisioningErrorsModel.Category.ValueString()
+				onPremisesProvisioningErrors.SetCategory(&planCategory)
 			} else {
-				onPremisesProvisioningErrorModel.Category = types.StringNull()
+				onPremisesProvisioningErrorsModel.Category = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
-				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
-				onPremisesProvisioningError.SetOccurredDateTime(&t)
+			if !onPremisesProvisioningErrorsModel.OccurredDateTime.IsUnknown() {
+				planOccurredDateTime := onPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planOccurredDateTime)
+				onPremisesProvisioningErrors.SetOccurredDateTime(&t)
 			} else {
-				onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
+				onPremisesProvisioningErrorsModel.OccurredDateTime = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
-				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
-				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
+			if !onPremisesProvisioningErrorsModel.PropertyCausingError.IsUnknown() {
+				planPropertyCausingError := onPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
+				onPremisesProvisioningErrors.SetPropertyCausingError(&planPropertyCausingError)
 			} else {
-				onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
+				onPremisesProvisioningErrorsModel.PropertyCausingError = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
-				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
-				onPremisesProvisioningError.SetValue(&planValue)
+			if !onPremisesProvisioningErrorsModel.Value.IsUnknown() {
+				planValue := onPremisesProvisioningErrorsModel.Value.ValueString()
+				onPremisesProvisioningErrors.SetValue(&planValue)
 			} else {
-				onPremisesProvisioningErrorModel.Value = types.StringNull()
+				onPremisesProvisioningErrorsModel.Value = types.StringNull()
 			}
 		}
 		requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
@@ -746,7 +765,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	if !plan.RenewedDateTime.IsUnknown() {
 		planRenewedDateTime := plan.RenewedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planRenewedDateTime)
+		t, _ := time.Parse(time.RFC3339, planRenewedDateTime)
 		requestBody.SetRenewedDateTime(&t)
 	} else {
 		plan.RenewedDateTime = types.StringNull()
@@ -769,30 +788,30 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if len(plan.ServiceProvisioningErrors.Elements()) > 0 {
 		var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for _, i := range plan.ServiceProvisioningErrors.Elements() {
-			serviceProvisioningError := models.NewServiceProvisioningError()
-			serviceProvisioningErrorModel := groupServiceProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
+			serviceProvisioningErrors := models.NewServiceProvisioningError()
+			serviceProvisioningErrorsModel := groupServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorsModel)
 
-			if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
-				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
-				serviceProvisioningError.SetCreatedDateTime(&t)
+			if !serviceProvisioningErrorsModel.CreatedDateTime.IsUnknown() {
+				planCreatedDateTime := serviceProvisioningErrorsModel.CreatedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
+				serviceProvisioningErrors.SetCreatedDateTime(&t)
 			} else {
-				serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
+				serviceProvisioningErrorsModel.CreatedDateTime = types.StringNull()
 			}
 
-			if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
-				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
-				serviceProvisioningError.SetIsResolved(&planIsResolved)
+			if !serviceProvisioningErrorsModel.IsResolved.IsUnknown() {
+				planIsResolved := serviceProvisioningErrorsModel.IsResolved.ValueBool()
+				serviceProvisioningErrors.SetIsResolved(&planIsResolved)
 			} else {
-				serviceProvisioningErrorModel.IsResolved = types.BoolNull()
+				serviceProvisioningErrorsModel.IsResolved = types.BoolNull()
 			}
 
-			if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
-				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
-				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
+			if !serviceProvisioningErrorsModel.ServiceInstance.IsUnknown() {
+				planServiceInstance := serviceProvisioningErrorsModel.ServiceInstance.ValueString()
+				serviceProvisioningErrors.SetServiceInstance(&planServiceInstance)
 			} else {
-				serviceProvisioningErrorModel.ServiceInstance = types.StringNull()
+				serviceProvisioningErrorsModel.ServiceInstance = types.StringNull()
 			}
 		}
 		requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
@@ -805,6 +824,13 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		requestBody.SetTheme(&planTheme)
 	} else {
 		plan.Theme = types.StringNull()
+	}
+
+	if !plan.UniqueName.IsUnknown() {
+		planUniqueName := plan.UniqueName.ValueString()
+		requestBody.SetUniqueName(&planUniqueName)
+	} else {
+		plan.UniqueName = types.StringNull()
 	}
 
 	if !plan.Visibility.IsUnknown() {
@@ -859,6 +885,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 				"expirationDateTime",
 				"groupTypes",
 				"isAssignableToRole",
+				"isManagementRestricted",
 				"licenseProcessingState",
 				"mail",
 				"mailEnabled",
@@ -880,34 +907,8 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 				"securityIdentifier",
 				"serviceProvisioningErrors",
 				"theme",
+				"uniqueName",
 				"visibility",
-				"appRoleAssignments",
-				"createdOnBehalfOf",
-				"memberOf",
-				"members",
-				"membersWithLicenseErrors",
-				"owners",
-				"permissionGrants",
-				"settings",
-				"transitiveMemberOf",
-				"transitiveMembers",
-				"acceptedSenders",
-				"calendar",
-				"calendarView",
-				"conversations",
-				"events",
-				"rejectedSenders",
-				"threads",
-				"drive",
-				"drives",
-				"sites",
-				"extensions",
-				"groupLifecyclePolicies",
-				"planner",
-				"onenote",
-				"photo",
-				"photos",
-				"team",
 			},
 		},
 	}
@@ -946,7 +947,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLabels() {
-			assignedLabels := new(groupAssignedLabelsModel)
+			assignedLabels := new(groupAssignedLabelModel)
 
 			if v.GetDisplayName() != nil {
 				assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
@@ -966,7 +967,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLicenses() {
-			assignedLicenses := new(groupAssignedLicensesModel)
+			assignedLicenses := new(groupAssignedLicenseModel)
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var disabledPlans []attr.Value
@@ -1028,6 +1029,11 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	} else {
 		state.IsAssignableToRole = types.BoolNull()
 	}
+	if result.GetIsManagementRestricted() != nil {
+		state.IsManagementRestricted = types.BoolValue(*result.GetIsManagementRestricted())
+	} else {
+		state.IsManagementRestricted = types.BoolNull()
+	}
 	if result.GetLicenseProcessingState() != nil {
 		licenseProcessingState := new(groupLicenseProcessingStateModel)
 
@@ -1083,7 +1089,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorsModel)
+			onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorModel)
 
 			if v.GetCategory() != nil {
 				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -1163,7 +1169,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(groupServiceProvisioningErrorsModel)
+			serviceProvisioningErrors := new(groupServiceProvisioningErrorModel)
 
 			if v.GetCreatedDateTime() != nil {
 				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
@@ -1189,6 +1195,11 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		state.Theme = types.StringValue(*result.GetTheme())
 	} else {
 		state.Theme = types.StringNull()
+	}
+	if result.GetUniqueName() != nil {
+		state.UniqueName = types.StringValue(*result.GetUniqueName())
+	} else {
+		state.UniqueName = types.StringNull()
 	}
 	if result.GetVisibility() != nil {
 		state.Visibility = types.StringValue(*result.GetVisibility())
@@ -1225,8 +1236,6 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	// Generate API request body from plan
 	requestBody := models.NewGroup()
-	var t time.Time
-	var u uuid.UUID
 
 	if !plan.Id.Equal(state.Id) {
 		planId := plan.Id.ValueString()
@@ -1235,27 +1244,27 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	if !plan.DeletedDateTime.Equal(state.DeletedDateTime) {
 		planDeletedDateTime := plan.DeletedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
+		t, _ := time.Parse(time.RFC3339, planDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
 	}
 
 	if !plan.AssignedLabels.Equal(state.AssignedLabels) {
 		var planAssignedLabels []models.AssignedLabelable
 		for k, i := range plan.AssignedLabels.Elements() {
-			assignedLabel := models.NewAssignedLabel()
-			assignedLabelModel := groupAssignedLabelsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedLabelModel)
-			assignedLabelState := groupAssignedLabelsModel{}
-			types.ListValueFrom(ctx, state.AssignedLabels.Elements()[k].Type(ctx), &assignedLabelModel)
+			assignedLabels := models.NewAssignedLabel()
+			assignedLabelsModel := groupAssignedLabelModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedLabelsModel)
+			assignedLabelsState := groupAssignedLabelModel{}
+			types.ListValueFrom(ctx, state.AssignedLabels.Elements()[k].Type(ctx), &assignedLabelsModel)
 
-			if !assignedLabelModel.DisplayName.Equal(assignedLabelState.DisplayName) {
-				planDisplayName := assignedLabelModel.DisplayName.ValueString()
-				assignedLabel.SetDisplayName(&planDisplayName)
+			if !assignedLabelsModel.DisplayName.Equal(assignedLabelsState.DisplayName) {
+				planDisplayName := assignedLabelsModel.DisplayName.ValueString()
+				assignedLabels.SetDisplayName(&planDisplayName)
 			}
 
-			if !assignedLabelModel.LabelId.Equal(assignedLabelState.LabelId) {
-				planLabelId := assignedLabelModel.LabelId.ValueString()
-				assignedLabel.SetLabelId(&planLabelId)
+			if !assignedLabelsModel.LabelId.Equal(assignedLabelsState.LabelId) {
+				planLabelId := assignedLabelsModel.LabelId.ValueString()
+				assignedLabels.SetLabelId(&planLabelId)
 			}
 		}
 		requestBody.SetAssignedLabels(planAssignedLabels)
@@ -1264,25 +1273,25 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !plan.AssignedLicenses.Equal(state.AssignedLicenses) {
 		var planAssignedLicenses []models.AssignedLicenseable
 		for k, i := range plan.AssignedLicenses.Elements() {
-			assignedLicense := models.NewAssignedLicense()
-			assignedLicenseModel := groupAssignedLicensesModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicenseModel)
-			assignedLicenseState := groupAssignedLicensesModel{}
-			types.ListValueFrom(ctx, state.AssignedLicenses.Elements()[k].Type(ctx), &assignedLicenseModel)
+			assignedLicenses := models.NewAssignedLicense()
+			assignedLicensesModel := groupAssignedLicenseModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicensesModel)
+			assignedLicensesState := groupAssignedLicenseModel{}
+			types.ListValueFrom(ctx, state.AssignedLicenses.Elements()[k].Type(ctx), &assignedLicensesModel)
 
-			if !assignedLicenseModel.DisabledPlans.Equal(assignedLicenseState.DisabledPlans) {
+			if !assignedLicensesModel.DisabledPlans.Equal(assignedLicensesState.DisabledPlans) {
 				var DisabledPlans []uuid.UUID
-				for _, i := range assignedLicenseModel.DisabledPlans.Elements() {
-					u, _ = uuid.Parse(i.String())
+				for _, i := range assignedLicensesModel.DisabledPlans.Elements() {
+					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
-				assignedLicense.SetDisabledPlans(DisabledPlans)
+				assignedLicenses.SetDisabledPlans(DisabledPlans)
 			}
 
-			if !assignedLicenseModel.SkuId.Equal(assignedLicenseState.SkuId) {
-				planSkuId := assignedLicenseModel.SkuId.ValueString()
-				u, _ = uuid.Parse(planSkuId)
-				assignedLicense.SetSkuId(&u)
+			if !assignedLicensesModel.SkuId.Equal(assignedLicensesState.SkuId) {
+				planSkuId := assignedLicensesModel.SkuId.ValueString()
+				u, _ := uuid.Parse(planSkuId)
+				assignedLicenses.SetSkuId(&u)
 			}
 		}
 		requestBody.SetAssignedLicenses(planAssignedLicenses)
@@ -1295,7 +1304,7 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	if !plan.CreatedDateTime.Equal(state.CreatedDateTime) {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
+		t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	}
 
@@ -1311,7 +1320,7 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	if !plan.ExpirationDateTime.Equal(state.ExpirationDateTime) {
 		planExpirationDateTime := plan.ExpirationDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planExpirationDateTime)
+		t, _ := time.Parse(time.RFC3339, planExpirationDateTime)
 		requestBody.SetExpirationDateTime(&t)
 	}
 
@@ -1326,6 +1335,11 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !plan.IsAssignableToRole.Equal(state.IsAssignableToRole) {
 		planIsAssignableToRole := plan.IsAssignableToRole.ValueBool()
 		requestBody.SetIsAssignableToRole(&planIsAssignableToRole)
+	}
+
+	if !plan.IsManagementRestricted.Equal(state.IsManagementRestricted) {
+		planIsManagementRestricted := plan.IsManagementRestricted.ValueBool()
+		requestBody.SetIsManagementRestricted(&planIsManagementRestricted)
 	}
 
 	if !plan.LicenseProcessingState.Equal(state.LicenseProcessingState) {
@@ -1376,7 +1390,7 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	if !plan.OnPremisesLastSyncDateTime.Equal(state.OnPremisesLastSyncDateTime) {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
+		t, _ := time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
 	}
 
@@ -1388,31 +1402,31 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !plan.OnPremisesProvisioningErrors.Equal(state.OnPremisesProvisioningErrors) {
 		var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for k, i := range plan.OnPremisesProvisioningErrors.Elements() {
-			onPremisesProvisioningError := models.NewOnPremisesProvisioningError()
-			onPremisesProvisioningErrorModel := groupOnPremisesProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
-			onPremisesProvisioningErrorState := groupOnPremisesProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, state.OnPremisesProvisioningErrors.Elements()[k].Type(ctx), &onPremisesProvisioningErrorModel)
+			onPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
+			onPremisesProvisioningErrorsModel := groupOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorsModel)
+			onPremisesProvisioningErrorsState := groupOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, state.OnPremisesProvisioningErrors.Elements()[k].Type(ctx), &onPremisesProvisioningErrorsModel)
 
-			if !onPremisesProvisioningErrorModel.Category.Equal(onPremisesProvisioningErrorState.Category) {
-				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
-				onPremisesProvisioningError.SetCategory(&planCategory)
+			if !onPremisesProvisioningErrorsModel.Category.Equal(onPremisesProvisioningErrorsState.Category) {
+				planCategory := onPremisesProvisioningErrorsModel.Category.ValueString()
+				onPremisesProvisioningErrors.SetCategory(&planCategory)
 			}
 
-			if !onPremisesProvisioningErrorModel.OccurredDateTime.Equal(onPremisesProvisioningErrorState.OccurredDateTime) {
-				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
-				onPremisesProvisioningError.SetOccurredDateTime(&t)
+			if !onPremisesProvisioningErrorsModel.OccurredDateTime.Equal(onPremisesProvisioningErrorsState.OccurredDateTime) {
+				planOccurredDateTime := onPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planOccurredDateTime)
+				onPremisesProvisioningErrors.SetOccurredDateTime(&t)
 			}
 
-			if !onPremisesProvisioningErrorModel.PropertyCausingError.Equal(onPremisesProvisioningErrorState.PropertyCausingError) {
-				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
-				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
+			if !onPremisesProvisioningErrorsModel.PropertyCausingError.Equal(onPremisesProvisioningErrorsState.PropertyCausingError) {
+				planPropertyCausingError := onPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
+				onPremisesProvisioningErrors.SetPropertyCausingError(&planPropertyCausingError)
 			}
 
-			if !onPremisesProvisioningErrorModel.Value.Equal(onPremisesProvisioningErrorState.Value) {
-				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
-				onPremisesProvisioningError.SetValue(&planValue)
+			if !onPremisesProvisioningErrorsModel.Value.Equal(onPremisesProvisioningErrorsState.Value) {
+				planValue := onPremisesProvisioningErrorsModel.Value.ValueString()
+				onPremisesProvisioningErrors.SetValue(&planValue)
 			}
 		}
 		requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
@@ -1453,7 +1467,7 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	if !plan.RenewedDateTime.Equal(state.RenewedDateTime) {
 		planRenewedDateTime := plan.RenewedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planRenewedDateTime)
+		t, _ := time.Parse(time.RFC3339, planRenewedDateTime)
 		requestBody.SetRenewedDateTime(&t)
 	}
 
@@ -1470,26 +1484,26 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !plan.ServiceProvisioningErrors.Equal(state.ServiceProvisioningErrors) {
 		var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for k, i := range plan.ServiceProvisioningErrors.Elements() {
-			serviceProvisioningError := models.NewServiceProvisioningError()
-			serviceProvisioningErrorModel := groupServiceProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
-			serviceProvisioningErrorState := groupServiceProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, state.ServiceProvisioningErrors.Elements()[k].Type(ctx), &serviceProvisioningErrorModel)
+			serviceProvisioningErrors := models.NewServiceProvisioningError()
+			serviceProvisioningErrorsModel := groupServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorsModel)
+			serviceProvisioningErrorsState := groupServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, state.ServiceProvisioningErrors.Elements()[k].Type(ctx), &serviceProvisioningErrorsModel)
 
-			if !serviceProvisioningErrorModel.CreatedDateTime.Equal(serviceProvisioningErrorState.CreatedDateTime) {
-				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
-				serviceProvisioningError.SetCreatedDateTime(&t)
+			if !serviceProvisioningErrorsModel.CreatedDateTime.Equal(serviceProvisioningErrorsState.CreatedDateTime) {
+				planCreatedDateTime := serviceProvisioningErrorsModel.CreatedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
+				serviceProvisioningErrors.SetCreatedDateTime(&t)
 			}
 
-			if !serviceProvisioningErrorModel.IsResolved.Equal(serviceProvisioningErrorState.IsResolved) {
-				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
-				serviceProvisioningError.SetIsResolved(&planIsResolved)
+			if !serviceProvisioningErrorsModel.IsResolved.Equal(serviceProvisioningErrorsState.IsResolved) {
+				planIsResolved := serviceProvisioningErrorsModel.IsResolved.ValueBool()
+				serviceProvisioningErrors.SetIsResolved(&planIsResolved)
 			}
 
-			if !serviceProvisioningErrorModel.ServiceInstance.Equal(serviceProvisioningErrorState.ServiceInstance) {
-				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
-				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
+			if !serviceProvisioningErrorsModel.ServiceInstance.Equal(serviceProvisioningErrorsState.ServiceInstance) {
+				planServiceInstance := serviceProvisioningErrorsModel.ServiceInstance.ValueString()
+				serviceProvisioningErrors.SetServiceInstance(&planServiceInstance)
 			}
 		}
 		requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
@@ -1498,6 +1512,11 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !plan.Theme.Equal(state.Theme) {
 		planTheme := plan.Theme.ValueString()
 		requestBody.SetTheme(&planTheme)
+	}
+
+	if !plan.UniqueName.Equal(state.UniqueName) {
+		planUniqueName := plan.UniqueName.ValueString()
+		requestBody.SetUniqueName(&planUniqueName)
 	}
 
 	if !plan.Visibility.Equal(state.Visibility) {

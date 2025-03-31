@@ -21,50 +21,53 @@ description: |-
 
 ### Read-Only
 
-- `account_enabled` (Boolean) true if the service principal account is enabled; otherwise, false. If set to false, then no users will be able to sign in to this app, even if they are assigned to it. Supports $filter (eq, ne, not, in).
-- `add_ins` (Attributes List) Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams may set the addIns property for its 'FileHandler' functionality. This will let services like Microsoft 365 call the application in the context of a document the user is working on. (see [below for nested schema](#nestedatt--add_ins))
-- `alternative_names` (List of String) Used to retrieve service principals by subscription, identify resource group and full resource ids for managed identities. Supports $filter (eq, not, ge, le, startsWith).
+- `account_enabled` (Boolean) true if the service principal account is enabled; otherwise, false. If set to false, then no users are able to sign in to this app, even if they're assigned to it. Supports $filter (eq, ne, not, in).
+- `add_ins` (Attributes List) Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams may set the addIns property for its 'FileHandler' functionality. This lets services like Microsoft 365 call the application in the context of a document the user is working on. (see [below for nested schema](#nestedatt--add_ins))
+- `alternative_names` (List of String) Used to retrieve service principals by subscription, identify resource group and full resource IDs for managed identities. Supports $filter (eq, not, ge, le, startsWith).
 - `app_description` (String) The description exposed by the associated application.
 - `app_display_name` (String) The display name exposed by the associated application.
 - `app_id` (String) The unique identifier for the associated application (its appId property). Alternate key. Supports $filter (eq, ne, not, in, startsWith).
-- `app_owner_organization_id` (String) Contains the tenant id where the application is registered. This is applicable only to service principals backed by applications. Supports $filter (eq, ne, NOT, ge, le).
+- `app_owner_organization_id` (String) Contains the tenant ID where the application is registered. This is applicable only to service principals backed by applications. Supports $filter (eq, ne, NOT, ge, le).
 - `app_role_assignment_required` (Boolean) Specifies whether users or other service principals need to be granted an app role assignment for this service principal before users can sign in or apps can get tokens. The default value is false. Not nullable. Supports $filter (eq, ne, NOT).
-- `app_roles` (Attributes List) The roles exposed by the application which this service principal represents. For more information see the appRoles property definition on the application entity. Not nullable. (see [below for nested schema](#nestedatt--app_roles))
-- `application_template_id` (String) Unique identifier of the applicationTemplate that the servicePrincipal was created from. Read-only. Supports $filter (eq, ne, NOT, startsWith).
-- `custom_security_attributes` (Attributes) An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). Filter value is case sensitive. (see [below for nested schema](#nestedatt--custom_security_attributes))
+- `app_roles` (Attributes List) The roles exposed by the application that's linked to this service principal. For more information, see the appRoles property definition on the application entity. Not nullable. (see [below for nested schema](#nestedatt--app_roles))
+- `application_template_id` (String) Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne). Read-only. null if the service principal wasn't created from an application template.
+- `custom_security_attributes` (Attributes) An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). Filter value is case sensitive. To read this property, the calling app must be assigned the CustomSecAttributeAssignment.Read.All permission. To write this property, the calling app must be assigned the CustomSecAttributeAssignment.ReadWrite.All permissions. To read or write this property in delegated scenarios, the admin must be assigned the Attribute Assignment Administrator role. (see [below for nested schema](#nestedatt--custom_security_attributes))
 - `deleted_date_time` (String) Date and time when this object was deleted. Always null when the object hasn't been deleted.
-- `description` (String) Free text field to provide an internal end-user facing description of the service principal. End-user portals such MyApps will display the application description in this field. The maximum allowed size is 1024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
-- `disabled_by_microsoft_status` (String) Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons may include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).
+- `description` (String) Free text field to provide an internal end-user facing description of the service principal. End-user portals such MyApps displays the application description in this field. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
+- `disabled_by_microsoft_status` (String) Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).
 - `display_name` (String) The display name for the service principal. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.
 - `homepage` (String) Home page or landing page of the application.
 - `info` (Attributes) Basic profile information of the acquired application such as app's marketing, support, terms of service and privacy statement URLs. The terms of service and privacy statement are surfaced to users through the user consent experience. For more info, see How to: Add Terms of service and privacy statement for registered Microsoft Entra apps. Supports $filter (eq, ne, not, ge, le, and eq on null values). (see [below for nested schema](#nestedatt--info))
 - `key_credentials` (Attributes List) The collection of key credentials associated with the service principal. Not nullable. Supports $filter (eq, not, ge, le). (see [below for nested schema](#nestedatt--key_credentials))
 - `login_url` (String) Specifies the URL where the service provider redirects the user to Microsoft Entra ID to authenticate. Microsoft Entra ID uses the URL to launch the application from Microsoft 365 or the Microsoft Entra My Apps. When blank, Microsoft Entra ID performs IdP-initiated sign-on for applications configured with SAML-based single sign-on. The user launches the application from Microsoft 365, the Microsoft Entra My Apps, or the Microsoft Entra SSO URL.
-- `logout_url` (String) Specifies the URL that will be used by Microsoft's authorization service to logout an user using OpenId Connect front-channel, back-channel or SAML logout protocols.
-- `notes` (String) Free text field to capture information about the service principal, typically used for operational purposes. Maximum allowed size is 1024 characters.
+- `logout_url` (String) Specifies the URL that the Microsoft's authorization service uses to sign out a user using OpenID Connect front-channel, back-channel, or SAML sign out protocols.
+- `notes` (String) Free text field to capture information about the service principal, typically used for operational purposes. Maximum allowed size is 1,024 characters.
 - `notification_email_addresses` (List of String) Specifies the list of email addresses where Microsoft Entra ID sends a notification when the active certificate is near the expiration date. This is only for the certificates used to sign the SAML token issued for Microsoft Entra Gallery applications.
-- `oauth_2_permission_scopes` (Attributes List) The delegated permissions exposed by the application. For more information see the oauth2PermissionScopes property on the application entity's api property. Not nullable. (see [below for nested schema](#nestedatt--oauth_2_permission_scopes))
+- `oauth_2_permission_scopes` (Attributes List) The delegated permissions exposed by the application. For more information, see the oauth2PermissionScopes property on the application entity's api property. Not nullable. (see [below for nested schema](#nestedatt--oauth_2_permission_scopes))
 - `password_credentials` (Attributes List) The collection of password credentials associated with the application. Not nullable. (see [below for nested schema](#nestedatt--password_credentials))
-- `preferred_single_sign_on_mode` (String) Specifies the single sign-on mode configured for this application. Microsoft Entra ID uses the preferred single sign-on mode to launch the application from Microsoft 365 or the My Apps portal. The supported values are password, saml, notSupported, and oidc.
-- `preferred_token_signing_key_thumbprint` (String) This property can be used on SAML applications (apps that have preferredSingleSignOnMode set to saml) to control which certificate is used to sign the SAML responses. For applications that are not SAML, do not write or otherwise rely on this property.
+- `preferred_single_sign_on_mode` (String) Specifies the single sign-on mode configured for this application. Microsoft Entra ID uses the preferred single sign-on mode to launch the application from Microsoft 365 or the My Apps portal. The supported values are password, saml, notSupported, and oidc. Note: This field might be null for older SAML apps and for OIDC applications where it isn't set automatically.
+- `preferred_token_signing_key_thumbprint` (String) This property can be used on SAML applications (apps that have preferredSingleSignOnMode set to saml) to control which certificate is used to sign the SAML responses. For applications that aren't SAML, don't write or otherwise rely on this property.
 - `reply_urls` (List of String) The URLs that user tokens are sent to for sign in with the associated application, or the redirect URIs that OAuth 2.0 authorization codes and access tokens are sent to for the associated application. Not nullable.
 - `resource_specific_application_permissions` (Attributes List) The resource-specific application permissions exposed by this application. Currently, resource-specific permissions are only supported for Teams apps accessing to specific chats and teams using Microsoft Graph. Read-only. (see [below for nested schema](#nestedatt--resource_specific_application_permissions))
 - `saml_single_sign_on_settings` (Attributes) The collection for settings related to saml single sign-on. (see [below for nested schema](#nestedatt--saml_single_sign_on_settings))
-- `service_principal_names` (List of String) Contains the list of identifiersUris, copied over from the associated application. Additional values can be added to hybrid applications. These values can be used to identify the permissions exposed by this app within Microsoft Entra ID. For example,Client apps can specify a resource URI which is based on the values of this property to acquire an access token, which is the URI returned in the 'aud' claim.The any operator is required for filter expressions on multi-valued properties. Not nullable.  Supports $filter (eq, not, ge, le, startsWith).
-- `service_principal_type` (String) Identifies whether the service principal represents an application, a managed identity, or a legacy application. This is set by Microsoft Entra ID internally. The servicePrincipalType property can be set to three different values: Application - A service principal that represents an application or service. The appId property identifies the associated app registration, and matches the appId of an application, possibly from a different tenant. If the associated app registration is missing, tokens are not issued for the service principal.ManagedIdentity - A service principal that represents a managed identity. Service principals representing managed identities can be granted access and permissions, but cannot be updated or modified directly.Legacy - A service principal that represents an app created before app registrations, or through legacy experiences. Legacy service principal can have credentials, service principal names, reply URLs, and other properties which are editable by an authorized user, but does not have an associated app registration. The appId value does not associate the service principal with an app registration. The service principal can only be used in the tenant where it was created.SocialIdp - For internal use.
-- `sign_in_audience` (String) Specifies the Microsoft accounts that are supported for the current application. Read-only. Supported values are:AzureADMyOrg: Users with a Microsoft work or school account in my organization's Microsoft Entra tenant (single-tenant).AzureADMultipleOrgs: Users with a Microsoft work or school account in any organization's Microsoft Entra tenant (multi-tenant).AzureADandPersonalMicrosoftAccount: Users with a personal Microsoft account, or a work or school account in any organization's Microsoft Entra tenant.PersonalMicrosoftAccount: Users with a personal Microsoft account only.
+- `service_principal_names` (List of String) Contains the list of identifiersUris, copied over from the associated application. Additional values can be added to hybrid applications. These values can be used to identify the permissions exposed by this app within Microsoft Entra ID. For example,Client apps can specify a resource URI that is based on the values of this property to acquire an access token, which is the URI returned in the 'aud' claim.The any operator is required for filter expressions on multi-valued properties. Not nullable.  Supports $filter (eq, not, ge, le, startsWith).
+- `service_principal_type` (String) Identifies whether the service principal represents an application, a managed identity, or a legacy application. This is set by Microsoft Entra ID internally. The servicePrincipalType property can be set to three different values: Application - A service principal that represents an application or service. The appId property identifies the associated app registration, and matches the appId of an application, possibly from a different tenant. If the associated app registration is missing, tokens aren't issued for the service principal.ManagedIdentity - A service principal that represents a managed identity. Service principals representing managed identities can be granted access and permissions, but can't be updated or modified directly.Legacy - A service principal that represents an app created before app registrations, or through legacy experiences. A legacy service principal can have credentials, service principal names, reply URLs, and other properties that are editable by an authorized user, but doesn't have an associated app registration. The appId value doesn't associate the service principal with an app registration. The service principal can only be used in the tenant where it was created.SocialIdp - For internal use.
+- `sign_in_audience` (String) Specifies the Microsoft accounts that are supported for the current application. Read-only. Supported values are:AzureADMyOrg: Users with a Microsoft work or school account in my organization's Microsoft Entra tenant (single-tenant).AzureADMultipleOrgs: Users with a Microsoft work or school account in any organization's Microsoft Entra tenant (multitenant).AzureADandPersonalMicrosoftAccount: Users with a personal Microsoft account, or a work or school account in any organization's Microsoft Entra tenant.PersonalMicrosoftAccount: Users with a personal Microsoft account only.
 - `tags` (List of String) Custom strings that can be used to categorize and identify the service principal. Not nullable. The value is the union of strings set here and on the associated application entity's tags property.Supports $filter (eq, not, ge, le, startsWith).
 - `token_encryption_key_id` (String) Specifies the keyId of a public key from the keyCredentials collection. When configured, Microsoft Entra ID issues tokens for this application encrypted using the key specified by this property. The application code that receives the encrypted token must use the matching private key to decrypt the token before it can be used for the signed-in user.
-- `verified_publisher` (Attributes) Specifies the verified publisher of the application which this service principal represents. (see [below for nested schema](#nestedatt--verified_publisher))
+- `verified_publisher` (Attributes) Specifies the verified publisher of the application that's linked to this service principal. (see [below for nested schema](#nestedatt--verified_publisher))
 
 <a id="nestedatt--add_ins"></a>
 ### Nested Schema for `add_ins`
 
+Optional:
+
+- `id` (String) The unique identifier for the addIn object.
+
 Read-Only:
 
-- `id` (String)
-- `properties` (Attributes List) (see [below for nested schema](#nestedatt--add_ins--properties))
-- `type` (String)
+- `properties` (Attributes List) The collection of key-value pairs that define parameters that the consuming service can use or call. You must specify this property when performing a POST or a PATCH operation on the addIns collection. Required. (see [below for nested schema](#nestedatt--add_ins--properties))
+- `type` (String) The unique name for the functionality exposed by the app.
 
 <a id="nestedatt--add_ins--properties"></a>
 ### Nested Schema for `add_ins.properties`
@@ -79,12 +82,15 @@ Read-Only:
 <a id="nestedatt--app_roles"></a>
 ### Nested Schema for `app_roles`
 
+Optional:
+
+- `id` (String) Unique role identifier inside the appRoles collection. When creating a new app role, a new GUID identifier must be provided.
+
 Read-Only:
 
 - `allowed_member_types` (List of String) Specifies whether this app role can be assigned to users and groups (by setting to ['User']), to other application's (by setting to ['Application'], or both (by setting to ['User', 'Application']). App roles supporting assignment to other applications' service principals are also known as application permissions. The 'Application' value is only supported for app roles defined on application entities.
 - `description` (String) The description for the app role. This is displayed when the app role is being assigned and, if the app role functions as an application permission, during  consent experiences.
 - `display_name` (String) Display name for the permission that appears in the app role assignment and consent experiences.
-- `id` (String) Unique role identifier inside the appRoles collection. When creating a new app role, a new GUID identifier must be provided.
 - `is_enabled` (Boolean) When creating or updating an app role, this must be set to true (which is the default). To delete a role, this must first be set to false.  At that point, in a subsequent call, this role may be removed.
 - `origin` (String) Specifies if the app role is defined on the application object or on the servicePrincipal entity. Must not be included in any POST or PATCH requests. Read-only.
 - `value` (String) Specifies the value to include in the roles claim in ID tokens and access tokens authenticating an assigned user or service principal. Must not exceed 120 characters in length. Allowed characters are : ! # $ % & ' ( ) * + , - . / : ;  =  ? @ [ ] ^ + _  {  } ~, and characters in the ranges 0-9, A-Z and a-z. Any other character, including the space character, aren't allowed. May not begin with ..
@@ -112,9 +118,9 @@ Read-Only:
 Read-Only:
 
 - `custom_key_identifier` (String) A 40-character binary type that can be used to identify the credential. Optional. When not provided in the payload, defaults to the thumbprint of the certificate.
-- `display_name` (String) Friendly name for the key. Optional.
+- `display_name` (String) The friendly name for the key, with a maximum length of 90 characters. Longer values are accepted but shortened. Optional.
 - `end_date_time` (String) The date and time at which the credential expires. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
-- `key` (String) The certificate's raw data in byte array converted to Base64 string. Returned only on $select for a single object, that is, GET applications/{applicationId}?$select=keyCredentials or GET servicePrincipals/{servicePrincipalId}?$select=keyCredentials; otherwise, it is always null.  From a .cer certificate, you can read the key using the Convert.ToBase64String() method. For more information, see Get the certificate key.
+- `key` (String) The certificate's raw data in byte array converted to Base64 string. Returned only on $select for a single object, that is, GET applications/{applicationId}?$select=keyCredentials or GET servicePrincipals/{servicePrincipalId}?$select=keyCredentials; otherwise, it's always null.  From a .cer certificate, you can read the key using the Convert.ToBase64String() method. For more information, see Get the certificate key.
 - `key_id` (String) The unique identifier (GUID) for the key.
 - `start_date_time` (String) The date and time at which the credential becomes valid.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
 - `type` (String) The type of key credential; for example, Symmetric, AsymmetricX509Cert.
@@ -124,11 +130,14 @@ Read-Only:
 <a id="nestedatt--oauth_2_permission_scopes"></a>
 ### Nested Schema for `oauth_2_permission_scopes`
 
+Optional:
+
+- `id` (String) Unique delegated permission identifier inside the collection of delegated permissions defined for a resource application.
+
 Read-Only:
 
 - `admin_consent_description` (String) A description of the delegated permissions, intended to be read by an administrator granting the permission on behalf of all users. This text appears in tenant-wide admin consent experiences.
 - `admin_consent_display_name` (String) The permission's title, intended to be read by an administrator granting the permission on behalf of all users.
-- `id` (String) Unique delegated permission identifier inside the collection of delegated permissions defined for a resource application.
 - `is_enabled` (Boolean) When you create or update a permission, this property must be set to true (which is the default). To delete a permission, this property must first be set to false.  At that point, in a subsequent call, the permission may be removed.
 - `origin` (String)
 - `type` (String) The possible values are: User and Admin. Specifies whether this delegated permission should be considered safe for non-admin users to consent to on behalf of themselves, or whether an administrator consent should always be required. While Microsoft Graph defines the default consent requirement for each permission, the tenant administrator may override the behavior in their organization (by allowing, restricting, or limiting user consent to this delegated permission). For more information, see Configure how users consent to applications.
@@ -154,11 +163,14 @@ Read-Only:
 <a id="nestedatt--resource_specific_application_permissions"></a>
 ### Nested Schema for `resource_specific_application_permissions`
 
+Optional:
+
+- `id` (String) The unique identifier for the resource-specific application permission.
+
 Read-Only:
 
 - `description` (String) Describes the level of access that the resource-specific permission represents.
 - `display_name` (String) The display name for the resource-specific permission.
-- `id` (String) The unique identifier for the resource-specific application permission.
 - `is_enabled` (Boolean) Indicates whether the permission is enabled.
 - `value` (String) The value of the permission.
 

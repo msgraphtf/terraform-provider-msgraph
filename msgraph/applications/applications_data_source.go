@@ -2,10 +2,11 @@ package applications
 
 import (
 	"context"
-
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/applications"
@@ -59,16 +60,16 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							Computed:    true,
 						},
 						"add_ins": schema.ListNestedAttribute{
-							Description: "Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams may set the addIns property for its 'FileHandler' functionality. This will let services like Office 365 call the application in the context of a document the user is working on.",
+							Description: "Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams can set the addIns property for its 'FileHandler' functionality. This lets services like Microsoft 365 call the application in the context of a document the user is working on.",
 							Computed:    true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"id": schema.StringAttribute{
-										Description: "",
+										Description: "The unique identifier for the addIn object.",
 										Computed:    true,
 									},
 									"properties": schema.ListNestedAttribute{
-										Description: "",
+										Description: "The collection of key-value pairs that define parameters that the consuming service can use or call. You must specify this property when performing a POST or a PATCH operation on the addIns collection. Required.",
 										Computed:    true,
 										NestedObject: schema.NestedAttributeObject{
 											Attributes: map[string]schema.Attribute{
@@ -84,7 +85,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 										},
 									},
 									"type": schema.StringAttribute{
-										Description: "",
+										Description: "The unique name for the functionality exposed by the app.",
 										Computed:    true,
 									},
 								},
@@ -164,10 +165,6 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 										},
 									},
 								},
-								"requested_access_token_version": schema.Int64Attribute{
-									Description: "Specifies the access token version expected by this resource. This changes the version and format of the JWT produced independent of the endpoint or client used to request the access token.  The endpoint used, v1.0 or v2.0, is chosen by the client and only impacts the version of id_tokens. Resources need to explicitly configure requestedAccessTokenVersion to indicate the supported access token format.  Possible values for requestedAccessTokenVersion are 1, 2, or null. If the value is null, this defaults to 1, which corresponds to the v1.0 endpoint.  If signInAudience on the application is configured as AzureADandPersonalMicrosoftAccount or PersonalMicrosoftAccount, the value for this property must be 2.",
-									Computed:    true,
-								},
 							},
 						},
 						"app_id": schema.StringAttribute{
@@ -212,7 +209,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							},
 						},
 						"application_template_id": schema.StringAttribute{
-							Description: "Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne).",
+							Description: "Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne). Read-only. null if the app wasn't created from an application template.",
 							Computed:    true,
 						},
 						"certification": schema.SingleNestedAttribute{
@@ -250,11 +247,11 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							Computed:    true,
 						},
 						"description": schema.StringAttribute{
-							Description: "Free text field to provide a description of the application object to end users. The maximum allowed size is 1024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
+							Description: "Free text field to provide a description of the application object to end users. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 							Computed:    true,
 						},
 						"disabled_by_microsoft_status": schema.StringAttribute{
-							Description: "Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons may include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).",
+							Description: "Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).",
 							Computed:    true,
 						},
 						"display_name": schema.StringAttribute{
@@ -266,7 +263,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							Computed:    true,
 						},
 						"identifier_uris": schema.ListAttribute{
-							Description: "Also known as App ID URI, this value is set when an application is used as a resource app. The identifierUris acts as the prefix for the scopes you'll reference in your API's code, and it must be globally unique. You can use the default value provided, which is in the form api://<application-client-id>, or specify a more readable URI like https://contoso.com/api. For more information on valid identifierUris patterns and best practices, see Microsoft Entra application registration security best practices. Not nullable. Supports $filter (eq, ne, ge, le, startsWith).",
+							Description: "Also known as App ID URI, this value is set when an application is used as a resource app. The identifierUris acts as the prefix for the scopes you reference in your API's code, and it must be globally unique. You can use the default value provided, which is in the form api://<appId>, or specify a more readable URI like https://contoso.com/api. For more information on valid identifierUris patterns and best practices, see Microsoft Entra application registration security best practices. Not nullable. Supports $filter (eq, ne, ge, le, startsWith).",
 							Computed:    true,
 							ElementType: types.StringType,
 						},
@@ -301,7 +298,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							Computed:    true,
 						},
 						"is_fallback_public_client": schema.BoolAttribute{
-							Description: "Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false which means the fallback application type is confidential client such as a web app. There are certain scenarios where Microsoft Entra ID cannot determine the client application type. For example, the ROPC flow where it is configured without specifying a redirect URI. In those cases Microsoft Entra ID interprets the application type based on the value of this property.",
+							Description: "Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false, which means the fallback application type is confidential client such as a web app. There are certain scenarios where Microsoft Entra ID can't determine the client application type. For example, the ROPC flow where it's configured without specifying a redirect URI. In those cases, Microsoft Entra ID interprets the application type based on the value of this property.",
 							Computed:    true,
 						},
 						"key_credentials": schema.ListNestedAttribute{
@@ -314,7 +311,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 										Computed:    true,
 									},
 									"display_name": schema.StringAttribute{
-										Description: "Friendly name for the key. Optional.",
+										Description: "The friendly name for the key, with a maximum length of 90 characters. Longer values are accepted but shortened. Optional.",
 										Computed:    true,
 									},
 									"end_date_time": schema.StringAttribute{
@@ -322,7 +319,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 										Computed:    true,
 									},
 									"key": schema.StringAttribute{
-										Description: "The certificate's raw data in byte array converted to Base64 string. Returned only on $select for a single object, that is, GET applications/{applicationId}?$select=keyCredentials or GET servicePrincipals/{servicePrincipalId}?$select=keyCredentials; otherwise, it is always null.  From a .cer certificate, you can read the key using the Convert.ToBase64String() method. For more information, see Get the certificate key.",
+										Description: "The certificate's raw data in byte array converted to Base64 string. Returned only on $select for a single object, that is, GET applications/{applicationId}?$select=keyCredentials or GET servicePrincipals/{servicePrincipalId}?$select=keyCredentials; otherwise, it's always null.  From a .cer certificate, you can read the key using the Convert.ToBase64String() method. For more information, see Get the certificate key.",
 										Computed:    true,
 									},
 									"key_id": schema.StringAttribute{
@@ -346,6 +343,10 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 						},
 						"logo": schema.StringAttribute{
 							Description: "The main logo for the application. Not nullable.",
+							Computed:    true,
+						},
+						"native_authentication_apis_enabled": schema.StringAttribute{
+							Description: "Specifies whether the Native Authentication APIs are enabled for the application. The possible values are: none and all. Default is none. For more information, see Native Authentication.",
 							Computed:    true,
 						},
 						"notes": schema.StringAttribute{
@@ -493,7 +494,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							Computed:    true,
 							Attributes: map[string]schema.Attribute{
 								"redirect_uris": schema.ListAttribute{
-									Description: "Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.",
+									Description: "Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent. For iOS and macOS apps, specify the value following the syntax msauth.{BUNDLEID}://auth, replacing '{BUNDLEID}'. For example, if the bundle ID is com.microsoft.identitysample.MSALiOS, the URI is msauth.com.microsoft.identitysample.MSALiOS://auth.",
 									Computed:    true,
 									ElementType: types.StringType,
 								},
@@ -554,7 +555,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							Computed:    true,
 						},
 						"service_principal_lock_configuration": schema.SingleNestedAttribute{
-							Description: "Specifies whether sensitive properties of a multi-tenant application should be locked for editing after the application is provisioned in a tenant. Nullable. null by default.",
+							Description: "Specifies whether sensitive properties of a multitenant application should be locked for editing after the application is provisioned in a tenant. Nullable. null by default.",
 							Computed:    true,
 							Attributes: map[string]schema.Attribute{
 								"all_properties": schema.BoolAttribute{
@@ -580,7 +581,7 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							},
 						},
 						"sign_in_audience": schema.StringAttribute{
-							Description: "Specifies the Microsoft accounts that are supported for the current application. The possible values are: AzureADMyOrg, AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount (default), and PersonalMicrosoftAccount. See more in the table. The value of this object also limits the number of permissions an app can request. For more information, see Limits on requested permissions per app. The value for this property has implications on other app object properties. As a result, if you change this property, you may need to change other properties first. For more information, see Validation differences for signInAudience.Supports $filter (eq, ne, not).",
+							Description: "Specifies the Microsoft accounts that are supported for the current application. The possible values are: AzureADMyOrg (default), AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount, and PersonalMicrosoftAccount. See more in the table. The value of this object also limits the number of permissions an app can request. For more information, see Limits on requested permissions per app. The value for this property has implications on other app object properties. As a result, if you change this property, you might need to change other properties first. For more information, see Validation differences for signInAudience.Supports $filter (eq, ne, not).",
 							Computed:    true,
 						},
 						"spa": schema.SingleNestedAttribute{
@@ -601,6 +602,10 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 						},
 						"token_encryption_key_id": schema.StringAttribute{
 							Description: "Specifies the keyId of a public key from the keyCredentials collection. When configured, Microsoft Entra ID encrypts all the tokens it emits by using the key this property points to. The application code that receives the encrypted token must use the matching private key to decrypt the token before it can be used for the signed-in user.",
+							Computed:    true,
+						},
+						"unique_name": schema.StringAttribute{
+							Description: "The unique identifier that can be assigned to an application and used as an alternate key. Immutable. Read-only.",
 							Computed:    true,
 						},
 						"verified_publisher": schema.SingleNestedAttribute{
@@ -652,10 +657,6 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 									Computed:    true,
 									NestedObject: schema.NestedAttributeObject{
 										Attributes: map[string]schema.Attribute{
-											"index": schema.Int64Attribute{
-												Description: "",
-												Computed:    true,
-											},
 											"uri": schema.StringAttribute{
 												Description: "",
 												Computed:    true,
@@ -688,53 +689,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 	qparams := applications.ApplicationsRequestBuilderGetRequestConfiguration{
 		QueryParameters: &applications.ApplicationsRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
-				"addIns",
-				"api",
-				"appId",
-				"applicationTemplateId",
-				"appRoles",
-				"certification",
-				"createdDateTime",
-				"defaultRedirectUri",
-				"description",
-				"disabledByMicrosoftStatus",
-				"displayName",
-				"groupMembershipClaims",
-				"identifierUris",
-				"info",
-				"isDeviceOnlyAuthSupported",
-				"isFallbackPublicClient",
-				"keyCredentials",
-				"logo",
-				"notes",
-				"oauth2RequirePostResponse",
-				"optionalClaims",
-				"parentalControlSettings",
-				"passwordCredentials",
-				"publicClient",
-				"publisherDomain",
-				"requestSignatureVerification",
-				"requiredResourceAccess",
-				"samlMetadataUrl",
-				"serviceManagementReference",
-				"servicePrincipalLockConfiguration",
-				"signInAudience",
-				"spa",
-				"tags",
-				"tokenEncryptionKeyId",
-				"verifiedPublisher",
-				"web",
-				"appManagementPolicies",
-				"createdOnBehalfOf",
-				"extensionProperties",
-				"federatedIdentityCredentials",
-				"homeRealmDiscoveryPolicies",
-				"owners",
-				"tokenIssuancePolicies",
-				"tokenLifetimePolicies",
-				"synchronization",
+				"value",
 			},
 		},
 	}
@@ -749,447 +704,829 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 		return
 	}
 
-	for _, v := range result.GetValue() {
-		value := new(applicationsValueModel)
-
-		if v.GetId() != nil {
-			value.Id = types.StringValue(*v.GetId())
-		}
-		if v.GetDeletedDateTime() != nil {
-			value.DeletedDateTime = types.StringValue(v.GetDeletedDateTime().String())
-		}
-		for _, v := range v.GetAddIns() {
-			addIns := new(applicationsAddInsModel)
+	if len(result.GetValue()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetValue() {
+			value := new(applicationsApplicationModel)
 
 			if v.GetId() != nil {
-				addIns.Id = types.StringValue(v.GetId().String())
+				value.Id = types.StringValue(*v.GetId())
+			} else {
+				value.Id = types.StringNull()
 			}
-			for _, v := range v.GetProperties() {
-				properties := new(applicationsPropertiesModel)
+			if v.GetDeletedDateTime() != nil {
+				value.DeletedDateTime = types.StringValue(v.GetDeletedDateTime().String())
+			} else {
+				value.DeletedDateTime = types.StringNull()
+			}
+			if len(v.GetAddIns()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetAddIns() {
+					addIns := new(applicationsAddInModel)
 
-				if v.GetKey() != nil {
-					properties.Key = types.StringValue(*v.GetKey())
-				}
-				if v.GetValue() != nil {
-					properties.Value = types.StringValue(*v.GetValue())
-				}
-				addIns.Properties = append(addIns.Properties, *properties)
-			}
-			if v.GetTypeEscaped() != nil {
-				addIns.Type = types.StringValue(*v.GetTypeEscaped())
-			}
-			value.AddIns = append(value.AddIns, *addIns)
-		}
-		if v.GetApi() != nil {
-			value.Api = new(applicationsApiModel)
+					if v.GetId() != nil {
+						addIns.Id = types.StringValue(v.GetId().String())
+					} else {
+						addIns.Id = types.StringNull()
+					}
+					if len(v.GetProperties()) > 0 {
+						objectValues := []basetypes.ObjectValue{}
+						for _, v := range v.GetProperties() {
+							properties := new(applicationsKeyValueModel)
 
-			if v.GetApi().GetAcceptMappedClaims() != nil {
-				value.Api.AcceptMappedClaims = types.BoolValue(*v.GetApi().GetAcceptMappedClaims())
+							if v.GetKey() != nil {
+								properties.Key = types.StringValue(*v.GetKey())
+							} else {
+								properties.Key = types.StringNull()
+							}
+							if v.GetValue() != nil {
+								properties.Value = types.StringValue(*v.GetValue())
+							} else {
+								properties.Value = types.StringNull()
+							}
+							objectValue, _ := types.ObjectValueFrom(ctx, properties.AttributeTypes(), properties)
+							objectValues = append(objectValues, objectValue)
+						}
+						addIns.Properties, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+					}
+					if v.GetTypeEscaped() != nil {
+						addIns.Type = types.StringValue(*v.GetTypeEscaped())
+					} else {
+						addIns.Type = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, addIns.AttributeTypes(), addIns)
+					objectValues = append(objectValues, objectValue)
+				}
+				value.AddIns, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
-			for _, v := range v.GetApi().GetKnownClientApplications() {
-				value.Api.KnownClientApplications = append(value.Api.KnownClientApplications, types.StringValue(v.String()))
-			}
-			for _, v := range v.GetApi().GetOauth2PermissionScopes() {
-				oauth2PermissionScopes := new(applicationsOauth2PermissionScopesModel)
+			if v.GetApi() != nil {
+				api := new(applicationsApiApplicationModel)
 
-				if v.GetAdminConsentDescription() != nil {
-					oauth2PermissionScopes.AdminConsentDescription = types.StringValue(*v.GetAdminConsentDescription())
+				if v.GetApi().GetAcceptMappedClaims() != nil {
+					api.AcceptMappedClaims = types.BoolValue(*v.GetApi().GetAcceptMappedClaims())
+				} else {
+					api.AcceptMappedClaims = types.BoolNull()
 				}
-				if v.GetAdminConsentDisplayName() != nil {
-					oauth2PermissionScopes.AdminConsentDisplayName = types.StringValue(*v.GetAdminConsentDisplayName())
+				if len(v.GetApi().GetKnownClientApplications()) > 0 {
+					var knownClientApplications []attr.Value
+					for _, v := range v.GetApi().GetKnownClientApplications() {
+						knownClientApplications = append(knownClientApplications, types.StringValue(v.String()))
+					}
+					listValue, _ := types.ListValue(types.StringType, knownClientApplications)
+					api.KnownClientApplications = listValue
+				} else {
+					api.KnownClientApplications = types.ListNull(types.StringType)
 				}
-				if v.GetId() != nil {
-					oauth2PermissionScopes.Id = types.StringValue(v.GetId().String())
-				}
-				if v.GetIsEnabled() != nil {
-					oauth2PermissionScopes.IsEnabled = types.BoolValue(*v.GetIsEnabled())
-				}
-				if v.GetOrigin() != nil {
-					oauth2PermissionScopes.Origin = types.StringValue(*v.GetOrigin())
-				}
-				if v.GetTypeEscaped() != nil {
-					oauth2PermissionScopes.Type = types.StringValue(*v.GetTypeEscaped())
-				}
-				if v.GetUserConsentDescription() != nil {
-					oauth2PermissionScopes.UserConsentDescription = types.StringValue(*v.GetUserConsentDescription())
-				}
-				if v.GetUserConsentDisplayName() != nil {
-					oauth2PermissionScopes.UserConsentDisplayName = types.StringValue(*v.GetUserConsentDisplayName())
-				}
-				if v.GetValue() != nil {
-					oauth2PermissionScopes.Value = types.StringValue(*v.GetValue())
-				}
-				value.Api.Oauth2PermissionScopes = append(value.Api.Oauth2PermissionScopes, *oauth2PermissionScopes)
-			}
-			for _, v := range v.GetApi().GetPreAuthorizedApplications() {
-				preAuthorizedApplications := new(applicationsPreAuthorizedApplicationsModel)
+				if len(v.GetApi().GetOauth2PermissionScopes()) > 0 {
+					objectValues := []basetypes.ObjectValue{}
+					for _, v := range v.GetApi().GetOauth2PermissionScopes() {
+						oauth2PermissionScopes := new(applicationsPermissionScopeModel)
 
-				if v.GetAppId() != nil {
-					preAuthorizedApplications.AppId = types.StringValue(*v.GetAppId())
+						if v.GetAdminConsentDescription() != nil {
+							oauth2PermissionScopes.AdminConsentDescription = types.StringValue(*v.GetAdminConsentDescription())
+						} else {
+							oauth2PermissionScopes.AdminConsentDescription = types.StringNull()
+						}
+						if v.GetAdminConsentDisplayName() != nil {
+							oauth2PermissionScopes.AdminConsentDisplayName = types.StringValue(*v.GetAdminConsentDisplayName())
+						} else {
+							oauth2PermissionScopes.AdminConsentDisplayName = types.StringNull()
+						}
+						if v.GetId() != nil {
+							oauth2PermissionScopes.Id = types.StringValue(v.GetId().String())
+						} else {
+							oauth2PermissionScopes.Id = types.StringNull()
+						}
+						if v.GetIsEnabled() != nil {
+							oauth2PermissionScopes.IsEnabled = types.BoolValue(*v.GetIsEnabled())
+						} else {
+							oauth2PermissionScopes.IsEnabled = types.BoolNull()
+						}
+						if v.GetOrigin() != nil {
+							oauth2PermissionScopes.Origin = types.StringValue(*v.GetOrigin())
+						} else {
+							oauth2PermissionScopes.Origin = types.StringNull()
+						}
+						if v.GetTypeEscaped() != nil {
+							oauth2PermissionScopes.Type = types.StringValue(*v.GetTypeEscaped())
+						} else {
+							oauth2PermissionScopes.Type = types.StringNull()
+						}
+						if v.GetUserConsentDescription() != nil {
+							oauth2PermissionScopes.UserConsentDescription = types.StringValue(*v.GetUserConsentDescription())
+						} else {
+							oauth2PermissionScopes.UserConsentDescription = types.StringNull()
+						}
+						if v.GetUserConsentDisplayName() != nil {
+							oauth2PermissionScopes.UserConsentDisplayName = types.StringValue(*v.GetUserConsentDisplayName())
+						} else {
+							oauth2PermissionScopes.UserConsentDisplayName = types.StringNull()
+						}
+						if v.GetValue() != nil {
+							oauth2PermissionScopes.Value = types.StringValue(*v.GetValue())
+						} else {
+							oauth2PermissionScopes.Value = types.StringNull()
+						}
+						objectValue, _ := types.ObjectValueFrom(ctx, oauth2PermissionScopes.AttributeTypes(), oauth2PermissionScopes)
+						objectValues = append(objectValues, objectValue)
+					}
+					api.Oauth2PermissionScopes, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 				}
-				for _, v := range v.GetDelegatedPermissionIds() {
-					preAuthorizedApplications.DelegatedPermissionIds = append(preAuthorizedApplications.DelegatedPermissionIds, types.StringValue(v))
-				}
-				value.Api.PreAuthorizedApplications = append(value.Api.PreAuthorizedApplications, *preAuthorizedApplications)
-			}
-			if v.GetApi().GetRequestedAccessTokenVersion() != nil {
-				value.Api.RequestedAccessTokenVersion = types.Int64Value(int64(*v.GetApi().GetRequestedAccessTokenVersion()))
-			}
-		}
-		if v.GetAppId() != nil {
-			value.AppId = types.StringValue(*v.GetAppId())
-		}
-		for _, v := range v.GetAppRoles() {
-			appRoles := new(applicationsAppRolesModel)
+				if len(v.GetApi().GetPreAuthorizedApplications()) > 0 {
+					objectValues := []basetypes.ObjectValue{}
+					for _, v := range v.GetApi().GetPreAuthorizedApplications() {
+						preAuthorizedApplications := new(applicationsPreAuthorizedApplicationModel)
 
-			for _, v := range v.GetAllowedMemberTypes() {
-				appRoles.AllowedMemberTypes = append(appRoles.AllowedMemberTypes, types.StringValue(v))
+						if v.GetAppId() != nil {
+							preAuthorizedApplications.AppId = types.StringValue(*v.GetAppId())
+						} else {
+							preAuthorizedApplications.AppId = types.StringNull()
+						}
+						if len(v.GetDelegatedPermissionIds()) > 0 {
+							var delegatedPermissionIds []attr.Value
+							for _, v := range v.GetDelegatedPermissionIds() {
+								delegatedPermissionIds = append(delegatedPermissionIds, types.StringValue(v))
+							}
+							listValue, _ := types.ListValue(types.StringType, delegatedPermissionIds)
+							preAuthorizedApplications.DelegatedPermissionIds = listValue
+						} else {
+							preAuthorizedApplications.DelegatedPermissionIds = types.ListNull(types.StringType)
+						}
+						objectValue, _ := types.ObjectValueFrom(ctx, preAuthorizedApplications.AttributeTypes(), preAuthorizedApplications)
+						objectValues = append(objectValues, objectValue)
+					}
+					api.PreAuthorizedApplications, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, api.AttributeTypes(), api)
+				value.Api = objectValue
+			}
+			if v.GetAppId() != nil {
+				value.AppId = types.StringValue(*v.GetAppId())
+			} else {
+				value.AppId = types.StringNull()
+			}
+			if len(v.GetAppRoles()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetAppRoles() {
+					appRoles := new(applicationsAppRoleModel)
+
+					if len(v.GetAllowedMemberTypes()) > 0 {
+						var allowedMemberTypes []attr.Value
+						for _, v := range v.GetAllowedMemberTypes() {
+							allowedMemberTypes = append(allowedMemberTypes, types.StringValue(v))
+						}
+						listValue, _ := types.ListValue(types.StringType, allowedMemberTypes)
+						appRoles.AllowedMemberTypes = listValue
+					} else {
+						appRoles.AllowedMemberTypes = types.ListNull(types.StringType)
+					}
+					if v.GetDescription() != nil {
+						appRoles.Description = types.StringValue(*v.GetDescription())
+					} else {
+						appRoles.Description = types.StringNull()
+					}
+					if v.GetDisplayName() != nil {
+						appRoles.DisplayName = types.StringValue(*v.GetDisplayName())
+					} else {
+						appRoles.DisplayName = types.StringNull()
+					}
+					if v.GetId() != nil {
+						appRoles.Id = types.StringValue(v.GetId().String())
+					} else {
+						appRoles.Id = types.StringNull()
+					}
+					if v.GetIsEnabled() != nil {
+						appRoles.IsEnabled = types.BoolValue(*v.GetIsEnabled())
+					} else {
+						appRoles.IsEnabled = types.BoolNull()
+					}
+					if v.GetOrigin() != nil {
+						appRoles.Origin = types.StringValue(*v.GetOrigin())
+					} else {
+						appRoles.Origin = types.StringNull()
+					}
+					if v.GetValue() != nil {
+						appRoles.Value = types.StringValue(*v.GetValue())
+					} else {
+						appRoles.Value = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, appRoles.AttributeTypes(), appRoles)
+					objectValues = append(objectValues, objectValue)
+				}
+				value.AppRoles, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+			}
+			if v.GetApplicationTemplateId() != nil {
+				value.ApplicationTemplateId = types.StringValue(*v.GetApplicationTemplateId())
+			} else {
+				value.ApplicationTemplateId = types.StringNull()
+			}
+			if v.GetCertification() != nil {
+				certification := new(applicationsCertificationModel)
+
+				if v.GetCertification().GetCertificationDetailsUrl() != nil {
+					certification.CertificationDetailsUrl = types.StringValue(*v.GetCertification().GetCertificationDetailsUrl())
+				} else {
+					certification.CertificationDetailsUrl = types.StringNull()
+				}
+				if v.GetCertification().GetCertificationExpirationDateTime() != nil {
+					certification.CertificationExpirationDateTime = types.StringValue(v.GetCertification().GetCertificationExpirationDateTime().String())
+				} else {
+					certification.CertificationExpirationDateTime = types.StringNull()
+				}
+				if v.GetCertification().GetIsCertifiedByMicrosoft() != nil {
+					certification.IsCertifiedByMicrosoft = types.BoolValue(*v.GetCertification().GetIsCertifiedByMicrosoft())
+				} else {
+					certification.IsCertifiedByMicrosoft = types.BoolNull()
+				}
+				if v.GetCertification().GetIsPublisherAttested() != nil {
+					certification.IsPublisherAttested = types.BoolValue(*v.GetCertification().GetIsPublisherAttested())
+				} else {
+					certification.IsPublisherAttested = types.BoolNull()
+				}
+				if v.GetCertification().GetLastCertificationDateTime() != nil {
+					certification.LastCertificationDateTime = types.StringValue(v.GetCertification().GetLastCertificationDateTime().String())
+				} else {
+					certification.LastCertificationDateTime = types.StringNull()
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, certification.AttributeTypes(), certification)
+				value.Certification = objectValue
+			}
+			if v.GetCreatedDateTime() != nil {
+				value.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+			} else {
+				value.CreatedDateTime = types.StringNull()
+			}
+			if v.GetDefaultRedirectUri() != nil {
+				value.DefaultRedirectUri = types.StringValue(*v.GetDefaultRedirectUri())
+			} else {
+				value.DefaultRedirectUri = types.StringNull()
 			}
 			if v.GetDescription() != nil {
-				appRoles.Description = types.StringValue(*v.GetDescription())
+				value.Description = types.StringValue(*v.GetDescription())
+			} else {
+				value.Description = types.StringNull()
+			}
+			if v.GetDisabledByMicrosoftStatus() != nil {
+				value.DisabledByMicrosoftStatus = types.StringValue(*v.GetDisabledByMicrosoftStatus())
+			} else {
+				value.DisabledByMicrosoftStatus = types.StringNull()
 			}
 			if v.GetDisplayName() != nil {
-				appRoles.DisplayName = types.StringValue(*v.GetDisplayName())
+				value.DisplayName = types.StringValue(*v.GetDisplayName())
+			} else {
+				value.DisplayName = types.StringNull()
 			}
-			if v.GetId() != nil {
-				appRoles.Id = types.StringValue(v.GetId().String())
+			if v.GetGroupMembershipClaims() != nil {
+				value.GroupMembershipClaims = types.StringValue(*v.GetGroupMembershipClaims())
+			} else {
+				value.GroupMembershipClaims = types.StringNull()
 			}
-			if v.GetIsEnabled() != nil {
-				appRoles.IsEnabled = types.BoolValue(*v.GetIsEnabled())
-			}
-			if v.GetOrigin() != nil {
-				appRoles.Origin = types.StringValue(*v.GetOrigin())
-			}
-			if v.GetValue() != nil {
-				appRoles.Value = types.StringValue(*v.GetValue())
-			}
-			value.AppRoles = append(value.AppRoles, *appRoles)
-		}
-		if v.GetApplicationTemplateId() != nil {
-			value.ApplicationTemplateId = types.StringValue(*v.GetApplicationTemplateId())
-		}
-		if v.GetCertification() != nil {
-			value.Certification = new(applicationsCertificationModel)
-
-			if v.GetCertification().GetCertificationDetailsUrl() != nil {
-				value.Certification.CertificationDetailsUrl = types.StringValue(*v.GetCertification().GetCertificationDetailsUrl())
-			}
-			if v.GetCertification().GetCertificationExpirationDateTime() != nil {
-				value.Certification.CertificationExpirationDateTime = types.StringValue(v.GetCertification().GetCertificationExpirationDateTime().String())
-			}
-			if v.GetCertification().GetIsCertifiedByMicrosoft() != nil {
-				value.Certification.IsCertifiedByMicrosoft = types.BoolValue(*v.GetCertification().GetIsCertifiedByMicrosoft())
-			}
-			if v.GetCertification().GetIsPublisherAttested() != nil {
-				value.Certification.IsPublisherAttested = types.BoolValue(*v.GetCertification().GetIsPublisherAttested())
-			}
-			if v.GetCertification().GetLastCertificationDateTime() != nil {
-				value.Certification.LastCertificationDateTime = types.StringValue(v.GetCertification().GetLastCertificationDateTime().String())
-			}
-		}
-		if v.GetCreatedDateTime() != nil {
-			value.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
-		}
-		if v.GetDefaultRedirectUri() != nil {
-			value.DefaultRedirectUri = types.StringValue(*v.GetDefaultRedirectUri())
-		}
-		if v.GetDescription() != nil {
-			value.Description = types.StringValue(*v.GetDescription())
-		}
-		if v.GetDisabledByMicrosoftStatus() != nil {
-			value.DisabledByMicrosoftStatus = types.StringValue(*v.GetDisabledByMicrosoftStatus())
-		}
-		if v.GetDisplayName() != nil {
-			value.DisplayName = types.StringValue(*v.GetDisplayName())
-		}
-		if v.GetGroupMembershipClaims() != nil {
-			value.GroupMembershipClaims = types.StringValue(*v.GetGroupMembershipClaims())
-		}
-		for _, v := range v.GetIdentifierUris() {
-			value.IdentifierUris = append(value.IdentifierUris, types.StringValue(v))
-		}
-		if v.GetInfo() != nil {
-			value.Info = new(applicationsInfoModel)
-
-			if v.GetInfo().GetLogoUrl() != nil {
-				value.Info.LogoUrl = types.StringValue(*v.GetInfo().GetLogoUrl())
-			}
-			if v.GetInfo().GetMarketingUrl() != nil {
-				value.Info.MarketingUrl = types.StringValue(*v.GetInfo().GetMarketingUrl())
-			}
-			if v.GetInfo().GetPrivacyStatementUrl() != nil {
-				value.Info.PrivacyStatementUrl = types.StringValue(*v.GetInfo().GetPrivacyStatementUrl())
-			}
-			if v.GetInfo().GetSupportUrl() != nil {
-				value.Info.SupportUrl = types.StringValue(*v.GetInfo().GetSupportUrl())
-			}
-			if v.GetInfo().GetTermsOfServiceUrl() != nil {
-				value.Info.TermsOfServiceUrl = types.StringValue(*v.GetInfo().GetTermsOfServiceUrl())
-			}
-		}
-		if v.GetIsDeviceOnlyAuthSupported() != nil {
-			value.IsDeviceOnlyAuthSupported = types.BoolValue(*v.GetIsDeviceOnlyAuthSupported())
-		}
-		if v.GetIsFallbackPublicClient() != nil {
-			value.IsFallbackPublicClient = types.BoolValue(*v.GetIsFallbackPublicClient())
-		}
-		for _, v := range v.GetKeyCredentials() {
-			keyCredentials := new(applicationsKeyCredentialsModel)
-
-			if v.GetCustomKeyIdentifier() != nil {
-				keyCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
-			}
-			if v.GetDisplayName() != nil {
-				keyCredentials.DisplayName = types.StringValue(*v.GetDisplayName())
-			}
-			if v.GetEndDateTime() != nil {
-				keyCredentials.EndDateTime = types.StringValue(v.GetEndDateTime().String())
-			}
-			if v.GetKey() != nil {
-				keyCredentials.Key = types.StringValue(string(v.GetKey()[:]))
-			}
-			if v.GetKeyId() != nil {
-				keyCredentials.KeyId = types.StringValue(v.GetKeyId().String())
-			}
-			if v.GetStartDateTime() != nil {
-				keyCredentials.StartDateTime = types.StringValue(v.GetStartDateTime().String())
-			}
-			if v.GetTypeEscaped() != nil {
-				keyCredentials.Type = types.StringValue(*v.GetTypeEscaped())
-			}
-			if v.GetUsage() != nil {
-				keyCredentials.Usage = types.StringValue(*v.GetUsage())
-			}
-			value.KeyCredentials = append(value.KeyCredentials, *keyCredentials)
-		}
-		if v.GetLogo() != nil {
-			value.Logo = types.StringValue(string(v.GetLogo()[:]))
-		}
-		if v.GetNotes() != nil {
-			value.Notes = types.StringValue(*v.GetNotes())
-		}
-		if v.GetOauth2RequirePostResponse() != nil {
-			value.Oauth2RequirePostResponse = types.BoolValue(*v.GetOauth2RequirePostResponse())
-		}
-		if v.GetOptionalClaims() != nil {
-			value.OptionalClaims = new(applicationsOptionalClaimsModel)
-
-			for _, v := range v.GetOptionalClaims().GetAccessToken() {
-				accessToken := new(applicationsAccessTokenModel)
-
-				for _, v := range v.GetAdditionalProperties() {
-					accessToken.AdditionalProperties = append(accessToken.AdditionalProperties, types.StringValue(v))
+			if len(v.GetIdentifierUris()) > 0 {
+				var identifierUris []attr.Value
+				for _, v := range v.GetIdentifierUris() {
+					identifierUris = append(identifierUris, types.StringValue(v))
 				}
-				if v.GetEssential() != nil {
-					accessToken.Essential = types.BoolValue(*v.GetEssential())
-				}
-				if v.GetName() != nil {
-					accessToken.Name = types.StringValue(*v.GetName())
-				}
-				if v.GetSource() != nil {
-					accessToken.Source = types.StringValue(*v.GetSource())
-				}
-				value.OptionalClaims.AccessToken = append(value.OptionalClaims.AccessToken, *accessToken)
+				listValue, _ := types.ListValue(types.StringType, identifierUris)
+				value.IdentifierUris = listValue
+			} else {
+				value.IdentifierUris = types.ListNull(types.StringType)
 			}
-			for _, v := range v.GetOptionalClaims().GetIdToken() {
-				idToken := new(applicationsIdTokenModel)
+			if v.GetInfo() != nil {
+				info := new(applicationsInformationalUrlModel)
 
-				for _, v := range v.GetAdditionalProperties() {
-					idToken.AdditionalProperties = append(idToken.AdditionalProperties, types.StringValue(v))
+				if v.GetInfo().GetLogoUrl() != nil {
+					info.LogoUrl = types.StringValue(*v.GetInfo().GetLogoUrl())
+				} else {
+					info.LogoUrl = types.StringNull()
 				}
-				if v.GetEssential() != nil {
-					idToken.Essential = types.BoolValue(*v.GetEssential())
+				if v.GetInfo().GetMarketingUrl() != nil {
+					info.MarketingUrl = types.StringValue(*v.GetInfo().GetMarketingUrl())
+				} else {
+					info.MarketingUrl = types.StringNull()
 				}
-				if v.GetName() != nil {
-					idToken.Name = types.StringValue(*v.GetName())
+				if v.GetInfo().GetPrivacyStatementUrl() != nil {
+					info.PrivacyStatementUrl = types.StringValue(*v.GetInfo().GetPrivacyStatementUrl())
+				} else {
+					info.PrivacyStatementUrl = types.StringNull()
 				}
-				if v.GetSource() != nil {
-					idToken.Source = types.StringValue(*v.GetSource())
+				if v.GetInfo().GetSupportUrl() != nil {
+					info.SupportUrl = types.StringValue(*v.GetInfo().GetSupportUrl())
+				} else {
+					info.SupportUrl = types.StringNull()
 				}
-				value.OptionalClaims.IdToken = append(value.OptionalClaims.IdToken, *idToken)
-			}
-			for _, v := range v.GetOptionalClaims().GetSaml2Token() {
-				saml2Token := new(applicationsSaml2TokenModel)
+				if v.GetInfo().GetTermsOfServiceUrl() != nil {
+					info.TermsOfServiceUrl = types.StringValue(*v.GetInfo().GetTermsOfServiceUrl())
+				} else {
+					info.TermsOfServiceUrl = types.StringNull()
+				}
 
-				for _, v := range v.GetAdditionalProperties() {
-					saml2Token.AdditionalProperties = append(saml2Token.AdditionalProperties, types.StringValue(v))
+				objectValue, _ := types.ObjectValueFrom(ctx, info.AttributeTypes(), info)
+				value.Info = objectValue
+			}
+			if v.GetIsDeviceOnlyAuthSupported() != nil {
+				value.IsDeviceOnlyAuthSupported = types.BoolValue(*v.GetIsDeviceOnlyAuthSupported())
+			} else {
+				value.IsDeviceOnlyAuthSupported = types.BoolNull()
+			}
+			if v.GetIsFallbackPublicClient() != nil {
+				value.IsFallbackPublicClient = types.BoolValue(*v.GetIsFallbackPublicClient())
+			} else {
+				value.IsFallbackPublicClient = types.BoolNull()
+			}
+			if len(v.GetKeyCredentials()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetKeyCredentials() {
+					keyCredentials := new(applicationsKeyCredentialModel)
+
+					if v.GetCustomKeyIdentifier() != nil {
+						keyCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
+					} else {
+						keyCredentials.CustomKeyIdentifier = types.StringNull()
+					}
+					if v.GetDisplayName() != nil {
+						keyCredentials.DisplayName = types.StringValue(*v.GetDisplayName())
+					} else {
+						keyCredentials.DisplayName = types.StringNull()
+					}
+					if v.GetEndDateTime() != nil {
+						keyCredentials.EndDateTime = types.StringValue(v.GetEndDateTime().String())
+					} else {
+						keyCredentials.EndDateTime = types.StringNull()
+					}
+					if v.GetKey() != nil {
+						keyCredentials.Key = types.StringValue(string(v.GetKey()[:]))
+					} else {
+						keyCredentials.Key = types.StringNull()
+					}
+					if v.GetKeyId() != nil {
+						keyCredentials.KeyId = types.StringValue(v.GetKeyId().String())
+					} else {
+						keyCredentials.KeyId = types.StringNull()
+					}
+					if v.GetStartDateTime() != nil {
+						keyCredentials.StartDateTime = types.StringValue(v.GetStartDateTime().String())
+					} else {
+						keyCredentials.StartDateTime = types.StringNull()
+					}
+					if v.GetTypeEscaped() != nil {
+						keyCredentials.Type = types.StringValue(*v.GetTypeEscaped())
+					} else {
+						keyCredentials.Type = types.StringNull()
+					}
+					if v.GetUsage() != nil {
+						keyCredentials.Usage = types.StringValue(*v.GetUsage())
+					} else {
+						keyCredentials.Usage = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, keyCredentials.AttributeTypes(), keyCredentials)
+					objectValues = append(objectValues, objectValue)
 				}
-				if v.GetEssential() != nil {
-					saml2Token.Essential = types.BoolValue(*v.GetEssential())
+				value.KeyCredentials, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+			}
+			if v.GetLogo() != nil {
+				value.Logo = types.StringValue(string(v.GetLogo()[:]))
+			} else {
+				value.Logo = types.StringNull()
+			}
+			if v.GetNativeAuthenticationApisEnabled() != nil {
+				value.NativeAuthenticationApisEnabled = types.StringValue(v.GetNativeAuthenticationApisEnabled().String())
+			} else {
+				value.NativeAuthenticationApisEnabled = types.StringNull()
+			}
+			if v.GetNotes() != nil {
+				value.Notes = types.StringValue(*v.GetNotes())
+			} else {
+				value.Notes = types.StringNull()
+			}
+			if v.GetOauth2RequirePostResponse() != nil {
+				value.Oauth2RequirePostResponse = types.BoolValue(*v.GetOauth2RequirePostResponse())
+			} else {
+				value.Oauth2RequirePostResponse = types.BoolNull()
+			}
+			if v.GetOptionalClaims() != nil {
+				optionalClaims := new(applicationsOptionalClaimsModel)
+
+				if len(v.GetOptionalClaims().GetAccessToken()) > 0 {
+					objectValues := []basetypes.ObjectValue{}
+					for _, v := range v.GetOptionalClaims().GetAccessToken() {
+						accessToken := new(applicationsOptionalClaimModel)
+
+						if len(v.GetAdditionalProperties()) > 0 {
+							var additionalProperties []attr.Value
+							for _, v := range v.GetAdditionalProperties() {
+								additionalProperties = append(additionalProperties, types.StringValue(v))
+							}
+							listValue, _ := types.ListValue(types.StringType, additionalProperties)
+							accessToken.AdditionalProperties = listValue
+						} else {
+							accessToken.AdditionalProperties = types.ListNull(types.StringType)
+						}
+						if v.GetEssential() != nil {
+							accessToken.Essential = types.BoolValue(*v.GetEssential())
+						} else {
+							accessToken.Essential = types.BoolNull()
+						}
+						if v.GetName() != nil {
+							accessToken.Name = types.StringValue(*v.GetName())
+						} else {
+							accessToken.Name = types.StringNull()
+						}
+						if v.GetSource() != nil {
+							accessToken.Source = types.StringValue(*v.GetSource())
+						} else {
+							accessToken.Source = types.StringNull()
+						}
+						objectValue, _ := types.ObjectValueFrom(ctx, accessToken.AttributeTypes(), accessToken)
+						objectValues = append(objectValues, objectValue)
+					}
+					optionalClaims.AccessToken, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 				}
-				if v.GetName() != nil {
-					saml2Token.Name = types.StringValue(*v.GetName())
+				if len(v.GetOptionalClaims().GetIdToken()) > 0 {
+					objectValues := []basetypes.ObjectValue{}
+					for _, v := range v.GetOptionalClaims().GetIdToken() {
+						idToken := new(applicationsOptionalClaimModel)
+
+						if len(v.GetAdditionalProperties()) > 0 {
+							var additionalProperties []attr.Value
+							for _, v := range v.GetAdditionalProperties() {
+								additionalProperties = append(additionalProperties, types.StringValue(v))
+							}
+							listValue, _ := types.ListValue(types.StringType, additionalProperties)
+							idToken.AdditionalProperties = listValue
+						} else {
+							idToken.AdditionalProperties = types.ListNull(types.StringType)
+						}
+						if v.GetEssential() != nil {
+							idToken.Essential = types.BoolValue(*v.GetEssential())
+						} else {
+							idToken.Essential = types.BoolNull()
+						}
+						if v.GetName() != nil {
+							idToken.Name = types.StringValue(*v.GetName())
+						} else {
+							idToken.Name = types.StringNull()
+						}
+						if v.GetSource() != nil {
+							idToken.Source = types.StringValue(*v.GetSource())
+						} else {
+							idToken.Source = types.StringNull()
+						}
+						objectValue, _ := types.ObjectValueFrom(ctx, idToken.AttributeTypes(), idToken)
+						objectValues = append(objectValues, objectValue)
+					}
+					optionalClaims.IdToken, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 				}
-				if v.GetSource() != nil {
-					saml2Token.Source = types.StringValue(*v.GetSource())
+				if len(v.GetOptionalClaims().GetSaml2Token()) > 0 {
+					objectValues := []basetypes.ObjectValue{}
+					for _, v := range v.GetOptionalClaims().GetSaml2Token() {
+						saml2Token := new(applicationsOptionalClaimModel)
+
+						if len(v.GetAdditionalProperties()) > 0 {
+							var additionalProperties []attr.Value
+							for _, v := range v.GetAdditionalProperties() {
+								additionalProperties = append(additionalProperties, types.StringValue(v))
+							}
+							listValue, _ := types.ListValue(types.StringType, additionalProperties)
+							saml2Token.AdditionalProperties = listValue
+						} else {
+							saml2Token.AdditionalProperties = types.ListNull(types.StringType)
+						}
+						if v.GetEssential() != nil {
+							saml2Token.Essential = types.BoolValue(*v.GetEssential())
+						} else {
+							saml2Token.Essential = types.BoolNull()
+						}
+						if v.GetName() != nil {
+							saml2Token.Name = types.StringValue(*v.GetName())
+						} else {
+							saml2Token.Name = types.StringNull()
+						}
+						if v.GetSource() != nil {
+							saml2Token.Source = types.StringValue(*v.GetSource())
+						} else {
+							saml2Token.Source = types.StringNull()
+						}
+						objectValue, _ := types.ObjectValueFrom(ctx, saml2Token.AttributeTypes(), saml2Token)
+						objectValues = append(objectValues, objectValue)
+					}
+					optionalClaims.Saml2Token, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 				}
-				value.OptionalClaims.Saml2Token = append(value.OptionalClaims.Saml2Token, *saml2Token)
-			}
-		}
-		if v.GetParentalControlSettings() != nil {
-			value.ParentalControlSettings = new(applicationsParentalControlSettingsModel)
 
-			for _, v := range v.GetParentalControlSettings().GetCountriesBlockedForMinors() {
-				value.ParentalControlSettings.CountriesBlockedForMinors = append(value.ParentalControlSettings.CountriesBlockedForMinors, types.StringValue(v))
+				objectValue, _ := types.ObjectValueFrom(ctx, optionalClaims.AttributeTypes(), optionalClaims)
+				value.OptionalClaims = objectValue
 			}
-			if v.GetParentalControlSettings().GetLegalAgeGroupRule() != nil {
-				value.ParentalControlSettings.LegalAgeGroupRule = types.StringValue(*v.GetParentalControlSettings().GetLegalAgeGroupRule())
-			}
-		}
-		for _, v := range v.GetPasswordCredentials() {
-			passwordCredentials := new(applicationsPasswordCredentialsModel)
+			if v.GetParentalControlSettings() != nil {
+				parentalControlSettings := new(applicationsParentalControlSettingsModel)
 
-			if v.GetCustomKeyIdentifier() != nil {
-				passwordCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
-			}
-			if v.GetDisplayName() != nil {
-				passwordCredentials.DisplayName = types.StringValue(*v.GetDisplayName())
-			}
-			if v.GetEndDateTime() != nil {
-				passwordCredentials.EndDateTime = types.StringValue(v.GetEndDateTime().String())
-			}
-			if v.GetHint() != nil {
-				passwordCredentials.Hint = types.StringValue(*v.GetHint())
-			}
-			if v.GetKeyId() != nil {
-				passwordCredentials.KeyId = types.StringValue(v.GetKeyId().String())
-			}
-			if v.GetSecretText() != nil {
-				passwordCredentials.SecretText = types.StringValue(*v.GetSecretText())
-			}
-			if v.GetStartDateTime() != nil {
-				passwordCredentials.StartDateTime = types.StringValue(v.GetStartDateTime().String())
-			}
-			value.PasswordCredentials = append(value.PasswordCredentials, *passwordCredentials)
-		}
-		if v.GetPublicClient() != nil {
-			value.PublicClient = new(applicationsPublicClientModel)
-
-			for _, v := range v.GetPublicClient().GetRedirectUris() {
-				value.PublicClient.RedirectUris = append(value.PublicClient.RedirectUris, types.StringValue(v))
-			}
-		}
-		if v.GetPublisherDomain() != nil {
-			value.PublisherDomain = types.StringValue(*v.GetPublisherDomain())
-		}
-		if v.GetRequestSignatureVerification() != nil {
-			value.RequestSignatureVerification = new(applicationsRequestSignatureVerificationModel)
-
-			if v.GetRequestSignatureVerification().GetAllowedWeakAlgorithms() != nil {
-				value.RequestSignatureVerification.AllowedWeakAlgorithms = types.StringValue(v.GetRequestSignatureVerification().GetAllowedWeakAlgorithms().String())
-			}
-			if v.GetRequestSignatureVerification().GetIsSignedRequestRequired() != nil {
-				value.RequestSignatureVerification.IsSignedRequestRequired = types.BoolValue(*v.GetRequestSignatureVerification().GetIsSignedRequestRequired())
-			}
-		}
-		for _, v := range v.GetRequiredResourceAccess() {
-			requiredResourceAccess := new(applicationsRequiredResourceAccessModel)
-
-			for _, v := range v.GetResourceAccess() {
-				resourceAccess := new(applicationsResourceAccessModel)
-
-				if v.GetId() != nil {
-					resourceAccess.Id = types.StringValue(v.GetId().String())
+				if len(v.GetParentalControlSettings().GetCountriesBlockedForMinors()) > 0 {
+					var countriesBlockedForMinors []attr.Value
+					for _, v := range v.GetParentalControlSettings().GetCountriesBlockedForMinors() {
+						countriesBlockedForMinors = append(countriesBlockedForMinors, types.StringValue(v))
+					}
+					listValue, _ := types.ListValue(types.StringType, countriesBlockedForMinors)
+					parentalControlSettings.CountriesBlockedForMinors = listValue
+				} else {
+					parentalControlSettings.CountriesBlockedForMinors = types.ListNull(types.StringType)
 				}
-				if v.GetTypeEscaped() != nil {
-					resourceAccess.Type = types.StringValue(*v.GetTypeEscaped())
+				if v.GetParentalControlSettings().GetLegalAgeGroupRule() != nil {
+					parentalControlSettings.LegalAgeGroupRule = types.StringValue(*v.GetParentalControlSettings().GetLegalAgeGroupRule())
+				} else {
+					parentalControlSettings.LegalAgeGroupRule = types.StringNull()
 				}
-				requiredResourceAccess.ResourceAccess = append(requiredResourceAccess.ResourceAccess, *resourceAccess)
-			}
-			if v.GetResourceAppId() != nil {
-				requiredResourceAccess.ResourceAppId = types.StringValue(*v.GetResourceAppId())
-			}
-			value.RequiredResourceAccess = append(value.RequiredResourceAccess, *requiredResourceAccess)
-		}
-		if v.GetSamlMetadataUrl() != nil {
-			value.SamlMetadataUrl = types.StringValue(*v.GetSamlMetadataUrl())
-		}
-		if v.GetServiceManagementReference() != nil {
-			value.ServiceManagementReference = types.StringValue(*v.GetServiceManagementReference())
-		}
-		if v.GetServicePrincipalLockConfiguration() != nil {
-			value.ServicePrincipalLockConfiguration = new(applicationsServicePrincipalLockConfigurationModel)
 
-			if v.GetServicePrincipalLockConfiguration().GetAllProperties() != nil {
-				value.ServicePrincipalLockConfiguration.AllProperties = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetAllProperties())
+				objectValue, _ := types.ObjectValueFrom(ctx, parentalControlSettings.AttributeTypes(), parentalControlSettings)
+				value.ParentalControlSettings = objectValue
 			}
-			if v.GetServicePrincipalLockConfiguration().GetCredentialsWithUsageSign() != nil {
-				value.ServicePrincipalLockConfiguration.CredentialsWithUsageSign = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetCredentialsWithUsageSign())
-			}
-			if v.GetServicePrincipalLockConfiguration().GetCredentialsWithUsageVerify() != nil {
-				value.ServicePrincipalLockConfiguration.CredentialsWithUsageVerify = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetCredentialsWithUsageVerify())
-			}
-			if v.GetServicePrincipalLockConfiguration().GetIsEnabled() != nil {
-				value.ServicePrincipalLockConfiguration.IsEnabled = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetIsEnabled())
-			}
-			if v.GetServicePrincipalLockConfiguration().GetTokenEncryptionKeyId() != nil {
-				value.ServicePrincipalLockConfiguration.TokenEncryptionKeyId = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetTokenEncryptionKeyId())
-			}
-		}
-		if v.GetSignInAudience() != nil {
-			value.SignInAudience = types.StringValue(*v.GetSignInAudience())
-		}
-		if v.GetSpa() != nil {
-			value.Spa = new(applicationsSpaModel)
+			if len(v.GetPasswordCredentials()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetPasswordCredentials() {
+					passwordCredentials := new(applicationsPasswordCredentialModel)
 
-			for _, v := range v.GetSpa().GetRedirectUris() {
-				value.Spa.RedirectUris = append(value.Spa.RedirectUris, types.StringValue(v))
-			}
-		}
-		for _, v := range v.GetTags() {
-			value.Tags = append(value.Tags, types.StringValue(v))
-		}
-		if v.GetTokenEncryptionKeyId() != nil {
-			value.TokenEncryptionKeyId = types.StringValue(v.GetTokenEncryptionKeyId().String())
-		}
-		if v.GetVerifiedPublisher() != nil {
-			value.VerifiedPublisher = new(applicationsVerifiedPublisherModel)
-
-			if v.GetVerifiedPublisher().GetAddedDateTime() != nil {
-				value.VerifiedPublisher.AddedDateTime = types.StringValue(v.GetVerifiedPublisher().GetAddedDateTime().String())
-			}
-			if v.GetVerifiedPublisher().GetDisplayName() != nil {
-				value.VerifiedPublisher.DisplayName = types.StringValue(*v.GetVerifiedPublisher().GetDisplayName())
-			}
-			if v.GetVerifiedPublisher().GetVerifiedPublisherId() != nil {
-				value.VerifiedPublisher.VerifiedPublisherId = types.StringValue(*v.GetVerifiedPublisher().GetVerifiedPublisherId())
-			}
-		}
-		if v.GetWeb() != nil {
-			value.Web = new(applicationsWebModel)
-
-			if v.GetWeb().GetHomePageUrl() != nil {
-				value.Web.HomePageUrl = types.StringValue(*v.GetWeb().GetHomePageUrl())
-			}
-			if v.GetWeb().GetImplicitGrantSettings() != nil {
-				value.Web.ImplicitGrantSettings = new(applicationsImplicitGrantSettingsModel)
-
-				if v.GetWeb().GetImplicitGrantSettings().GetEnableAccessTokenIssuance() != nil {
-					value.Web.ImplicitGrantSettings.EnableAccessTokenIssuance = types.BoolValue(*v.GetWeb().GetImplicitGrantSettings().GetEnableAccessTokenIssuance())
+					if v.GetCustomKeyIdentifier() != nil {
+						passwordCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
+					} else {
+						passwordCredentials.CustomKeyIdentifier = types.StringNull()
+					}
+					if v.GetDisplayName() != nil {
+						passwordCredentials.DisplayName = types.StringValue(*v.GetDisplayName())
+					} else {
+						passwordCredentials.DisplayName = types.StringNull()
+					}
+					if v.GetEndDateTime() != nil {
+						passwordCredentials.EndDateTime = types.StringValue(v.GetEndDateTime().String())
+					} else {
+						passwordCredentials.EndDateTime = types.StringNull()
+					}
+					if v.GetHint() != nil {
+						passwordCredentials.Hint = types.StringValue(*v.GetHint())
+					} else {
+						passwordCredentials.Hint = types.StringNull()
+					}
+					if v.GetKeyId() != nil {
+						passwordCredentials.KeyId = types.StringValue(v.GetKeyId().String())
+					} else {
+						passwordCredentials.KeyId = types.StringNull()
+					}
+					if v.GetSecretText() != nil {
+						passwordCredentials.SecretText = types.StringValue(*v.GetSecretText())
+					} else {
+						passwordCredentials.SecretText = types.StringNull()
+					}
+					if v.GetStartDateTime() != nil {
+						passwordCredentials.StartDateTime = types.StringValue(v.GetStartDateTime().String())
+					} else {
+						passwordCredentials.StartDateTime = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, passwordCredentials.AttributeTypes(), passwordCredentials)
+					objectValues = append(objectValues, objectValue)
 				}
-				if v.GetWeb().GetImplicitGrantSettings().GetEnableIdTokenIssuance() != nil {
-					value.Web.ImplicitGrantSettings.EnableIdTokenIssuance = types.BoolValue(*v.GetWeb().GetImplicitGrantSettings().GetEnableIdTokenIssuance())
-				}
+				value.PasswordCredentials, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
-			if v.GetWeb().GetLogoutUrl() != nil {
-				value.Web.LogoutUrl = types.StringValue(*v.GetWeb().GetLogoutUrl())
-			}
-			for _, v := range v.GetWeb().GetRedirectUriSettings() {
-				redirectUriSettings := new(applicationsRedirectUriSettingsModel)
+			if v.GetPublicClient() != nil {
+				publicClient := new(applicationsPublicClientApplicationModel)
 
-				if v.GetIndex() != nil {
-					redirectUriSettings.Index = types.Int64Value(int64(*v.GetIndex()))
+				if len(v.GetPublicClient().GetRedirectUris()) > 0 {
+					var redirectUris []attr.Value
+					for _, v := range v.GetPublicClient().GetRedirectUris() {
+						redirectUris = append(redirectUris, types.StringValue(v))
+					}
+					listValue, _ := types.ListValue(types.StringType, redirectUris)
+					publicClient.RedirectUris = listValue
+				} else {
+					publicClient.RedirectUris = types.ListNull(types.StringType)
 				}
-				if v.GetUri() != nil {
-					redirectUriSettings.Uri = types.StringValue(*v.GetUri())
+
+				objectValue, _ := types.ObjectValueFrom(ctx, publicClient.AttributeTypes(), publicClient)
+				value.PublicClient = objectValue
+			}
+			if v.GetPublisherDomain() != nil {
+				value.PublisherDomain = types.StringValue(*v.GetPublisherDomain())
+			} else {
+				value.PublisherDomain = types.StringNull()
+			}
+			if v.GetRequestSignatureVerification() != nil {
+				requestSignatureVerification := new(applicationsRequestSignatureVerificationModel)
+
+				if v.GetRequestSignatureVerification().GetAllowedWeakAlgorithms() != nil {
+					requestSignatureVerification.AllowedWeakAlgorithms = types.StringValue(v.GetRequestSignatureVerification().GetAllowedWeakAlgorithms().String())
+				} else {
+					requestSignatureVerification.AllowedWeakAlgorithms = types.StringNull()
 				}
-				value.Web.RedirectUriSettings = append(value.Web.RedirectUriSettings, *redirectUriSettings)
+				if v.GetRequestSignatureVerification().GetIsSignedRequestRequired() != nil {
+					requestSignatureVerification.IsSignedRequestRequired = types.BoolValue(*v.GetRequestSignatureVerification().GetIsSignedRequestRequired())
+				} else {
+					requestSignatureVerification.IsSignedRequestRequired = types.BoolNull()
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, requestSignatureVerification.AttributeTypes(), requestSignatureVerification)
+				value.RequestSignatureVerification = objectValue
 			}
-			for _, v := range v.GetWeb().GetRedirectUris() {
-				value.Web.RedirectUris = append(value.Web.RedirectUris, types.StringValue(v))
+			if len(v.GetRequiredResourceAccess()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetRequiredResourceAccess() {
+					requiredResourceAccess := new(applicationsRequiredResourceAccessModel)
+
+					if len(v.GetResourceAccess()) > 0 {
+						objectValues := []basetypes.ObjectValue{}
+						for _, v := range v.GetResourceAccess() {
+							resourceAccess := new(applicationsResourceAccessModel)
+
+							if v.GetId() != nil {
+								resourceAccess.Id = types.StringValue(v.GetId().String())
+							} else {
+								resourceAccess.Id = types.StringNull()
+							}
+							if v.GetTypeEscaped() != nil {
+								resourceAccess.Type = types.StringValue(*v.GetTypeEscaped())
+							} else {
+								resourceAccess.Type = types.StringNull()
+							}
+							objectValue, _ := types.ObjectValueFrom(ctx, resourceAccess.AttributeTypes(), resourceAccess)
+							objectValues = append(objectValues, objectValue)
+						}
+						requiredResourceAccess.ResourceAccess, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+					}
+					if v.GetResourceAppId() != nil {
+						requiredResourceAccess.ResourceAppId = types.StringValue(*v.GetResourceAppId())
+					} else {
+						requiredResourceAccess.ResourceAppId = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, requiredResourceAccess.AttributeTypes(), requiredResourceAccess)
+					objectValues = append(objectValues, objectValue)
+				}
+				value.RequiredResourceAccess, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
+			if v.GetSamlMetadataUrl() != nil {
+				value.SamlMetadataUrl = types.StringValue(*v.GetSamlMetadataUrl())
+			} else {
+				value.SamlMetadataUrl = types.StringNull()
+			}
+			if v.GetServiceManagementReference() != nil {
+				value.ServiceManagementReference = types.StringValue(*v.GetServiceManagementReference())
+			} else {
+				value.ServiceManagementReference = types.StringNull()
+			}
+			if v.GetServicePrincipalLockConfiguration() != nil {
+				servicePrincipalLockConfiguration := new(applicationsServicePrincipalLockConfigurationModel)
+
+				if v.GetServicePrincipalLockConfiguration().GetAllProperties() != nil {
+					servicePrincipalLockConfiguration.AllProperties = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetAllProperties())
+				} else {
+					servicePrincipalLockConfiguration.AllProperties = types.BoolNull()
+				}
+				if v.GetServicePrincipalLockConfiguration().GetCredentialsWithUsageSign() != nil {
+					servicePrincipalLockConfiguration.CredentialsWithUsageSign = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetCredentialsWithUsageSign())
+				} else {
+					servicePrincipalLockConfiguration.CredentialsWithUsageSign = types.BoolNull()
+				}
+				if v.GetServicePrincipalLockConfiguration().GetCredentialsWithUsageVerify() != nil {
+					servicePrincipalLockConfiguration.CredentialsWithUsageVerify = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetCredentialsWithUsageVerify())
+				} else {
+					servicePrincipalLockConfiguration.CredentialsWithUsageVerify = types.BoolNull()
+				}
+				if v.GetServicePrincipalLockConfiguration().GetIsEnabled() != nil {
+					servicePrincipalLockConfiguration.IsEnabled = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetIsEnabled())
+				} else {
+					servicePrincipalLockConfiguration.IsEnabled = types.BoolNull()
+				}
+				if v.GetServicePrincipalLockConfiguration().GetTokenEncryptionKeyId() != nil {
+					servicePrincipalLockConfiguration.TokenEncryptionKeyId = types.BoolValue(*v.GetServicePrincipalLockConfiguration().GetTokenEncryptionKeyId())
+				} else {
+					servicePrincipalLockConfiguration.TokenEncryptionKeyId = types.BoolNull()
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, servicePrincipalLockConfiguration.AttributeTypes(), servicePrincipalLockConfiguration)
+				value.ServicePrincipalLockConfiguration = objectValue
+			}
+			if v.GetSignInAudience() != nil {
+				value.SignInAudience = types.StringValue(*v.GetSignInAudience())
+			} else {
+				value.SignInAudience = types.StringNull()
+			}
+			if v.GetSpa() != nil {
+				spa := new(applicationsSpaApplicationModel)
+
+				if len(v.GetSpa().GetRedirectUris()) > 0 {
+					var redirectUris []attr.Value
+					for _, v := range v.GetSpa().GetRedirectUris() {
+						redirectUris = append(redirectUris, types.StringValue(v))
+					}
+					listValue, _ := types.ListValue(types.StringType, redirectUris)
+					spa.RedirectUris = listValue
+				} else {
+					spa.RedirectUris = types.ListNull(types.StringType)
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, spa.AttributeTypes(), spa)
+				value.Spa = objectValue
+			}
+			if len(v.GetTags()) > 0 {
+				var tags []attr.Value
+				for _, v := range v.GetTags() {
+					tags = append(tags, types.StringValue(v))
+				}
+				listValue, _ := types.ListValue(types.StringType, tags)
+				value.Tags = listValue
+			} else {
+				value.Tags = types.ListNull(types.StringType)
+			}
+			if v.GetTokenEncryptionKeyId() != nil {
+				value.TokenEncryptionKeyId = types.StringValue(v.GetTokenEncryptionKeyId().String())
+			} else {
+				value.TokenEncryptionKeyId = types.StringNull()
+			}
+			if v.GetUniqueName() != nil {
+				value.UniqueName = types.StringValue(*v.GetUniqueName())
+			} else {
+				value.UniqueName = types.StringNull()
+			}
+			if v.GetVerifiedPublisher() != nil {
+				verifiedPublisher := new(applicationsVerifiedPublisherModel)
+
+				if v.GetVerifiedPublisher().GetAddedDateTime() != nil {
+					verifiedPublisher.AddedDateTime = types.StringValue(v.GetVerifiedPublisher().GetAddedDateTime().String())
+				} else {
+					verifiedPublisher.AddedDateTime = types.StringNull()
+				}
+				if v.GetVerifiedPublisher().GetDisplayName() != nil {
+					verifiedPublisher.DisplayName = types.StringValue(*v.GetVerifiedPublisher().GetDisplayName())
+				} else {
+					verifiedPublisher.DisplayName = types.StringNull()
+				}
+				if v.GetVerifiedPublisher().GetVerifiedPublisherId() != nil {
+					verifiedPublisher.VerifiedPublisherId = types.StringValue(*v.GetVerifiedPublisher().GetVerifiedPublisherId())
+				} else {
+					verifiedPublisher.VerifiedPublisherId = types.StringNull()
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, verifiedPublisher.AttributeTypes(), verifiedPublisher)
+				value.VerifiedPublisher = objectValue
+			}
+			if v.GetWeb() != nil {
+				web := new(applicationsWebApplicationModel)
+
+				if v.GetWeb().GetHomePageUrl() != nil {
+					web.HomePageUrl = types.StringValue(*v.GetWeb().GetHomePageUrl())
+				} else {
+					web.HomePageUrl = types.StringNull()
+				}
+				if v.GetWeb().GetImplicitGrantSettings() != nil {
+					implicitGrantSettings := new(applicationsImplicitGrantSettingsModel)
+
+					if v.GetWeb().GetImplicitGrantSettings().GetEnableAccessTokenIssuance() != nil {
+						implicitGrantSettings.EnableAccessTokenIssuance = types.BoolValue(*v.GetWeb().GetImplicitGrantSettings().GetEnableAccessTokenIssuance())
+					} else {
+						implicitGrantSettings.EnableAccessTokenIssuance = types.BoolNull()
+					}
+					if v.GetWeb().GetImplicitGrantSettings().GetEnableIdTokenIssuance() != nil {
+						implicitGrantSettings.EnableIdTokenIssuance = types.BoolValue(*v.GetWeb().GetImplicitGrantSettings().GetEnableIdTokenIssuance())
+					} else {
+						implicitGrantSettings.EnableIdTokenIssuance = types.BoolNull()
+					}
+
+					objectValue, _ := types.ObjectValueFrom(ctx, implicitGrantSettings.AttributeTypes(), implicitGrantSettings)
+					web.ImplicitGrantSettings = objectValue
+				}
+				if v.GetWeb().GetLogoutUrl() != nil {
+					web.LogoutUrl = types.StringValue(*v.GetWeb().GetLogoutUrl())
+				} else {
+					web.LogoutUrl = types.StringNull()
+				}
+				if len(v.GetWeb().GetRedirectUriSettings()) > 0 {
+					objectValues := []basetypes.ObjectValue{}
+					for _, v := range v.GetWeb().GetRedirectUriSettings() {
+						redirectUriSettings := new(applicationsRedirectUriSettingsModel)
+
+						if v.GetUri() != nil {
+							redirectUriSettings.Uri = types.StringValue(*v.GetUri())
+						} else {
+							redirectUriSettings.Uri = types.StringNull()
+						}
+						objectValue, _ := types.ObjectValueFrom(ctx, redirectUriSettings.AttributeTypes(), redirectUriSettings)
+						objectValues = append(objectValues, objectValue)
+					}
+					web.RedirectUriSettings, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+				}
+				if len(v.GetWeb().GetRedirectUris()) > 0 {
+					var redirectUris []attr.Value
+					for _, v := range v.GetWeb().GetRedirectUris() {
+						redirectUris = append(redirectUris, types.StringValue(v))
+					}
+					listValue, _ := types.ListValue(types.StringType, redirectUris)
+					web.RedirectUris = listValue
+				} else {
+					web.RedirectUris = types.ListNull(types.StringType)
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, web.AttributeTypes(), web)
+				value.Web = objectValue
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
+			objectValues = append(objectValues, objectValue)
 		}
-		state.Value = append(state.Value, *value)
+		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state

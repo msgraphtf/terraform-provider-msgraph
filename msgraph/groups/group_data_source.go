@@ -2,7 +2,6 @@ package groups
 
 import (
 	"context"
-
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -58,7 +57,7 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 			},
 			"assigned_labels": schema.ListNestedAttribute{
-				Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select.",
+				Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select. This property can be updated only in delegated scenarios where the caller requires both the Microsoft Graph permission and a supported administrator role.",
 				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -79,23 +78,23 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"disabled_plans": schema.ListAttribute{
-							Description: "A collection of the unique identifiers for plans that have been disabled.",
+							Description: "A collection of the unique identifiers for plans that have been disabled. IDs are available in servicePlans > servicePlanId in the tenant's subscribedSkus or serviceStatus > servicePlanId in the tenant's companySubscription.",
 							Computed:    true,
 							ElementType: types.StringType,
 						},
 						"sku_id": schema.StringAttribute{
-							Description: "The unique identifier for the SKU.",
+							Description: "The unique identifier for the SKU. Corresponds to the skuId from subscribedSkus or companySubscription.",
 							Computed:    true,
 						},
 					},
 				},
 			},
 			"classification": schema.StringAttribute{
-				Description: "Describes a classification for the group (such as low, medium or high business impact). Valid values for this property are defined by creating a ClassificationList setting value, based on the template definition.Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith).",
+				Description: "Describes a classification for the group (such as low, medium, or high business impact). Valid values for this property are defined by creating a ClassificationList setting value, based on the template definition.Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith).",
 				Computed:    true,
 			},
 			"created_date_time": schema.StringAttribute{
-				Description: "Timestamp of when the group was created. The value cannot be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only.",
+				Description: "Timestamp of when the group was created. The value can't be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only.",
 				Computed:    true,
 			},
 			"description": schema.StringAttribute{
@@ -103,11 +102,11 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 			},
 			"display_name": schema.StringAttribute{
-				Description: "The display name for the group. This property is required when a group is created and cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
+				Description: "The display name for the group. This property is required when a group is created and can't be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
 				Computed:    true,
 			},
 			"expiration_date_time": schema.StringAttribute{
-				Description: "Timestamp of when the group is set to expire. It is null for security groups, but for Microsoft 365 groups, it represents when the group is set to expire as defined in the groupLifecyclePolicy. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
+				Description: "Timestamp of when the group is set to expire. It's null for security groups, but for Microsoft 365 groups, it represents when the group is set to expire as defined in the groupLifecyclePolicy. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
 				Computed:    true,
 			},
 			"group_types": schema.ListAttribute{
@@ -116,7 +115,11 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				ElementType: types.StringType,
 			},
 			"is_assignable_to_role": schema.BoolAttribute{
-				Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group cannot be a dynamic group (that is, groupTypes cannot contain DynamicMembership). Only callers in Global Administrator and Privileged Role Administrator roles can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",
+				Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group can't be a dynamic group (that is, groupTypes can't contain DynamicMembership). Only callers with at least the Privileged Role Administrator role can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",
+				Computed:    true,
+			},
+			"is_management_restricted": schema.BoolAttribute{
+				Description: "",
 				Computed:    true,
 			},
 			"license_processing_state": schema.SingleNestedAttribute{
@@ -130,7 +133,7 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				},
 			},
 			"mail": schema.StringAttribute{
-				Description: "The SMTP address for the group, for example, 'serviceadmins@contoso.onmicrosoft.com'. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+				Description: "The SMTP address for the group, for example, 'serviceadmins@contoso.com'. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Computed:    true,
 			},
 			"mail_enabled": schema.BoolAttribute{
@@ -138,7 +141,7 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 			},
 			"mail_nickname": schema.StringAttribute{
-				Description: "The mail alias for the group, unique for Microsoft 365 groups in the organization. Maximum length is 64 characters. This property can contain only characters in the ASCII character set 0 - 127 except the following: @ () / [] ' ; : <> , SPACE. Required. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+				Description: "The mail alias for the group, unique for Microsoft 365 groups in the organization. Maximum length is 64 characters. This property can contain only characters in the ASCII character set 0 - 127 except the following characters: @ () / [] ' ; : <> , SPACE. Required. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 				Computed:    true,
 			},
 			"membership_rule": schema.StringAttribute{
@@ -150,15 +153,15 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 			},
 			"on_premises_domain_name": schema.StringAttribute{
-				Description: "",
+				Description: "Contains the on-premises domain FQDN, also called dnsDomainName synchronized from the on-premises directory. The property is only populated for customers synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect.Returned by default. Read-only.",
 				Computed:    true,
 			},
 			"on_premises_last_sync_date_time": schema.StringAttribute{
-				Description: "Indicates the last time at which the group was synced with the on-premises directory.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in).",
+				Description: "Indicates the last time at which the group was synced with the on-premises directory. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in).",
 				Computed:    true,
 			},
 			"on_premises_net_bios_name": schema.StringAttribute{
-				Description: "",
+				Description: "Contains the on-premises netBios name synchronized from the on-premises directory. The property is only populated for customers synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect.Returned by default. Read-only.",
 				Computed:    true,
 			},
 			"on_premises_provisioning_errors": schema.ListNestedAttribute{
@@ -190,15 +193,15 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 			},
 			"on_premises_security_identifier": schema.StringAttribute{
-				Description: "Contains the on-premises security identifier (SID) for the group synchronized from on-premises to the cloud. Returned by default. Supports $filter (eq including on null values). Read-only.",
+				Description: "Contains the on-premises security identifier (SID) for the group synchronized from on-premises to the cloud. Read-only. Returned by default. Supports $filter (eq including on null values).",
 				Computed:    true,
 			},
 			"on_premises_sync_enabled": schema.BoolAttribute{
-				Description: "true if this group is synced from an on-premises directory; false if this group was originally synced from an on-premises directory but is no longer synced; null if this object has never been synced from an on-premises directory (default). Returned by default. Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
+				Description: "true if this group is synced from an on-premises directory; false if this group was originally synced from an on-premises directory but is no longer synced; null if this object has never synced from an on-premises directory (default). Returned by default. Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
 				Computed:    true,
 			},
 			"preferred_data_location": schema.StringAttribute{
-				Description: "The preferred data location for the Microsoft 365 group. By default, the group inherits the group creator's preferred data location. To set this property, the calling app must be granted the Directory.ReadWrite.All permission and the user be assigned one of the following Microsoft Entra roles:  Global Administrator  User Account Administrator Directory Writer  Exchange Administrator  SharePoint Administrator  For more information about this property, see OneDrive Online Multi-Geo. Nullable. Returned by default.",
+				Description: "The preferred data location for the Microsoft 365 group. By default, the group inherits the group creator's preferred data location. To set this property, the calling app must be granted the Directory.ReadWrite.All permission and the user be assigned at least one of the following Microsoft Entra roles: User Account Administrator Directory Writer  Exchange Administrator  SharePoint Administrator  For more information about this property, see OneDrive Online Multi-Geo. Nullable. Returned by default.",
 				Computed:    true,
 			},
 			"preferred_language": schema.StringAttribute{
@@ -211,7 +214,7 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				ElementType: types.StringType,
 			},
 			"renewed_date_time": schema.StringAttribute{
-				Description: "Timestamp of when the group was last renewed. This cannot be modified directly and is only updated via the renew service action. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
+				Description: "Timestamp of when the group was last renewed. This value can't be modified directly and is only updated via the renew service action. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
 				Computed:    true,
 			},
 			"security_enabled": schema.BoolAttribute{
@@ -219,11 +222,11 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 			},
 			"security_identifier": schema.StringAttribute{
-				Description: "Security identifier of the group, used in Windows scenarios. Returned by default.",
+				Description: "Security identifier of the group, used in Windows scenarios. Read-only. Returned by default.",
 				Computed:    true,
 			},
 			"service_provisioning_errors": schema.ListNestedAttribute{
-				Description: "Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a group object .  Supports $filter (eq, not, for isResolved and serviceInstance).",
+				Description: "Errors published by a federated service describing a nontransient, service-specific error regarding the properties or link from a group object.  Supports $filter (eq, not, for isResolved and serviceInstance).",
 				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -243,11 +246,15 @@ func (d *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				},
 			},
 			"theme": schema.StringAttribute{
-				Description: "Specifies a Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange or Red. Returned by default.",
+				Description: "Specifies a Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange, or Red. Returned by default.",
+				Computed:    true,
+			},
+			"unique_name": schema.StringAttribute{
+				Description: "The unique identifier that can be assigned to a group and used as an alternate key. Immutable. Read-only.",
 				Computed:    true,
 			},
 			"visibility": schema.StringAttribute{
-				Description: "Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value is not specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.",
+				Description: "Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value isn't specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.",
 				Computed:    true,
 			},
 		},
@@ -276,6 +283,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				"expirationDateTime",
 				"groupTypes",
 				"isAssignableToRole",
+				"isManagementRestricted",
 				"licenseProcessingState",
 				"mail",
 				"mailEnabled",
@@ -297,34 +305,8 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				"securityIdentifier",
 				"serviceProvisioningErrors",
 				"theme",
+				"uniqueName",
 				"visibility",
-				"appRoleAssignments",
-				"createdOnBehalfOf",
-				"memberOf",
-				"members",
-				"membersWithLicenseErrors",
-				"owners",
-				"permissionGrants",
-				"settings",
-				"transitiveMemberOf",
-				"transitiveMembers",
-				"acceptedSenders",
-				"calendar",
-				"calendarView",
-				"conversations",
-				"events",
-				"rejectedSenders",
-				"threads",
-				"drive",
-				"drives",
-				"sites",
-				"extensions",
-				"groupLifecyclePolicies",
-				"planner",
-				"onenote",
-				"photo",
-				"photos",
-				"team",
 			},
 		},
 	}
@@ -363,7 +345,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if len(result.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLabels() {
-			assignedLabels := new(groupAssignedLabelsModel)
+			assignedLabels := new(groupAssignedLabelModel)
 
 			if v.GetDisplayName() != nil {
 				assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
@@ -383,7 +365,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLicenses() {
-			assignedLicenses := new(groupAssignedLicensesModel)
+			assignedLicenses := new(groupAssignedLicenseModel)
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var disabledPlans []attr.Value
@@ -445,6 +427,11 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	} else {
 		state.IsAssignableToRole = types.BoolNull()
 	}
+	if result.GetIsManagementRestricted() != nil {
+		state.IsManagementRestricted = types.BoolValue(*result.GetIsManagementRestricted())
+	} else {
+		state.IsManagementRestricted = types.BoolNull()
+	}
 	if result.GetLicenseProcessingState() != nil {
 		licenseProcessingState := new(groupLicenseProcessingStateModel)
 
@@ -500,7 +487,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorsModel)
+			onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorModel)
 
 			if v.GetCategory() != nil {
 				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -580,7 +567,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(groupServiceProvisioningErrorsModel)
+			serviceProvisioningErrors := new(groupServiceProvisioningErrorModel)
 
 			if v.GetCreatedDateTime() != nil {
 				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
@@ -606,6 +593,11 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		state.Theme = types.StringValue(*result.GetTheme())
 	} else {
 		state.Theme = types.StringNull()
+	}
+	if result.GetUniqueName() != nil {
+		state.UniqueName = types.StringValue(*result.GetUniqueName())
+	} else {
+		state.UniqueName = types.StringNull()
 	}
 	if result.GetVisibility() != nil {
 		state.Visibility = types.StringValue(*result.GetVisibility())

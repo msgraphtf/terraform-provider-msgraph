@@ -2,10 +2,11 @@ package groups
 
 import (
 	"context"
-
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/groups"
@@ -59,7 +60,7 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Computed:    true,
 						},
 						"assigned_labels": schema.ListNestedAttribute{
-							Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select.",
+							Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select. This property can be updated only in delegated scenarios where the caller requires both the Microsoft Graph permission and a supported administrator role.",
 							Computed:    true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -80,23 +81,23 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"disabled_plans": schema.ListAttribute{
-										Description: "A collection of the unique identifiers for plans that have been disabled.",
+										Description: "A collection of the unique identifiers for plans that have been disabled. IDs are available in servicePlans > servicePlanId in the tenant's subscribedSkus or serviceStatus > servicePlanId in the tenant's companySubscription.",
 										Computed:    true,
 										ElementType: types.StringType,
 									},
 									"sku_id": schema.StringAttribute{
-										Description: "The unique identifier for the SKU.",
+										Description: "The unique identifier for the SKU. Corresponds to the skuId from subscribedSkus or companySubscription.",
 										Computed:    true,
 									},
 								},
 							},
 						},
 						"classification": schema.StringAttribute{
-							Description: "Describes a classification for the group (such as low, medium or high business impact). Valid values for this property are defined by creating a ClassificationList setting value, based on the template definition.Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith).",
+							Description: "Describes a classification for the group (such as low, medium, or high business impact). Valid values for this property are defined by creating a ClassificationList setting value, based on the template definition.Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith).",
 							Computed:    true,
 						},
 						"created_date_time": schema.StringAttribute{
-							Description: "Timestamp of when the group was created. The value cannot be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only.",
+							Description: "Timestamp of when the group was created. The value can't be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only.",
 							Computed:    true,
 						},
 						"description": schema.StringAttribute{
@@ -104,11 +105,11 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Computed:    true,
 						},
 						"display_name": schema.StringAttribute{
-							Description: "The display name for the group. This property is required when a group is created and cannot be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
+							Description: "The display name for the group. This property is required when a group is created and can't be cleared during updates. Maximum length is 256 characters. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
 							Computed:    true,
 						},
 						"expiration_date_time": schema.StringAttribute{
-							Description: "Timestamp of when the group is set to expire. It is null for security groups, but for Microsoft 365 groups, it represents when the group is set to expire as defined in the groupLifecyclePolicy. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
+							Description: "Timestamp of when the group is set to expire. It's null for security groups, but for Microsoft 365 groups, it represents when the group is set to expire as defined in the groupLifecyclePolicy. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
 							Computed:    true,
 						},
 						"group_types": schema.ListAttribute{
@@ -117,7 +118,11 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							ElementType: types.StringType,
 						},
 						"is_assignable_to_role": schema.BoolAttribute{
-							Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group cannot be a dynamic group (that is, groupTypes cannot contain DynamicMembership). Only callers in Global Administrator and Privileged Role Administrator roles can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",
+							Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group can't be a dynamic group (that is, groupTypes can't contain DynamicMembership). Only callers with at least the Privileged Role Administrator role can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",
+							Computed:    true,
+						},
+						"is_management_restricted": schema.BoolAttribute{
+							Description: "",
 							Computed:    true,
 						},
 						"license_processing_state": schema.SingleNestedAttribute{
@@ -131,7 +136,7 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							},
 						},
 						"mail": schema.StringAttribute{
-							Description: "The SMTP address for the group, for example, 'serviceadmins@contoso.onmicrosoft.com'. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+							Description: "The SMTP address for the group, for example, 'serviceadmins@contoso.com'. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 							Computed:    true,
 						},
 						"mail_enabled": schema.BoolAttribute{
@@ -139,7 +144,7 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Computed:    true,
 						},
 						"mail_nickname": schema.StringAttribute{
-							Description: "The mail alias for the group, unique for Microsoft 365 groups in the organization. Maximum length is 64 characters. This property can contain only characters in the ASCII character set 0 - 127 except the following: @ () / [] ' ; : <> , SPACE. Required. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
+							Description: "The mail alias for the group, unique for Microsoft 365 groups in the organization. Maximum length is 64 characters. This property can contain only characters in the ASCII character set 0 - 127 except the following characters: @ () / [] ' ; : <> , SPACE. Required. Returned by default. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values).",
 							Computed:    true,
 						},
 						"membership_rule": schema.StringAttribute{
@@ -151,15 +156,15 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Computed:    true,
 						},
 						"on_premises_domain_name": schema.StringAttribute{
-							Description: "",
+							Description: "Contains the on-premises domain FQDN, also called dnsDomainName synchronized from the on-premises directory. The property is only populated for customers synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect.Returned by default. Read-only.",
 							Computed:    true,
 						},
 						"on_premises_last_sync_date_time": schema.StringAttribute{
-							Description: "Indicates the last time at which the group was synced with the on-premises directory.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in).",
+							Description: "Indicates the last time at which the group was synced with the on-premises directory. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only. Supports $filter (eq, ne, not, ge, le, in).",
 							Computed:    true,
 						},
 						"on_premises_net_bios_name": schema.StringAttribute{
-							Description: "",
+							Description: "Contains the on-premises netBios name synchronized from the on-premises directory. The property is only populated for customers synchronizing their on-premises directory to Microsoft Entra ID via Microsoft Entra Connect.Returned by default. Read-only.",
 							Computed:    true,
 						},
 						"on_premises_provisioning_errors": schema.ListNestedAttribute{
@@ -191,15 +196,15 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Computed:    true,
 						},
 						"on_premises_security_identifier": schema.StringAttribute{
-							Description: "Contains the on-premises security identifier (SID) for the group synchronized from on-premises to the cloud. Returned by default. Supports $filter (eq including on null values). Read-only.",
+							Description: "Contains the on-premises security identifier (SID) for the group synchronized from on-premises to the cloud. Read-only. Returned by default. Supports $filter (eq including on null values).",
 							Computed:    true,
 						},
 						"on_premises_sync_enabled": schema.BoolAttribute{
-							Description: "true if this group is synced from an on-premises directory; false if this group was originally synced from an on-premises directory but is no longer synced; null if this object has never been synced from an on-premises directory (default). Returned by default. Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
+							Description: "true if this group is synced from an on-premises directory; false if this group was originally synced from an on-premises directory but is no longer synced; null if this object has never synced from an on-premises directory (default). Returned by default. Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
 							Computed:    true,
 						},
 						"preferred_data_location": schema.StringAttribute{
-							Description: "The preferred data location for the Microsoft 365 group. By default, the group inherits the group creator's preferred data location. To set this property, the calling app must be granted the Directory.ReadWrite.All permission and the user be assigned one of the following Microsoft Entra roles:  Global Administrator  User Account Administrator Directory Writer  Exchange Administrator  SharePoint Administrator  For more information about this property, see OneDrive Online Multi-Geo. Nullable. Returned by default.",
+							Description: "The preferred data location for the Microsoft 365 group. By default, the group inherits the group creator's preferred data location. To set this property, the calling app must be granted the Directory.ReadWrite.All permission and the user be assigned at least one of the following Microsoft Entra roles: User Account Administrator Directory Writer  Exchange Administrator  SharePoint Administrator  For more information about this property, see OneDrive Online Multi-Geo. Nullable. Returned by default.",
 							Computed:    true,
 						},
 						"preferred_language": schema.StringAttribute{
@@ -212,7 +217,7 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							ElementType: types.StringType,
 						},
 						"renewed_date_time": schema.StringAttribute{
-							Description: "Timestamp of when the group was last renewed. This cannot be modified directly and is only updated via the renew service action. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
+							Description: "Timestamp of when the group was last renewed. This value can't be modified directly and is only updated via the renew service action. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Supports $filter (eq, ne, not, ge, le, in). Read-only.",
 							Computed:    true,
 						},
 						"security_enabled": schema.BoolAttribute{
@@ -220,11 +225,11 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Computed:    true,
 						},
 						"security_identifier": schema.StringAttribute{
-							Description: "Security identifier of the group, used in Windows scenarios. Returned by default.",
+							Description: "Security identifier of the group, used in Windows scenarios. Read-only. Returned by default.",
 							Computed:    true,
 						},
 						"service_provisioning_errors": schema.ListNestedAttribute{
-							Description: "Errors published by a federated service describing a non-transient, service-specific error regarding the properties or link from a group object .  Supports $filter (eq, not, for isResolved and serviceInstance).",
+							Description: "Errors published by a federated service describing a nontransient, service-specific error regarding the properties or link from a group object.  Supports $filter (eq, not, for isResolved and serviceInstance).",
 							Computed:    true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -244,11 +249,15 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							},
 						},
 						"theme": schema.StringAttribute{
-							Description: "Specifies a Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange or Red. Returned by default.",
+							Description: "Specifies a Microsoft 365 group's color theme. Possible values are Teal, Purple, Green, Blue, Pink, Orange, or Red. Returned by default.",
+							Computed:    true,
+						},
+						"unique_name": schema.StringAttribute{
+							Description: "The unique identifier that can be assigned to a group and used as an alternate key. Immutable. Read-only.",
 							Computed:    true,
 						},
 						"visibility": schema.StringAttribute{
-							Description: "Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value is not specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.",
+							Description: "Specifies the group join policy and group content visibility for groups. Possible values are: Private, Public, or HiddenMembership. HiddenMembership can be set only for Microsoft 365 groups when the groups are created. It can't be updated later. Other values of visibility can be updated after group creation. If visibility value isn't specified during group creation on Microsoft Graph, a security group is created as Private by default, and the Microsoft 365 group is Public. Groups assignable to roles are always Private. To learn more, see group visibility options. Returned by default. Nullable.",
 							Computed:    true,
 						},
 					},
@@ -269,66 +278,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	qparams := groups.GroupsRequestBuilderGetRequestConfiguration{
 		QueryParameters: &groups.GroupsRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
-				"assignedLabels",
-				"assignedLicenses",
-				"classification",
-				"createdDateTime",
-				"description",
-				"displayName",
-				"expirationDateTime",
-				"groupTypes",
-				"isAssignableToRole",
-				"licenseProcessingState",
-				"mail",
-				"mailEnabled",
-				"mailNickname",
-				"membershipRule",
-				"membershipRuleProcessingState",
-				"onPremisesDomainName",
-				"onPremisesLastSyncDateTime",
-				"onPremisesNetBiosName",
-				"onPremisesProvisioningErrors",
-				"onPremisesSamAccountName",
-				"onPremisesSecurityIdentifier",
-				"onPremisesSyncEnabled",
-				"preferredDataLocation",
-				"preferredLanguage",
-				"proxyAddresses",
-				"renewedDateTime",
-				"securityEnabled",
-				"securityIdentifier",
-				"serviceProvisioningErrors",
-				"theme",
-				"visibility",
-				"appRoleAssignments",
-				"createdOnBehalfOf",
-				"memberOf",
-				"members",
-				"membersWithLicenseErrors",
-				"owners",
-				"permissionGrants",
-				"settings",
-				"transitiveMemberOf",
-				"transitiveMembers",
-				"acceptedSenders",
-				"calendar",
-				"calendarView",
-				"conversations",
-				"events",
-				"rejectedSenders",
-				"threads",
-				"drive",
-				"drives",
-				"sites",
-				"extensions",
-				"groupLifecyclePolicies",
-				"planner",
-				"onenote",
-				"photo",
-				"photos",
-				"team",
+				"value",
 			},
 		},
 	}
@@ -343,154 +293,287 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	for _, v := range result.GetValue() {
-		value := new(groupsValueModel)
+	if len(result.GetValue()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetValue() {
+			value := new(groupsGroupModel)
 
-		if v.GetId() != nil {
-			value.Id = types.StringValue(*v.GetId())
-		}
-		if v.GetDeletedDateTime() != nil {
-			value.DeletedDateTime = types.StringValue(v.GetDeletedDateTime().String())
-		}
-		for _, v := range v.GetAssignedLabels() {
-			assignedLabels := new(groupsAssignedLabelsModel)
+			if v.GetId() != nil {
+				value.Id = types.StringValue(*v.GetId())
+			} else {
+				value.Id = types.StringNull()
+			}
+			if v.GetDeletedDateTime() != nil {
+				value.DeletedDateTime = types.StringValue(v.GetDeletedDateTime().String())
+			} else {
+				value.DeletedDateTime = types.StringNull()
+			}
+			if len(v.GetAssignedLabels()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetAssignedLabels() {
+					assignedLabels := new(groupsAssignedLabelModel)
 
-			if v.GetDisplayName() != nil {
-				assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
+					if v.GetDisplayName() != nil {
+						assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
+					} else {
+						assignedLabels.DisplayName = types.StringNull()
+					}
+					if v.GetLabelId() != nil {
+						assignedLabels.LabelId = types.StringValue(*v.GetLabelId())
+					} else {
+						assignedLabels.LabelId = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, assignedLabels.AttributeTypes(), assignedLabels)
+					objectValues = append(objectValues, objectValue)
+				}
+				value.AssignedLabels, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
-			if v.GetLabelId() != nil {
-				assignedLabels.LabelId = types.StringValue(*v.GetLabelId())
-			}
-			value.AssignedLabels = append(value.AssignedLabels, *assignedLabels)
-		}
-		for _, v := range v.GetAssignedLicenses() {
-			assignedLicenses := new(groupsAssignedLicensesModel)
+			if len(v.GetAssignedLicenses()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetAssignedLicenses() {
+					assignedLicenses := new(groupsAssignedLicenseModel)
 
-			for _, v := range v.GetDisabledPlans() {
-				assignedLicenses.DisabledPlans = append(assignedLicenses.DisabledPlans, types.StringValue(v.String()))
+					if len(v.GetDisabledPlans()) > 0 {
+						var disabledPlans []attr.Value
+						for _, v := range v.GetDisabledPlans() {
+							disabledPlans = append(disabledPlans, types.StringValue(v.String()))
+						}
+						listValue, _ := types.ListValue(types.StringType, disabledPlans)
+						assignedLicenses.DisabledPlans = listValue
+					} else {
+						assignedLicenses.DisabledPlans = types.ListNull(types.StringType)
+					}
+					if v.GetSkuId() != nil {
+						assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
+					} else {
+						assignedLicenses.SkuId = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, assignedLicenses.AttributeTypes(), assignedLicenses)
+					objectValues = append(objectValues, objectValue)
+				}
+				value.AssignedLicenses, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
-			if v.GetSkuId() != nil {
-				assignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
+			if v.GetClassification() != nil {
+				value.Classification = types.StringValue(*v.GetClassification())
+			} else {
+				value.Classification = types.StringNull()
 			}
-			value.AssignedLicenses = append(value.AssignedLicenses, *assignedLicenses)
-		}
-		if v.GetClassification() != nil {
-			value.Classification = types.StringValue(*v.GetClassification())
-		}
-		if v.GetCreatedDateTime() != nil {
-			value.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
-		}
-		if v.GetDescription() != nil {
-			value.Description = types.StringValue(*v.GetDescription())
-		}
-		if v.GetDisplayName() != nil {
-			value.DisplayName = types.StringValue(*v.GetDisplayName())
-		}
-		if v.GetExpirationDateTime() != nil {
-			value.ExpirationDateTime = types.StringValue(v.GetExpirationDateTime().String())
-		}
-		for _, v := range v.GetGroupTypes() {
-			value.GroupTypes = append(value.GroupTypes, types.StringValue(v))
-		}
-		if v.GetIsAssignableToRole() != nil {
-			value.IsAssignableToRole = types.BoolValue(*v.GetIsAssignableToRole())
-		}
-		if v.GetLicenseProcessingState() != nil {
-			value.LicenseProcessingState = new(groupsLicenseProcessingStateModel)
-
-			if v.GetLicenseProcessingState().GetState() != nil {
-				value.LicenseProcessingState.State = types.StringValue(*v.GetLicenseProcessingState().GetState())
-			}
-		}
-		if v.GetMail() != nil {
-			value.Mail = types.StringValue(*v.GetMail())
-		}
-		if v.GetMailEnabled() != nil {
-			value.MailEnabled = types.BoolValue(*v.GetMailEnabled())
-		}
-		if v.GetMailNickname() != nil {
-			value.MailNickname = types.StringValue(*v.GetMailNickname())
-		}
-		if v.GetMembershipRule() != nil {
-			value.MembershipRule = types.StringValue(*v.GetMembershipRule())
-		}
-		if v.GetMembershipRuleProcessingState() != nil {
-			value.MembershipRuleProcessingState = types.StringValue(*v.GetMembershipRuleProcessingState())
-		}
-		if v.GetOnPremisesDomainName() != nil {
-			value.OnPremisesDomainName = types.StringValue(*v.GetOnPremisesDomainName())
-		}
-		if v.GetOnPremisesLastSyncDateTime() != nil {
-			value.OnPremisesLastSyncDateTime = types.StringValue(v.GetOnPremisesLastSyncDateTime().String())
-		}
-		if v.GetOnPremisesNetBiosName() != nil {
-			value.OnPremisesNetBiosName = types.StringValue(*v.GetOnPremisesNetBiosName())
-		}
-		for _, v := range v.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(groupsOnPremisesProvisioningErrorsModel)
-
-			if v.GetCategory() != nil {
-				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
-			}
-			if v.GetOccurredDateTime() != nil {
-				onPremisesProvisioningErrors.OccurredDateTime = types.StringValue(v.GetOccurredDateTime().String())
-			}
-			if v.GetPropertyCausingError() != nil {
-				onPremisesProvisioningErrors.PropertyCausingError = types.StringValue(*v.GetPropertyCausingError())
-			}
-			if v.GetValue() != nil {
-				onPremisesProvisioningErrors.Value = types.StringValue(*v.GetValue())
-			}
-			value.OnPremisesProvisioningErrors = append(value.OnPremisesProvisioningErrors, *onPremisesProvisioningErrors)
-		}
-		if v.GetOnPremisesSamAccountName() != nil {
-			value.OnPremisesSamAccountName = types.StringValue(*v.GetOnPremisesSamAccountName())
-		}
-		if v.GetOnPremisesSecurityIdentifier() != nil {
-			value.OnPremisesSecurityIdentifier = types.StringValue(*v.GetOnPremisesSecurityIdentifier())
-		}
-		if v.GetOnPremisesSyncEnabled() != nil {
-			value.OnPremisesSyncEnabled = types.BoolValue(*v.GetOnPremisesSyncEnabled())
-		}
-		if v.GetPreferredDataLocation() != nil {
-			value.PreferredDataLocation = types.StringValue(*v.GetPreferredDataLocation())
-		}
-		if v.GetPreferredLanguage() != nil {
-			value.PreferredLanguage = types.StringValue(*v.GetPreferredLanguage())
-		}
-		for _, v := range v.GetProxyAddresses() {
-			value.ProxyAddresses = append(value.ProxyAddresses, types.StringValue(v))
-		}
-		if v.GetRenewedDateTime() != nil {
-			value.RenewedDateTime = types.StringValue(v.GetRenewedDateTime().String())
-		}
-		if v.GetSecurityEnabled() != nil {
-			value.SecurityEnabled = types.BoolValue(*v.GetSecurityEnabled())
-		}
-		if v.GetSecurityIdentifier() != nil {
-			value.SecurityIdentifier = types.StringValue(*v.GetSecurityIdentifier())
-		}
-		for _, v := range v.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(groupsServiceProvisioningErrorsModel)
-
 			if v.GetCreatedDateTime() != nil {
-				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+				value.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+			} else {
+				value.CreatedDateTime = types.StringNull()
 			}
-			if v.GetIsResolved() != nil {
-				serviceProvisioningErrors.IsResolved = types.BoolValue(*v.GetIsResolved())
+			if v.GetDescription() != nil {
+				value.Description = types.StringValue(*v.GetDescription())
+			} else {
+				value.Description = types.StringNull()
 			}
-			if v.GetServiceInstance() != nil {
-				serviceProvisioningErrors.ServiceInstance = types.StringValue(*v.GetServiceInstance())
+			if v.GetDisplayName() != nil {
+				value.DisplayName = types.StringValue(*v.GetDisplayName())
+			} else {
+				value.DisplayName = types.StringNull()
 			}
-			value.ServiceProvisioningErrors = append(value.ServiceProvisioningErrors, *serviceProvisioningErrors)
+			if v.GetExpirationDateTime() != nil {
+				value.ExpirationDateTime = types.StringValue(v.GetExpirationDateTime().String())
+			} else {
+				value.ExpirationDateTime = types.StringNull()
+			}
+			if len(v.GetGroupTypes()) > 0 {
+				var groupTypes []attr.Value
+				for _, v := range v.GetGroupTypes() {
+					groupTypes = append(groupTypes, types.StringValue(v))
+				}
+				listValue, _ := types.ListValue(types.StringType, groupTypes)
+				value.GroupTypes = listValue
+			} else {
+				value.GroupTypes = types.ListNull(types.StringType)
+			}
+			if v.GetIsAssignableToRole() != nil {
+				value.IsAssignableToRole = types.BoolValue(*v.GetIsAssignableToRole())
+			} else {
+				value.IsAssignableToRole = types.BoolNull()
+			}
+			if v.GetIsManagementRestricted() != nil {
+				value.IsManagementRestricted = types.BoolValue(*v.GetIsManagementRestricted())
+			} else {
+				value.IsManagementRestricted = types.BoolNull()
+			}
+			if v.GetLicenseProcessingState() != nil {
+				licenseProcessingState := new(groupsLicenseProcessingStateModel)
+
+				if v.GetLicenseProcessingState().GetState() != nil {
+					licenseProcessingState.State = types.StringValue(*v.GetLicenseProcessingState().GetState())
+				} else {
+					licenseProcessingState.State = types.StringNull()
+				}
+
+				objectValue, _ := types.ObjectValueFrom(ctx, licenseProcessingState.AttributeTypes(), licenseProcessingState)
+				value.LicenseProcessingState = objectValue
+			}
+			if v.GetMail() != nil {
+				value.Mail = types.StringValue(*v.GetMail())
+			} else {
+				value.Mail = types.StringNull()
+			}
+			if v.GetMailEnabled() != nil {
+				value.MailEnabled = types.BoolValue(*v.GetMailEnabled())
+			} else {
+				value.MailEnabled = types.BoolNull()
+			}
+			if v.GetMailNickname() != nil {
+				value.MailNickname = types.StringValue(*v.GetMailNickname())
+			} else {
+				value.MailNickname = types.StringNull()
+			}
+			if v.GetMembershipRule() != nil {
+				value.MembershipRule = types.StringValue(*v.GetMembershipRule())
+			} else {
+				value.MembershipRule = types.StringNull()
+			}
+			if v.GetMembershipRuleProcessingState() != nil {
+				value.MembershipRuleProcessingState = types.StringValue(*v.GetMembershipRuleProcessingState())
+			} else {
+				value.MembershipRuleProcessingState = types.StringNull()
+			}
+			if v.GetOnPremisesDomainName() != nil {
+				value.OnPremisesDomainName = types.StringValue(*v.GetOnPremisesDomainName())
+			} else {
+				value.OnPremisesDomainName = types.StringNull()
+			}
+			if v.GetOnPremisesLastSyncDateTime() != nil {
+				value.OnPremisesLastSyncDateTime = types.StringValue(v.GetOnPremisesLastSyncDateTime().String())
+			} else {
+				value.OnPremisesLastSyncDateTime = types.StringNull()
+			}
+			if v.GetOnPremisesNetBiosName() != nil {
+				value.OnPremisesNetBiosName = types.StringValue(*v.GetOnPremisesNetBiosName())
+			} else {
+				value.OnPremisesNetBiosName = types.StringNull()
+			}
+			if len(v.GetOnPremisesProvisioningErrors()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetOnPremisesProvisioningErrors() {
+					onPremisesProvisioningErrors := new(groupsOnPremisesProvisioningErrorModel)
+
+					if v.GetCategory() != nil {
+						onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
+					} else {
+						onPremisesProvisioningErrors.Category = types.StringNull()
+					}
+					if v.GetOccurredDateTime() != nil {
+						onPremisesProvisioningErrors.OccurredDateTime = types.StringValue(v.GetOccurredDateTime().String())
+					} else {
+						onPremisesProvisioningErrors.OccurredDateTime = types.StringNull()
+					}
+					if v.GetPropertyCausingError() != nil {
+						onPremisesProvisioningErrors.PropertyCausingError = types.StringValue(*v.GetPropertyCausingError())
+					} else {
+						onPremisesProvisioningErrors.PropertyCausingError = types.StringNull()
+					}
+					if v.GetValue() != nil {
+						onPremisesProvisioningErrors.Value = types.StringValue(*v.GetValue())
+					} else {
+						onPremisesProvisioningErrors.Value = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, onPremisesProvisioningErrors.AttributeTypes(), onPremisesProvisioningErrors)
+					objectValues = append(objectValues, objectValue)
+				}
+				value.OnPremisesProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+			}
+			if v.GetOnPremisesSamAccountName() != nil {
+				value.OnPremisesSamAccountName = types.StringValue(*v.GetOnPremisesSamAccountName())
+			} else {
+				value.OnPremisesSamAccountName = types.StringNull()
+			}
+			if v.GetOnPremisesSecurityIdentifier() != nil {
+				value.OnPremisesSecurityIdentifier = types.StringValue(*v.GetOnPremisesSecurityIdentifier())
+			} else {
+				value.OnPremisesSecurityIdentifier = types.StringNull()
+			}
+			if v.GetOnPremisesSyncEnabled() != nil {
+				value.OnPremisesSyncEnabled = types.BoolValue(*v.GetOnPremisesSyncEnabled())
+			} else {
+				value.OnPremisesSyncEnabled = types.BoolNull()
+			}
+			if v.GetPreferredDataLocation() != nil {
+				value.PreferredDataLocation = types.StringValue(*v.GetPreferredDataLocation())
+			} else {
+				value.PreferredDataLocation = types.StringNull()
+			}
+			if v.GetPreferredLanguage() != nil {
+				value.PreferredLanguage = types.StringValue(*v.GetPreferredLanguage())
+			} else {
+				value.PreferredLanguage = types.StringNull()
+			}
+			if len(v.GetProxyAddresses()) > 0 {
+				var proxyAddresses []attr.Value
+				for _, v := range v.GetProxyAddresses() {
+					proxyAddresses = append(proxyAddresses, types.StringValue(v))
+				}
+				listValue, _ := types.ListValue(types.StringType, proxyAddresses)
+				value.ProxyAddresses = listValue
+			} else {
+				value.ProxyAddresses = types.ListNull(types.StringType)
+			}
+			if v.GetRenewedDateTime() != nil {
+				value.RenewedDateTime = types.StringValue(v.GetRenewedDateTime().String())
+			} else {
+				value.RenewedDateTime = types.StringNull()
+			}
+			if v.GetSecurityEnabled() != nil {
+				value.SecurityEnabled = types.BoolValue(*v.GetSecurityEnabled())
+			} else {
+				value.SecurityEnabled = types.BoolNull()
+			}
+			if v.GetSecurityIdentifier() != nil {
+				value.SecurityIdentifier = types.StringValue(*v.GetSecurityIdentifier())
+			} else {
+				value.SecurityIdentifier = types.StringNull()
+			}
+			if len(v.GetServiceProvisioningErrors()) > 0 {
+				objectValues := []basetypes.ObjectValue{}
+				for _, v := range v.GetServiceProvisioningErrors() {
+					serviceProvisioningErrors := new(groupsServiceProvisioningErrorModel)
+
+					if v.GetCreatedDateTime() != nil {
+						serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+					} else {
+						serviceProvisioningErrors.CreatedDateTime = types.StringNull()
+					}
+					if v.GetIsResolved() != nil {
+						serviceProvisioningErrors.IsResolved = types.BoolValue(*v.GetIsResolved())
+					} else {
+						serviceProvisioningErrors.IsResolved = types.BoolNull()
+					}
+					if v.GetServiceInstance() != nil {
+						serviceProvisioningErrors.ServiceInstance = types.StringValue(*v.GetServiceInstance())
+					} else {
+						serviceProvisioningErrors.ServiceInstance = types.StringNull()
+					}
+					objectValue, _ := types.ObjectValueFrom(ctx, serviceProvisioningErrors.AttributeTypes(), serviceProvisioningErrors)
+					objectValues = append(objectValues, objectValue)
+				}
+				value.ServiceProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+			}
+			if v.GetTheme() != nil {
+				value.Theme = types.StringValue(*v.GetTheme())
+			} else {
+				value.Theme = types.StringNull()
+			}
+			if v.GetUniqueName() != nil {
+				value.UniqueName = types.StringValue(*v.GetUniqueName())
+			} else {
+				value.UniqueName = types.StringNull()
+			}
+			if v.GetVisibility() != nil {
+				value.Visibility = types.StringValue(*v.GetVisibility())
+			} else {
+				value.Visibility = types.StringNull()
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
+			objectValues = append(objectValues, objectValue)
 		}
-		if v.GetTheme() != nil {
-			value.Theme = types.StringValue(*v.GetTheme())
-		}
-		if v.GetVisibility() != nil {
-			value.Visibility = types.StringValue(*v.GetVisibility())
-		}
-		state.Value = append(state.Value, *value)
+		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state

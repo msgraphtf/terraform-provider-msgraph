@@ -31,12 +31,12 @@ Read-Only:
 - `e_tag` (String) ETag for the item. Read-only.
 - `error` (Attributes) (see [below for nested schema](#nestedatt--value--error))
 - `id` (String) The unique identifier for an entity. Read-only.
-- `is_personal_site` (Boolean)
+- `is_personal_site` (Boolean) Identifies whether the site is personal or not. Read-only.
 - `last_modified_by` (Attributes) Identity of the user, device, and application that last modified the item. Read-only. (see [below for nested schema](#nestedatt--value--last_modified_by))
 - `last_modified_date_time` (String) Date and time the item was last modified. Read-only.
 - `name` (String) The name of the item. Read-write.
 - `parent_reference` (Attributes) Parent information, if the item has a parent. Read-write. (see [below for nested schema](#nestedatt--value--parent_reference))
-- `root` (Attributes) If present, indicates that this is the root site in the site collection. Read-only. (see [below for nested schema](#nestedatt--value--root))
+- `root` (Attributes) If present, provides the root site in the site collection. Read-only. (see [below for nested schema](#nestedatt--value--root))
 - `sharepoint_ids` (Attributes) Returns identifiers useful for SharePoint REST compatibility. Read-only. (see [below for nested schema](#nestedatt--value--sharepoint_ids))
 - `site_collection` (Attributes) Provides details about the site's site collection. Available only on the root site. Read-only. (see [below for nested schema](#nestedatt--value--site_collection))
 - `web_url` (String) URL that either displays the resource in the browser (for Office file formats), or is a direct link to the file (for other formats). Read-only.
@@ -55,8 +55,8 @@ Read-Only:
 
 Read-Only:
 
-- `display_name` (String) The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.
-- `id` (String) Unique identifier for the identity.
+- `display_name` (String) The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.
+- `id` (String) Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.
 
 
 <a id="nestedatt--value--created_by--device"></a>
@@ -64,8 +64,8 @@ Read-Only:
 
 Read-Only:
 
-- `display_name` (String) The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.
-- `id` (String) Unique identifier for the identity.
+- `display_name` (String) The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.
+- `id` (String) Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.
 
 
 <a id="nestedatt--value--created_by--user"></a>
@@ -73,8 +73,8 @@ Read-Only:
 
 Read-Only:
 
-- `display_name` (String) The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.
-- `id` (String) Unique identifier for the identity.
+- `display_name` (String) The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.
+- `id` (String) Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.
 
 
 
@@ -110,7 +110,7 @@ Read-Only:
 - `target` (String) The target of the error.
 
 <a id="nestedatt--value--error--inner_error--details"></a>
-### Nested Schema for `value.error.inner_error.target`
+### Nested Schema for `value.error.inner_error.details`
 
 Read-Only:
 
@@ -135,8 +135,8 @@ Read-Only:
 
 Read-Only:
 
-- `display_name` (String) The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.
-- `id` (String) Unique identifier for the identity.
+- `display_name` (String) The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.
+- `id` (String) Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.
 
 
 <a id="nestedatt--value--last_modified_by--device"></a>
@@ -144,8 +144,8 @@ Read-Only:
 
 Read-Only:
 
-- `display_name` (String) The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.
-- `id` (String) Unique identifier for the identity.
+- `display_name` (String) The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.
+- `id` (String) Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.
 
 
 <a id="nestedatt--value--last_modified_by--user"></a>
@@ -153,8 +153,8 @@ Read-Only:
 
 Read-Only:
 
-- `display_name` (String) The display name of the identity. The display name might not always be available or up to date. For example, if a user changes their display name, the API might show the new value in a future response, but the items associated with the user won't show up as having changed when using delta.
-- `id` (String) Unique identifier for the identity.
+- `display_name` (String) The display name of the identity.For drive items, the display name might not always be available or up to date. For example, if a user changes their display name the API might show the new value in a future response, but the items associated with the user don't show up as changed when using delta.
+- `id` (String) Unique identifier for the identity or actor. For example, in the access reviews decisions API, this property might record the id of the principal, that is, the group, user, or application that's subject to review.
 
 
 
@@ -163,14 +163,14 @@ Read-Only:
 
 Read-Only:
 
-- `drive_id` (String) Unique identifier of the drive instance that contains the driveItem. Only returned if the item is located in a [drive][]. Read-only.
-- `drive_type` (String) Identifies the type of drive. Only returned if the item is located in a [drive][]. See [drive][] resource for values.
+- `drive_id` (String) Unique identifier of the drive instance that contains the driveItem. Only returned if the item is located in a drive. Read-only.
+- `drive_type` (String) Identifies the type of drive. Only returned if the item is located in a drive. See drive resource for values.
 - `id` (String) Unique identifier of the driveItem in the drive or a listItem in a list. Read-only.
 - `name` (String) The name of the item being referenced. Read-only.
-- `path` (String) Path that can be used to navigate to the item. Read-only.
-- `share_id` (String) A unique identifier for a shared resource that can be accessed via the [Shares][] API.
+- `path` (String) Percent-encoded path that can be used to navigate to the item. Read-only.
+- `share_id` (String) A unique identifier for a shared resource that can be accessed via the Shares API.
 - `sharepoint_ids` (Attributes) Returns identifiers useful for SharePoint REST compatibility. Read-only. (see [below for nested schema](#nestedatt--value--parent_reference--sharepoint_ids))
-- `site_id` (String) For OneDrive for Business and SharePoint, this property represents the ID of the site that contains the parent document library of the driveItem resource or the parent list of the listItem resource. The value is the same as the id property of that [site][] resource. It is an opaque string that consists of three identifiers of the site. For OneDrive, this property is not populated.
+- `site_id` (String) For OneDrive for Business and SharePoint, this property represents the ID of the site that contains the parent document library of the driveItem resource or the parent list of the listItem resource. The value is the same as the id property of that site resource. It is an opaque string that consists of three identifiers of the site. For OneDrive, this property is not populated.
 
 <a id="nestedatt--value--parent_reference--sharepoint_ids"></a>
 ### Nested Schema for `value.parent_reference.sharepoint_ids`
@@ -210,9 +210,18 @@ Read-Only:
 
 Read-Only:
 
-- `data_location_code` (String) The geographic region code for where this site collection resides. Read-only.
+- `archival_details` (Attributes) Represents whether the site collection is recently archived, fully archived, or reactivating. Possible values are: recentlyArchived, fullyArchived, reactivating, unknownFutureValue. (see [below for nested schema](#nestedatt--value--site_collection--archival_details))
+- `data_location_code` (String) The geographic region code for where this site collection resides. Only present for multi-geo tenants. Read-only.
 - `hostname` (String) The hostname for the site collection. Read-only.
 - `root` (Attributes) If present, indicates that this is a root site collection in SharePoint. Read-only. (see [below for nested schema](#nestedatt--value--site_collection--root))
+
+<a id="nestedatt--value--site_collection--archival_details"></a>
+### Nested Schema for `value.site_collection.archival_details`
+
+Read-Only:
+
+- `archive_status` (String) Represents the current archive status of the site collection. Returned only on $select. The possible values are: recentlyArchived, fullyArchived, reactivating, unknownFutureValue.
+
 
 <a id="nestedatt--value--site_collection--root"></a>
 ### Nested Schema for `value.site_collection.root`

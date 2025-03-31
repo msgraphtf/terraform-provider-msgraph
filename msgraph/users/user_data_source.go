@@ -2,7 +2,6 @@ package users
 
 import (
 	"context"
-
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -75,12 +74,12 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"disabled_plans": schema.ListAttribute{
-							Description: "A collection of the unique identifiers for plans that have been disabled.",
+							Description: "A collection of the unique identifiers for plans that have been disabled. IDs are available in servicePlans > servicePlanId in the tenant's subscribedSkus or serviceStatus > servicePlanId in the tenant's companySubscription.",
 							Computed:    true,
 							ElementType: types.StringType,
 						},
 						"sku_id": schema.StringAttribute{
-							Description: "The unique identifier for the SKU.",
+							Description: "The unique identifier for the SKU. Corresponds to the skuId from subscribedSkus or companySubscription.",
 							Computed:    true,
 						},
 					},
@@ -171,7 +170,7 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"employee_leave_date_time": schema.StringAttribute{
-				Description: "The date and time when the user left or will leave the organization. To read this property, the calling app must be assigned the User-LifeCycleInfo.Read.All permission. To write this property, the calling app must be assigned the User.Read.All and User-LifeCycleInfo.ReadWrite.All permissions. To read this property in delegated scenarios, the admin needs at least one of the following Microsoft Entra roles: Lifecycle Workflows Administrator, Global Reader. To write this property in delegated scenarios, the admin needs the Global Administrator role. Supports $filter (eq, ne, not , ge, le, in). For more information, see Configure the employeeLeaveDateTime property for a user.",
+				Description: "The date and time when the user left or will leave the organization. To read this property, the calling app must be assigned the User-LifeCycleInfo.Read.All permission. To write this property, the calling app must be assigned the User.Read.All and User-LifeCycleInfo.ReadWrite.All permissions. To read this property in delegated scenarios, the admin needs at least one of the following Microsoft Entra roles: Lifecycle Workflows Administrator (least privilege), Global Reader. To write this property in delegated scenarios, the admin needs the Global Administrator role. Supports $filter (eq, ne, not , ge, le, in). For more information, see Configure the employeeLeaveDateTime property for a user.",
 				Computed:    true,
 			},
 			"employee_org_data": schema.SingleNestedAttribute{
@@ -241,6 +240,10 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "A list for the user to describe their interests. Returned only on $select.",
 				Computed:    true,
 				ElementType: types.StringType,
+			},
+			"is_management_restricted": schema.BoolAttribute{
+				Description: "",
+				Computed:    true,
 			},
 			"is_resource_account": schema.BoolAttribute{
 				Description: "Don't use – reserved for future use.",
@@ -320,7 +323,7 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"on_premises_extension_attributes": schema.SingleNestedAttribute{
-				Description: "Contains extensionAttributes1-15 for the user. These extension attributes are also known as Exchange custom attributes 1-15. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during the creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. Returned only on $select. Supports $filter (eq, ne, not, in).",
+				Description: "Contains extensionAttributes1-15 for the user. These extension attributes are also known as Exchange custom attributes 1-15. Each attribute can store up to 1024 characters. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during the creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. Returned only on $select. Supports $filter (eq, ne, not, in).",
 				Computed:    true,
 				Attributes: map[string]schema.Attribute{
 					"extension_attribute_1": schema.StringAttribute{
@@ -443,7 +446,7 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"password_profile": schema.SingleNestedAttribute{
-				Description: "Specifies the password profile for the user. The profile contains the user's password. This property is required when a user is created. The password in the profile must satisfy minimum requirements as specified by the passwordPolicies property. By default, a strong password is required. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values).",
+				Description: "Specifies the password profile for the user. The profile contains the user's password. This property is required when a user is created. The password in the profile must satisfy minimum requirements as specified by the passwordPolicies property. By default, a strong password is required. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values). To update this property:  In delegated access, the calling app must be assigned the Directory.AccessAsUser.All delegated permission on behalf of the signed-in user.  In application-only access, the calling app must be assigned the User.ReadWrite.All (least privilege) or Directory.ReadWrite.All (higher privilege) application permission and at least the User Administrator Microsoft Entra role.",
 				Computed:    true,
 				Attributes: map[string]schema.Attribute{
 					"force_change_password_next_sign_in": schema.BoolAttribute{
@@ -654,6 +657,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				"identities",
 				"imAddresses",
 				"interests",
+				"isManagementRestricted",
 				"isResourceAccount",
 				"jobTitle",
 				"lastPasswordChangeDateTime",
@@ -707,8 +711,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	if !state.Id.IsNull() {
 		result, err = d.client.Users().ByUserId(state.Id.ValueString()).Get(context.Background(), &qparams)
-	} else if !state.UserPrincipalName.IsNull() {
-		result, err = d.client.Users().ByUserId(state.UserPrincipalName.ValueString()).Get(context.Background(), &qparams)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
@@ -753,7 +755,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLicenses() {
-			assignedLicenses := new(userAssignedLicensesModel)
+			assignedLicenses := new(userAssignedLicenseModel)
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var disabledPlans []attr.Value
@@ -778,7 +780,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if len(result.GetAssignedPlans()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedPlans() {
-			assignedPlans := new(userAssignedPlansModel)
+			assignedPlans := new(userAssignedPlanModel)
 
 			if v.GetAssignedDateTime() != nil {
 				assignedPlans.AssignedDateTime = types.StringValue(v.GetAssignedDateTime().String())
@@ -942,7 +944,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if len(result.GetIdentities()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetIdentities() {
-			identities := new(userIdentitiesModel)
+			identities := new(userObjectIdentityModel)
 
 			if v.GetIssuer() != nil {
 				identities.Issuer = types.StringValue(*v.GetIssuer())
@@ -984,6 +986,11 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	} else {
 		state.Interests = types.ListNull(types.StringType)
 	}
+	if result.GetIsManagementRestricted() != nil {
+		state.IsManagementRestricted = types.BoolValue(*result.GetIsManagementRestricted())
+	} else {
+		state.IsManagementRestricted = types.BoolNull()
+	}
 	if result.GetIsResourceAccount() != nil {
 		state.IsResourceAccount = types.BoolValue(*result.GetIsResourceAccount())
 	} else {
@@ -1007,7 +1014,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if len(result.GetLicenseAssignmentStates()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetLicenseAssignmentStates() {
-			licenseAssignmentStates := new(userLicenseAssignmentStatesModel)
+			licenseAssignmentStates := new(userLicenseAssignmentStateModel)
 
 			if v.GetAssignedByGroup() != nil {
 				licenseAssignmentStates.AssignedByGroup = types.StringValue(*v.GetAssignedByGroup())
@@ -1179,7 +1186,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(userOnPremisesProvisioningErrorsModel)
+			onPremisesProvisioningErrors := new(userOnPremisesProvisioningErrorModel)
 
 			if v.GetCategory() != nil {
 				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -1296,7 +1303,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if len(result.GetProvisionedPlans()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetProvisionedPlans() {
-			provisionedPlans := new(userProvisionedPlansModel)
+			provisionedPlans := new(userProvisionedPlanModel)
 
 			if v.GetCapabilityStatus() != nil {
 				provisionedPlans.CapabilityStatus = types.StringValue(*v.GetCapabilityStatus())
@@ -1356,7 +1363,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(userServiceProvisioningErrorsModel)
+			serviceProvisioningErrors := new(userServiceProvisioningErrorModel)
 
 			if v.GetCreatedDateTime() != nil {
 				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())

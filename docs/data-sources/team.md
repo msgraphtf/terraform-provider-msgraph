@@ -84,9 +84,3 @@ Read-Only:
 
 <a id="nestedatt--summary"></a>
 ### Nested Schema for `summary`
-
-Read-Only:
-
-- `guests_count` (Number) Count of guests in a team.
-- `members_count` (Number) Count of members in a team.
-- `owners_count` (Number) Count of owners in a team.

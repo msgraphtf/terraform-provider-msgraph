@@ -24,26 +24,27 @@ description: |-
 
 Read-Only:
 
-- `add_ins` (Attributes List) Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams may set the addIns property for its 'FileHandler' functionality. This will let services like Office 365 call the application in the context of a document the user is working on. (see [below for nested schema](#nestedatt--value--add_ins))
+- `add_ins` (Attributes List) Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams can set the addIns property for its 'FileHandler' functionality. This lets services like Microsoft 365 call the application in the context of a document the user is working on. (see [below for nested schema](#nestedatt--value--add_ins))
 - `api` (Attributes) Specifies settings for an application that implements a web API. (see [below for nested schema](#nestedatt--value--api))
 - `app_id` (String) The unique identifier for the application that is assigned to an application by Microsoft Entra ID. Not nullable. Read-only. Alternate key. Supports $filter (eq).
 - `app_roles` (Attributes List) The collection of roles defined for the application. With app role assignments, these roles can be assigned to users, groups, or service principals associated with other applications. Not nullable. (see [below for nested schema](#nestedatt--value--app_roles))
-- `application_template_id` (String) Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne).
+- `application_template_id` (String) Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne). Read-only. null if the app wasn't created from an application template.
 - `certification` (Attributes) Specifies the certification status of the application. (see [below for nested schema](#nestedatt--value--certification))
 - `created_date_time` (String) The date and time the application was registered. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.  Supports $filter (eq, ne, not, ge, le, in, and eq on null values) and $orderby.
 - `default_redirect_uri` (String)
 - `deleted_date_time` (String) Date and time when this object was deleted. Always null when the object hasn't been deleted.
-- `description` (String) Free text field to provide a description of the application object to end users. The maximum allowed size is 1024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
-- `disabled_by_microsoft_status` (String) Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons may include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).
+- `description` (String) Free text field to provide a description of the application object to end users. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
+- `disabled_by_microsoft_status` (String) Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).
 - `display_name` (String) The display name for the application. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.
 - `group_membership_claims` (String) Configures the groups claim issued in a user or OAuth 2.0 access token that the application expects. To set this attribute, use one of the following valid string values: None, SecurityGroup (for security groups and Microsoft Entra roles), All (this gets all of the security groups, distribution groups, and Microsoft Entra directory roles that the signed-in user is a member of).
 - `id` (String) The unique identifier for an entity. Read-only.
-- `identifier_uris` (List of String) Also known as App ID URI, this value is set when an application is used as a resource app. The identifierUris acts as the prefix for the scopes you'll reference in your API's code, and it must be globally unique. You can use the default value provided, which is in the form api://<application-client-id>, or specify a more readable URI like https://contoso.com/api. For more information on valid identifierUris patterns and best practices, see Microsoft Entra application registration security best practices. Not nullable. Supports $filter (eq, ne, ge, le, startsWith).
+- `identifier_uris` (List of String) Also known as App ID URI, this value is set when an application is used as a resource app. The identifierUris acts as the prefix for the scopes you reference in your API's code, and it must be globally unique. You can use the default value provided, which is in the form api://<appId>, or specify a more readable URI like https://contoso.com/api. For more information on valid identifierUris patterns and best practices, see Microsoft Entra application registration security best practices. Not nullable. Supports $filter (eq, ne, ge, le, startsWith).
 - `info` (Attributes) Basic profile information of the application such as  app's marketing, support, terms of service and privacy statement URLs. The terms of service and privacy statement are surfaced to users through the user consent experience. For more info, see How to: Add Terms of service and privacy statement for registered Microsoft Entra apps. Supports $filter (eq, ne, not, ge, le, and eq on null values). (see [below for nested schema](#nestedatt--value--info))
 - `is_device_only_auth_supported` (Boolean) Specifies whether this application supports device authentication without a user. The default is false.
-- `is_fallback_public_client` (Boolean) Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false which means the fallback application type is confidential client such as a web app. There are certain scenarios where Microsoft Entra ID cannot determine the client application type. For example, the ROPC flow where it is configured without specifying a redirect URI. In those cases Microsoft Entra ID interprets the application type based on the value of this property.
+- `is_fallback_public_client` (Boolean) Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false, which means the fallback application type is confidential client such as a web app. There are certain scenarios where Microsoft Entra ID can't determine the client application type. For example, the ROPC flow where it's configured without specifying a redirect URI. In those cases, Microsoft Entra ID interprets the application type based on the value of this property.
 - `key_credentials` (Attributes List) The collection of key credentials associated with the application. Not nullable. Supports $filter (eq, not, ge, le). (see [below for nested schema](#nestedatt--value--key_credentials))
 - `logo` (String) The main logo for the application. Not nullable.
+- `native_authentication_apis_enabled` (String) Specifies whether the Native Authentication APIs are enabled for the application. The possible values are: none and all. Default is none. For more information, see Native Authentication.
 - `notes` (String) Notes relevant for the management of the application.
 - `oauth_2_require_post_response` (Boolean)
 - `optional_claims` (Attributes) Application developers can configure optional claims in their Microsoft Entra applications to specify the claims that are sent to their application by the Microsoft security token service. For more information, see How to: Provide optional claims to your app. (see [below for nested schema](#nestedatt--value--optional_claims))
@@ -55,11 +56,12 @@ Read-Only:
 - `required_resource_access` (Attributes List) Specifies the resources that the application needs to access. This property also specifies the set of delegated permissions and application roles that it needs for each of those resources. This configuration of access to the required resources drives the consent experience. No more than 50 resource services (APIs) can be configured. Beginning mid-October 2021, the total number of required permissions must not exceed 400. For more information, see Limits on requested permissions per app. Not nullable. Supports $filter (eq, not, ge, le). (see [below for nested schema](#nestedatt--value--required_resource_access))
 - `saml_metadata_url` (String) The URL where the service exposes SAML metadata for federation. This property is valid only for single-tenant applications. Nullable.
 - `service_management_reference` (String) References application or service contact information from a Service or Asset Management database. Nullable.
-- `service_principal_lock_configuration` (Attributes) Specifies whether sensitive properties of a multi-tenant application should be locked for editing after the application is provisioned in a tenant. Nullable. null by default. (see [below for nested schema](#nestedatt--value--service_principal_lock_configuration))
-- `sign_in_audience` (String) Specifies the Microsoft accounts that are supported for the current application. The possible values are: AzureADMyOrg, AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount (default), and PersonalMicrosoftAccount. See more in the table. The value of this object also limits the number of permissions an app can request. For more information, see Limits on requested permissions per app. The value for this property has implications on other app object properties. As a result, if you change this property, you may need to change other properties first. For more information, see Validation differences for signInAudience.Supports $filter (eq, ne, not).
+- `service_principal_lock_configuration` (Attributes) Specifies whether sensitive properties of a multitenant application should be locked for editing after the application is provisioned in a tenant. Nullable. null by default. (see [below for nested schema](#nestedatt--value--service_principal_lock_configuration))
+- `sign_in_audience` (String) Specifies the Microsoft accounts that are supported for the current application. The possible values are: AzureADMyOrg (default), AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount, and PersonalMicrosoftAccount. See more in the table. The value of this object also limits the number of permissions an app can request. For more information, see Limits on requested permissions per app. The value for this property has implications on other app object properties. As a result, if you change this property, you might need to change other properties first. For more information, see Validation differences for signInAudience.Supports $filter (eq, ne, not).
 - `spa` (Attributes) Specifies settings for a single-page application, including sign out URLs and redirect URIs for authorization codes and access tokens. (see [below for nested schema](#nestedatt--value--spa))
 - `tags` (List of String) Custom strings that can be used to categorize and identify the application. Not nullable. Strings added here will also appear in the tags property of any associated service principals.Supports $filter (eq, not, ge, le, startsWith) and $search.
 - `token_encryption_key_id` (String) Specifies the keyId of a public key from the keyCredentials collection. When configured, Microsoft Entra ID encrypts all the tokens it emits by using the key this property points to. The application code that receives the encrypted token must use the matching private key to decrypt the token before it can be used for the signed-in user.
+- `unique_name` (String) The unique identifier that can be assigned to an application and used as an alternate key. Immutable. Read-only.
 - `verified_publisher` (Attributes) Specifies the verified publisher of the application. For more information about how publisher verification helps support application security, trustworthiness, and compliance, see Publisher verification. (see [below for nested schema](#nestedatt--value--verified_publisher))
 - `web` (Attributes) Specifies settings for a web application. (see [below for nested schema](#nestedatt--value--web))
 
@@ -68,9 +70,9 @@ Read-Only:
 
 Read-Only:
 
-- `id` (String)
-- `properties` (Attributes List) (see [below for nested schema](#nestedatt--value--add_ins--properties))
-- `type` (String)
+- `id` (String) The unique identifier for the addIn object.
+- `properties` (Attributes List) The collection of key-value pairs that define parameters that the consuming service can use or call. You must specify this property when performing a POST or a PATCH operation on the addIns collection. Required. (see [below for nested schema](#nestedatt--value--add_ins--properties))
+- `type` (String) The unique name for the functionality exposed by the app.
 
 <a id="nestedatt--value--add_ins--properties"></a>
 ### Nested Schema for `value.add_ins.properties`
@@ -91,7 +93,6 @@ Read-Only:
 - `known_client_applications` (List of String) Used for bundling consent if you have a solution that contains two parts: a client app and a custom web API app. If you set the appID of the client app to this value, the user only consents once to the client app. Microsoft Entra ID knows that consenting to the client means implicitly consenting to the web API and automatically provisions service principals for both APIs at the same time. Both the client and the web API app must be registered in the same tenant.
 - `oauth_2_permission_scopes` (Attributes List) The definition of the delegated permissions exposed by the web API represented by this application registration. These delegated permissions may be requested by a client application, and may be granted by users or administrators during consent. Delegated permissions are sometimes referred to as OAuth 2.0 scopes. (see [below for nested schema](#nestedatt--value--api--oauth_2_permission_scopes))
 - `pre_authorized_applications` (Attributes List) Lists the client applications that are preauthorized with the specified delegated permissions to access this application's APIs. Users aren't required to consent to any preauthorized application (for the permissions specified). However, any other permissions not listed in preAuthorizedApplications (requested through incremental consent for example) will require user consent. (see [below for nested schema](#nestedatt--value--api--pre_authorized_applications))
-- `requested_access_token_version` (Number) Specifies the access token version expected by this resource. This changes the version and format of the JWT produced independent of the endpoint or client used to request the access token.  The endpoint used, v1.0 or v2.0, is chosen by the client and only impacts the version of id_tokens. Resources need to explicitly configure requestedAccessTokenVersion to indicate the supported access token format.  Possible values for requestedAccessTokenVersion are 1, 2, or null. If the value is null, this defaults to 1, which corresponds to the v1.0 endpoint.  If signInAudience on the application is configured as AzureADandPersonalMicrosoftAccount or PersonalMicrosoftAccount, the value for this property must be 2.
 
 <a id="nestedatt--value--api--oauth_2_permission_scopes"></a>
 ### Nested Schema for `value.api.oauth_2_permission_scopes`
@@ -163,9 +164,9 @@ Read-Only:
 Read-Only:
 
 - `custom_key_identifier` (String) A 40-character binary type that can be used to identify the credential. Optional. When not provided in the payload, defaults to the thumbprint of the certificate.
-- `display_name` (String) Friendly name for the key. Optional.
+- `display_name` (String) The friendly name for the key, with a maximum length of 90 characters. Longer values are accepted but shortened. Optional.
 - `end_date_time` (String) The date and time at which the credential expires. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
-- `key` (String) The certificate's raw data in byte array converted to Base64 string. Returned only on $select for a single object, that is, GET applications/{applicationId}?$select=keyCredentials or GET servicePrincipals/{servicePrincipalId}?$select=keyCredentials; otherwise, it is always null.  From a .cer certificate, you can read the key using the Convert.ToBase64String() method. For more information, see Get the certificate key.
+- `key` (String) The certificate's raw data in byte array converted to Base64 string. Returned only on $select for a single object, that is, GET applications/{applicationId}?$select=keyCredentials or GET servicePrincipals/{servicePrincipalId}?$select=keyCredentials; otherwise, it's always null.  From a .cer certificate, you can read the key using the Convert.ToBase64String() method. For more information, see Get the certificate key.
 - `key_id` (String) The unique identifier (GUID) for the key.
 - `start_date_time` (String) The date and time at which the credential becomes valid.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
 - `type` (String) The type of key credential; for example, Symmetric, AsymmetricX509Cert.
@@ -243,7 +244,7 @@ Read-Only:
 
 Read-Only:
 
-- `redirect_uris` (List of String) Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.
+- `redirect_uris` (List of String) Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent. For iOS and macOS apps, specify the value following the syntax msauth.{BUNDLEID}://auth, replacing '{BUNDLEID}'. For example, if the bundle ID is com.microsoft.identitysample.MSALiOS, the URI is msauth.com.microsoft.identitysample.MSALiOS://auth.
 
 
 <a id="nestedatt--value--request_signature_verification"></a>
@@ -328,5 +329,4 @@ Read-Only:
 
 Read-Only:
 
-- `index` (Number)
 - `uri` (String)

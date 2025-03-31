@@ -3,14 +3,13 @@ package users
 import (
 	"context"
 	"github.com/google/uuid"
-	"time"
-
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"time"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
@@ -106,7 +105,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"disabled_plans": schema.ListAttribute{
-							Description: "A collection of the unique identifiers for plans that have been disabled.",
+							Description: "A collection of the unique identifiers for plans that have been disabled. IDs are available in servicePlans > servicePlanId in the tenant's subscribedSkus or serviceStatus > servicePlanId in the tenant's companySubscription.",
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.List{
@@ -115,7 +114,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							ElementType: types.StringType,
 						},
 						"sku_id": schema.StringAttribute{
-							Description: "The unique identifier for the SKU.",
+							Description: "The unique identifier for the SKU. Corresponds to the skuId from subscribedSkus or companySubscription.",
 							Optional:    true,
 							Computed:    true,
 							PlanModifiers: []planmodifier.String{
@@ -286,7 +285,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"employee_leave_date_time": schema.StringAttribute{
-				Description: "The date and time when the user left or will leave the organization. To read this property, the calling app must be assigned the User-LifeCycleInfo.Read.All permission. To write this property, the calling app must be assigned the User.Read.All and User-LifeCycleInfo.ReadWrite.All permissions. To read this property in delegated scenarios, the admin needs at least one of the following Microsoft Entra roles: Lifecycle Workflows Administrator, Global Reader. To write this property in delegated scenarios, the admin needs the Global Administrator role. Supports $filter (eq, ne, not , ge, le, in). For more information, see Configure the employeeLeaveDateTime property for a user.",
+				Description: "The date and time when the user left or will leave the organization. To read this property, the calling app must be assigned the User-LifeCycleInfo.Read.All permission. To write this property, the calling app must be assigned the User.Read.All and User-LifeCycleInfo.ReadWrite.All permissions. To read this property in delegated scenarios, the admin needs at least one of the following Microsoft Entra roles: Lifecycle Workflows Administrator (least privilege), Global Reader. To write this property in delegated scenarios, the admin needs the Global Administrator role. Supports $filter (eq, ne, not , ge, le, in). For more information, see Configure the employeeLeaveDateTime property for a user.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -420,6 +419,14 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
+			},
+			"is_management_restricted": schema.BoolAttribute{
+				Description: "",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"is_resource_account": schema.BoolAttribute{
 				Description: "Don't use – reserved for future use.",
@@ -571,7 +578,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"on_premises_extension_attributes": schema.SingleNestedAttribute{
-				Description: "Contains extensionAttributes1-15 for the user. These extension attributes are also known as Exchange custom attributes 1-15. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during the creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. Returned only on $select. Supports $filter (eq, ne, not, in).",
+				Description: "Contains extensionAttributes1-15 for the user. These extension attributes are also known as Exchange custom attributes 1-15. Each attribute can store up to 1024 characters. For an onPremisesSyncEnabled user, the source of authority for this set of properties is the on-premises and is read-only. For a cloud-only user (where onPremisesSyncEnabled is false), these properties can be set during the creation or update of a user object.  For a cloud-only user previously synced from on-premises Active Directory, these properties are read-only in Microsoft Graph but can be fully managed through the Exchange Admin Center or the Exchange Online V2 module in PowerShell. Returned only on $select. Supports $filter (eq, ne, not, in).",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
@@ -810,7 +817,7 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"password_profile": schema.SingleNestedAttribute{
-				Description: "Specifies the password profile for the user. The profile contains the user's password. This property is required when a user is created. The password in the profile must satisfy minimum requirements as specified by the passwordPolicies property. By default, a strong password is required. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values).",
+				Description: "Specifies the password profile for the user. The profile contains the user's password. This property is required when a user is created. The password in the profile must satisfy minimum requirements as specified by the passwordPolicies property. By default, a strong password is required. Returned only on $select. Supports $filter (eq, ne, not, in, and eq on null values). To update this property:  In delegated access, the calling app must be assigned the Directory.AccessAsUser.All delegated permission on behalf of the signed-in user.  In application-only access, the calling app must be assigned the User.ReadWrite.All (least privilege) or Directory.ReadWrite.All (higher privilege) application permission and at least the User Administrator Microsoft Entra role.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
@@ -1136,9 +1143,6 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 
-	var t time.Time
-	var u uuid.UUID
-
 	// Generate API request body from Plan
 	requestBody := models.NewUser()
 
@@ -1151,7 +1155,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.DeletedDateTime.IsUnknown() {
 		planDeletedDateTime := plan.DeletedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
+		t, _ := time.Parse(time.RFC3339, planDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
 	} else {
 		plan.DeletedDateTime = types.StringNull()
@@ -1181,27 +1185,27 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if len(plan.AssignedLicenses.Elements()) > 0 {
 		var planAssignedLicenses []models.AssignedLicenseable
 		for _, i := range plan.AssignedLicenses.Elements() {
-			assignedLicense := models.NewAssignedLicense()
-			assignedLicenseModel := userAssignedLicensesModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicenseModel)
+			assignedLicenses := models.NewAssignedLicense()
+			assignedLicensesModel := userAssignedLicenseModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicensesModel)
 
-			if len(assignedLicenseModel.DisabledPlans.Elements()) > 0 {
+			if len(assignedLicensesModel.DisabledPlans.Elements()) > 0 {
 				var DisabledPlans []uuid.UUID
-				for _, i := range assignedLicenseModel.DisabledPlans.Elements() {
-					u, _ = uuid.Parse(i.String())
+				for _, i := range assignedLicensesModel.DisabledPlans.Elements() {
+					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
-				assignedLicense.SetDisabledPlans(DisabledPlans)
+				assignedLicenses.SetDisabledPlans(DisabledPlans)
 			} else {
-				assignedLicenseModel.DisabledPlans = types.ListNull(types.StringType)
+				assignedLicensesModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !assignedLicenseModel.SkuId.IsUnknown() {
-				planSkuId := assignedLicenseModel.SkuId.ValueString()
-				u, _ = uuid.Parse(planSkuId)
-				assignedLicense.SetSkuId(&u)
+			if !assignedLicensesModel.SkuId.IsUnknown() {
+				planSkuId := assignedLicensesModel.SkuId.ValueString()
+				u, _ := uuid.Parse(planSkuId)
+				assignedLicenses.SetSkuId(&u)
 			} else {
-				assignedLicenseModel.SkuId = types.StringNull()
+				assignedLicensesModel.SkuId = types.StringNull()
 			}
 		}
 		requestBody.SetAssignedLicenses(planAssignedLicenses)
@@ -1212,38 +1216,38 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if len(plan.AssignedPlans.Elements()) > 0 {
 		var planAssignedPlans []models.AssignedPlanable
 		for _, i := range plan.AssignedPlans.Elements() {
-			assignedPlan := models.NewAssignedPlan()
-			assignedPlanModel := userAssignedPlansModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
+			assignedPlans := models.NewAssignedPlan()
+			assignedPlansModel := userAssignedPlanModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlansModel)
 
-			if !assignedPlanModel.AssignedDateTime.IsUnknown() {
-				planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
-				assignedPlan.SetAssignedDateTime(&t)
+			if !assignedPlansModel.AssignedDateTime.IsUnknown() {
+				planAssignedDateTime := assignedPlansModel.AssignedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planAssignedDateTime)
+				assignedPlans.SetAssignedDateTime(&t)
 			} else {
-				assignedPlanModel.AssignedDateTime = types.StringNull()
+				assignedPlansModel.AssignedDateTime = types.StringNull()
 			}
 
-			if !assignedPlanModel.CapabilityStatus.IsUnknown() {
-				planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
-				assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
+			if !assignedPlansModel.CapabilityStatus.IsUnknown() {
+				planCapabilityStatus := assignedPlansModel.CapabilityStatus.ValueString()
+				assignedPlans.SetCapabilityStatus(&planCapabilityStatus)
 			} else {
-				assignedPlanModel.CapabilityStatus = types.StringNull()
+				assignedPlansModel.CapabilityStatus = types.StringNull()
 			}
 
-			if !assignedPlanModel.Service.IsUnknown() {
-				planService := assignedPlanModel.Service.ValueString()
-				assignedPlan.SetService(&planService)
+			if !assignedPlansModel.Service.IsUnknown() {
+				planService := assignedPlansModel.Service.ValueString()
+				assignedPlans.SetService(&planService)
 			} else {
-				assignedPlanModel.Service = types.StringNull()
+				assignedPlansModel.Service = types.StringNull()
 			}
 
-			if !assignedPlanModel.ServicePlanId.IsUnknown() {
-				planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
-				u, _ = uuid.Parse(planServicePlanId)
-				assignedPlan.SetServicePlanId(&u)
+			if !assignedPlansModel.ServicePlanId.IsUnknown() {
+				planServicePlanId := assignedPlansModel.ServicePlanId.ValueString()
+				u, _ := uuid.Parse(planServicePlanId)
+				assignedPlans.SetServicePlanId(&u)
 			} else {
-				assignedPlanModel.ServicePlanId = types.StringNull()
+				assignedPlansModel.ServicePlanId = types.StringNull()
 			}
 		}
 		requestBody.SetAssignedPlans(planAssignedPlans)
@@ -1274,7 +1278,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.Birthday.IsUnknown() {
 		planBirthday := plan.Birthday.ValueString()
-		t, _ = time.Parse(time.RFC3339, planBirthday)
+		t, _ := time.Parse(time.RFC3339, planBirthday)
 		requestBody.SetBirthday(&t)
 	} else {
 		plan.Birthday = types.StringNull()
@@ -1320,7 +1324,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.CreatedDateTime.IsUnknown() {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
+		t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	} else {
 		plan.CreatedDateTime = types.StringNull()
@@ -1349,7 +1353,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.EmployeeHireDate.IsUnknown() {
 		planEmployeeHireDate := plan.EmployeeHireDate.ValueString()
-		t, _ = time.Parse(time.RFC3339, planEmployeeHireDate)
+		t, _ := time.Parse(time.RFC3339, planEmployeeHireDate)
 		requestBody.SetEmployeeHireDate(&t)
 	} else {
 		plan.EmployeeHireDate = types.StringNull()
@@ -1364,7 +1368,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.EmployeeLeaveDateTime.IsUnknown() {
 		planEmployeeLeaveDateTime := plan.EmployeeLeaveDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
+		t, _ := time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
 		requestBody.SetEmployeeLeaveDateTime(&t)
 	} else {
 		plan.EmployeeLeaveDateTime = types.StringNull()
@@ -1411,7 +1415,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.ExternalUserStateChangeDateTime.IsUnknown() {
 		planExternalUserStateChangeDateTime := plan.ExternalUserStateChangeDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
+		t, _ := time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
 		requestBody.SetExternalUserStateChangeDateTime(&t)
 	} else {
 		plan.ExternalUserStateChangeDateTime = types.StringNull()
@@ -1433,7 +1437,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.HireDate.IsUnknown() {
 		planHireDate := plan.HireDate.ValueString()
-		t, _ = time.Parse(time.RFC3339, planHireDate)
+		t, _ := time.Parse(time.RFC3339, planHireDate)
 		requestBody.SetHireDate(&t)
 	} else {
 		plan.HireDate = types.StringNull()
@@ -1442,29 +1446,29 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if len(plan.Identities.Elements()) > 0 {
 		var planIdentities []models.ObjectIdentityable
 		for _, i := range plan.Identities.Elements() {
-			objectIdentity := models.NewObjectIdentity()
-			objectIdentityModel := userIdentitiesModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
+			identities := models.NewObjectIdentity()
+			identitiesModel := userObjectIdentityModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &identitiesModel)
 
-			if !objectIdentityModel.Issuer.IsUnknown() {
-				planIssuer := objectIdentityModel.Issuer.ValueString()
-				objectIdentity.SetIssuer(&planIssuer)
+			if !identitiesModel.Issuer.IsUnknown() {
+				planIssuer := identitiesModel.Issuer.ValueString()
+				identities.SetIssuer(&planIssuer)
 			} else {
-				objectIdentityModel.Issuer = types.StringNull()
+				identitiesModel.Issuer = types.StringNull()
 			}
 
-			if !objectIdentityModel.IssuerAssignedId.IsUnknown() {
-				planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
-				objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
+			if !identitiesModel.IssuerAssignedId.IsUnknown() {
+				planIssuerAssignedId := identitiesModel.IssuerAssignedId.ValueString()
+				identities.SetIssuerAssignedId(&planIssuerAssignedId)
 			} else {
-				objectIdentityModel.IssuerAssignedId = types.StringNull()
+				identitiesModel.IssuerAssignedId = types.StringNull()
 			}
 
-			if !objectIdentityModel.SignInType.IsUnknown() {
-				planSignInType := objectIdentityModel.SignInType.ValueString()
-				objectIdentity.SetSignInType(&planSignInType)
+			if !identitiesModel.SignInType.IsUnknown() {
+				planSignInType := identitiesModel.SignInType.ValueString()
+				identities.SetSignInType(&planSignInType)
 			} else {
-				objectIdentityModel.SignInType = types.StringNull()
+				identitiesModel.SignInType = types.StringNull()
 			}
 		}
 		requestBody.SetIdentities(planIdentities)
@@ -1492,6 +1496,13 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		plan.Interests = types.ListNull(types.StringType)
 	}
 
+	if !plan.IsManagementRestricted.IsUnknown() {
+		planIsManagementRestricted := plan.IsManagementRestricted.ValueBool()
+		requestBody.SetIsManagementRestricted(&planIsManagementRestricted)
+	} else {
+		plan.IsManagementRestricted = types.BoolNull()
+	}
+
 	if !plan.IsResourceAccount.IsUnknown() {
 		planIsResourceAccount := plan.IsResourceAccount.ValueBool()
 		requestBody.SetIsResourceAccount(&planIsResourceAccount)
@@ -1508,7 +1519,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.LastPasswordChangeDateTime.IsUnknown() {
 		planLastPasswordChangeDateTime := plan.LastPasswordChangeDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planLastPasswordChangeDateTime)
+		t, _ := time.Parse(time.RFC3339, planLastPasswordChangeDateTime)
 		requestBody.SetLastPasswordChangeDateTime(&t)
 	} else {
 		plan.LastPasswordChangeDateTime = types.StringNull()
@@ -1524,56 +1535,56 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if len(plan.LicenseAssignmentStates.Elements()) > 0 {
 		var planLicenseAssignmentStates []models.LicenseAssignmentStateable
 		for _, i := range plan.LicenseAssignmentStates.Elements() {
-			licenseAssignmentState := models.NewLicenseAssignmentState()
-			licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
+			licenseAssignmentStates := models.NewLicenseAssignmentState()
+			licenseAssignmentStatesModel := userLicenseAssignmentStateModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStatesModel)
 
-			if !licenseAssignmentStateModel.AssignedByGroup.IsUnknown() {
-				planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
-				licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
+			if !licenseAssignmentStatesModel.AssignedByGroup.IsUnknown() {
+				planAssignedByGroup := licenseAssignmentStatesModel.AssignedByGroup.ValueString()
+				licenseAssignmentStates.SetAssignedByGroup(&planAssignedByGroup)
 			} else {
-				licenseAssignmentStateModel.AssignedByGroup = types.StringNull()
+				licenseAssignmentStatesModel.AssignedByGroup = types.StringNull()
 			}
 
-			if len(licenseAssignmentStateModel.DisabledPlans.Elements()) > 0 {
+			if len(licenseAssignmentStatesModel.DisabledPlans.Elements()) > 0 {
 				var DisabledPlans []uuid.UUID
-				for _, i := range licenseAssignmentStateModel.DisabledPlans.Elements() {
-					u, _ = uuid.Parse(i.String())
+				for _, i := range licenseAssignmentStatesModel.DisabledPlans.Elements() {
+					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
-				licenseAssignmentState.SetDisabledPlans(DisabledPlans)
+				licenseAssignmentStates.SetDisabledPlans(DisabledPlans)
 			} else {
-				licenseAssignmentStateModel.DisabledPlans = types.ListNull(types.StringType)
+				licenseAssignmentStatesModel.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !licenseAssignmentStateModel.Error.IsUnknown() {
-				planError := licenseAssignmentStateModel.Error.ValueString()
-				licenseAssignmentState.SetError(&planError)
+			if !licenseAssignmentStatesModel.Error.IsUnknown() {
+				planError := licenseAssignmentStatesModel.Error.ValueString()
+				licenseAssignmentStates.SetError(&planError)
 			} else {
-				licenseAssignmentStateModel.Error = types.StringNull()
+				licenseAssignmentStatesModel.Error = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.LastUpdatedDateTime.IsUnknown() {
-				planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
-				licenseAssignmentState.SetLastUpdatedDateTime(&t)
+			if !licenseAssignmentStatesModel.LastUpdatedDateTime.IsUnknown() {
+				planLastUpdatedDateTime := licenseAssignmentStatesModel.LastUpdatedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planLastUpdatedDateTime)
+				licenseAssignmentStates.SetLastUpdatedDateTime(&t)
 			} else {
-				licenseAssignmentStateModel.LastUpdatedDateTime = types.StringNull()
+				licenseAssignmentStatesModel.LastUpdatedDateTime = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.SkuId.IsUnknown() {
-				planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
-				u, _ = uuid.Parse(planSkuId)
-				licenseAssignmentState.SetSkuId(&u)
+			if !licenseAssignmentStatesModel.SkuId.IsUnknown() {
+				planSkuId := licenseAssignmentStatesModel.SkuId.ValueString()
+				u, _ := uuid.Parse(planSkuId)
+				licenseAssignmentStates.SetSkuId(&u)
 			} else {
-				licenseAssignmentStateModel.SkuId = types.StringNull()
+				licenseAssignmentStatesModel.SkuId = types.StringNull()
 			}
 
-			if !licenseAssignmentStateModel.State.IsUnknown() {
-				planState := licenseAssignmentStateModel.State.ValueString()
-				licenseAssignmentState.SetState(&planState)
+			if !licenseAssignmentStatesModel.State.IsUnknown() {
+				planState := licenseAssignmentStatesModel.State.ValueString()
+				licenseAssignmentStates.SetState(&planState)
 			} else {
-				licenseAssignmentStateModel.State = types.StringNull()
+				licenseAssignmentStatesModel.State = types.StringNull()
 			}
 		}
 		requestBody.SetLicenseAssignmentStates(planLicenseAssignmentStates)
@@ -1755,7 +1766,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
+		t, _ := time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
 	} else {
 		plan.OnPremisesLastSyncDateTime = types.StringNull()
@@ -1764,37 +1775,37 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if len(plan.OnPremisesProvisioningErrors.Elements()) > 0 {
 		var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for _, i := range plan.OnPremisesProvisioningErrors.Elements() {
-			onPremisesProvisioningError := models.NewOnPremisesProvisioningError()
-			onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
+			onPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
+			onPremisesProvisioningErrorsModel := userOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorsModel)
 
-			if !onPremisesProvisioningErrorModel.Category.IsUnknown() {
-				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
-				onPremisesProvisioningError.SetCategory(&planCategory)
+			if !onPremisesProvisioningErrorsModel.Category.IsUnknown() {
+				planCategory := onPremisesProvisioningErrorsModel.Category.ValueString()
+				onPremisesProvisioningErrors.SetCategory(&planCategory)
 			} else {
-				onPremisesProvisioningErrorModel.Category = types.StringNull()
+				onPremisesProvisioningErrorsModel.Category = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.OccurredDateTime.IsUnknown() {
-				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
-				onPremisesProvisioningError.SetOccurredDateTime(&t)
+			if !onPremisesProvisioningErrorsModel.OccurredDateTime.IsUnknown() {
+				planOccurredDateTime := onPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planOccurredDateTime)
+				onPremisesProvisioningErrors.SetOccurredDateTime(&t)
 			} else {
-				onPremisesProvisioningErrorModel.OccurredDateTime = types.StringNull()
+				onPremisesProvisioningErrorsModel.OccurredDateTime = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.PropertyCausingError.IsUnknown() {
-				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
-				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
+			if !onPremisesProvisioningErrorsModel.PropertyCausingError.IsUnknown() {
+				planPropertyCausingError := onPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
+				onPremisesProvisioningErrors.SetPropertyCausingError(&planPropertyCausingError)
 			} else {
-				onPremisesProvisioningErrorModel.PropertyCausingError = types.StringNull()
+				onPremisesProvisioningErrorsModel.PropertyCausingError = types.StringNull()
 			}
 
-			if !onPremisesProvisioningErrorModel.Value.IsUnknown() {
-				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
-				onPremisesProvisioningError.SetValue(&planValue)
+			if !onPremisesProvisioningErrorsModel.Value.IsUnknown() {
+				planValue := onPremisesProvisioningErrorsModel.Value.ValueString()
+				onPremisesProvisioningErrors.SetValue(&planValue)
 			} else {
-				onPremisesProvisioningErrorModel.Value = types.StringNull()
+				onPremisesProvisioningErrorsModel.Value = types.StringNull()
 			}
 		}
 		requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
@@ -1920,29 +1931,29 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if len(plan.ProvisionedPlans.Elements()) > 0 {
 		var planProvisionedPlans []models.ProvisionedPlanable
 		for _, i := range plan.ProvisionedPlans.Elements() {
-			provisionedPlan := models.NewProvisionedPlan()
-			provisionedPlanModel := userProvisionedPlansModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
+			provisionedPlans := models.NewProvisionedPlan()
+			provisionedPlansModel := userProvisionedPlanModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlansModel)
 
-			if !provisionedPlanModel.CapabilityStatus.IsUnknown() {
-				planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
-				provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
+			if !provisionedPlansModel.CapabilityStatus.IsUnknown() {
+				planCapabilityStatus := provisionedPlansModel.CapabilityStatus.ValueString()
+				provisionedPlans.SetCapabilityStatus(&planCapabilityStatus)
 			} else {
-				provisionedPlanModel.CapabilityStatus = types.StringNull()
+				provisionedPlansModel.CapabilityStatus = types.StringNull()
 			}
 
-			if !provisionedPlanModel.ProvisioningStatus.IsUnknown() {
-				planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
-				provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
+			if !provisionedPlansModel.ProvisioningStatus.IsUnknown() {
+				planProvisioningStatus := provisionedPlansModel.ProvisioningStatus.ValueString()
+				provisionedPlans.SetProvisioningStatus(&planProvisioningStatus)
 			} else {
-				provisionedPlanModel.ProvisioningStatus = types.StringNull()
+				provisionedPlansModel.ProvisioningStatus = types.StringNull()
 			}
 
-			if !provisionedPlanModel.Service.IsUnknown() {
-				planService := provisionedPlanModel.Service.ValueString()
-				provisionedPlan.SetService(&planService)
+			if !provisionedPlansModel.Service.IsUnknown() {
+				planService := provisionedPlansModel.Service.ValueString()
+				provisionedPlans.SetService(&planService)
 			} else {
-				provisionedPlanModel.Service = types.StringNull()
+				provisionedPlansModel.Service = types.StringNull()
 			}
 		}
 		requestBody.SetProvisionedPlans(planProvisionedPlans)
@@ -1990,30 +2001,30 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if len(plan.ServiceProvisioningErrors.Elements()) > 0 {
 		var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for _, i := range plan.ServiceProvisioningErrors.Elements() {
-			serviceProvisioningError := models.NewServiceProvisioningError()
-			serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
+			serviceProvisioningErrors := models.NewServiceProvisioningError()
+			serviceProvisioningErrorsModel := userServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorsModel)
 
-			if !serviceProvisioningErrorModel.CreatedDateTime.IsUnknown() {
-				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
-				serviceProvisioningError.SetCreatedDateTime(&t)
+			if !serviceProvisioningErrorsModel.CreatedDateTime.IsUnknown() {
+				planCreatedDateTime := serviceProvisioningErrorsModel.CreatedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
+				serviceProvisioningErrors.SetCreatedDateTime(&t)
 			} else {
-				serviceProvisioningErrorModel.CreatedDateTime = types.StringNull()
+				serviceProvisioningErrorsModel.CreatedDateTime = types.StringNull()
 			}
 
-			if !serviceProvisioningErrorModel.IsResolved.IsUnknown() {
-				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
-				serviceProvisioningError.SetIsResolved(&planIsResolved)
+			if !serviceProvisioningErrorsModel.IsResolved.IsUnknown() {
+				planIsResolved := serviceProvisioningErrorsModel.IsResolved.ValueBool()
+				serviceProvisioningErrors.SetIsResolved(&planIsResolved)
 			} else {
-				serviceProvisioningErrorModel.IsResolved = types.BoolNull()
+				serviceProvisioningErrorsModel.IsResolved = types.BoolNull()
 			}
 
-			if !serviceProvisioningErrorModel.ServiceInstance.IsUnknown() {
-				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
-				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
+			if !serviceProvisioningErrorsModel.ServiceInstance.IsUnknown() {
+				planServiceInstance := serviceProvisioningErrorsModel.ServiceInstance.ValueString()
+				serviceProvisioningErrors.SetServiceInstance(&planServiceInstance)
 			} else {
-				serviceProvisioningErrorModel.ServiceInstance = types.StringNull()
+				serviceProvisioningErrorsModel.ServiceInstance = types.StringNull()
 			}
 		}
 		requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
@@ -2035,7 +2046,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 		if !signInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
 			planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
+			t, _ := time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
 			signInActivity.SetLastNonInteractiveSignInDateTime(&t)
 		} else {
 			signInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
@@ -2050,7 +2061,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 		if !signInActivityModel.LastSignInDateTime.IsUnknown() {
 			planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
+			t, _ := time.Parse(time.RFC3339, planLastSignInDateTime)
 			signInActivity.SetLastSignInDateTime(&t)
 		} else {
 			signInActivityModel.LastSignInDateTime = types.StringNull()
@@ -2065,7 +2076,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 		if !signInActivityModel.LastSuccessfulSignInDateTime.IsUnknown() {
 			planLastSuccessfulSignInDateTime := signInActivityModel.LastSuccessfulSignInDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planLastSuccessfulSignInDateTime)
+			t, _ := time.Parse(time.RFC3339, planLastSuccessfulSignInDateTime)
 			signInActivity.SetLastSuccessfulSignInDateTime(&t)
 		} else {
 			signInActivityModel.LastSuccessfulSignInDateTime = types.StringNull()
@@ -2086,7 +2097,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !plan.SignInSessionsValidFromDateTime.IsUnknown() {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
+		t, _ := time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
 		requestBody.SetSignInSessionsValidFromDateTime(&t)
 	} else {
 		plan.SignInSessionsValidFromDateTime = types.StringNull()
@@ -2209,6 +2220,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 				"identities",
 				"imAddresses",
 				"interests",
+				"isManagementRestricted",
 				"isResourceAccount",
 				"jobTitle",
 				"lastPasswordChangeDateTime",
@@ -2262,8 +2274,6 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	if !state.Id.IsNull() {
 		result, err = d.client.Users().ByUserId(state.Id.ValueString()).Get(context.Background(), &qparams)
-	} else if !state.UserPrincipalName.IsNull() {
-		result, err = d.client.Users().ByUserId(state.UserPrincipalName.ValueString()).Get(context.Background(), &qparams)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
@@ -2308,7 +2318,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLicenses() {
-			assignedLicenses := new(userAssignedLicensesModel)
+			assignedLicenses := new(userAssignedLicenseModel)
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var disabledPlans []attr.Value
@@ -2333,7 +2343,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetAssignedPlans()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedPlans() {
-			assignedPlans := new(userAssignedPlansModel)
+			assignedPlans := new(userAssignedPlanModel)
 
 			if v.GetAssignedDateTime() != nil {
 				assignedPlans.AssignedDateTime = types.StringValue(v.GetAssignedDateTime().String())
@@ -2497,7 +2507,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetIdentities()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetIdentities() {
-			identities := new(userIdentitiesModel)
+			identities := new(userObjectIdentityModel)
 
 			if v.GetIssuer() != nil {
 				identities.Issuer = types.StringValue(*v.GetIssuer())
@@ -2539,6 +2549,11 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	} else {
 		state.Interests = types.ListNull(types.StringType)
 	}
+	if result.GetIsManagementRestricted() != nil {
+		state.IsManagementRestricted = types.BoolValue(*result.GetIsManagementRestricted())
+	} else {
+		state.IsManagementRestricted = types.BoolNull()
+	}
 	if result.GetIsResourceAccount() != nil {
 		state.IsResourceAccount = types.BoolValue(*result.GetIsResourceAccount())
 	} else {
@@ -2562,7 +2577,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetLicenseAssignmentStates()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetLicenseAssignmentStates() {
-			licenseAssignmentStates := new(userLicenseAssignmentStatesModel)
+			licenseAssignmentStates := new(userLicenseAssignmentStateModel)
 
 			if v.GetAssignedByGroup() != nil {
 				licenseAssignmentStates.AssignedByGroup = types.StringValue(*v.GetAssignedByGroup())
@@ -2734,7 +2749,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(userOnPremisesProvisioningErrorsModel)
+			onPremisesProvisioningErrors := new(userOnPremisesProvisioningErrorModel)
 
 			if v.GetCategory() != nil {
 				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -2851,7 +2866,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetProvisionedPlans()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetProvisionedPlans() {
-			provisionedPlans := new(userProvisionedPlansModel)
+			provisionedPlans := new(userProvisionedPlanModel)
 
 			if v.GetCapabilityStatus() != nil {
 				provisionedPlans.CapabilityStatus = types.StringValue(*v.GetCapabilityStatus())
@@ -2911,7 +2926,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(userServiceProvisioningErrorsModel)
+			serviceProvisioningErrors := new(userServiceProvisioningErrorModel)
 
 			if v.GetCreatedDateTime() != nil {
 				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
@@ -3050,8 +3065,6 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	// Generate API request body from plan
 	requestBody := models.NewUser()
-	var t time.Time
-	var u uuid.UUID
 
 	if !plan.Id.Equal(state.Id) {
 		planId := plan.Id.ValueString()
@@ -3060,7 +3073,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.DeletedDateTime.Equal(state.DeletedDateTime) {
 		planDeletedDateTime := plan.DeletedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planDeletedDateTime)
+		t, _ := time.Parse(time.RFC3339, planDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
 	}
 
@@ -3082,25 +3095,25 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.AssignedLicenses.Equal(state.AssignedLicenses) {
 		var planAssignedLicenses []models.AssignedLicenseable
 		for k, i := range plan.AssignedLicenses.Elements() {
-			assignedLicense := models.NewAssignedLicense()
-			assignedLicenseModel := userAssignedLicensesModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicenseModel)
-			assignedLicenseState := userAssignedLicensesModel{}
-			types.ListValueFrom(ctx, state.AssignedLicenses.Elements()[k].Type(ctx), &assignedLicenseModel)
+			assignedLicenses := models.NewAssignedLicense()
+			assignedLicensesModel := userAssignedLicenseModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicensesModel)
+			assignedLicensesState := userAssignedLicenseModel{}
+			types.ListValueFrom(ctx, state.AssignedLicenses.Elements()[k].Type(ctx), &assignedLicensesModel)
 
-			if !assignedLicenseModel.DisabledPlans.Equal(assignedLicenseState.DisabledPlans) {
+			if !assignedLicensesModel.DisabledPlans.Equal(assignedLicensesState.DisabledPlans) {
 				var DisabledPlans []uuid.UUID
-				for _, i := range assignedLicenseModel.DisabledPlans.Elements() {
-					u, _ = uuid.Parse(i.String())
+				for _, i := range assignedLicensesModel.DisabledPlans.Elements() {
+					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
-				assignedLicense.SetDisabledPlans(DisabledPlans)
+				assignedLicenses.SetDisabledPlans(DisabledPlans)
 			}
 
-			if !assignedLicenseModel.SkuId.Equal(assignedLicenseState.SkuId) {
-				planSkuId := assignedLicenseModel.SkuId.ValueString()
-				u, _ = uuid.Parse(planSkuId)
-				assignedLicense.SetSkuId(&u)
+			if !assignedLicensesModel.SkuId.Equal(assignedLicensesState.SkuId) {
+				planSkuId := assignedLicensesModel.SkuId.ValueString()
+				u, _ := uuid.Parse(planSkuId)
+				assignedLicenses.SetSkuId(&u)
 			}
 		}
 		requestBody.SetAssignedLicenses(planAssignedLicenses)
@@ -3109,32 +3122,32 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.AssignedPlans.Equal(state.AssignedPlans) {
 		var planAssignedPlans []models.AssignedPlanable
 		for k, i := range plan.AssignedPlans.Elements() {
-			assignedPlan := models.NewAssignedPlan()
-			assignedPlanModel := userAssignedPlansModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlanModel)
-			assignedPlanState := userAssignedPlansModel{}
-			types.ListValueFrom(ctx, state.AssignedPlans.Elements()[k].Type(ctx), &assignedPlanModel)
+			assignedPlans := models.NewAssignedPlan()
+			assignedPlansModel := userAssignedPlanModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &assignedPlansModel)
+			assignedPlansState := userAssignedPlanModel{}
+			types.ListValueFrom(ctx, state.AssignedPlans.Elements()[k].Type(ctx), &assignedPlansModel)
 
-			if !assignedPlanModel.AssignedDateTime.Equal(assignedPlanState.AssignedDateTime) {
-				planAssignedDateTime := assignedPlanModel.AssignedDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planAssignedDateTime)
-				assignedPlan.SetAssignedDateTime(&t)
+			if !assignedPlansModel.AssignedDateTime.Equal(assignedPlansState.AssignedDateTime) {
+				planAssignedDateTime := assignedPlansModel.AssignedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planAssignedDateTime)
+				assignedPlans.SetAssignedDateTime(&t)
 			}
 
-			if !assignedPlanModel.CapabilityStatus.Equal(assignedPlanState.CapabilityStatus) {
-				planCapabilityStatus := assignedPlanModel.CapabilityStatus.ValueString()
-				assignedPlan.SetCapabilityStatus(&planCapabilityStatus)
+			if !assignedPlansModel.CapabilityStatus.Equal(assignedPlansState.CapabilityStatus) {
+				planCapabilityStatus := assignedPlansModel.CapabilityStatus.ValueString()
+				assignedPlans.SetCapabilityStatus(&planCapabilityStatus)
 			}
 
-			if !assignedPlanModel.Service.Equal(assignedPlanState.Service) {
-				planService := assignedPlanModel.Service.ValueString()
-				assignedPlan.SetService(&planService)
+			if !assignedPlansModel.Service.Equal(assignedPlansState.Service) {
+				planService := assignedPlansModel.Service.ValueString()
+				assignedPlans.SetService(&planService)
 			}
 
-			if !assignedPlanModel.ServicePlanId.Equal(assignedPlanState.ServicePlanId) {
-				planServicePlanId := assignedPlanModel.ServicePlanId.ValueString()
-				u, _ = uuid.Parse(planServicePlanId)
-				assignedPlan.SetServicePlanId(&u)
+			if !assignedPlansModel.ServicePlanId.Equal(assignedPlansState.ServicePlanId) {
+				planServicePlanId := assignedPlansModel.ServicePlanId.ValueString()
+				u, _ := uuid.Parse(planServicePlanId)
+				assignedPlans.SetServicePlanId(&u)
 			}
 		}
 		requestBody.SetAssignedPlans(planAssignedPlans)
@@ -3161,7 +3174,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.Birthday.Equal(state.Birthday) {
 		planBirthday := plan.Birthday.ValueString()
-		t, _ = time.Parse(time.RFC3339, planBirthday)
+		t, _ := time.Parse(time.RFC3339, planBirthday)
 		requestBody.SetBirthday(&t)
 	}
 
@@ -3195,7 +3208,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.CreatedDateTime.Equal(state.CreatedDateTime) {
 		planCreatedDateTime := plan.CreatedDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
+		t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	}
 
@@ -3216,7 +3229,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.EmployeeHireDate.Equal(state.EmployeeHireDate) {
 		planEmployeeHireDate := plan.EmployeeHireDate.ValueString()
-		t, _ = time.Parse(time.RFC3339, planEmployeeHireDate)
+		t, _ := time.Parse(time.RFC3339, planEmployeeHireDate)
 		requestBody.SetEmployeeHireDate(&t)
 	}
 
@@ -3227,7 +3240,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.EmployeeLeaveDateTime.Equal(state.EmployeeLeaveDateTime) {
 		planEmployeeLeaveDateTime := plan.EmployeeLeaveDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
+		t, _ := time.Parse(time.RFC3339, planEmployeeLeaveDateTime)
 		requestBody.SetEmployeeLeaveDateTime(&t)
 	}
 
@@ -3264,7 +3277,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.ExternalUserStateChangeDateTime.Equal(state.ExternalUserStateChangeDateTime) {
 		planExternalUserStateChangeDateTime := plan.ExternalUserStateChangeDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
+		t, _ := time.Parse(time.RFC3339, planExternalUserStateChangeDateTime)
 		requestBody.SetExternalUserStateChangeDateTime(&t)
 	}
 
@@ -3280,32 +3293,32 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.HireDate.Equal(state.HireDate) {
 		planHireDate := plan.HireDate.ValueString()
-		t, _ = time.Parse(time.RFC3339, planHireDate)
+		t, _ := time.Parse(time.RFC3339, planHireDate)
 		requestBody.SetHireDate(&t)
 	}
 
 	if !plan.Identities.Equal(state.Identities) {
 		var planIdentities []models.ObjectIdentityable
 		for k, i := range plan.Identities.Elements() {
-			objectIdentity := models.NewObjectIdentity()
-			objectIdentityModel := userIdentitiesModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &objectIdentityModel)
-			objectIdentityState := userIdentitiesModel{}
-			types.ListValueFrom(ctx, state.Identities.Elements()[k].Type(ctx), &objectIdentityModel)
+			identities := models.NewObjectIdentity()
+			identitiesModel := userObjectIdentityModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &identitiesModel)
+			identitiesState := userObjectIdentityModel{}
+			types.ListValueFrom(ctx, state.Identities.Elements()[k].Type(ctx), &identitiesModel)
 
-			if !objectIdentityModel.Issuer.Equal(objectIdentityState.Issuer) {
-				planIssuer := objectIdentityModel.Issuer.ValueString()
-				objectIdentity.SetIssuer(&planIssuer)
+			if !identitiesModel.Issuer.Equal(identitiesState.Issuer) {
+				planIssuer := identitiesModel.Issuer.ValueString()
+				identities.SetIssuer(&planIssuer)
 			}
 
-			if !objectIdentityModel.IssuerAssignedId.Equal(objectIdentityState.IssuerAssignedId) {
-				planIssuerAssignedId := objectIdentityModel.IssuerAssignedId.ValueString()
-				objectIdentity.SetIssuerAssignedId(&planIssuerAssignedId)
+			if !identitiesModel.IssuerAssignedId.Equal(identitiesState.IssuerAssignedId) {
+				planIssuerAssignedId := identitiesModel.IssuerAssignedId.ValueString()
+				identities.SetIssuerAssignedId(&planIssuerAssignedId)
 			}
 
-			if !objectIdentityModel.SignInType.Equal(objectIdentityState.SignInType) {
-				planSignInType := objectIdentityModel.SignInType.ValueString()
-				objectIdentity.SetSignInType(&planSignInType)
+			if !identitiesModel.SignInType.Equal(identitiesState.SignInType) {
+				planSignInType := identitiesModel.SignInType.ValueString()
+				identities.SetSignInType(&planSignInType)
 			}
 		}
 		requestBody.SetIdentities(planIdentities)
@@ -3327,6 +3340,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBody.SetInterests(interests)
 	}
 
+	if !plan.IsManagementRestricted.Equal(state.IsManagementRestricted) {
+		planIsManagementRestricted := plan.IsManagementRestricted.ValueBool()
+		requestBody.SetIsManagementRestricted(&planIsManagementRestricted)
+	}
+
 	if !plan.IsResourceAccount.Equal(state.IsResourceAccount) {
 		planIsResourceAccount := plan.IsResourceAccount.ValueBool()
 		requestBody.SetIsResourceAccount(&planIsResourceAccount)
@@ -3339,7 +3357,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.LastPasswordChangeDateTime.Equal(state.LastPasswordChangeDateTime) {
 		planLastPasswordChangeDateTime := plan.LastPasswordChangeDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planLastPasswordChangeDateTime)
+		t, _ := time.Parse(time.RFC3339, planLastPasswordChangeDateTime)
 		requestBody.SetLastPasswordChangeDateTime(&t)
 	}
 
@@ -3351,46 +3369,46 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.LicenseAssignmentStates.Equal(state.LicenseAssignmentStates) {
 		var planLicenseAssignmentStates []models.LicenseAssignmentStateable
 		for k, i := range plan.LicenseAssignmentStates.Elements() {
-			licenseAssignmentState := models.NewLicenseAssignmentState()
-			licenseAssignmentStateModel := userLicenseAssignmentStatesModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStateModel)
-			licenseAssignmentStateState := userLicenseAssignmentStatesModel{}
-			types.ListValueFrom(ctx, state.LicenseAssignmentStates.Elements()[k].Type(ctx), &licenseAssignmentStateModel)
+			licenseAssignmentStates := models.NewLicenseAssignmentState()
+			licenseAssignmentStatesModel := userLicenseAssignmentStateModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &licenseAssignmentStatesModel)
+			licenseAssignmentStatesState := userLicenseAssignmentStateModel{}
+			types.ListValueFrom(ctx, state.LicenseAssignmentStates.Elements()[k].Type(ctx), &licenseAssignmentStatesModel)
 
-			if !licenseAssignmentStateModel.AssignedByGroup.Equal(licenseAssignmentStateState.AssignedByGroup) {
-				planAssignedByGroup := licenseAssignmentStateModel.AssignedByGroup.ValueString()
-				licenseAssignmentState.SetAssignedByGroup(&planAssignedByGroup)
+			if !licenseAssignmentStatesModel.AssignedByGroup.Equal(licenseAssignmentStatesState.AssignedByGroup) {
+				planAssignedByGroup := licenseAssignmentStatesModel.AssignedByGroup.ValueString()
+				licenseAssignmentStates.SetAssignedByGroup(&planAssignedByGroup)
 			}
 
-			if !licenseAssignmentStateModel.DisabledPlans.Equal(licenseAssignmentStateState.DisabledPlans) {
+			if !licenseAssignmentStatesModel.DisabledPlans.Equal(licenseAssignmentStatesState.DisabledPlans) {
 				var DisabledPlans []uuid.UUID
-				for _, i := range licenseAssignmentStateModel.DisabledPlans.Elements() {
-					u, _ = uuid.Parse(i.String())
+				for _, i := range licenseAssignmentStatesModel.DisabledPlans.Elements() {
+					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
-				licenseAssignmentState.SetDisabledPlans(DisabledPlans)
+				licenseAssignmentStates.SetDisabledPlans(DisabledPlans)
 			}
 
-			if !licenseAssignmentStateModel.Error.Equal(licenseAssignmentStateState.Error) {
-				planError := licenseAssignmentStateModel.Error.ValueString()
-				licenseAssignmentState.SetError(&planError)
+			if !licenseAssignmentStatesModel.Error.Equal(licenseAssignmentStatesState.Error) {
+				planError := licenseAssignmentStatesModel.Error.ValueString()
+				licenseAssignmentStates.SetError(&planError)
 			}
 
-			if !licenseAssignmentStateModel.LastUpdatedDateTime.Equal(licenseAssignmentStateState.LastUpdatedDateTime) {
-				planLastUpdatedDateTime := licenseAssignmentStateModel.LastUpdatedDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planLastUpdatedDateTime)
-				licenseAssignmentState.SetLastUpdatedDateTime(&t)
+			if !licenseAssignmentStatesModel.LastUpdatedDateTime.Equal(licenseAssignmentStatesState.LastUpdatedDateTime) {
+				planLastUpdatedDateTime := licenseAssignmentStatesModel.LastUpdatedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planLastUpdatedDateTime)
+				licenseAssignmentStates.SetLastUpdatedDateTime(&t)
 			}
 
-			if !licenseAssignmentStateModel.SkuId.Equal(licenseAssignmentStateState.SkuId) {
-				planSkuId := licenseAssignmentStateModel.SkuId.ValueString()
-				u, _ = uuid.Parse(planSkuId)
-				licenseAssignmentState.SetSkuId(&u)
+			if !licenseAssignmentStatesModel.SkuId.Equal(licenseAssignmentStatesState.SkuId) {
+				planSkuId := licenseAssignmentStatesModel.SkuId.ValueString()
+				u, _ := uuid.Parse(planSkuId)
+				licenseAssignmentStates.SetSkuId(&u)
 			}
 
-			if !licenseAssignmentStateModel.State.Equal(licenseAssignmentStateState.State) {
-				planState := licenseAssignmentStateModel.State.ValueString()
-				licenseAssignmentState.SetState(&planState)
+			if !licenseAssignmentStatesModel.State.Equal(licenseAssignmentStatesState.State) {
+				planState := licenseAssignmentStatesModel.State.ValueString()
+				licenseAssignmentStates.SetState(&planState)
 			}
 		}
 		requestBody.SetLicenseAssignmentStates(planLicenseAssignmentStates)
@@ -3524,38 +3542,38 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.OnPremisesLastSyncDateTime.Equal(state.OnPremisesLastSyncDateTime) {
 		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
+		t, _ := time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
 	}
 
 	if !plan.OnPremisesProvisioningErrors.Equal(state.OnPremisesProvisioningErrors) {
 		var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for k, i := range plan.OnPremisesProvisioningErrors.Elements() {
-			onPremisesProvisioningError := models.NewOnPremisesProvisioningError()
-			onPremisesProvisioningErrorModel := userOnPremisesProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorModel)
-			onPremisesProvisioningErrorState := userOnPremisesProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, state.OnPremisesProvisioningErrors.Elements()[k].Type(ctx), &onPremisesProvisioningErrorModel)
+			onPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
+			onPremisesProvisioningErrorsModel := userOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorsModel)
+			onPremisesProvisioningErrorsState := userOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, state.OnPremisesProvisioningErrors.Elements()[k].Type(ctx), &onPremisesProvisioningErrorsModel)
 
-			if !onPremisesProvisioningErrorModel.Category.Equal(onPremisesProvisioningErrorState.Category) {
-				planCategory := onPremisesProvisioningErrorModel.Category.ValueString()
-				onPremisesProvisioningError.SetCategory(&planCategory)
+			if !onPremisesProvisioningErrorsModel.Category.Equal(onPremisesProvisioningErrorsState.Category) {
+				planCategory := onPremisesProvisioningErrorsModel.Category.ValueString()
+				onPremisesProvisioningErrors.SetCategory(&planCategory)
 			}
 
-			if !onPremisesProvisioningErrorModel.OccurredDateTime.Equal(onPremisesProvisioningErrorState.OccurredDateTime) {
-				planOccurredDateTime := onPremisesProvisioningErrorModel.OccurredDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planOccurredDateTime)
-				onPremisesProvisioningError.SetOccurredDateTime(&t)
+			if !onPremisesProvisioningErrorsModel.OccurredDateTime.Equal(onPremisesProvisioningErrorsState.OccurredDateTime) {
+				planOccurredDateTime := onPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planOccurredDateTime)
+				onPremisesProvisioningErrors.SetOccurredDateTime(&t)
 			}
 
-			if !onPremisesProvisioningErrorModel.PropertyCausingError.Equal(onPremisesProvisioningErrorState.PropertyCausingError) {
-				planPropertyCausingError := onPremisesProvisioningErrorModel.PropertyCausingError.ValueString()
-				onPremisesProvisioningError.SetPropertyCausingError(&planPropertyCausingError)
+			if !onPremisesProvisioningErrorsModel.PropertyCausingError.Equal(onPremisesProvisioningErrorsState.PropertyCausingError) {
+				planPropertyCausingError := onPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
+				onPremisesProvisioningErrors.SetPropertyCausingError(&planPropertyCausingError)
 			}
 
-			if !onPremisesProvisioningErrorModel.Value.Equal(onPremisesProvisioningErrorState.Value) {
-				planValue := onPremisesProvisioningErrorModel.Value.ValueString()
-				onPremisesProvisioningError.SetValue(&planValue)
+			if !onPremisesProvisioningErrorsModel.Value.Equal(onPremisesProvisioningErrorsState.Value) {
+				planValue := onPremisesProvisioningErrorsModel.Value.ValueString()
+				onPremisesProvisioningErrors.SetValue(&planValue)
 			}
 		}
 		requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
@@ -3651,25 +3669,25 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.ProvisionedPlans.Equal(state.ProvisionedPlans) {
 		var planProvisionedPlans []models.ProvisionedPlanable
 		for k, i := range plan.ProvisionedPlans.Elements() {
-			provisionedPlan := models.NewProvisionedPlan()
-			provisionedPlanModel := userProvisionedPlansModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlanModel)
-			provisionedPlanState := userProvisionedPlansModel{}
-			types.ListValueFrom(ctx, state.ProvisionedPlans.Elements()[k].Type(ctx), &provisionedPlanModel)
+			provisionedPlans := models.NewProvisionedPlan()
+			provisionedPlansModel := userProvisionedPlanModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &provisionedPlansModel)
+			provisionedPlansState := userProvisionedPlanModel{}
+			types.ListValueFrom(ctx, state.ProvisionedPlans.Elements()[k].Type(ctx), &provisionedPlansModel)
 
-			if !provisionedPlanModel.CapabilityStatus.Equal(provisionedPlanState.CapabilityStatus) {
-				planCapabilityStatus := provisionedPlanModel.CapabilityStatus.ValueString()
-				provisionedPlan.SetCapabilityStatus(&planCapabilityStatus)
+			if !provisionedPlansModel.CapabilityStatus.Equal(provisionedPlansState.CapabilityStatus) {
+				planCapabilityStatus := provisionedPlansModel.CapabilityStatus.ValueString()
+				provisionedPlans.SetCapabilityStatus(&planCapabilityStatus)
 			}
 
-			if !provisionedPlanModel.ProvisioningStatus.Equal(provisionedPlanState.ProvisioningStatus) {
-				planProvisioningStatus := provisionedPlanModel.ProvisioningStatus.ValueString()
-				provisionedPlan.SetProvisioningStatus(&planProvisioningStatus)
+			if !provisionedPlansModel.ProvisioningStatus.Equal(provisionedPlansState.ProvisioningStatus) {
+				planProvisioningStatus := provisionedPlansModel.ProvisioningStatus.ValueString()
+				provisionedPlans.SetProvisioningStatus(&planProvisioningStatus)
 			}
 
-			if !provisionedPlanModel.Service.Equal(provisionedPlanState.Service) {
-				planService := provisionedPlanModel.Service.ValueString()
-				provisionedPlan.SetService(&planService)
+			if !provisionedPlansModel.Service.Equal(provisionedPlansState.Service) {
+				planService := provisionedPlansModel.Service.ValueString()
+				provisionedPlans.SetService(&planService)
 			}
 		}
 		requestBody.SetProvisionedPlans(planProvisionedPlans)
@@ -3707,26 +3725,26 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.ServiceProvisioningErrors.Equal(state.ServiceProvisioningErrors) {
 		var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for k, i := range plan.ServiceProvisioningErrors.Elements() {
-			serviceProvisioningError := models.NewServiceProvisioningError()
-			serviceProvisioningErrorModel := userServiceProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorModel)
-			serviceProvisioningErrorState := userServiceProvisioningErrorsModel{}
-			types.ListValueFrom(ctx, state.ServiceProvisioningErrors.Elements()[k].Type(ctx), &serviceProvisioningErrorModel)
+			serviceProvisioningErrors := models.NewServiceProvisioningError()
+			serviceProvisioningErrorsModel := userServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorsModel)
+			serviceProvisioningErrorsState := userServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, state.ServiceProvisioningErrors.Elements()[k].Type(ctx), &serviceProvisioningErrorsModel)
 
-			if !serviceProvisioningErrorModel.CreatedDateTime.Equal(serviceProvisioningErrorState.CreatedDateTime) {
-				planCreatedDateTime := serviceProvisioningErrorModel.CreatedDateTime.ValueString()
-				t, _ = time.Parse(time.RFC3339, planCreatedDateTime)
-				serviceProvisioningError.SetCreatedDateTime(&t)
+			if !serviceProvisioningErrorsModel.CreatedDateTime.Equal(serviceProvisioningErrorsState.CreatedDateTime) {
+				planCreatedDateTime := serviceProvisioningErrorsModel.CreatedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
+				serviceProvisioningErrors.SetCreatedDateTime(&t)
 			}
 
-			if !serviceProvisioningErrorModel.IsResolved.Equal(serviceProvisioningErrorState.IsResolved) {
-				planIsResolved := serviceProvisioningErrorModel.IsResolved.ValueBool()
-				serviceProvisioningError.SetIsResolved(&planIsResolved)
+			if !serviceProvisioningErrorsModel.IsResolved.Equal(serviceProvisioningErrorsState.IsResolved) {
+				planIsResolved := serviceProvisioningErrorsModel.IsResolved.ValueBool()
+				serviceProvisioningErrors.SetIsResolved(&planIsResolved)
 			}
 
-			if !serviceProvisioningErrorModel.ServiceInstance.Equal(serviceProvisioningErrorState.ServiceInstance) {
-				planServiceInstance := serviceProvisioningErrorModel.ServiceInstance.ValueString()
-				serviceProvisioningError.SetServiceInstance(&planServiceInstance)
+			if !serviceProvisioningErrorsModel.ServiceInstance.Equal(serviceProvisioningErrorsState.ServiceInstance) {
+				planServiceInstance := serviceProvisioningErrorsModel.ServiceInstance.ValueString()
+				serviceProvisioningErrors.SetServiceInstance(&planServiceInstance)
 			}
 		}
 		requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
@@ -3746,7 +3764,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 		if !signInActivityModel.LastNonInteractiveSignInDateTime.Equal(signInActivityState.LastNonInteractiveSignInDateTime) {
 			planLastNonInteractiveSignInDateTime := signInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
+			t, _ := time.Parse(time.RFC3339, planLastNonInteractiveSignInDateTime)
 			signInActivity.SetLastNonInteractiveSignInDateTime(&t)
 		}
 
@@ -3757,7 +3775,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 		if !signInActivityModel.LastSignInDateTime.Equal(signInActivityState.LastSignInDateTime) {
 			planLastSignInDateTime := signInActivityModel.LastSignInDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planLastSignInDateTime)
+			t, _ := time.Parse(time.RFC3339, planLastSignInDateTime)
 			signInActivity.SetLastSignInDateTime(&t)
 		}
 
@@ -3768,7 +3786,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 		if !signInActivityModel.LastSuccessfulSignInDateTime.Equal(signInActivityState.LastSuccessfulSignInDateTime) {
 			planLastSuccessfulSignInDateTime := signInActivityModel.LastSuccessfulSignInDateTime.ValueString()
-			t, _ = time.Parse(time.RFC3339, planLastSuccessfulSignInDateTime)
+			t, _ := time.Parse(time.RFC3339, planLastSuccessfulSignInDateTime)
 			signInActivity.SetLastSuccessfulSignInDateTime(&t)
 		}
 
@@ -3783,7 +3801,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !plan.SignInSessionsValidFromDateTime.Equal(state.SignInSessionsValidFromDateTime) {
 		planSignInSessionsValidFromDateTime := plan.SignInSessionsValidFromDateTime.ValueString()
-		t, _ = time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
+		t, _ := time.Parse(time.RFC3339, planSignInSessionsValidFromDateTime)
 		requestBody.SetSignInSessionsValidFromDateTime(&t)
 	}
 

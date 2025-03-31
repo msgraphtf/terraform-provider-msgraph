@@ -8,15 +8,23 @@ import (
 type groupModel struct {
 	Id                            types.String `tfsdk:"id"`
 	DeletedDateTime               types.String `tfsdk:"deleted_date_time"`
+	AllowExternalSenders          types.Bool   `tfsdk:"allow_external_senders"`
 	AssignedLabels                types.List   `tfsdk:"assigned_labels"`
 	AssignedLicenses              types.List   `tfsdk:"assigned_licenses"`
+	AutoSubscribeNewMembers       types.Bool   `tfsdk:"auto_subscribe_new_members"`
 	Classification                types.String `tfsdk:"classification"`
 	CreatedDateTime               types.String `tfsdk:"created_date_time"`
 	Description                   types.String `tfsdk:"description"`
 	DisplayName                   types.String `tfsdk:"display_name"`
 	ExpirationDateTime            types.String `tfsdk:"expiration_date_time"`
 	GroupTypes                    types.List   `tfsdk:"group_types"`
+	HasMembersWithLicenseErrors   types.Bool   `tfsdk:"has_members_with_license_errors"`
+	HideFromAddressLists          types.Bool   `tfsdk:"hide_from_address_lists"`
+	HideFromOutlookClients        types.Bool   `tfsdk:"hide_from_outlook_clients"`
+	IsArchived                    types.Bool   `tfsdk:"is_archived"`
 	IsAssignableToRole            types.Bool   `tfsdk:"is_assignable_to_role"`
+	IsManagementRestricted        types.Bool   `tfsdk:"is_management_restricted"`
+	IsSubscribedByMail            types.Bool   `tfsdk:"is_subscribed_by_mail"`
 	LicenseProcessingState        types.Object `tfsdk:"license_processing_state"`
 	Mail                          types.String `tfsdk:"mail"`
 	MailEnabled                   types.Bool   `tfsdk:"mail_enabled"`
@@ -38,27 +46,37 @@ type groupModel struct {
 	SecurityIdentifier            types.String `tfsdk:"security_identifier"`
 	ServiceProvisioningErrors     types.List   `tfsdk:"service_provisioning_errors"`
 	Theme                         types.String `tfsdk:"theme"`
+	UniqueName                    types.String `tfsdk:"unique_name"`
+	UnseenCount                   types.Int32  `tfsdk:"unseen_count"`
 	Visibility                    types.String `tfsdk:"visibility"`
 }
 
 func (m groupModel) AttributeTypes() map[string]attr.Type {
-	groupAssignedLabels := groupAssignedLabelsModel{}
-	groupAssignedLicenses := groupAssignedLicensesModel{}
+	groupAssignedLabels := groupAssignedLabelModel{}
+	groupAssignedLicenses := groupAssignedLicenseModel{}
 	groupLicenseProcessingState := groupLicenseProcessingStateModel{}
-	groupOnPremisesProvisioningErrors := groupOnPremisesProvisioningErrorsModel{}
-	groupServiceProvisioningErrors := groupServiceProvisioningErrorsModel{}
+	groupOnPremisesProvisioningErrors := groupOnPremisesProvisioningErrorModel{}
+	groupServiceProvisioningErrors := groupServiceProvisioningErrorModel{}
 	return map[string]attr.Type{
 		"id":                               types.StringType,
 		"deleted_date_time":                types.StringType,
+		"allow_external_senders":           types.BoolType,
 		"assigned_labels":                  types.ListType{ElemType: types.ObjectType{AttrTypes: groupAssignedLabels.AttributeTypes()}},
 		"assigned_licenses":                types.ListType{ElemType: types.ObjectType{AttrTypes: groupAssignedLicenses.AttributeTypes()}},
+		"auto_subscribe_new_members":       types.BoolType,
 		"classification":                   types.StringType,
 		"created_date_time":                types.StringType,
 		"description":                      types.StringType,
 		"display_name":                     types.StringType,
 		"expiration_date_time":             types.StringType,
 		"group_types":                      types.ListType{ElemType: types.StringType},
+		"has_members_with_license_errors":  types.BoolType,
+		"hide_from_address_lists":          types.BoolType,
+		"hide_from_outlook_clients":        types.BoolType,
+		"is_archived":                      types.BoolType,
 		"is_assignable_to_role":            types.BoolType,
+		"is_management_restricted":         types.BoolType,
+		"is_subscribed_by_mail":            types.BoolType,
 		"license_processing_state":         types.ObjectType{AttrTypes: groupLicenseProcessingState.AttributeTypes()},
 		"mail":                             types.StringType,
 		"mail_enabled":                     types.BoolType,
@@ -80,28 +98,30 @@ func (m groupModel) AttributeTypes() map[string]attr.Type {
 		"security_identifier":              types.StringType,
 		"service_provisioning_errors":      types.ListType{ElemType: types.ObjectType{AttrTypes: groupServiceProvisioningErrors.AttributeTypes()}},
 		"theme":                            types.StringType,
+		"unique_name":                      types.StringType,
+		"unseen_count":                     types.Int32Type,
 		"visibility":                       types.StringType,
 	}
 }
 
-type groupAssignedLabelsModel struct {
+type groupAssignedLabelModel struct {
 	DisplayName types.String `tfsdk:"display_name"`
 	LabelId     types.String `tfsdk:"label_id"`
 }
 
-func (m groupAssignedLabelsModel) AttributeTypes() map[string]attr.Type {
+func (m groupAssignedLabelModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"display_name": types.StringType,
 		"label_id":     types.StringType,
 	}
 }
 
-type groupAssignedLicensesModel struct {
+type groupAssignedLicenseModel struct {
 	DisabledPlans types.List   `tfsdk:"disabled_plans"`
 	SkuId         types.String `tfsdk:"sku_id"`
 }
 
-func (m groupAssignedLicensesModel) AttributeTypes() map[string]attr.Type {
+func (m groupAssignedLicenseModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"disabled_plans": types.ListType{ElemType: types.StringType},
 		"sku_id":         types.StringType,
@@ -118,14 +138,14 @@ func (m groupLicenseProcessingStateModel) AttributeTypes() map[string]attr.Type 
 	}
 }
 
-type groupOnPremisesProvisioningErrorsModel struct {
+type groupOnPremisesProvisioningErrorModel struct {
 	Category             types.String `tfsdk:"category"`
 	OccurredDateTime     types.String `tfsdk:"occurred_date_time"`
 	PropertyCausingError types.String `tfsdk:"property_causing_error"`
 	Value                types.String `tfsdk:"value"`
 }
 
-func (m groupOnPremisesProvisioningErrorsModel) AttributeTypes() map[string]attr.Type {
+func (m groupOnPremisesProvisioningErrorModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"category":               types.StringType,
 		"occurred_date_time":     types.StringType,
@@ -134,13 +154,13 @@ func (m groupOnPremisesProvisioningErrorsModel) AttributeTypes() map[string]attr
 	}
 }
 
-type groupServiceProvisioningErrorsModel struct {
+type groupServiceProvisioningErrorModel struct {
 	CreatedDateTime types.String `tfsdk:"created_date_time"`
 	IsResolved      types.Bool   `tfsdk:"is_resolved"`
 	ServiceInstance types.String `tfsdk:"service_instance"`
 }
 
-func (m groupServiceProvisioningErrorsModel) AttributeTypes() map[string]attr.Type {
+func (m groupServiceProvisioningErrorModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"created_date_time": types.StringType,
 		"is_resolved":       types.BoolType,

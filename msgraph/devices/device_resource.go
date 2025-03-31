@@ -1,0 +1,1114 @@
+package devices
+
+import (
+	"context"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"time"
+
+	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	"github.com/microsoftgraph/msgraph-sdk-go/devices"
+	"github.com/microsoftgraph/msgraph-sdk-go/models"
+
+	"terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/listplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
+)
+
+// Ensure the implementation satisfies the expected interfaces.
+var (
+	_ resource.Resource              = &deviceResource{}
+	_ resource.ResourceWithConfigure = &deviceResource{}
+)
+
+// NewDeviceResource is a helper function to simplify the provider implementation.
+func NewDeviceResource() resource.Resource {
+	return &deviceResource{}
+}
+
+// deviceResource is the resource implementation.
+type deviceResource struct {
+	client *msgraphsdk.GraphServiceClient
+}
+
+// Metadata returns the resource type name.
+func (d *deviceResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_device"
+}
+
+// Configure adds the provider configured client to the resource.
+func (d *deviceResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	d.client = req.ProviderData.(*msgraphsdk.GraphServiceClient)
+}
+
+// Schema defines the schema for the resource.
+func (d *deviceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"deleted_date_time": schema.StringAttribute{
+				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"account_enabled": schema.BoolAttribute{
+				Description: "true if the account is enabled; otherwise, false. Required. Default is true.  Supports $filter (eq, ne, not, in). Only callers with at least the Cloud Device Administrator role can set this property.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"alternative_security_ids": schema.ListNestedAttribute{
+				Description: "For internal use only. Not nullable. Supports $filter (eq, not, ge, le).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"identity_provider": schema.StringAttribute{
+							Description: "For internal use only.",
+							Optional:    true,
+							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
+						},
+						"key": schema.StringAttribute{
+							Description: "For internal use only.",
+							Optional:    true,
+							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
+						},
+					},
+				},
+			},
+			"approximate_last_sign_in_date_time": schema.StringAttribute{
+				Description: "The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Supports $filter (eq, ne, not, ge, le, and eq on null values) and $orderby.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"compliance_expiration_date_time": schema.StringAttribute{
+				Description: "The timestamp when the device is no longer deemed compliant. The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"device_category": schema.StringAttribute{
+				Description: "User-defined property set by Intune to automatically add devices to groups and simplify managing devices.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"device_id": schema.StringAttribute{
+				Description: "Unique identifier set by Azure Device Registration Service at the time of registration. This alternate key can be used to reference the device object. Supports $filter (eq, ne, not, startsWith).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"device_metadata": schema.StringAttribute{
+				Description: "For internal use only. Set to null.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"device_ownership": schema.StringAttribute{
+				Description: "Ownership of the device. Intune sets this property. Possible values are: unknown, company, personal.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"display_name": schema.StringAttribute{
+				Description: "The display name for the device. Required. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"enrollment_profile_name": schema.StringAttribute{
+				Description: "Enrollment profile applied to the device. For example, Apple Device Enrollment Profile, Device enrollment - Corporate device identifiers, or Windows Autopilot profile name. This property is set by Intune.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"enrollment_type": schema.StringAttribute{
+				Description: "Enrollment type of the device. Intune sets this property. Possible values are: unknown, userEnrollment, deviceEnrollmentManager, appleBulkWithUser, appleBulkWithoutUser, windowsAzureADJoin, windowsBulkUserless, windowsAutoEnrollment, windowsBulkAzureDomainJoin, windowsCoManagement, windowsAzureADJoinUsingDeviceAuth,appleUserEnrollment, appleUserEnrollmentWithServiceAccount. NOTE: This property might return other values apart from those listed.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"is_compliant": schema.BoolAttribute{
+				Description: "true if the device complies with Mobile Device Management (MDM) policies; otherwise, false. Read-only. This can only be updated by Intune for any device OS type or by an approved MDM app for Windows OS devices. Supports $filter (eq, ne, not).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"is_managed": schema.BoolAttribute{
+				Description: "true if the device is managed by a Mobile Device Management (MDM) app; otherwise, false. This can only be updated by Intune for any device OS type or by an approved MDM app for Windows OS devices. Supports $filter (eq, ne, not).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"is_management_restricted": schema.BoolAttribute{
+				Description: "",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"is_rooted": schema.BoolAttribute{
+				Description: "true if the device is rooted or jail-broken. This property can only be updated by Intune.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"management_type": schema.StringAttribute{
+				Description: "The management channel of the device. This property is set by Intune. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"manufacturer": schema.StringAttribute{
+				Description: "Manufacturer of the device. Read-only.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"mdm_app_id": schema.StringAttribute{
+				Description: "Application identifier used to register device into MDM. Read-only. Supports $filter (eq, ne, not, startsWith).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"model": schema.StringAttribute{
+				Description: "Model of the device. Read-only.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"on_premises_last_sync_date_time": schema.StringAttribute{
+				Description: "The last time at which the object was synced with the on-premises directory. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z Read-only. Supports $filter (eq, ne, not, ge, le, in).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"on_premises_security_identifier": schema.StringAttribute{
+				Description: "The on-premises security identifier (SID) for the user who was synchronized from on-premises to the cloud. Read-only. Returned only on $select. Supports $filter (eq).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"on_premises_sync_enabled": schema.BoolAttribute{
+				Description: "true if this object is synced from an on-premises directory; false if this object was originally synced from an on-premises directory but is no longer synced; null if this object has never been synced from an on-premises directory (default). Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"operating_system": schema.StringAttribute{
+				Description: "The type of operating system on the device. Required. Supports $filter (eq, ne, not, ge, le, startsWith, and eq on null values).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"operating_system_version": schema.StringAttribute{
+				Description: "The version of the operating system on the device. Required. Supports $filter (eq, ne, not, ge, le, startsWith, and eq on null values).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"physical_ids": schema.ListAttribute{
+				Description: "For internal use only. Not nullable. Supports $filter (eq, not, ge, le, startsWith,/$count eq 0, /$count ne 0).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
+				ElementType: types.StringType,
+			},
+			"profile_type": schema.StringAttribute{
+				Description: "The profile type of the device. Possible values: RegisteredDevice (default), SecureVM, Printer, Shared, IoT.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"registration_date_time": schema.StringAttribute{
+				Description: "Date and time of when the device was registered. The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"system_labels": schema.ListAttribute{
+				Description: "List of labels applied to the device by the system. Supports $filter (/$count eq 0, /$count ne 0).",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
+				ElementType: types.StringType,
+			},
+			"trust_type": schema.StringAttribute{
+				Description: "Type of trust for the joined device. Read-only. Possible values:  Workplace (indicates bring your own personal devices), AzureAd (Cloud-only joined devices), ServerAd (on-premises domain joined devices joined to Microsoft Entra ID). For more information, see Introduction to device management in Microsoft Entra ID.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+		},
+	}
+}
+
+// Create creates the resource and sets the initial Terraform state.
+func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	// Retrieve values from plan
+	var plan deviceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Generate API request body from Plan
+	requestBody := models.NewDevice()
+
+	if !plan.Id.IsUnknown() {
+		planId := plan.Id.ValueString()
+		requestBody.SetId(&planId)
+	} else {
+		plan.Id = types.StringNull()
+	}
+
+	if !plan.DeletedDateTime.IsUnknown() {
+		planDeletedDateTime := plan.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planDeletedDateTime)
+		requestBody.SetDeletedDateTime(&t)
+	} else {
+		plan.DeletedDateTime = types.StringNull()
+	}
+
+	if !plan.AccountEnabled.IsUnknown() {
+		planAccountEnabled := plan.AccountEnabled.ValueBool()
+		requestBody.SetAccountEnabled(&planAccountEnabled)
+	} else {
+		plan.AccountEnabled = types.BoolNull()
+	}
+
+	if len(plan.AlternativeSecurityIds.Elements()) > 0 {
+		var planAlternativeSecurityIds []models.AlternativeSecurityIdable
+		for _, i := range plan.AlternativeSecurityIds.Elements() {
+			alternativeSecurityIds := models.NewAlternativeSecurityId()
+			alternativeSecurityIdsModel := deviceAlternativeSecurityIdModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &alternativeSecurityIdsModel)
+
+			if !alternativeSecurityIdsModel.IdentityProvider.IsUnknown() {
+				planIdentityProvider := alternativeSecurityIdsModel.IdentityProvider.ValueString()
+				alternativeSecurityIds.SetIdentityProvider(&planIdentityProvider)
+			} else {
+				alternativeSecurityIdsModel.IdentityProvider = types.StringNull()
+			}
+
+			if !alternativeSecurityIdsModel.Key.IsUnknown() {
+				planKey := alternativeSecurityIdsModel.Key.ValueString()
+				alternativeSecurityIds.SetKey([]byte(planKey))
+			} else {
+				alternativeSecurityIdsModel.Key = types.StringNull()
+			}
+		}
+		requestBody.SetAlternativeSecurityIds(planAlternativeSecurityIds)
+	} else {
+		plan.AlternativeSecurityIds = types.ListNull(plan.AlternativeSecurityIds.ElementType(ctx))
+	}
+
+	if !plan.ApproximateLastSignInDateTime.IsUnknown() {
+		planApproximateLastSignInDateTime := plan.ApproximateLastSignInDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planApproximateLastSignInDateTime)
+		requestBody.SetApproximateLastSignInDateTime(&t)
+	} else {
+		plan.ApproximateLastSignInDateTime = types.StringNull()
+	}
+
+	if !plan.ComplianceExpirationDateTime.IsUnknown() {
+		planComplianceExpirationDateTime := plan.ComplianceExpirationDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planComplianceExpirationDateTime)
+		requestBody.SetComplianceExpirationDateTime(&t)
+	} else {
+		plan.ComplianceExpirationDateTime = types.StringNull()
+	}
+
+	if !plan.DeviceCategory.IsUnknown() {
+		planDeviceCategory := plan.DeviceCategory.ValueString()
+		requestBody.SetDeviceCategory(&planDeviceCategory)
+	} else {
+		plan.DeviceCategory = types.StringNull()
+	}
+
+	if !plan.DeviceId.IsUnknown() {
+		planDeviceId := plan.DeviceId.ValueString()
+		requestBody.SetDeviceId(&planDeviceId)
+	} else {
+		plan.DeviceId = types.StringNull()
+	}
+
+	if !plan.DeviceMetadata.IsUnknown() {
+		planDeviceMetadata := plan.DeviceMetadata.ValueString()
+		requestBody.SetDeviceMetadata(&planDeviceMetadata)
+	} else {
+		plan.DeviceMetadata = types.StringNull()
+	}
+
+	if !plan.DeviceOwnership.IsUnknown() {
+		planDeviceOwnership := plan.DeviceOwnership.ValueString()
+		requestBody.SetDeviceOwnership(&planDeviceOwnership)
+	} else {
+		plan.DeviceOwnership = types.StringNull()
+	}
+
+	if !plan.DisplayName.IsUnknown() {
+		planDisplayName := plan.DisplayName.ValueString()
+		requestBody.SetDisplayName(&planDisplayName)
+	} else {
+		plan.DisplayName = types.StringNull()
+	}
+
+	if !plan.EnrollmentProfileName.IsUnknown() {
+		planEnrollmentProfileName := plan.EnrollmentProfileName.ValueString()
+		requestBody.SetEnrollmentProfileName(&planEnrollmentProfileName)
+	} else {
+		plan.EnrollmentProfileName = types.StringNull()
+	}
+
+	if !plan.EnrollmentType.IsUnknown() {
+		planEnrollmentType := plan.EnrollmentType.ValueString()
+		requestBody.SetEnrollmentType(&planEnrollmentType)
+	} else {
+		plan.EnrollmentType = types.StringNull()
+	}
+
+	if !plan.IsCompliant.IsUnknown() {
+		planIsCompliant := plan.IsCompliant.ValueBool()
+		requestBody.SetIsCompliant(&planIsCompliant)
+	} else {
+		plan.IsCompliant = types.BoolNull()
+	}
+
+	if !plan.IsManaged.IsUnknown() {
+		planIsManaged := plan.IsManaged.ValueBool()
+		requestBody.SetIsManaged(&planIsManaged)
+	} else {
+		plan.IsManaged = types.BoolNull()
+	}
+
+	if !plan.IsManagementRestricted.IsUnknown() {
+		planIsManagementRestricted := plan.IsManagementRestricted.ValueBool()
+		requestBody.SetIsManagementRestricted(&planIsManagementRestricted)
+	} else {
+		plan.IsManagementRestricted = types.BoolNull()
+	}
+
+	if !plan.IsRooted.IsUnknown() {
+		planIsRooted := plan.IsRooted.ValueBool()
+		requestBody.SetIsRooted(&planIsRooted)
+	} else {
+		plan.IsRooted = types.BoolNull()
+	}
+
+	if !plan.ManagementType.IsUnknown() {
+		planManagementType := plan.ManagementType.ValueString()
+		requestBody.SetManagementType(&planManagementType)
+	} else {
+		plan.ManagementType = types.StringNull()
+	}
+
+	if !plan.Manufacturer.IsUnknown() {
+		planManufacturer := plan.Manufacturer.ValueString()
+		requestBody.SetManufacturer(&planManufacturer)
+	} else {
+		plan.Manufacturer = types.StringNull()
+	}
+
+	if !plan.MdmAppId.IsUnknown() {
+		planMdmAppId := plan.MdmAppId.ValueString()
+		requestBody.SetMdmAppId(&planMdmAppId)
+	} else {
+		plan.MdmAppId = types.StringNull()
+	}
+
+	if !plan.Model.IsUnknown() {
+		planModel := plan.Model.ValueString()
+		requestBody.SetModel(&planModel)
+	} else {
+		plan.Model = types.StringNull()
+	}
+
+	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
+		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
+		requestBody.SetOnPremisesLastSyncDateTime(&t)
+	} else {
+		plan.OnPremisesLastSyncDateTime = types.StringNull()
+	}
+
+	if !plan.OnPremisesSecurityIdentifier.IsUnknown() {
+		planOnPremisesSecurityIdentifier := plan.OnPremisesSecurityIdentifier.ValueString()
+		requestBody.SetOnPremisesSecurityIdentifier(&planOnPremisesSecurityIdentifier)
+	} else {
+		plan.OnPremisesSecurityIdentifier = types.StringNull()
+	}
+
+	if !plan.OnPremisesSyncEnabled.IsUnknown() {
+		planOnPremisesSyncEnabled := plan.OnPremisesSyncEnabled.ValueBool()
+		requestBody.SetOnPremisesSyncEnabled(&planOnPremisesSyncEnabled)
+	} else {
+		plan.OnPremisesSyncEnabled = types.BoolNull()
+	}
+
+	if !plan.OperatingSystem.IsUnknown() {
+		planOperatingSystem := plan.OperatingSystem.ValueString()
+		requestBody.SetOperatingSystem(&planOperatingSystem)
+	} else {
+		plan.OperatingSystem = types.StringNull()
+	}
+
+	if !plan.OperatingSystemVersion.IsUnknown() {
+		planOperatingSystemVersion := plan.OperatingSystemVersion.ValueString()
+		requestBody.SetOperatingSystemVersion(&planOperatingSystemVersion)
+	} else {
+		plan.OperatingSystemVersion = types.StringNull()
+	}
+
+	if len(plan.PhysicalIds.Elements()) > 0 {
+		var physicalIds []string
+		for _, i := range plan.PhysicalIds.Elements() {
+			physicalIds = append(physicalIds, i.String())
+		}
+		requestBody.SetPhysicalIds(physicalIds)
+	} else {
+		plan.PhysicalIds = types.ListNull(types.StringType)
+	}
+
+	if !plan.ProfileType.IsUnknown() {
+		planProfileType := plan.ProfileType.ValueString()
+		requestBody.SetProfileType(&planProfileType)
+	} else {
+		plan.ProfileType = types.StringNull()
+	}
+
+	if !plan.RegistrationDateTime.IsUnknown() {
+		planRegistrationDateTime := plan.RegistrationDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planRegistrationDateTime)
+		requestBody.SetRegistrationDateTime(&t)
+	} else {
+		plan.RegistrationDateTime = types.StringNull()
+	}
+
+	if len(plan.SystemLabels.Elements()) > 0 {
+		var systemLabels []string
+		for _, i := range plan.SystemLabels.Elements() {
+			systemLabels = append(systemLabels, i.String())
+		}
+		requestBody.SetSystemLabels(systemLabels)
+	} else {
+		plan.SystemLabels = types.ListNull(types.StringType)
+	}
+
+	if !plan.TrustType.IsUnknown() {
+		planTrustType := plan.TrustType.ValueString()
+		requestBody.SetTrustType(&planTrustType)
+	} else {
+		plan.TrustType = types.StringNull()
+	}
+
+	// Create new device
+	result, err := r.client.Devices().Post(context.Background(), requestBody, nil)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error creating device",
+			err.Error(),
+		)
+		return
+	}
+
+	// Map response body to schema and populate Computed attribute value
+	// TODO: Add support for other Computed values
+	plan.Id = types.StringValue(*result.GetId())
+
+	// Set state to fully populated data
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+}
+
+// Read refreshes the Terraform state with the latest data.
+func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state deviceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	qparams := devices.DeviceItemRequestBuilderGetRequestConfiguration{
+		QueryParameters: &devices.DeviceItemRequestBuilderGetQueryParameters{
+			Select: []string{
+				"id",
+				"deletedDateTime",
+				"accountEnabled",
+				"alternativeSecurityIds",
+				"approximateLastSignInDateTime",
+				"complianceExpirationDateTime",
+				"deviceCategory",
+				"deviceId",
+				"deviceMetadata",
+				"deviceOwnership",
+				"deviceVersion",
+				"displayName",
+				"enrollmentProfileName",
+				"enrollmentType",
+				"isCompliant",
+				"isManaged",
+				"isManagementRestricted",
+				"isRooted",
+				"managementType",
+				"manufacturer",
+				"mdmAppId",
+				"model",
+				"onPremisesLastSyncDateTime",
+				"onPremisesSecurityIdentifier",
+				"onPremisesSyncEnabled",
+				"operatingSystem",
+				"operatingSystemVersion",
+				"physicalIds",
+				"profileType",
+				"registrationDateTime",
+				"systemLabels",
+				"trustType",
+			},
+		},
+	}
+
+	var result models.Deviceable
+	var err error
+
+	if !state.Id.IsNull() {
+		result, err = d.client.Devices().ByDeviceId(state.Id.ValueString()).Get(context.Background(), &qparams)
+	} else {
+		resp.Diagnostics.AddError(
+			"Missing argument",
+			"TODO: Specify required parameters",
+		)
+		return
+	}
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error getting device",
+			err.Error(),
+		)
+		return
+	}
+
+	if result.GetId() != nil {
+		state.Id = types.StringValue(*result.GetId())
+	} else {
+		state.Id = types.StringNull()
+	}
+	if result.GetDeletedDateTime() != nil {
+		state.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
+	} else {
+		state.DeletedDateTime = types.StringNull()
+	}
+	if result.GetAccountEnabled() != nil {
+		state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
+	} else {
+		state.AccountEnabled = types.BoolNull()
+	}
+	if len(result.GetAlternativeSecurityIds()) > 0 {
+		objectValues := []basetypes.ObjectValue{}
+		for _, v := range result.GetAlternativeSecurityIds() {
+			alternativeSecurityIds := new(deviceAlternativeSecurityIdModel)
+
+			if v.GetIdentityProvider() != nil {
+				alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
+			} else {
+				alternativeSecurityIds.IdentityProvider = types.StringNull()
+			}
+			if v.GetKey() != nil {
+				alternativeSecurityIds.Key = types.StringValue(string(v.GetKey()[:]))
+			} else {
+				alternativeSecurityIds.Key = types.StringNull()
+			}
+			objectValue, _ := types.ObjectValueFrom(ctx, alternativeSecurityIds.AttributeTypes(), alternativeSecurityIds)
+			objectValues = append(objectValues, objectValue)
+		}
+		state.AlternativeSecurityIds, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+	}
+	if result.GetApproximateLastSignInDateTime() != nil {
+		state.ApproximateLastSignInDateTime = types.StringValue(result.GetApproximateLastSignInDateTime().String())
+	} else {
+		state.ApproximateLastSignInDateTime = types.StringNull()
+	}
+	if result.GetComplianceExpirationDateTime() != nil {
+		state.ComplianceExpirationDateTime = types.StringValue(result.GetComplianceExpirationDateTime().String())
+	} else {
+		state.ComplianceExpirationDateTime = types.StringNull()
+	}
+	if result.GetDeviceCategory() != nil {
+		state.DeviceCategory = types.StringValue(*result.GetDeviceCategory())
+	} else {
+		state.DeviceCategory = types.StringNull()
+	}
+	if result.GetDeviceId() != nil {
+		state.DeviceId = types.StringValue(*result.GetDeviceId())
+	} else {
+		state.DeviceId = types.StringNull()
+	}
+	if result.GetDeviceMetadata() != nil {
+		state.DeviceMetadata = types.StringValue(*result.GetDeviceMetadata())
+	} else {
+		state.DeviceMetadata = types.StringNull()
+	}
+	if result.GetDeviceOwnership() != nil {
+		state.DeviceOwnership = types.StringValue(*result.GetDeviceOwnership())
+	} else {
+		state.DeviceOwnership = types.StringNull()
+	}
+	if result.GetDisplayName() != nil {
+		state.DisplayName = types.StringValue(*result.GetDisplayName())
+	} else {
+		state.DisplayName = types.StringNull()
+	}
+	if result.GetEnrollmentProfileName() != nil {
+		state.EnrollmentProfileName = types.StringValue(*result.GetEnrollmentProfileName())
+	} else {
+		state.EnrollmentProfileName = types.StringNull()
+	}
+	if result.GetEnrollmentType() != nil {
+		state.EnrollmentType = types.StringValue(*result.GetEnrollmentType())
+	} else {
+		state.EnrollmentType = types.StringNull()
+	}
+	if result.GetIsCompliant() != nil {
+		state.IsCompliant = types.BoolValue(*result.GetIsCompliant())
+	} else {
+		state.IsCompliant = types.BoolNull()
+	}
+	if result.GetIsManaged() != nil {
+		state.IsManaged = types.BoolValue(*result.GetIsManaged())
+	} else {
+		state.IsManaged = types.BoolNull()
+	}
+	if result.GetIsManagementRestricted() != nil {
+		state.IsManagementRestricted = types.BoolValue(*result.GetIsManagementRestricted())
+	} else {
+		state.IsManagementRestricted = types.BoolNull()
+	}
+	if result.GetIsRooted() != nil {
+		state.IsRooted = types.BoolValue(*result.GetIsRooted())
+	} else {
+		state.IsRooted = types.BoolNull()
+	}
+	if result.GetManagementType() != nil {
+		state.ManagementType = types.StringValue(*result.GetManagementType())
+	} else {
+		state.ManagementType = types.StringNull()
+	}
+	if result.GetManufacturer() != nil {
+		state.Manufacturer = types.StringValue(*result.GetManufacturer())
+	} else {
+		state.Manufacturer = types.StringNull()
+	}
+	if result.GetMdmAppId() != nil {
+		state.MdmAppId = types.StringValue(*result.GetMdmAppId())
+	} else {
+		state.MdmAppId = types.StringNull()
+	}
+	if result.GetModel() != nil {
+		state.Model = types.StringValue(*result.GetModel())
+	} else {
+		state.Model = types.StringNull()
+	}
+	if result.GetOnPremisesLastSyncDateTime() != nil {
+		state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
+	} else {
+		state.OnPremisesLastSyncDateTime = types.StringNull()
+	}
+	if result.GetOnPremisesSecurityIdentifier() != nil {
+		state.OnPremisesSecurityIdentifier = types.StringValue(*result.GetOnPremisesSecurityIdentifier())
+	} else {
+		state.OnPremisesSecurityIdentifier = types.StringNull()
+	}
+	if result.GetOnPremisesSyncEnabled() != nil {
+		state.OnPremisesSyncEnabled = types.BoolValue(*result.GetOnPremisesSyncEnabled())
+	} else {
+		state.OnPremisesSyncEnabled = types.BoolNull()
+	}
+	if result.GetOperatingSystem() != nil {
+		state.OperatingSystem = types.StringValue(*result.GetOperatingSystem())
+	} else {
+		state.OperatingSystem = types.StringNull()
+	}
+	if result.GetOperatingSystemVersion() != nil {
+		state.OperatingSystemVersion = types.StringValue(*result.GetOperatingSystemVersion())
+	} else {
+		state.OperatingSystemVersion = types.StringNull()
+	}
+	if len(result.GetPhysicalIds()) > 0 {
+		var physicalIds []attr.Value
+		for _, v := range result.GetPhysicalIds() {
+			physicalIds = append(physicalIds, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, physicalIds)
+		state.PhysicalIds = listValue
+	} else {
+		state.PhysicalIds = types.ListNull(types.StringType)
+	}
+	if result.GetProfileType() != nil {
+		state.ProfileType = types.StringValue(*result.GetProfileType())
+	} else {
+		state.ProfileType = types.StringNull()
+	}
+	if result.GetRegistrationDateTime() != nil {
+		state.RegistrationDateTime = types.StringValue(result.GetRegistrationDateTime().String())
+	} else {
+		state.RegistrationDateTime = types.StringNull()
+	}
+	if len(result.GetSystemLabels()) > 0 {
+		var systemLabels []attr.Value
+		for _, v := range result.GetSystemLabels() {
+			systemLabels = append(systemLabels, types.StringValue(v))
+		}
+		listValue, _ := types.ListValue(types.StringType, systemLabels)
+		state.SystemLabels = listValue
+	} else {
+		state.SystemLabels = types.ListNull(types.StringType)
+	}
+	if result.GetTrustType() != nil {
+		state.TrustType = types.StringValue(*result.GetTrustType())
+	} else {
+		state.TrustType = types.StringNull()
+	}
+
+	// Overwrite items with refreshed state
+	diags := resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+}
+
+// Update updates the resource and sets the updated Terraform state on success.
+func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	// Retrieve values from plan
+	var plan deviceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Get current state
+	var state deviceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Generate API request body from plan
+	requestBody := models.NewDevice()
+
+	if !plan.Id.Equal(state.Id) {
+		planId := plan.Id.ValueString()
+		requestBody.SetId(&planId)
+	}
+
+	if !plan.DeletedDateTime.Equal(state.DeletedDateTime) {
+		planDeletedDateTime := plan.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planDeletedDateTime)
+		requestBody.SetDeletedDateTime(&t)
+	}
+
+	if !plan.AccountEnabled.Equal(state.AccountEnabled) {
+		planAccountEnabled := plan.AccountEnabled.ValueBool()
+		requestBody.SetAccountEnabled(&planAccountEnabled)
+	}
+
+	if !plan.AlternativeSecurityIds.Equal(state.AlternativeSecurityIds) {
+		var planAlternativeSecurityIds []models.AlternativeSecurityIdable
+		for k, i := range plan.AlternativeSecurityIds.Elements() {
+			alternativeSecurityIds := models.NewAlternativeSecurityId()
+			alternativeSecurityIdsModel := deviceAlternativeSecurityIdModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &alternativeSecurityIdsModel)
+			alternativeSecurityIdsState := deviceAlternativeSecurityIdModel{}
+			types.ListValueFrom(ctx, state.AlternativeSecurityIds.Elements()[k].Type(ctx), &alternativeSecurityIdsModel)
+
+			if !alternativeSecurityIdsModel.IdentityProvider.Equal(alternativeSecurityIdsState.IdentityProvider) {
+				planIdentityProvider := alternativeSecurityIdsModel.IdentityProvider.ValueString()
+				alternativeSecurityIds.SetIdentityProvider(&planIdentityProvider)
+			}
+
+			if !alternativeSecurityIdsModel.Key.Equal(alternativeSecurityIdsState.Key) {
+				planKey := alternativeSecurityIdsModel.Key.ValueString()
+				alternativeSecurityIds.SetKey([]byte(planKey))
+			}
+		}
+		requestBody.SetAlternativeSecurityIds(planAlternativeSecurityIds)
+	}
+
+	if !plan.ApproximateLastSignInDateTime.Equal(state.ApproximateLastSignInDateTime) {
+		planApproximateLastSignInDateTime := plan.ApproximateLastSignInDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planApproximateLastSignInDateTime)
+		requestBody.SetApproximateLastSignInDateTime(&t)
+	}
+
+	if !plan.ComplianceExpirationDateTime.Equal(state.ComplianceExpirationDateTime) {
+		planComplianceExpirationDateTime := plan.ComplianceExpirationDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planComplianceExpirationDateTime)
+		requestBody.SetComplianceExpirationDateTime(&t)
+	}
+
+	if !plan.DeviceCategory.Equal(state.DeviceCategory) {
+		planDeviceCategory := plan.DeviceCategory.ValueString()
+		requestBody.SetDeviceCategory(&planDeviceCategory)
+	}
+
+	if !plan.DeviceId.Equal(state.DeviceId) {
+		planDeviceId := plan.DeviceId.ValueString()
+		requestBody.SetDeviceId(&planDeviceId)
+	}
+
+	if !plan.DeviceMetadata.Equal(state.DeviceMetadata) {
+		planDeviceMetadata := plan.DeviceMetadata.ValueString()
+		requestBody.SetDeviceMetadata(&planDeviceMetadata)
+	}
+
+	if !plan.DeviceOwnership.Equal(state.DeviceOwnership) {
+		planDeviceOwnership := plan.DeviceOwnership.ValueString()
+		requestBody.SetDeviceOwnership(&planDeviceOwnership)
+	}
+
+	if !plan.DisplayName.Equal(state.DisplayName) {
+		planDisplayName := plan.DisplayName.ValueString()
+		requestBody.SetDisplayName(&planDisplayName)
+	}
+
+	if !plan.EnrollmentProfileName.Equal(state.EnrollmentProfileName) {
+		planEnrollmentProfileName := plan.EnrollmentProfileName.ValueString()
+		requestBody.SetEnrollmentProfileName(&planEnrollmentProfileName)
+	}
+
+	if !plan.EnrollmentType.Equal(state.EnrollmentType) {
+		planEnrollmentType := plan.EnrollmentType.ValueString()
+		requestBody.SetEnrollmentType(&planEnrollmentType)
+	}
+
+	if !plan.IsCompliant.Equal(state.IsCompliant) {
+		planIsCompliant := plan.IsCompliant.ValueBool()
+		requestBody.SetIsCompliant(&planIsCompliant)
+	}
+
+	if !plan.IsManaged.Equal(state.IsManaged) {
+		planIsManaged := plan.IsManaged.ValueBool()
+		requestBody.SetIsManaged(&planIsManaged)
+	}
+
+	if !plan.IsManagementRestricted.Equal(state.IsManagementRestricted) {
+		planIsManagementRestricted := plan.IsManagementRestricted.ValueBool()
+		requestBody.SetIsManagementRestricted(&planIsManagementRestricted)
+	}
+
+	if !plan.IsRooted.Equal(state.IsRooted) {
+		planIsRooted := plan.IsRooted.ValueBool()
+		requestBody.SetIsRooted(&planIsRooted)
+	}
+
+	if !plan.ManagementType.Equal(state.ManagementType) {
+		planManagementType := plan.ManagementType.ValueString()
+		requestBody.SetManagementType(&planManagementType)
+	}
+
+	if !plan.Manufacturer.Equal(state.Manufacturer) {
+		planManufacturer := plan.Manufacturer.ValueString()
+		requestBody.SetManufacturer(&planManufacturer)
+	}
+
+	if !plan.MdmAppId.Equal(state.MdmAppId) {
+		planMdmAppId := plan.MdmAppId.ValueString()
+		requestBody.SetMdmAppId(&planMdmAppId)
+	}
+
+	if !plan.Model.Equal(state.Model) {
+		planModel := plan.Model.ValueString()
+		requestBody.SetModel(&planModel)
+	}
+
+	if !plan.OnPremisesLastSyncDateTime.Equal(state.OnPremisesLastSyncDateTime) {
+		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
+		requestBody.SetOnPremisesLastSyncDateTime(&t)
+	}
+
+	if !plan.OnPremisesSecurityIdentifier.Equal(state.OnPremisesSecurityIdentifier) {
+		planOnPremisesSecurityIdentifier := plan.OnPremisesSecurityIdentifier.ValueString()
+		requestBody.SetOnPremisesSecurityIdentifier(&planOnPremisesSecurityIdentifier)
+	}
+
+	if !plan.OnPremisesSyncEnabled.Equal(state.OnPremisesSyncEnabled) {
+		planOnPremisesSyncEnabled := plan.OnPremisesSyncEnabled.ValueBool()
+		requestBody.SetOnPremisesSyncEnabled(&planOnPremisesSyncEnabled)
+	}
+
+	if !plan.OperatingSystem.Equal(state.OperatingSystem) {
+		planOperatingSystem := plan.OperatingSystem.ValueString()
+		requestBody.SetOperatingSystem(&planOperatingSystem)
+	}
+
+	if !plan.OperatingSystemVersion.Equal(state.OperatingSystemVersion) {
+		planOperatingSystemVersion := plan.OperatingSystemVersion.ValueString()
+		requestBody.SetOperatingSystemVersion(&planOperatingSystemVersion)
+	}
+
+	if !plan.PhysicalIds.Equal(state.PhysicalIds) {
+		var physicalIds []string
+		for _, i := range plan.PhysicalIds.Elements() {
+			physicalIds = append(physicalIds, i.String())
+		}
+		requestBody.SetPhysicalIds(physicalIds)
+	}
+
+	if !plan.ProfileType.Equal(state.ProfileType) {
+		planProfileType := plan.ProfileType.ValueString()
+		requestBody.SetProfileType(&planProfileType)
+	}
+
+	if !plan.RegistrationDateTime.Equal(state.RegistrationDateTime) {
+		planRegistrationDateTime := plan.RegistrationDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, planRegistrationDateTime)
+		requestBody.SetRegistrationDateTime(&t)
+	}
+
+	if !plan.SystemLabels.Equal(state.SystemLabels) {
+		var systemLabels []string
+		for _, i := range plan.SystemLabels.Elements() {
+			systemLabels = append(systemLabels, i.String())
+		}
+		requestBody.SetSystemLabels(systemLabels)
+	}
+
+	if !plan.TrustType.Equal(state.TrustType) {
+		planTrustType := plan.TrustType.ValueString()
+		requestBody.SetTrustType(&planTrustType)
+	}
+
+	// Update device
+	_, err := r.client.Devices().ByDeviceId(state.Id.ValueString()).Patch(context.Background(), requestBody, nil)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error updating device",
+			err.Error(),
+		)
+		return
+	}
+
+	// Update resource state with Computed values
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+}
+
+// Delete deletes the resource and removes the Terraform state on success.
+func (r *deviceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	// Retrieve values from state
+	var state deviceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// TODO: Delete device
+	err := r.client.Devices().ByDeviceId(state.Id.ValueString()).Delete(context.Background(), nil)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error deleting device",
+			err.Error(),
+		)
+		return
+	}
+
+}
