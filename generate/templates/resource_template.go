@@ -2,7 +2,7 @@ package {{.PackageName}}
 
 import (
     "context"
-	{{- if .CreateRequest.IfUuidUsed }}
+	{{- if .CreateRequest.IfUuidImportNeeded }}
 	"github.com/google/uuid"
 	{{- end}}
 	"time"

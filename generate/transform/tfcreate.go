@@ -80,8 +80,8 @@ func (cr CreateRequest) AllAttributes() []createRequestAttribute {
 
 }
 
-// IfUuidUsed checks if there are any attributes types that use UUID
-func (cr CreateRequest) IfUuidUsed() bool {
+// Determines if a terraform resource needs to import google/uuid
+func (cr CreateRequest) IfUuidImportNeeded() bool {
 
 	for _, cra := range cr.AllAttributes() {
 		if cra.AttributeType() == "CreateStringUuidAttribute" || cra.AttributeType() == "CreateArrayUuidAttribute" {
