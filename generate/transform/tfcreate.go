@@ -61,6 +61,38 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 	return cra
 }
 
+// AllAttributes returns an array of all createRequestAttributes in the CreateRequest instance, including all nested/child attributes
+func (cr CreateRequest) AllAttributes() []createRequestAttribute {
+
+	var recurseAttributes func(attributes []createRequestAttribute) []createRequestAttribute
+	recurseAttributes = func(attributes []createRequestAttribute) []createRequestAttribute{
+
+		for _, cra := range attributes {
+			if cra.AttributeType() == "CreateObjectAttribute" || cra.AttributeType() == "CreateArrayObjectAttribute" {
+				attributes = append(attributes, recurseAttributes(cra.NestedCreate())...)
+			}
+		}
+
+		return attributes
+	}
+
+	return recurseAttributes(cr.Attributes())
+
+}
+
+// IfUuidUsed checks if there are any attributes types that use UUID
+func (cr CreateRequest) IfUuidUsed() bool {
+
+	for _, cra := range cr.AllAttributes() {
+		if cra.AttributeType() == "CreateStringUuidAttribute" || cra.AttributeType() == "CreateArrayUuidAttribute" {
+			return true
+		}
+	}
+
+	return false
+
+}
+
 type createRequestAttribute struct {
 	CreateRequest *CreateRequest
 	Property      openapi.OpenAPISchemaProperty

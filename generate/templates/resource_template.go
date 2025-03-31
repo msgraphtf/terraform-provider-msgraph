@@ -2,7 +2,9 @@ package {{.PackageName}}
 
 import (
     "context"
+	{{- if .CreateRequest.IfUuidUsed }}
 	"github.com/google/uuid"
+	{{- end}}
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
