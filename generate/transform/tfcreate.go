@@ -239,7 +239,7 @@ func (cra createRequestAttribute) RequestBodyVar() string {
 	} else if cra.Property.ArrayOf == "object" {
 		return cra.Property.ObjectOf.Title
 	} else {
-		return "sdkRequestBody"
+		return "sdkModel" + cra.CreateRequest.BlockName.UpperCamel()
 	}
 
 }
@@ -251,7 +251,7 @@ func (cra createRequestAttribute) ParentRequestBodyVar() string {
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
 		return cra.Parent.RequestBodyVar()
 	} else {
-		return "sdkRequestBody"
+		return "sdkModel" + cra.CreateRequest.BlockName.UpperCamel()
 	}
 
 }

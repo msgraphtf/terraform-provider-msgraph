@@ -1144,11 +1144,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	// Generate API request body from Terraform plan
-	sdkRequestBody := models.NewUser()
+	sdkModelUser := models.NewUser()
 
 	if !tfPlan.Id.IsUnknown() {
 		tfPlanId := tfPlan.Id.ValueString()
-		sdkRequestBody.SetId(&tfPlanId)
+		sdkModelUser.SetId(&tfPlanId)
 	} else {
 		tfPlan.Id = types.StringNull()
 	}
@@ -1156,28 +1156,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.DeletedDateTime.IsUnknown() {
 		tfPlanDeletedDateTime := tfPlan.DeletedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		sdkRequestBody.SetDeletedDateTime(&t)
+		sdkModelUser.SetDeletedDateTime(&t)
 	} else {
 		tfPlan.DeletedDateTime = types.StringNull()
 	}
 
 	if !tfPlan.AboutMe.IsUnknown() {
 		tfPlanAboutMe := tfPlan.AboutMe.ValueString()
-		sdkRequestBody.SetAboutMe(&tfPlanAboutMe)
+		sdkModelUser.SetAboutMe(&tfPlanAboutMe)
 	} else {
 		tfPlan.AboutMe = types.StringNull()
 	}
 
 	if !tfPlan.AccountEnabled.IsUnknown() {
 		tfPlanAccountEnabled := tfPlan.AccountEnabled.ValueBool()
-		sdkRequestBody.SetAccountEnabled(&tfPlanAccountEnabled)
+		sdkModelUser.SetAccountEnabled(&tfPlanAccountEnabled)
 	} else {
 		tfPlan.AccountEnabled = types.BoolNull()
 	}
 
 	if !tfPlan.AgeGroup.IsUnknown() {
 		tfPlanAgeGroup := tfPlan.AgeGroup.ValueString()
-		sdkRequestBody.SetAgeGroup(&tfPlanAgeGroup)
+		sdkModelUser.SetAgeGroup(&tfPlanAgeGroup)
 	} else {
 		tfPlan.AgeGroup = types.StringNull()
 	}
@@ -1208,7 +1208,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				assignedLicensesModel.SkuId = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetAssignedLicenses(tfPlanAssignedLicenses)
+		sdkModelUser.SetAssignedLicenses(tfPlanAssignedLicenses)
 	} else {
 		tfPlan.AssignedLicenses = types.ListNull(tfPlan.AssignedLicenses.ElementType(ctx))
 	}
@@ -1250,7 +1250,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				assignedPlansModel.ServicePlanId = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetAssignedPlans(tfPlanAssignedPlans)
+		sdkModelUser.SetAssignedPlans(tfPlanAssignedPlans)
 	} else {
 		tfPlan.AssignedPlans = types.ListNull(tfPlan.AssignedPlans.ElementType(ctx))
 	}
@@ -1269,7 +1269,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			authorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
 		}
-		sdkRequestBody.SetAuthorizationInfo(authorizationInfo)
+		sdkModelUser.SetAuthorizationInfo(authorizationInfo)
 		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfoModel.AttributeTypes(), authorizationInfoModel)
 		tfPlan.AuthorizationInfo = objectValue
 	} else {
@@ -1279,7 +1279,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.Birthday.IsUnknown() {
 		tfPlanBirthday := tfPlan.Birthday.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanBirthday)
-		sdkRequestBody.SetBirthday(&t)
+		sdkModelUser.SetBirthday(&t)
 	} else {
 		tfPlan.Birthday = types.StringNull()
 	}
@@ -1289,35 +1289,35 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.BusinessPhones.Elements() {
 			businessPhones = append(businessPhones, i.String())
 		}
-		sdkRequestBody.SetBusinessPhones(businessPhones)
+		sdkModelUser.SetBusinessPhones(businessPhones)
 	} else {
 		tfPlan.BusinessPhones = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.City.IsUnknown() {
 		tfPlanCity := tfPlan.City.ValueString()
-		sdkRequestBody.SetCity(&tfPlanCity)
+		sdkModelUser.SetCity(&tfPlanCity)
 	} else {
 		tfPlan.City = types.StringNull()
 	}
 
 	if !tfPlan.CompanyName.IsUnknown() {
 		tfPlanCompanyName := tfPlan.CompanyName.ValueString()
-		sdkRequestBody.SetCompanyName(&tfPlanCompanyName)
+		sdkModelUser.SetCompanyName(&tfPlanCompanyName)
 	} else {
 		tfPlan.CompanyName = types.StringNull()
 	}
 
 	if !tfPlan.ConsentProvidedForMinor.IsUnknown() {
 		tfPlanConsentProvidedForMinor := tfPlan.ConsentProvidedForMinor.ValueString()
-		sdkRequestBody.SetConsentProvidedForMinor(&tfPlanConsentProvidedForMinor)
+		sdkModelUser.SetConsentProvidedForMinor(&tfPlanConsentProvidedForMinor)
 	} else {
 		tfPlan.ConsentProvidedForMinor = types.StringNull()
 	}
 
 	if !tfPlan.Country.IsUnknown() {
 		tfPlanCountry := tfPlan.Country.ValueString()
-		sdkRequestBody.SetCountry(&tfPlanCountry)
+		sdkModelUser.SetCountry(&tfPlanCountry)
 	} else {
 		tfPlan.Country = types.StringNull()
 	}
@@ -1325,28 +1325,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.CreatedDateTime.IsUnknown() {
 		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
-		sdkRequestBody.SetCreatedDateTime(&t)
+		sdkModelUser.SetCreatedDateTime(&t)
 	} else {
 		tfPlan.CreatedDateTime = types.StringNull()
 	}
 
 	if !tfPlan.CreationType.IsUnknown() {
 		tfPlanCreationType := tfPlan.CreationType.ValueString()
-		sdkRequestBody.SetCreationType(&tfPlanCreationType)
+		sdkModelUser.SetCreationType(&tfPlanCreationType)
 	} else {
 		tfPlan.CreationType = types.StringNull()
 	}
 
 	if !tfPlan.Department.IsUnknown() {
 		tfPlanDepartment := tfPlan.Department.ValueString()
-		sdkRequestBody.SetDepartment(&tfPlanDepartment)
+		sdkModelUser.SetDepartment(&tfPlanDepartment)
 	} else {
 		tfPlan.Department = types.StringNull()
 	}
 
 	if !tfPlan.DisplayName.IsUnknown() {
 		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
-		sdkRequestBody.SetDisplayName(&tfPlanDisplayName)
+		sdkModelUser.SetDisplayName(&tfPlanDisplayName)
 	} else {
 		tfPlan.DisplayName = types.StringNull()
 	}
@@ -1354,14 +1354,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.EmployeeHireDate.IsUnknown() {
 		tfPlanEmployeeHireDate := tfPlan.EmployeeHireDate.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanEmployeeHireDate)
-		sdkRequestBody.SetEmployeeHireDate(&t)
+		sdkModelUser.SetEmployeeHireDate(&t)
 	} else {
 		tfPlan.EmployeeHireDate = types.StringNull()
 	}
 
 	if !tfPlan.EmployeeId.IsUnknown() {
 		tfPlanEmployeeId := tfPlan.EmployeeId.ValueString()
-		sdkRequestBody.SetEmployeeId(&tfPlanEmployeeId)
+		sdkModelUser.SetEmployeeId(&tfPlanEmployeeId)
 	} else {
 		tfPlan.EmployeeId = types.StringNull()
 	}
@@ -1369,7 +1369,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.EmployeeLeaveDateTime.IsUnknown() {
 		tfPlanEmployeeLeaveDateTime := tfPlan.EmployeeLeaveDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanEmployeeLeaveDateTime)
-		sdkRequestBody.SetEmployeeLeaveDateTime(&t)
+		sdkModelUser.SetEmployeeLeaveDateTime(&t)
 	} else {
 		tfPlan.EmployeeLeaveDateTime = types.StringNull()
 	}
@@ -1392,7 +1392,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			employeeOrgDataModel.Division = types.StringNull()
 		}
-		sdkRequestBody.SetEmployeeOrgData(employeeOrgData)
+		sdkModelUser.SetEmployeeOrgData(employeeOrgData)
 		objectValue, _ := types.ObjectValueFrom(ctx, employeeOrgDataModel.AttributeTypes(), employeeOrgDataModel)
 		tfPlan.EmployeeOrgData = objectValue
 	} else {
@@ -1401,14 +1401,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.EmployeeType.IsUnknown() {
 		tfPlanEmployeeType := tfPlan.EmployeeType.ValueString()
-		sdkRequestBody.SetEmployeeType(&tfPlanEmployeeType)
+		sdkModelUser.SetEmployeeType(&tfPlanEmployeeType)
 	} else {
 		tfPlan.EmployeeType = types.StringNull()
 	}
 
 	if !tfPlan.ExternalUserState.IsUnknown() {
 		tfPlanExternalUserState := tfPlan.ExternalUserState.ValueString()
-		sdkRequestBody.SetExternalUserState(&tfPlanExternalUserState)
+		sdkModelUser.SetExternalUserState(&tfPlanExternalUserState)
 	} else {
 		tfPlan.ExternalUserState = types.StringNull()
 	}
@@ -1416,21 +1416,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.ExternalUserStateChangeDateTime.IsUnknown() {
 		tfPlanExternalUserStateChangeDateTime := tfPlan.ExternalUserStateChangeDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanExternalUserStateChangeDateTime)
-		sdkRequestBody.SetExternalUserStateChangeDateTime(&t)
+		sdkModelUser.SetExternalUserStateChangeDateTime(&t)
 	} else {
 		tfPlan.ExternalUserStateChangeDateTime = types.StringNull()
 	}
 
 	if !tfPlan.FaxNumber.IsUnknown() {
 		tfPlanFaxNumber := tfPlan.FaxNumber.ValueString()
-		sdkRequestBody.SetFaxNumber(&tfPlanFaxNumber)
+		sdkModelUser.SetFaxNumber(&tfPlanFaxNumber)
 	} else {
 		tfPlan.FaxNumber = types.StringNull()
 	}
 
 	if !tfPlan.GivenName.IsUnknown() {
 		tfPlanGivenName := tfPlan.GivenName.ValueString()
-		sdkRequestBody.SetGivenName(&tfPlanGivenName)
+		sdkModelUser.SetGivenName(&tfPlanGivenName)
 	} else {
 		tfPlan.GivenName = types.StringNull()
 	}
@@ -1438,7 +1438,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.HireDate.IsUnknown() {
 		tfPlanHireDate := tfPlan.HireDate.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanHireDate)
-		sdkRequestBody.SetHireDate(&t)
+		sdkModelUser.SetHireDate(&t)
 	} else {
 		tfPlan.HireDate = types.StringNull()
 	}
@@ -1471,7 +1471,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				identitiesModel.SignInType = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetIdentities(tfPlanIdentities)
+		sdkModelUser.SetIdentities(tfPlanIdentities)
 	} else {
 		tfPlan.Identities = types.ListNull(tfPlan.Identities.ElementType(ctx))
 	}
@@ -1481,7 +1481,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.ImAddresses.Elements() {
 			imAddresses = append(imAddresses, i.String())
 		}
-		sdkRequestBody.SetImAddresses(imAddresses)
+		sdkModelUser.SetImAddresses(imAddresses)
 	} else {
 		tfPlan.ImAddresses = types.ListNull(types.StringType)
 	}
@@ -1491,28 +1491,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.Interests.Elements() {
 			interests = append(interests, i.String())
 		}
-		sdkRequestBody.SetInterests(interests)
+		sdkModelUser.SetInterests(interests)
 	} else {
 		tfPlan.Interests = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.IsManagementRestricted.IsUnknown() {
 		tfPlanIsManagementRestricted := tfPlan.IsManagementRestricted.ValueBool()
-		sdkRequestBody.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
+		sdkModelUser.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
 	} else {
 		tfPlan.IsManagementRestricted = types.BoolNull()
 	}
 
 	if !tfPlan.IsResourceAccount.IsUnknown() {
 		tfPlanIsResourceAccount := tfPlan.IsResourceAccount.ValueBool()
-		sdkRequestBody.SetIsResourceAccount(&tfPlanIsResourceAccount)
+		sdkModelUser.SetIsResourceAccount(&tfPlanIsResourceAccount)
 	} else {
 		tfPlan.IsResourceAccount = types.BoolNull()
 	}
 
 	if !tfPlan.JobTitle.IsUnknown() {
 		tfPlanJobTitle := tfPlan.JobTitle.ValueString()
-		sdkRequestBody.SetJobTitle(&tfPlanJobTitle)
+		sdkModelUser.SetJobTitle(&tfPlanJobTitle)
 	} else {
 		tfPlan.JobTitle = types.StringNull()
 	}
@@ -1520,14 +1520,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.LastPasswordChangeDateTime.IsUnknown() {
 		tfPlanLastPasswordChangeDateTime := tfPlan.LastPasswordChangeDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanLastPasswordChangeDateTime)
-		sdkRequestBody.SetLastPasswordChangeDateTime(&t)
+		sdkModelUser.SetLastPasswordChangeDateTime(&t)
 	} else {
 		tfPlan.LastPasswordChangeDateTime = types.StringNull()
 	}
 
 	if !tfPlan.LegalAgeGroupClassification.IsUnknown() {
 		tfPlanLegalAgeGroupClassification := tfPlan.LegalAgeGroupClassification.ValueString()
-		sdkRequestBody.SetLegalAgeGroupClassification(&tfPlanLegalAgeGroupClassification)
+		sdkModelUser.SetLegalAgeGroupClassification(&tfPlanLegalAgeGroupClassification)
 	} else {
 		tfPlan.LegalAgeGroupClassification = types.StringNull()
 	}
@@ -1587,56 +1587,56 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				licenseAssignmentStatesModel.State = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetLicenseAssignmentStates(tfPlanLicenseAssignmentStates)
+		sdkModelUser.SetLicenseAssignmentStates(tfPlanLicenseAssignmentStates)
 	} else {
 		tfPlan.LicenseAssignmentStates = types.ListNull(tfPlan.LicenseAssignmentStates.ElementType(ctx))
 	}
 
 	if !tfPlan.Mail.IsUnknown() {
 		tfPlanMail := tfPlan.Mail.ValueString()
-		sdkRequestBody.SetMail(&tfPlanMail)
+		sdkModelUser.SetMail(&tfPlanMail)
 	} else {
 		tfPlan.Mail = types.StringNull()
 	}
 
 	if !tfPlan.MailNickname.IsUnknown() {
 		tfPlanMailNickname := tfPlan.MailNickname.ValueString()
-		sdkRequestBody.SetMailNickname(&tfPlanMailNickname)
+		sdkModelUser.SetMailNickname(&tfPlanMailNickname)
 	} else {
 		tfPlan.MailNickname = types.StringNull()
 	}
 
 	if !tfPlan.MobilePhone.IsUnknown() {
 		tfPlanMobilePhone := tfPlan.MobilePhone.ValueString()
-		sdkRequestBody.SetMobilePhone(&tfPlanMobilePhone)
+		sdkModelUser.SetMobilePhone(&tfPlanMobilePhone)
 	} else {
 		tfPlan.MobilePhone = types.StringNull()
 	}
 
 	if !tfPlan.MySite.IsUnknown() {
 		tfPlanMySite := tfPlan.MySite.ValueString()
-		sdkRequestBody.SetMySite(&tfPlanMySite)
+		sdkModelUser.SetMySite(&tfPlanMySite)
 	} else {
 		tfPlan.MySite = types.StringNull()
 	}
 
 	if !tfPlan.OfficeLocation.IsUnknown() {
 		tfPlanOfficeLocation := tfPlan.OfficeLocation.ValueString()
-		sdkRequestBody.SetOfficeLocation(&tfPlanOfficeLocation)
+		sdkModelUser.SetOfficeLocation(&tfPlanOfficeLocation)
 	} else {
 		tfPlan.OfficeLocation = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesDistinguishedName.IsUnknown() {
 		tfPlanOnPremisesDistinguishedName := tfPlan.OnPremisesDistinguishedName.ValueString()
-		sdkRequestBody.SetOnPremisesDistinguishedName(&tfPlanOnPremisesDistinguishedName)
+		sdkModelUser.SetOnPremisesDistinguishedName(&tfPlanOnPremisesDistinguishedName)
 	} else {
 		tfPlan.OnPremisesDistinguishedName = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesDomainName.IsUnknown() {
 		tfPlanOnPremisesDomainName := tfPlan.OnPremisesDomainName.ValueString()
-		sdkRequestBody.SetOnPremisesDomainName(&tfPlanOnPremisesDomainName)
+		sdkModelUser.SetOnPremisesDomainName(&tfPlanOnPremisesDomainName)
 	} else {
 		tfPlan.OnPremisesDomainName = types.StringNull()
 	}
@@ -1750,7 +1750,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			onPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
 		}
-		sdkRequestBody.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
+		sdkModelUser.SetOnPremisesExtensionAttributes(onPremisesExtensionAttributes)
 		objectValue, _ := types.ObjectValueFrom(ctx, onPremisesExtensionAttributesModel.AttributeTypes(), onPremisesExtensionAttributesModel)
 		tfPlan.OnPremisesExtensionAttributes = objectValue
 	} else {
@@ -1759,7 +1759,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.OnPremisesImmutableId.IsUnknown() {
 		tfPlanOnPremisesImmutableId := tfPlan.OnPremisesImmutableId.ValueString()
-		sdkRequestBody.SetOnPremisesImmutableId(&tfPlanOnPremisesImmutableId)
+		sdkModelUser.SetOnPremisesImmutableId(&tfPlanOnPremisesImmutableId)
 	} else {
 		tfPlan.OnPremisesImmutableId = types.StringNull()
 	}
@@ -1767,7 +1767,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.OnPremisesLastSyncDateTime.IsUnknown() {
 		tfPlanOnPremisesLastSyncDateTime := tfPlan.OnPremisesLastSyncDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanOnPremisesLastSyncDateTime)
-		sdkRequestBody.SetOnPremisesLastSyncDateTime(&t)
+		sdkModelUser.SetOnPremisesLastSyncDateTime(&t)
 	} else {
 		tfPlan.OnPremisesLastSyncDateTime = types.StringNull()
 	}
@@ -1808,35 +1808,35 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				onPremisesProvisioningErrorsModel.Value = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
+		sdkModelUser.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
 	} else {
 		tfPlan.OnPremisesProvisioningErrors = types.ListNull(tfPlan.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
 
 	if !tfPlan.OnPremisesSamAccountName.IsUnknown() {
 		tfPlanOnPremisesSamAccountName := tfPlan.OnPremisesSamAccountName.ValueString()
-		sdkRequestBody.SetOnPremisesSamAccountName(&tfPlanOnPremisesSamAccountName)
+		sdkModelUser.SetOnPremisesSamAccountName(&tfPlanOnPremisesSamAccountName)
 	} else {
 		tfPlan.OnPremisesSamAccountName = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesSecurityIdentifier.IsUnknown() {
 		tfPlanOnPremisesSecurityIdentifier := tfPlan.OnPremisesSecurityIdentifier.ValueString()
-		sdkRequestBody.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
+		sdkModelUser.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
 	} else {
 		tfPlan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesSyncEnabled.IsUnknown() {
 		tfPlanOnPremisesSyncEnabled := tfPlan.OnPremisesSyncEnabled.ValueBool()
-		sdkRequestBody.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
+		sdkModelUser.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
 	} else {
 		tfPlan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
 	if !tfPlan.OnPremisesUserPrincipalName.IsUnknown() {
 		tfPlanOnPremisesUserPrincipalName := tfPlan.OnPremisesUserPrincipalName.ValueString()
-		sdkRequestBody.SetOnPremisesUserPrincipalName(&tfPlanOnPremisesUserPrincipalName)
+		sdkModelUser.SetOnPremisesUserPrincipalName(&tfPlanOnPremisesUserPrincipalName)
 	} else {
 		tfPlan.OnPremisesUserPrincipalName = types.StringNull()
 	}
@@ -1846,14 +1846,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.OtherMails.Elements() {
 			otherMails = append(otherMails, i.String())
 		}
-		sdkRequestBody.SetOtherMails(otherMails)
+		sdkModelUser.SetOtherMails(otherMails)
 	} else {
 		tfPlan.OtherMails = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.PasswordPolicies.IsUnknown() {
 		tfPlanPasswordPolicies := tfPlan.PasswordPolicies.ValueString()
-		sdkRequestBody.SetPasswordPolicies(&tfPlanPasswordPolicies)
+		sdkModelUser.SetPasswordPolicies(&tfPlanPasswordPolicies)
 	} else {
 		tfPlan.PasswordPolicies = types.StringNull()
 	}
@@ -1883,7 +1883,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			passwordProfileModel.Password = types.StringNull()
 		}
-		sdkRequestBody.SetPasswordProfile(passwordProfile)
+		sdkModelUser.SetPasswordProfile(passwordProfile)
 		objectValue, _ := types.ObjectValueFrom(ctx, passwordProfileModel.AttributeTypes(), passwordProfileModel)
 		tfPlan.PasswordProfile = objectValue
 	} else {
@@ -1895,35 +1895,35 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.PastProjects.Elements() {
 			pastProjects = append(pastProjects, i.String())
 		}
-		sdkRequestBody.SetPastProjects(pastProjects)
+		sdkModelUser.SetPastProjects(pastProjects)
 	} else {
 		tfPlan.PastProjects = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.PostalCode.IsUnknown() {
 		tfPlanPostalCode := tfPlan.PostalCode.ValueString()
-		sdkRequestBody.SetPostalCode(&tfPlanPostalCode)
+		sdkModelUser.SetPostalCode(&tfPlanPostalCode)
 	} else {
 		tfPlan.PostalCode = types.StringNull()
 	}
 
 	if !tfPlan.PreferredDataLocation.IsUnknown() {
 		tfPlanPreferredDataLocation := tfPlan.PreferredDataLocation.ValueString()
-		sdkRequestBody.SetPreferredDataLocation(&tfPlanPreferredDataLocation)
+		sdkModelUser.SetPreferredDataLocation(&tfPlanPreferredDataLocation)
 	} else {
 		tfPlan.PreferredDataLocation = types.StringNull()
 	}
 
 	if !tfPlan.PreferredLanguage.IsUnknown() {
 		tfPlanPreferredLanguage := tfPlan.PreferredLanguage.ValueString()
-		sdkRequestBody.SetPreferredLanguage(&tfPlanPreferredLanguage)
+		sdkModelUser.SetPreferredLanguage(&tfPlanPreferredLanguage)
 	} else {
 		tfPlan.PreferredLanguage = types.StringNull()
 	}
 
 	if !tfPlan.PreferredName.IsUnknown() {
 		tfPlanPreferredName := tfPlan.PreferredName.ValueString()
-		sdkRequestBody.SetPreferredName(&tfPlanPreferredName)
+		sdkModelUser.SetPreferredName(&tfPlanPreferredName)
 	} else {
 		tfPlan.PreferredName = types.StringNull()
 	}
@@ -1956,7 +1956,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				provisionedPlansModel.Service = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetProvisionedPlans(tfPlanProvisionedPlans)
+		sdkModelUser.SetProvisionedPlans(tfPlanProvisionedPlans)
 	} else {
 		tfPlan.ProvisionedPlans = types.ListNull(tfPlan.ProvisionedPlans.ElementType(ctx))
 	}
@@ -1966,7 +1966,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.ProxyAddresses.Elements() {
 			proxyAddresses = append(proxyAddresses, i.String())
 		}
-		sdkRequestBody.SetProxyAddresses(proxyAddresses)
+		sdkModelUser.SetProxyAddresses(proxyAddresses)
 	} else {
 		tfPlan.ProxyAddresses = types.ListNull(types.StringType)
 	}
@@ -1976,7 +1976,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.Responsibilities.Elements() {
 			responsibilities = append(responsibilities, i.String())
 		}
-		sdkRequestBody.SetResponsibilities(responsibilities)
+		sdkModelUser.SetResponsibilities(responsibilities)
 	} else {
 		tfPlan.Responsibilities = types.ListNull(types.StringType)
 	}
@@ -1986,14 +1986,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.Schools.Elements() {
 			schools = append(schools, i.String())
 		}
-		sdkRequestBody.SetSchools(schools)
+		sdkModelUser.SetSchools(schools)
 	} else {
 		tfPlan.Schools = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.SecurityIdentifier.IsUnknown() {
 		tfPlanSecurityIdentifier := tfPlan.SecurityIdentifier.ValueString()
-		sdkRequestBody.SetSecurityIdentifier(&tfPlanSecurityIdentifier)
+		sdkModelUser.SetSecurityIdentifier(&tfPlanSecurityIdentifier)
 	} else {
 		tfPlan.SecurityIdentifier = types.StringNull()
 	}
@@ -2027,14 +2027,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 				serviceProvisioningErrorsModel.ServiceInstance = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
+		sdkModelUser.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
 	} else {
 		tfPlan.ServiceProvisioningErrors = types.ListNull(tfPlan.ServiceProvisioningErrors.ElementType(ctx))
 	}
 
 	if !tfPlan.ShowInAddressList.IsUnknown() {
 		tfPlanShowInAddressList := tfPlan.ShowInAddressList.ValueBool()
-		sdkRequestBody.SetShowInAddressList(&tfPlanShowInAddressList)
+		sdkModelUser.SetShowInAddressList(&tfPlanShowInAddressList)
 	} else {
 		tfPlan.ShowInAddressList = types.BoolNull()
 	}
@@ -2088,7 +2088,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			signInActivityModel.LastSuccessfulSignInRequestId = types.StringNull()
 		}
-		sdkRequestBody.SetSignInActivity(signInActivity)
+		sdkModelUser.SetSignInActivity(signInActivity)
 		objectValue, _ := types.ObjectValueFrom(ctx, signInActivityModel.AttributeTypes(), signInActivityModel)
 		tfPlan.SignInActivity = objectValue
 	} else {
@@ -2098,7 +2098,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.SignInSessionsValidFromDateTime.IsUnknown() {
 		tfPlanSignInSessionsValidFromDateTime := tfPlan.SignInSessionsValidFromDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanSignInSessionsValidFromDateTime)
-		sdkRequestBody.SetSignInSessionsValidFromDateTime(&t)
+		sdkModelUser.SetSignInSessionsValidFromDateTime(&t)
 	} else {
 		tfPlan.SignInSessionsValidFromDateTime = types.StringNull()
 	}
@@ -2108,55 +2108,55 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		for _, i := range tfPlan.Skills.Elements() {
 			skills = append(skills, i.String())
 		}
-		sdkRequestBody.SetSkills(skills)
+		sdkModelUser.SetSkills(skills)
 	} else {
 		tfPlan.Skills = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.State.IsUnknown() {
 		tfPlanState := tfPlan.State.ValueString()
-		sdkRequestBody.SetState(&tfPlanState)
+		sdkModelUser.SetState(&tfPlanState)
 	} else {
 		tfPlan.State = types.StringNull()
 	}
 
 	if !tfPlan.StreetAddress.IsUnknown() {
 		tfPlanStreetAddress := tfPlan.StreetAddress.ValueString()
-		sdkRequestBody.SetStreetAddress(&tfPlanStreetAddress)
+		sdkModelUser.SetStreetAddress(&tfPlanStreetAddress)
 	} else {
 		tfPlan.StreetAddress = types.StringNull()
 	}
 
 	if !tfPlan.Surname.IsUnknown() {
 		tfPlanSurname := tfPlan.Surname.ValueString()
-		sdkRequestBody.SetSurname(&tfPlanSurname)
+		sdkModelUser.SetSurname(&tfPlanSurname)
 	} else {
 		tfPlan.Surname = types.StringNull()
 	}
 
 	if !tfPlan.UsageLocation.IsUnknown() {
 		tfPlanUsageLocation := tfPlan.UsageLocation.ValueString()
-		sdkRequestBody.SetUsageLocation(&tfPlanUsageLocation)
+		sdkModelUser.SetUsageLocation(&tfPlanUsageLocation)
 	} else {
 		tfPlan.UsageLocation = types.StringNull()
 	}
 
 	if !tfPlan.UserPrincipalName.IsUnknown() {
 		tfPlanUserPrincipalName := tfPlan.UserPrincipalName.ValueString()
-		sdkRequestBody.SetUserPrincipalName(&tfPlanUserPrincipalName)
+		sdkModelUser.SetUserPrincipalName(&tfPlanUserPrincipalName)
 	} else {
 		tfPlan.UserPrincipalName = types.StringNull()
 	}
 
 	if !tfPlan.UserType.IsUnknown() {
 		tfPlanUserType := tfPlan.UserType.ValueString()
-		sdkRequestBody.SetUserType(&tfPlanUserType)
+		sdkModelUser.SetUserType(&tfPlanUserType)
 	} else {
 		tfPlan.UserType = types.StringNull()
 	}
 
 	// Create new user
-	result, err := r.client.Users().Post(context.Background(), sdkRequestBody, nil)
+	result, err := r.client.Users().Post(context.Background(), sdkModelUser, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating user",

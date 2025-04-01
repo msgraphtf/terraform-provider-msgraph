@@ -467,11 +467,11 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 
 	// Generate API request body from Terraform plan
-	sdkRequestBody := models.NewGroup()
+	sdkModelGroup := models.NewGroup()
 
 	if !tfPlan.Id.IsUnknown() {
 		tfPlanId := tfPlan.Id.ValueString()
-		sdkRequestBody.SetId(&tfPlanId)
+		sdkModelGroup.SetId(&tfPlanId)
 	} else {
 		tfPlan.Id = types.StringNull()
 	}
@@ -479,7 +479,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if !tfPlan.DeletedDateTime.IsUnknown() {
 		tfPlanDeletedDateTime := tfPlan.DeletedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		sdkRequestBody.SetDeletedDateTime(&t)
+		sdkModelGroup.SetDeletedDateTime(&t)
 	} else {
 		tfPlan.DeletedDateTime = types.StringNull()
 	}
@@ -505,7 +505,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 				assignedLabelsModel.LabelId = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetAssignedLabels(tfPlanAssignedLabels)
+		sdkModelGroup.SetAssignedLabels(tfPlanAssignedLabels)
 	} else {
 		tfPlan.AssignedLabels = types.ListNull(tfPlan.AssignedLabels.ElementType(ctx))
 	}
@@ -536,14 +536,14 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 				assignedLicensesModel.SkuId = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetAssignedLicenses(tfPlanAssignedLicenses)
+		sdkModelGroup.SetAssignedLicenses(tfPlanAssignedLicenses)
 	} else {
 		tfPlan.AssignedLicenses = types.ListNull(tfPlan.AssignedLicenses.ElementType(ctx))
 	}
 
 	if !tfPlan.Classification.IsUnknown() {
 		tfPlanClassification := tfPlan.Classification.ValueString()
-		sdkRequestBody.SetClassification(&tfPlanClassification)
+		sdkModelGroup.SetClassification(&tfPlanClassification)
 	} else {
 		tfPlan.Classification = types.StringNull()
 	}
@@ -551,21 +551,21 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if !tfPlan.CreatedDateTime.IsUnknown() {
 		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
-		sdkRequestBody.SetCreatedDateTime(&t)
+		sdkModelGroup.SetCreatedDateTime(&t)
 	} else {
 		tfPlan.CreatedDateTime = types.StringNull()
 	}
 
 	if !tfPlan.Description.IsUnknown() {
 		tfPlanDescription := tfPlan.Description.ValueString()
-		sdkRequestBody.SetDescription(&tfPlanDescription)
+		sdkModelGroup.SetDescription(&tfPlanDescription)
 	} else {
 		tfPlan.Description = types.StringNull()
 	}
 
 	if !tfPlan.DisplayName.IsUnknown() {
 		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
-		sdkRequestBody.SetDisplayName(&tfPlanDisplayName)
+		sdkModelGroup.SetDisplayName(&tfPlanDisplayName)
 	} else {
 		tfPlan.DisplayName = types.StringNull()
 	}
@@ -573,7 +573,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if !tfPlan.ExpirationDateTime.IsUnknown() {
 		tfPlanExpirationDateTime := tfPlan.ExpirationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanExpirationDateTime)
-		sdkRequestBody.SetExpirationDateTime(&t)
+		sdkModelGroup.SetExpirationDateTime(&t)
 	} else {
 		tfPlan.ExpirationDateTime = types.StringNull()
 	}
@@ -583,21 +583,21 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		for _, i := range tfPlan.GroupTypes.Elements() {
 			groupTypes = append(groupTypes, i.String())
 		}
-		sdkRequestBody.SetGroupTypes(groupTypes)
+		sdkModelGroup.SetGroupTypes(groupTypes)
 	} else {
 		tfPlan.GroupTypes = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.IsAssignableToRole.IsUnknown() {
 		tfPlanIsAssignableToRole := tfPlan.IsAssignableToRole.ValueBool()
-		sdkRequestBody.SetIsAssignableToRole(&tfPlanIsAssignableToRole)
+		sdkModelGroup.SetIsAssignableToRole(&tfPlanIsAssignableToRole)
 	} else {
 		tfPlan.IsAssignableToRole = types.BoolNull()
 	}
 
 	if !tfPlan.IsManagementRestricted.IsUnknown() {
 		tfPlanIsManagementRestricted := tfPlan.IsManagementRestricted.ValueBool()
-		sdkRequestBody.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
+		sdkModelGroup.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
 	} else {
 		tfPlan.IsManagementRestricted = types.BoolNull()
 	}
@@ -613,7 +613,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		} else {
 			licenseProcessingStateModel.State = types.StringNull()
 		}
-		sdkRequestBody.SetLicenseProcessingState(licenseProcessingState)
+		sdkModelGroup.SetLicenseProcessingState(licenseProcessingState)
 		objectValue, _ := types.ObjectValueFrom(ctx, licenseProcessingStateModel.AttributeTypes(), licenseProcessingStateModel)
 		tfPlan.LicenseProcessingState = objectValue
 	} else {
@@ -622,42 +622,42 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	if !tfPlan.Mail.IsUnknown() {
 		tfPlanMail := tfPlan.Mail.ValueString()
-		sdkRequestBody.SetMail(&tfPlanMail)
+		sdkModelGroup.SetMail(&tfPlanMail)
 	} else {
 		tfPlan.Mail = types.StringNull()
 	}
 
 	if !tfPlan.MailEnabled.IsUnknown() {
 		tfPlanMailEnabled := tfPlan.MailEnabled.ValueBool()
-		sdkRequestBody.SetMailEnabled(&tfPlanMailEnabled)
+		sdkModelGroup.SetMailEnabled(&tfPlanMailEnabled)
 	} else {
 		tfPlan.MailEnabled = types.BoolNull()
 	}
 
 	if !tfPlan.MailNickname.IsUnknown() {
 		tfPlanMailNickname := tfPlan.MailNickname.ValueString()
-		sdkRequestBody.SetMailNickname(&tfPlanMailNickname)
+		sdkModelGroup.SetMailNickname(&tfPlanMailNickname)
 	} else {
 		tfPlan.MailNickname = types.StringNull()
 	}
 
 	if !tfPlan.MembershipRule.IsUnknown() {
 		tfPlanMembershipRule := tfPlan.MembershipRule.ValueString()
-		sdkRequestBody.SetMembershipRule(&tfPlanMembershipRule)
+		sdkModelGroup.SetMembershipRule(&tfPlanMembershipRule)
 	} else {
 		tfPlan.MembershipRule = types.StringNull()
 	}
 
 	if !tfPlan.MembershipRuleProcessingState.IsUnknown() {
 		tfPlanMembershipRuleProcessingState := tfPlan.MembershipRuleProcessingState.ValueString()
-		sdkRequestBody.SetMembershipRuleProcessingState(&tfPlanMembershipRuleProcessingState)
+		sdkModelGroup.SetMembershipRuleProcessingState(&tfPlanMembershipRuleProcessingState)
 	} else {
 		tfPlan.MembershipRuleProcessingState = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesDomainName.IsUnknown() {
 		tfPlanOnPremisesDomainName := tfPlan.OnPremisesDomainName.ValueString()
-		sdkRequestBody.SetOnPremisesDomainName(&tfPlanOnPremisesDomainName)
+		sdkModelGroup.SetOnPremisesDomainName(&tfPlanOnPremisesDomainName)
 	} else {
 		tfPlan.OnPremisesDomainName = types.StringNull()
 	}
@@ -665,14 +665,14 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if !tfPlan.OnPremisesLastSyncDateTime.IsUnknown() {
 		tfPlanOnPremisesLastSyncDateTime := tfPlan.OnPremisesLastSyncDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanOnPremisesLastSyncDateTime)
-		sdkRequestBody.SetOnPremisesLastSyncDateTime(&t)
+		sdkModelGroup.SetOnPremisesLastSyncDateTime(&t)
 	} else {
 		tfPlan.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesNetBiosName.IsUnknown() {
 		tfPlanOnPremisesNetBiosName := tfPlan.OnPremisesNetBiosName.ValueString()
-		sdkRequestBody.SetOnPremisesNetBiosName(&tfPlanOnPremisesNetBiosName)
+		sdkModelGroup.SetOnPremisesNetBiosName(&tfPlanOnPremisesNetBiosName)
 	} else {
 		tfPlan.OnPremisesNetBiosName = types.StringNull()
 	}
@@ -713,42 +713,42 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 				onPremisesProvisioningErrorsModel.Value = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
+		sdkModelGroup.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
 	} else {
 		tfPlan.OnPremisesProvisioningErrors = types.ListNull(tfPlan.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
 
 	if !tfPlan.OnPremisesSamAccountName.IsUnknown() {
 		tfPlanOnPremisesSamAccountName := tfPlan.OnPremisesSamAccountName.ValueString()
-		sdkRequestBody.SetOnPremisesSamAccountName(&tfPlanOnPremisesSamAccountName)
+		sdkModelGroup.SetOnPremisesSamAccountName(&tfPlanOnPremisesSamAccountName)
 	} else {
 		tfPlan.OnPremisesSamAccountName = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesSecurityIdentifier.IsUnknown() {
 		tfPlanOnPremisesSecurityIdentifier := tfPlan.OnPremisesSecurityIdentifier.ValueString()
-		sdkRequestBody.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
+		sdkModelGroup.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
 	} else {
 		tfPlan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesSyncEnabled.IsUnknown() {
 		tfPlanOnPremisesSyncEnabled := tfPlan.OnPremisesSyncEnabled.ValueBool()
-		sdkRequestBody.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
+		sdkModelGroup.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
 	} else {
 		tfPlan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
 	if !tfPlan.PreferredDataLocation.IsUnknown() {
 		tfPlanPreferredDataLocation := tfPlan.PreferredDataLocation.ValueString()
-		sdkRequestBody.SetPreferredDataLocation(&tfPlanPreferredDataLocation)
+		sdkModelGroup.SetPreferredDataLocation(&tfPlanPreferredDataLocation)
 	} else {
 		tfPlan.PreferredDataLocation = types.StringNull()
 	}
 
 	if !tfPlan.PreferredLanguage.IsUnknown() {
 		tfPlanPreferredLanguage := tfPlan.PreferredLanguage.ValueString()
-		sdkRequestBody.SetPreferredLanguage(&tfPlanPreferredLanguage)
+		sdkModelGroup.SetPreferredLanguage(&tfPlanPreferredLanguage)
 	} else {
 		tfPlan.PreferredLanguage = types.StringNull()
 	}
@@ -758,7 +758,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		for _, i := range tfPlan.ProxyAddresses.Elements() {
 			proxyAddresses = append(proxyAddresses, i.String())
 		}
-		sdkRequestBody.SetProxyAddresses(proxyAddresses)
+		sdkModelGroup.SetProxyAddresses(proxyAddresses)
 	} else {
 		tfPlan.ProxyAddresses = types.ListNull(types.StringType)
 	}
@@ -766,21 +766,21 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if !tfPlan.RenewedDateTime.IsUnknown() {
 		tfPlanRenewedDateTime := tfPlan.RenewedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanRenewedDateTime)
-		sdkRequestBody.SetRenewedDateTime(&t)
+		sdkModelGroup.SetRenewedDateTime(&t)
 	} else {
 		tfPlan.RenewedDateTime = types.StringNull()
 	}
 
 	if !tfPlan.SecurityEnabled.IsUnknown() {
 		tfPlanSecurityEnabled := tfPlan.SecurityEnabled.ValueBool()
-		sdkRequestBody.SetSecurityEnabled(&tfPlanSecurityEnabled)
+		sdkModelGroup.SetSecurityEnabled(&tfPlanSecurityEnabled)
 	} else {
 		tfPlan.SecurityEnabled = types.BoolNull()
 	}
 
 	if !tfPlan.SecurityIdentifier.IsUnknown() {
 		tfPlanSecurityIdentifier := tfPlan.SecurityIdentifier.ValueString()
-		sdkRequestBody.SetSecurityIdentifier(&tfPlanSecurityIdentifier)
+		sdkModelGroup.SetSecurityIdentifier(&tfPlanSecurityIdentifier)
 	} else {
 		tfPlan.SecurityIdentifier = types.StringNull()
 	}
@@ -814,34 +814,34 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 				serviceProvisioningErrorsModel.ServiceInstance = types.StringNull()
 			}
 		}
-		sdkRequestBody.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
+		sdkModelGroup.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
 	} else {
 		tfPlan.ServiceProvisioningErrors = types.ListNull(tfPlan.ServiceProvisioningErrors.ElementType(ctx))
 	}
 
 	if !tfPlan.Theme.IsUnknown() {
 		tfPlanTheme := tfPlan.Theme.ValueString()
-		sdkRequestBody.SetTheme(&tfPlanTheme)
+		sdkModelGroup.SetTheme(&tfPlanTheme)
 	} else {
 		tfPlan.Theme = types.StringNull()
 	}
 
 	if !tfPlan.UniqueName.IsUnknown() {
 		tfPlanUniqueName := tfPlan.UniqueName.ValueString()
-		sdkRequestBody.SetUniqueName(&tfPlanUniqueName)
+		sdkModelGroup.SetUniqueName(&tfPlanUniqueName)
 	} else {
 		tfPlan.UniqueName = types.StringNull()
 	}
 
 	if !tfPlan.Visibility.IsUnknown() {
 		tfPlanVisibility := tfPlan.Visibility.ValueString()
-		sdkRequestBody.SetVisibility(&tfPlanVisibility)
+		sdkModelGroup.SetVisibility(&tfPlanVisibility)
 	} else {
 		tfPlan.Visibility = types.StringNull()
 	}
 
 	// Create new group
-	result, err := r.client.Groups().Post(context.Background(), sdkRequestBody, nil)
+	result, err := r.client.Groups().Post(context.Background(), sdkModelGroup, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating group",
