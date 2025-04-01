@@ -162,16 +162,6 @@ func (cra createRequestAttribute) SetModelMethod() string {
 	}
 }
 
-func (cra createRequestAttribute) NestedPlan() string {
-
-	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "." + cra.Name()
-	} else {
-		return "tfPlan." + cra.Name()
-	}
-
-}
-
 func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	var cr []createRequestAttribute
 

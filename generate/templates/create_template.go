@@ -122,7 +122,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	if !{{.PlanVar}}.IsUnknown(){
 		{{.SdkModelVarName}} := models.New{{.SdkModelName}}()
 		{{.TfModelVarName}} := {{.TfModelName}}Model{}
-		{{.NestedPlan}}.As(ctx, &{{.TfModelVarName}}, basetypes.ObjectAsOptions{})
+		{{.PlanVar}}.As(ctx, &{{.TfModelVarName}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
 		{{.ParentSdkModelVarName}}.Set{{.Name}}({{.SdkModelVarName}})
 		{{.ParentPlanVar}}, _ = types.ObjectValueFrom(ctx, {{.TfModelVarName}}.AttributeTypes(), {{.SdkModelVarName}})
