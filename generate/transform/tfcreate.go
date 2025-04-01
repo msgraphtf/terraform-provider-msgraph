@@ -193,9 +193,9 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 func (cra createRequestAttribute) SdkModelVarName() string {
 
 	if cra.Type() == "CreateObjectAttribute" {
-		return "sdkModel" + upperFirst(cra.Property.Name)
+		return "sdkModel" + cra.Name()
 	} else if cra.Type() == "CreateArrayObjectAttribute" {
-		return "sdkModel" + upperFirst(cra.Property.Name)
+		return "sdkModel" + cra.Name()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.SdkModelVarName()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
