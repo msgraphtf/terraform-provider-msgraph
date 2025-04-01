@@ -196,12 +196,8 @@ func (cra createRequestAttribute) SdkModelVarName() string {
 		return cra.Name()
 	} else if cra.Type() == "CreateArrayObjectAttribute" {
 		return cra.Name()
-	} else if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
+	} else if cra.Parent != nil {
 		return cra.Parent.SdkModelVarName()
-	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
-		return cra.Parent.SdkModelVarName()
-	} else if cra.Property.ArrayOf == "object" {
-		return upperFirst(cra.Property.ObjectOf.Title)
 	} else {
 		return cra.CreateRequest.BlockName.UpperCamel()
 	}
