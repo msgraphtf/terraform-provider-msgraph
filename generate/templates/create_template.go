@@ -89,11 +89,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayStringAttribute" }}
 	if len({{.PlanVar}}.Elements()) > 0 {
-		var {{.AttributeName.LowerCamel}} []string
+		var stringArray{{.AttributeName.UpperCamel}} []string
 		for _, i := range {{.PlanVar}}.Elements() {
-			{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
+			stringArray{{.AttributeName.UpperCamel}} = append(stringArray{{.AttributeName.UpperCamel}}, i.String())
 		}
-		{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
+		{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(stringArray{{.AttributeName.UpperCamel}})
 	} else {
 		{{.PlanVar}} = types.ListNull(types.StringType)
 	}
@@ -101,12 +101,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayUuidAttribute" }}
 	if len({{.PlanVar}}.Elements()) > 0 {
-		var {{.AttributeName.UpperCamel}} []uuid.UUID
+		var uuidArray{{.AttributeName.UpperCamel}} []uuid.UUID
 		for _, i := range {{.PlanVar}}.Elements() {
 			u, _ := uuid.Parse(i.String())
-			{{.AttributeName.UpperCamel}} = append({{.AttributeName.UpperCamel}}, u)
+			uuidArray{{.AttributeName.UpperCamel}} = append(uuidArray{{.AttributeName.UpperCamel}}, u)
 		}
-		{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.UpperCamel}})
+		{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(uuidArray{{.AttributeName.UpperCamel}})
 	} else {
 		{{.PlanVar}} = types.ListNull(types.StringType)
 	}

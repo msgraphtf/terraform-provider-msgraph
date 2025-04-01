@@ -546,11 +546,11 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 
 	if len(tfPlan.PhysicalIds.Elements()) > 0 {
-		var physicalIds []string
+		var stringArrayPhysicalIds []string
 		for _, i := range tfPlan.PhysicalIds.Elements() {
-			physicalIds = append(physicalIds, i.String())
+			stringArrayPhysicalIds = append(stringArrayPhysicalIds, i.String())
 		}
-		sdkModelDevice.SetPhysicalIds(physicalIds)
+		sdkModelDevice.SetPhysicalIds(stringArrayPhysicalIds)
 	} else {
 		tfPlan.PhysicalIds = types.ListNull(types.StringType)
 	}
@@ -571,11 +571,11 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 
 	if len(tfPlan.SystemLabels.Elements()) > 0 {
-		var systemLabels []string
+		var stringArraySystemLabels []string
 		for _, i := range tfPlan.SystemLabels.Elements() {
-			systemLabels = append(systemLabels, i.String())
+			stringArraySystemLabels = append(stringArraySystemLabels, i.String())
 		}
-		sdkModelDevice.SetSystemLabels(systemLabels)
+		sdkModelDevice.SetSystemLabels(stringArraySystemLabels)
 	} else {
 		tfPlan.SystemLabels = types.ListNull(types.StringType)
 	}

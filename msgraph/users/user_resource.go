@@ -1190,12 +1190,12 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			types.ListValueFrom(ctx, i.Type(ctx), &tfModelAssignedLicenses)
 
 			if len(tfModelAssignedLicenses.DisabledPlans.Elements()) > 0 {
-				var DisabledPlans []uuid.UUID
+				var uuidArrayDisabledPlans []uuid.UUID
 				for _, i := range tfModelAssignedLicenses.DisabledPlans.Elements() {
 					u, _ := uuid.Parse(i.String())
-					DisabledPlans = append(DisabledPlans, u)
+					uuidArrayDisabledPlans = append(uuidArrayDisabledPlans, u)
 				}
-				sdkModelAssignedLicenses.SetDisabledPlans(DisabledPlans)
+				sdkModelAssignedLicenses.SetDisabledPlans(uuidArrayDisabledPlans)
 			} else {
 				tfModelAssignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -1261,11 +1261,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlan.AuthorizationInfo.As(ctx, &tfModelAuthorizationInfo, basetypes.ObjectAsOptions{})
 
 		if len(tfModelAuthorizationInfo.CertificateUserIds.Elements()) > 0 {
-			var certificateUserIds []string
+			var stringArrayCertificateUserIds []string
 			for _, i := range tfModelAuthorizationInfo.CertificateUserIds.Elements() {
-				certificateUserIds = append(certificateUserIds, i.String())
+				stringArrayCertificateUserIds = append(stringArrayCertificateUserIds, i.String())
 			}
-			sdkModelAuthorizationInfo.SetCertificateUserIds(certificateUserIds)
+			sdkModelAuthorizationInfo.SetCertificateUserIds(stringArrayCertificateUserIds)
 		} else {
 			tfModelAuthorizationInfo.CertificateUserIds = types.ListNull(types.StringType)
 		}
@@ -1285,11 +1285,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	if len(tfPlan.BusinessPhones.Elements()) > 0 {
-		var businessPhones []string
+		var stringArrayBusinessPhones []string
 		for _, i := range tfPlan.BusinessPhones.Elements() {
-			businessPhones = append(businessPhones, i.String())
+			stringArrayBusinessPhones = append(stringArrayBusinessPhones, i.String())
 		}
-		sdkModelUser.SetBusinessPhones(businessPhones)
+		sdkModelUser.SetBusinessPhones(stringArrayBusinessPhones)
 	} else {
 		tfPlan.BusinessPhones = types.ListNull(types.StringType)
 	}
@@ -1477,21 +1477,21 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	if len(tfPlan.ImAddresses.Elements()) > 0 {
-		var imAddresses []string
+		var stringArrayImAddresses []string
 		for _, i := range tfPlan.ImAddresses.Elements() {
-			imAddresses = append(imAddresses, i.String())
+			stringArrayImAddresses = append(stringArrayImAddresses, i.String())
 		}
-		sdkModelUser.SetImAddresses(imAddresses)
+		sdkModelUser.SetImAddresses(stringArrayImAddresses)
 	} else {
 		tfPlan.ImAddresses = types.ListNull(types.StringType)
 	}
 
 	if len(tfPlan.Interests.Elements()) > 0 {
-		var interests []string
+		var stringArrayInterests []string
 		for _, i := range tfPlan.Interests.Elements() {
-			interests = append(interests, i.String())
+			stringArrayInterests = append(stringArrayInterests, i.String())
 		}
-		sdkModelUser.SetInterests(interests)
+		sdkModelUser.SetInterests(stringArrayInterests)
 	} else {
 		tfPlan.Interests = types.ListNull(types.StringType)
 	}
@@ -1547,12 +1547,12 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			}
 
 			if len(tfModelLicenseAssignmentStates.DisabledPlans.Elements()) > 0 {
-				var DisabledPlans []uuid.UUID
+				var uuidArrayDisabledPlans []uuid.UUID
 				for _, i := range tfModelLicenseAssignmentStates.DisabledPlans.Elements() {
 					u, _ := uuid.Parse(i.String())
-					DisabledPlans = append(DisabledPlans, u)
+					uuidArrayDisabledPlans = append(uuidArrayDisabledPlans, u)
 				}
-				sdkModelLicenseAssignmentStates.SetDisabledPlans(DisabledPlans)
+				sdkModelLicenseAssignmentStates.SetDisabledPlans(uuidArrayDisabledPlans)
 			} else {
 				tfModelLicenseAssignmentStates.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -1842,11 +1842,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	if len(tfPlan.OtherMails.Elements()) > 0 {
-		var otherMails []string
+		var stringArrayOtherMails []string
 		for _, i := range tfPlan.OtherMails.Elements() {
-			otherMails = append(otherMails, i.String())
+			stringArrayOtherMails = append(stringArrayOtherMails, i.String())
 		}
-		sdkModelUser.SetOtherMails(otherMails)
+		sdkModelUser.SetOtherMails(stringArrayOtherMails)
 	} else {
 		tfPlan.OtherMails = types.ListNull(types.StringType)
 	}
@@ -1891,11 +1891,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	if len(tfPlan.PastProjects.Elements()) > 0 {
-		var pastProjects []string
+		var stringArrayPastProjects []string
 		for _, i := range tfPlan.PastProjects.Elements() {
-			pastProjects = append(pastProjects, i.String())
+			stringArrayPastProjects = append(stringArrayPastProjects, i.String())
 		}
-		sdkModelUser.SetPastProjects(pastProjects)
+		sdkModelUser.SetPastProjects(stringArrayPastProjects)
 	} else {
 		tfPlan.PastProjects = types.ListNull(types.StringType)
 	}
@@ -1962,31 +1962,31 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	if len(tfPlan.ProxyAddresses.Elements()) > 0 {
-		var proxyAddresses []string
+		var stringArrayProxyAddresses []string
 		for _, i := range tfPlan.ProxyAddresses.Elements() {
-			proxyAddresses = append(proxyAddresses, i.String())
+			stringArrayProxyAddresses = append(stringArrayProxyAddresses, i.String())
 		}
-		sdkModelUser.SetProxyAddresses(proxyAddresses)
+		sdkModelUser.SetProxyAddresses(stringArrayProxyAddresses)
 	} else {
 		tfPlan.ProxyAddresses = types.ListNull(types.StringType)
 	}
 
 	if len(tfPlan.Responsibilities.Elements()) > 0 {
-		var responsibilities []string
+		var stringArrayResponsibilities []string
 		for _, i := range tfPlan.Responsibilities.Elements() {
-			responsibilities = append(responsibilities, i.String())
+			stringArrayResponsibilities = append(stringArrayResponsibilities, i.String())
 		}
-		sdkModelUser.SetResponsibilities(responsibilities)
+		sdkModelUser.SetResponsibilities(stringArrayResponsibilities)
 	} else {
 		tfPlan.Responsibilities = types.ListNull(types.StringType)
 	}
 
 	if len(tfPlan.Schools.Elements()) > 0 {
-		var schools []string
+		var stringArraySchools []string
 		for _, i := range tfPlan.Schools.Elements() {
-			schools = append(schools, i.String())
+			stringArraySchools = append(stringArraySchools, i.String())
 		}
-		sdkModelUser.SetSchools(schools)
+		sdkModelUser.SetSchools(stringArraySchools)
 	} else {
 		tfPlan.Schools = types.ListNull(types.StringType)
 	}
@@ -2104,11 +2104,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	if len(tfPlan.Skills.Elements()) > 0 {
-		var skills []string
+		var stringArraySkills []string
 		for _, i := range tfPlan.Skills.Elements() {
-			skills = append(skills, i.String())
+			stringArraySkills = append(stringArraySkills, i.String())
 		}
-		sdkModelUser.SetSkills(skills)
+		sdkModelUser.SetSkills(stringArraySkills)
 	} else {
 		tfPlan.Skills = types.ListNull(types.StringType)
 	}

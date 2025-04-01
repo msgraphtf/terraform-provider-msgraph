@@ -877,11 +877,11 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if len(tfPlan.AlternativeNames.Elements()) > 0 {
-		var alternativeNames []string
+		var stringArrayAlternativeNames []string
 		for _, i := range tfPlan.AlternativeNames.Elements() {
-			alternativeNames = append(alternativeNames, i.String())
+			stringArrayAlternativeNames = append(stringArrayAlternativeNames, i.String())
 		}
-		sdkModelServicePrincipal.SetAlternativeNames(alternativeNames)
+		sdkModelServicePrincipal.SetAlternativeNames(stringArrayAlternativeNames)
 	} else {
 		tfPlan.AlternativeNames = types.ListNull(types.StringType)
 	}
@@ -930,11 +930,11 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 			types.ListValueFrom(ctx, i.Type(ctx), &tfModelAppRoles)
 
 			if len(tfModelAppRoles.AllowedMemberTypes.Elements()) > 0 {
-				var allowedMemberTypes []string
+				var stringArrayAllowedMemberTypes []string
 				for _, i := range tfModelAppRoles.AllowedMemberTypes.Elements() {
-					allowedMemberTypes = append(allowedMemberTypes, i.String())
+					stringArrayAllowedMemberTypes = append(stringArrayAllowedMemberTypes, i.String())
 				}
-				sdkModelAppRoles.SetAllowedMemberTypes(allowedMemberTypes)
+				sdkModelAppRoles.SetAllowedMemberTypes(stringArrayAllowedMemberTypes)
 			} else {
 				tfModelAppRoles.AllowedMemberTypes = types.ListNull(types.StringType)
 			}
@@ -1173,11 +1173,11 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if len(tfPlan.NotificationEmailAddresses.Elements()) > 0 {
-		var notificationEmailAddresses []string
+		var stringArrayNotificationEmailAddresses []string
 		for _, i := range tfPlan.NotificationEmailAddresses.Elements() {
-			notificationEmailAddresses = append(notificationEmailAddresses, i.String())
+			stringArrayNotificationEmailAddresses = append(stringArrayNotificationEmailAddresses, i.String())
 		}
-		sdkModelServicePrincipal.SetNotificationEmailAddresses(notificationEmailAddresses)
+		sdkModelServicePrincipal.SetNotificationEmailAddresses(stringArrayNotificationEmailAddresses)
 	} else {
 		tfPlan.NotificationEmailAddresses = types.ListNull(types.StringType)
 	}
@@ -1337,11 +1337,11 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if len(tfPlan.ReplyUrls.Elements()) > 0 {
-		var replyUrls []string
+		var stringArrayReplyUrls []string
 		for _, i := range tfPlan.ReplyUrls.Elements() {
-			replyUrls = append(replyUrls, i.String())
+			stringArrayReplyUrls = append(stringArrayReplyUrls, i.String())
 		}
-		sdkModelServicePrincipal.SetReplyUrls(replyUrls)
+		sdkModelServicePrincipal.SetReplyUrls(stringArrayReplyUrls)
 	} else {
 		tfPlan.ReplyUrls = types.ListNull(types.StringType)
 	}
@@ -1413,11 +1413,11 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if len(tfPlan.ServicePrincipalNames.Elements()) > 0 {
-		var servicePrincipalNames []string
+		var stringArrayServicePrincipalNames []string
 		for _, i := range tfPlan.ServicePrincipalNames.Elements() {
-			servicePrincipalNames = append(servicePrincipalNames, i.String())
+			stringArrayServicePrincipalNames = append(stringArrayServicePrincipalNames, i.String())
 		}
-		sdkModelServicePrincipal.SetServicePrincipalNames(servicePrincipalNames)
+		sdkModelServicePrincipal.SetServicePrincipalNames(stringArrayServicePrincipalNames)
 	} else {
 		tfPlan.ServicePrincipalNames = types.ListNull(types.StringType)
 	}
@@ -1437,11 +1437,11 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if len(tfPlan.Tags.Elements()) > 0 {
-		var tags []string
+		var stringArrayTags []string
 		for _, i := range tfPlan.Tags.Elements() {
-			tags = append(tags, i.String())
+			stringArrayTags = append(stringArrayTags, i.String())
 		}
-		sdkModelServicePrincipal.SetTags(tags)
+		sdkModelServicePrincipal.SetTags(stringArrayTags)
 	} else {
 		tfPlan.Tags = types.ListNull(types.StringType)
 	}

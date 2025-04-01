@@ -1305,12 +1305,12 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		if len(tfModelApi.KnownClientApplications.Elements()) > 0 {
-			var KnownClientApplications []uuid.UUID
+			var uuidArrayKnownClientApplications []uuid.UUID
 			for _, i := range tfModelApi.KnownClientApplications.Elements() {
 				u, _ := uuid.Parse(i.String())
-				KnownClientApplications = append(KnownClientApplications, u)
+				uuidArrayKnownClientApplications = append(uuidArrayKnownClientApplications, u)
 			}
-			sdkModelApi.SetKnownClientApplications(KnownClientApplications)
+			sdkModelApi.SetKnownClientApplications(uuidArrayKnownClientApplications)
 		} else {
 			tfModelApi.KnownClientApplications = types.ListNull(types.StringType)
 		}
@@ -1406,11 +1406,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				}
 
 				if len(tfModelPreAuthorizedApplications.DelegatedPermissionIds.Elements()) > 0 {
-					var delegatedPermissionIds []string
+					var stringArrayDelegatedPermissionIds []string
 					for _, i := range tfModelPreAuthorizedApplications.DelegatedPermissionIds.Elements() {
-						delegatedPermissionIds = append(delegatedPermissionIds, i.String())
+						stringArrayDelegatedPermissionIds = append(stringArrayDelegatedPermissionIds, i.String())
 					}
-					sdkModelPreAuthorizedApplications.SetDelegatedPermissionIds(delegatedPermissionIds)
+					sdkModelPreAuthorizedApplications.SetDelegatedPermissionIds(stringArrayDelegatedPermissionIds)
 				} else {
 					tfModelPreAuthorizedApplications.DelegatedPermissionIds = types.ListNull(types.StringType)
 				}
@@ -1441,11 +1441,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			types.ListValueFrom(ctx, i.Type(ctx), &tfModelAppRoles)
 
 			if len(tfModelAppRoles.AllowedMemberTypes.Elements()) > 0 {
-				var allowedMemberTypes []string
+				var stringArrayAllowedMemberTypes []string
 				for _, i := range tfModelAppRoles.AllowedMemberTypes.Elements() {
-					allowedMemberTypes = append(allowedMemberTypes, i.String())
+					stringArrayAllowedMemberTypes = append(stringArrayAllowedMemberTypes, i.String())
 				}
-				sdkModelAppRoles.SetAllowedMemberTypes(allowedMemberTypes)
+				sdkModelAppRoles.SetAllowedMemberTypes(stringArrayAllowedMemberTypes)
 			} else {
 				tfModelAppRoles.AllowedMemberTypes = types.ListNull(types.StringType)
 			}
@@ -1597,11 +1597,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	if len(tfPlan.IdentifierUris.Elements()) > 0 {
-		var identifierUris []string
+		var stringArrayIdentifierUris []string
 		for _, i := range tfPlan.IdentifierUris.Elements() {
-			identifierUris = append(identifierUris, i.String())
+			stringArrayIdentifierUris = append(stringArrayIdentifierUris, i.String())
 		}
-		sdkModelApplication.SetIdentifierUris(identifierUris)
+		sdkModelApplication.SetIdentifierUris(stringArrayIdentifierUris)
 	} else {
 		tfPlan.IdentifierUris = types.ListNull(types.StringType)
 	}
@@ -1780,11 +1780,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				types.ListValueFrom(ctx, i.Type(ctx), &tfModelAccessToken)
 
 				if len(tfModelAccessToken.AdditionalProperties.Elements()) > 0 {
-					var additionalProperties []string
+					var stringArrayAdditionalProperties []string
 					for _, i := range tfModelAccessToken.AdditionalProperties.Elements() {
-						additionalProperties = append(additionalProperties, i.String())
+						stringArrayAdditionalProperties = append(stringArrayAdditionalProperties, i.String())
 					}
-					sdkModelAccessToken.SetAdditionalProperties(additionalProperties)
+					sdkModelAccessToken.SetAdditionalProperties(stringArrayAdditionalProperties)
 				} else {
 					tfModelAccessToken.AdditionalProperties = types.ListNull(types.StringType)
 				}
@@ -1823,11 +1823,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				types.ListValueFrom(ctx, i.Type(ctx), &tfModelIdToken)
 
 				if len(tfModelIdToken.AdditionalProperties.Elements()) > 0 {
-					var additionalProperties []string
+					var stringArrayAdditionalProperties []string
 					for _, i := range tfModelIdToken.AdditionalProperties.Elements() {
-						additionalProperties = append(additionalProperties, i.String())
+						stringArrayAdditionalProperties = append(stringArrayAdditionalProperties, i.String())
 					}
-					sdkModelIdToken.SetAdditionalProperties(additionalProperties)
+					sdkModelIdToken.SetAdditionalProperties(stringArrayAdditionalProperties)
 				} else {
 					tfModelIdToken.AdditionalProperties = types.ListNull(types.StringType)
 				}
@@ -1866,11 +1866,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				types.ListValueFrom(ctx, i.Type(ctx), &tfModelSaml2Token)
 
 				if len(tfModelSaml2Token.AdditionalProperties.Elements()) > 0 {
-					var additionalProperties []string
+					var stringArrayAdditionalProperties []string
 					for _, i := range tfModelSaml2Token.AdditionalProperties.Elements() {
-						additionalProperties = append(additionalProperties, i.String())
+						stringArrayAdditionalProperties = append(stringArrayAdditionalProperties, i.String())
 					}
-					sdkModelSaml2Token.SetAdditionalProperties(additionalProperties)
+					sdkModelSaml2Token.SetAdditionalProperties(stringArrayAdditionalProperties)
 				} else {
 					tfModelSaml2Token.AdditionalProperties = types.ListNull(types.StringType)
 				}
@@ -1913,11 +1913,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		tfPlan.ParentalControlSettings.As(ctx, &tfModelParentalControlSettings, basetypes.ObjectAsOptions{})
 
 		if len(tfModelParentalControlSettings.CountriesBlockedForMinors.Elements()) > 0 {
-			var countriesBlockedForMinors []string
+			var stringArrayCountriesBlockedForMinors []string
 			for _, i := range tfModelParentalControlSettings.CountriesBlockedForMinors.Elements() {
-				countriesBlockedForMinors = append(countriesBlockedForMinors, i.String())
+				stringArrayCountriesBlockedForMinors = append(stringArrayCountriesBlockedForMinors, i.String())
 			}
-			sdkModelParentalControlSettings.SetCountriesBlockedForMinors(countriesBlockedForMinors)
+			sdkModelParentalControlSettings.SetCountriesBlockedForMinors(stringArrayCountriesBlockedForMinors)
 		} else {
 			tfModelParentalControlSettings.CountriesBlockedForMinors = types.ListNull(types.StringType)
 		}
@@ -2005,11 +2005,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		tfPlan.PublicClient.As(ctx, &tfModelPublicClient, basetypes.ObjectAsOptions{})
 
 		if len(tfModelPublicClient.RedirectUris.Elements()) > 0 {
-			var redirectUris []string
+			var stringArrayRedirectUris []string
 			for _, i := range tfModelPublicClient.RedirectUris.Elements() {
-				redirectUris = append(redirectUris, i.String())
+				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			sdkModelPublicClient.SetRedirectUris(redirectUris)
+			sdkModelPublicClient.SetRedirectUris(stringArrayRedirectUris)
 		} else {
 			tfModelPublicClient.RedirectUris = types.ListNull(types.StringType)
 		}
@@ -2173,11 +2173,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		tfPlan.Spa.As(ctx, &tfModelSpa, basetypes.ObjectAsOptions{})
 
 		if len(tfModelSpa.RedirectUris.Elements()) > 0 {
-			var redirectUris []string
+			var stringArrayRedirectUris []string
 			for _, i := range tfModelSpa.RedirectUris.Elements() {
-				redirectUris = append(redirectUris, i.String())
+				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			sdkModelSpa.SetRedirectUris(redirectUris)
+			sdkModelSpa.SetRedirectUris(stringArrayRedirectUris)
 		} else {
 			tfModelSpa.RedirectUris = types.ListNull(types.StringType)
 		}
@@ -2189,11 +2189,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	if len(tfPlan.Tags.Elements()) > 0 {
-		var tags []string
+		var stringArrayTags []string
 		for _, i := range tfPlan.Tags.Elements() {
-			tags = append(tags, i.String())
+			stringArrayTags = append(stringArrayTags, i.String())
 		}
-		sdkModelApplication.SetTags(tags)
+		sdkModelApplication.SetTags(stringArrayTags)
 	} else {
 		tfPlan.Tags = types.ListNull(types.StringType)
 	}
@@ -2310,11 +2310,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		if len(tfModelWeb.RedirectUris.Elements()) > 0 {
-			var redirectUris []string
+			var stringArrayRedirectUris []string
 			for _, i := range tfModelWeb.RedirectUris.Elements() {
-				redirectUris = append(redirectUris, i.String())
+				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			sdkModelWeb.SetRedirectUris(redirectUris)
+			sdkModelWeb.SetRedirectUris(stringArrayRedirectUris)
 		} else {
 			tfModelWeb.RedirectUris = types.ListNull(types.StringType)
 		}

@@ -518,12 +518,12 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			types.ListValueFrom(ctx, i.Type(ctx), &tfModelAssignedLicenses)
 
 			if len(tfModelAssignedLicenses.DisabledPlans.Elements()) > 0 {
-				var DisabledPlans []uuid.UUID
+				var uuidArrayDisabledPlans []uuid.UUID
 				for _, i := range tfModelAssignedLicenses.DisabledPlans.Elements() {
 					u, _ := uuid.Parse(i.String())
-					DisabledPlans = append(DisabledPlans, u)
+					uuidArrayDisabledPlans = append(uuidArrayDisabledPlans, u)
 				}
-				sdkModelAssignedLicenses.SetDisabledPlans(DisabledPlans)
+				sdkModelAssignedLicenses.SetDisabledPlans(uuidArrayDisabledPlans)
 			} else {
 				tfModelAssignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -579,11 +579,11 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 
 	if len(tfPlan.GroupTypes.Elements()) > 0 {
-		var groupTypes []string
+		var stringArrayGroupTypes []string
 		for _, i := range tfPlan.GroupTypes.Elements() {
-			groupTypes = append(groupTypes, i.String())
+			stringArrayGroupTypes = append(stringArrayGroupTypes, i.String())
 		}
-		sdkModelGroup.SetGroupTypes(groupTypes)
+		sdkModelGroup.SetGroupTypes(stringArrayGroupTypes)
 	} else {
 		tfPlan.GroupTypes = types.ListNull(types.StringType)
 	}
@@ -754,11 +754,11 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 
 	if len(tfPlan.ProxyAddresses.Elements()) > 0 {
-		var proxyAddresses []string
+		var stringArrayProxyAddresses []string
 		for _, i := range tfPlan.ProxyAddresses.Elements() {
-			proxyAddresses = append(proxyAddresses, i.String())
+			stringArrayProxyAddresses = append(stringArrayProxyAddresses, i.String())
 		}
-		sdkModelGroup.SetProxyAddresses(proxyAddresses)
+		sdkModelGroup.SetProxyAddresses(stringArrayProxyAddresses)
 	} else {
 		tfPlan.ProxyAddresses = types.ListNull(types.StringType)
 	}
