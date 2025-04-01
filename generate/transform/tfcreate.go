@@ -68,7 +68,7 @@ func (cr CreateRequest) AllAttributes() []createRequestAttribute {
 	recurseAttributes = func(attributes []createRequestAttribute) []createRequestAttribute{
 
 		for _, cra := range attributes {
-			if cra.AttributeType() == "CreateObjectAttribute" || cra.AttributeType() == "CreateArrayObjectAttribute" {
+			if cra.Type() == "CreateObjectAttribute" || cra.Type() == "CreateArrayObjectAttribute" {
 				attributes = append(attributes, recurseAttributes(cra.NestedCreate())...)
 			}
 		}
@@ -84,7 +84,7 @@ func (cr CreateRequest) AllAttributes() []createRequestAttribute {
 func (cr CreateRequest) IfUuidImportNeeded() bool {
 
 	for _, cra := range cr.AllAttributes() {
-		if cra.AttributeType() == "CreateStringUuidAttribute" || cra.AttributeType() == "CreateArrayUuidAttribute" {
+		if cra.Type() == "CreateStringUuidAttribute" || cra.Type() == "CreateArrayUuidAttribute" {
 			return true
 		}
 	}
@@ -103,7 +103,7 @@ func (cra createRequestAttribute) Name() string {
 	return upperFirst(cra.Property.Name)
 }
 
-func (cra createRequestAttribute) AttributeType() string {
+func (cra createRequestAttribute) Type() string {
 
 	switch cra.Property.Type {
 	case "string":
@@ -148,9 +148,9 @@ func (cra createRequestAttribute) AttributeType() string {
 
 func (cra createRequestAttribute) PlanVar() string {
 
-	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.TfModelVarName() + "." + cra.Name()
-	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
 		return cra.Parent.TfModelVarName() + "." + cra.Name()
 	} else {
 		return "tfPlan." + cra.Name()
@@ -188,7 +188,7 @@ func (cra createRequestAttribute) PlanValueMethod() string {
 
 func (cra createRequestAttribute) NestedPlan() string {
 
-	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.TfModelVarName() + "." + cra.Name()
 	} else {
 		return "tfPlan." + cra.Name()
@@ -231,13 +231,13 @@ func (cra createRequestAttribute) ModelName() string {
 // Multiple models need to be created an assembled when there are nested objects
 func (cra createRequestAttribute) SdkModelVarName() string {
 
-	if cra.AttributeType() == "CreateObjectAttribute" {
+	if cra.Type() == "CreateObjectAttribute" {
 		return "sdkModel" + upperFirst(cra.Property.Name)
-	} else if cra.AttributeType() == "CreateArrayObjectAttribute" {
+	} else if cra.Type() == "CreateArrayObjectAttribute" {
 		return "sdkModel" + upperFirst(cra.Property.Name)
-	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+	} else if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.SdkModelVarName()
-	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
 		return cra.Parent.SdkModelVarName()
 	} else if cra.Property.ArrayOf == "object" {
 		return "sdkModel" + upperFirst(cra.Property.ObjectOf.Title)
@@ -251,9 +251,9 @@ func (cra createRequestAttribute) SdkModelVarName() string {
 // This is used in Object attributes
 func (cra createRequestAttribute) ParentSdkModelVarName() string {
 
-	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.SdkModelVarName()
-	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
 		return cra.Parent.SdkModelVarName()
 	} else {
 		return "sdkModel" + cra.CreateRequest.BlockName.UpperCamel()
@@ -265,13 +265,13 @@ func (cra createRequestAttribute) ParentSdkModelVarName() string {
 // The variable contains the terraform plan data for the given object
 func (cra createRequestAttribute) TfModelVarName() string {
 
-	if cra.AttributeType() == "CreateObjectAttribute" {
+	if cra.Type() == "CreateObjectAttribute" {
 		return "tfModel" + upperFirst(cra.Property.Name)
-	} else if cra.AttributeType() == "CreateArrayObjectAttribute" {
+	} else if cra.Type() == "CreateArrayObjectAttribute" {
 		return "tfModel" + upperFirst(cra.Property.Name)
-	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+	} else if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.TfModelVarName()
-	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
 		return cra.Parent.TfModelVarName()
 	} else if cra.Property.ArrayOf == "object" {
 		return "tfModel" + upperFirst(cra.Property.ObjectOf.Title)
@@ -283,7 +283,7 @@ func (cra createRequestAttribute) TfModelVarName() string {
 
 func (cra createRequestAttribute) ParentPlanVar() string {
 
-	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.TfModelVarName() + "." + cra.Name()
 	} else {
 		return "tfPlan." + cra.Name()
