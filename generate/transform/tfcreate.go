@@ -117,11 +117,7 @@ func (cra createRequestAttribute) Type() string {
 		}
 		return "CreateStringAttribute"
 	case "integer":
-		if cra.Property.Format == "int32" {
-			return "CreateInt32Attribute"
-		} else {
-			return "CreateInt64Attribute"
-		}
+		return "CreateInt64Attribute"
 	case "boolean":
 		return "CreateBoolAttribute"
 	case "array":
@@ -155,34 +151,6 @@ func (cra createRequestAttribute) PlanVar() string {
 	} else {
 		return "tfPlan." + cra.Name()
 	}
-
-}
-
-func (cra createRequestAttribute) PlanValueMethod() string {
-
-	switch cra.Property.Type {
-	case "string":
-		return "ValueString"
-	case "integer":
-		return "ValueInt64"
-	case "boolean":
-		return "ValueBool"
-	case "array":
-		switch cra.Property.ArrayOf {
-		case "string":
-			if cra.Property.Format == "uuid" {
-				return "ValueString"
-			} else {
-				return "ValueString"
-			}
-		}
-	case "object":
-		if cra.Property.ObjectOf.Type == "string" { // This is a string enum
-			return "ValueString"
-		}
-	}
-
-	return "UNKNOWN"
 
 }
 

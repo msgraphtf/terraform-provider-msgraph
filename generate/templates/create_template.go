@@ -13,7 +13,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
 	{{.SdkModelVarName}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	} else {
 		{{.PlanVar}} = types.StringNull()
@@ -22,7 +22,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringEnumAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
 	parsed{{.Name}}, _ := models.Parse{{.NewModelMethod}}(tfPlan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.NewModelMethod}})
 	{{.SdkModelVarName}}.Set{{.Name}}(&asserted{{.Name}})
@@ -33,7 +33,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringTimeAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
 	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
 	{{.SdkModelVarName}}.Set{{.Name}}(&t)
 	} else {
@@ -43,7 +43,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringUuidAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
 	u, _ := uuid.Parse(tfPlan{{.Name}})
 	{{.SdkModelVarName}}.Set{{.Name}}(&u)
 	} else {
@@ -53,7 +53,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringBase64UrlAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
 	{{.SdkModelVarName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	} else {
 		{{.PlanVar}} = types.StringNull()
@@ -62,16 +62,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateInt64Attribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
-	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
-	} else {
-		{{.PlanVar}} = types.Int64Null()
-	}
-	{{- end}}
-
-	{{- define "CreateInt32Attribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := int32({{.PlanVar}}.{{.PlanValueMethod}}())
+	tfPlan{{.Name}} := {{.PlanVar}}.ValueInt64()
 	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		{{.PlanVar}} = types.Int64Null()
@@ -80,7 +71,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateBoolAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	tfPlan{{.Name}} := {{.PlanVar}}.ValueBool()
 	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		{{.PlanVar}} = types.BoolNull()
