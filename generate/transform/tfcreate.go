@@ -142,16 +142,15 @@ func (cra createRequestAttribute) Type() string {
 	return "UNKNOWN"
 }
 
-// Generates the variable name that contains the Terraform plan
-// New plans need to be created, and eventually combined, when dealing with nested objects
-func (cra createRequestAttribute) PlanVar() string {
+// Generates the name of the parent attribute
+// Returns empty string nothing if the attribute has no parent
+// Used to generate the variable name for the terraform plan
+func (cra createRequestAttribute) ParentName() string {
 
-	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return "tfPlan" + cra.Parent.Name() + "." + cra.Name()
-	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
-		return "tfPlan" + cra.Parent.Name() + "." + cra.Name()
+	if cra.Parent != nil {
+		return cra.Parent.Name()
 	} else {
-		return "tfPlan." + cra.Name()
+		return ""
 	}
 
 }

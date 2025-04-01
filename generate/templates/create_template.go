@@ -12,101 +12,101 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	sdkModel{{.BlockName.UpperCamel}} := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
+	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
+	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	{{.SdkModelVarName}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	} else {
-		{{.PlanVar}} = types.StringNull()
+		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringEnumAttribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
+	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
+	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	parsed{{.Name}}, _ := models.Parse{{.SdkModelName}}(tfPlan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.SdkModelName}})
 	{{.SdkModelVarName}}.Set{{.Name}}(&asserted{{.Name}})
 	} else {
-		{{.PlanVar}} = types.StringNull()
+		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringTimeAttribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
+	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
+	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
 	{{.SdkModelVarName}}.Set{{.Name}}(&t)
 	} else {
-		{{.PlanVar}} = types.StringNull()
+		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringUuidAttribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
+	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
+	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	u, _ := uuid.Parse(tfPlan{{.Name}})
 	{{.SdkModelVarName}}.Set{{.Name}}(&u)
 	} else {
-		{{.PlanVar}} = types.StringNull()
+		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringBase64UrlAttribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
+	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
+	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	{{.SdkModelVarName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	} else {
-		{{.PlanVar}} = types.StringNull()
+		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.ValueInt64()
+	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
+	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueInt64()
 	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
-		{{.PlanVar}} = types.Int64Null()
+		tfPlan{{.ParentName}}.{{.Name}} = types.Int64Null()
 	}
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.Name}} := {{.PlanVar}}.ValueBool()
+	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
+	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueBool()
 	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
-		{{.PlanVar}} = types.BoolNull()
+		tfPlan{{.ParentName}}.{{.Name}} = types.BoolNull()
 	}
 	{{- end}}
 
 	{{- define "CreateArrayStringAttribute" }}
-	if len({{.PlanVar}}.Elements()) > 0 {
+	if len(tfPlan{{.ParentName}}.{{.Name}}.Elements()) > 0 {
 		var stringArray{{.Name}} []string
-		for _, i := range {{.PlanVar}}.Elements() {
+		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			stringArray{{.Name}} = append(stringArray{{.Name}}, i.String())
 		}
 		{{.SdkModelVarName}}.Set{{.Name}}(stringArray{{.Name}})
 	} else {
-		{{.PlanVar}} = types.ListNull(types.StringType)
+		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(types.StringType)
 	}
 	{{- end}}
 
 	{{- define "CreateArrayUuidAttribute" }}
-	if len({{.PlanVar}}.Elements()) > 0 {
+	if len(tfPlan{{.ParentName}}.{{.Name}}.Elements()) > 0 {
 		var uuidArray{{.Name}} []uuid.UUID
-		for _, i := range {{.PlanVar}}.Elements() {
+		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			u, _ := uuid.Parse(i.String())
 			uuidArray{{.Name}} = append(uuidArray{{.Name}}, u)
 		}
 		{{.SdkModelVarName}}.Set{{.Name}}(uuidArray{{.Name}})
 	} else {
-		{{.PlanVar}} = types.ListNull(types.StringType)
+		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(types.StringType)
 	}
 	{{- end}}
 
 	{{- define "CreateArrayObjectAttribute" }}
-	if len({{.PlanVar}}.Elements()) > 0 {
+	if len(tfPlan{{.ParentName}}.{{.Name}}.Elements()) > 0 {
 		var tfPlan{{.Name}} []models.{{.SdkModelName}}able
-		for _, i := range {{.PlanVar}}.Elements() {
+		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			{{.SdkModelVarName}} := models.New{{.SdkModelName}}()
 			tfPlan{{.Name}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.Name}})
@@ -114,20 +114,20 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		}
 		{{.ParentSdkModelVarName}}.Set{{.Name}}(tfPlan{{.Name}})
 	} else {
-		{{.PlanVar}} = types.ListNull({{.PlanVar}}.ElementType(ctx))
+		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(tfPlan{{.ParentName}}.{{.Name}}.ElementType(ctx))
 	}
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}
-	if !{{.PlanVar}}.IsUnknown(){
+	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 		{{.SdkModelVarName}} := models.New{{.SdkModelName}}()
 		tfPlan{{.Name}} := {{.TfModelName}}Model{}
-		{{.PlanVar}}.As(ctx, &tfPlan{{.Name}}, basetypes.ObjectAsOptions{})
+		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.Name}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
 		{{.ParentSdkModelVarName}}.Set{{.Name}}({{.SdkModelVarName}})
-		{{.PlanVar}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.Name}}.AttributeTypes(), {{.SdkModelVarName}})
+		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.Name}}.AttributeTypes(), {{.SdkModelVarName}})
 	} else {
-		{{.PlanVar}} = types.ObjectNull({{.PlanVar}}.AttributeTypes(ctx))
+		tfPlan{{.ParentName}}.{{.Name}} = types.ObjectNull(tfPlan{{.ParentName}}.{{.Name}}.AttributeTypes(ctx))
 	}
 	{{- end}}
 
