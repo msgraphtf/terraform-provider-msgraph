@@ -23,8 +23,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateStringEnumAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
-	parsed{{.Name}}, _ := models.Parse{{.SdkModelName}}(tfPlan{{.Name}})
-	asserted{{.Name}} := parsed{{.Name}}.(models.{{.SdkModelName}})
+	parsed{{.Name}}, _ := models.Parse{{.ObjectOf}}(tfPlan{{.Name}})
+	asserted{{.Name}} := parsed{{.Name}}.(models.{{.ObjectOf}})
 	sdkModel{{.ParentName}}.Set{{.Name}}(&asserted{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
@@ -105,9 +105,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	if len(tfPlan{{.ParentName}}.{{.Name}}.Elements()) > 0 {
-		var tfPlan{{.Name}} []models.{{.SdkModelName}}able
+		var tfPlan{{.Name}} []models.{{.ObjectOf}}able
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
-			sdkModel{{.Name}} := models.New{{.SdkModelName}}()
+			sdkModel{{.Name}} := models.New{{.ObjectOf}}()
 			tfPlan{{.Name}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.Name}})
 			{{template "generate_create" .NestedCreate}}
@@ -120,7 +120,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateObjectAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
-		sdkModel{{.Name}} := models.New{{.SdkModelName}}()
+		sdkModel{{.Name}} := models.New{{.ObjectOf}}()
 		tfPlan{{.Name}} := {{.TfModelName}}Model{}
 		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.Name}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}

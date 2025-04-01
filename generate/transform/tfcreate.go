@@ -165,6 +165,17 @@ func (cra createRequestAttribute) SetModelMethod() string {
 	}
 }
 
+// If this atribute is an object, returns the name of the object that is is.
+// This can be slightly (grammatically) different from the name
+func (cra createRequestAttribute) ObjectOf() string {
+	return upperFirst(cra.Property.ObjectOf.Title)
+}
+
+// Generates the Terraform Model name of the given attribute
+func (cra createRequestAttribute) TfModelName() string {
+	return cra.CreateRequest.BlockName.LowerCamel() + cra.ObjectOf()
+}
+
 func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	var cr []createRequestAttribute
 
@@ -185,15 +196,5 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	}
 
 	return cr
-}
-
-// Generates the SDK Model name of the given attribute
-func (cra createRequestAttribute) SdkModelName() string {
-	return upperFirst(cra.Property.ObjectOf.Title)
-}
-
-// Generates the Terraform Model name of the given attribute
-func (cra createRequestAttribute) TfModelName() string {
-	return cra.CreateRequest.BlockName.LowerCamel() + upperFirst(cra.Property.ObjectOf.Title)
 }
 
