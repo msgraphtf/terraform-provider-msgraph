@@ -13,8 +13,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.AttributeName}} := {{.PlanVar}}.{{.PlanValueMethod}}()
-	{{.SdkModelVarName}}.Set{{.SetModelMethod}}(&tfPlan{{.AttributeName}})
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	{{.SdkModelVarName}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	} else {
 		{{.PlanVar}} = types.StringNull()
 	}
@@ -22,10 +22,10 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringEnumAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.AttributeName}} := {{.PlanVar}}.{{.PlanValueMethod}}()
-	parsed{{.AttributeName}}, _ := models.Parse{{.NewModelMethod}}(tfPlan{{.AttributeName}})
-	asserted{{.AttributeName}} := parsed{{.AttributeName}}.(models.{{.NewModelMethod}})
-	{{.SdkModelVarName}}.Set{{.AttributeName}}(&asserted{{.AttributeName}})
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	parsed{{.Name}}, _ := models.Parse{{.NewModelMethod}}(tfPlan{{.Name}})
+	asserted{{.Name}} := parsed{{.Name}}.(models.{{.NewModelMethod}})
+	{{.SdkModelVarName}}.Set{{.Name}}(&asserted{{.Name}})
 	} else {
 		{{.PlanVar}} = types.StringNull()
 	}
@@ -33,9 +33,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringTimeAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.AttributeName}} := {{.PlanVar}}.{{.PlanValueMethod}}()
-	t, _ := time.Parse(time.RFC3339, tfPlan{{.AttributeName}})
-	{{.SdkModelVarName}}.Set{{.AttributeName}}(&t)
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
+	{{.SdkModelVarName}}.Set{{.Name}}(&t)
 	} else {
 		{{.PlanVar}} = types.StringNull()
 	}
@@ -43,9 +43,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringUuidAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.AttributeName}} := {{.PlanVar}}.{{.PlanValueMethod}}()
-	u, _ := uuid.Parse(tfPlan{{.AttributeName}})
-	{{.SdkModelVarName}}.Set{{.AttributeName}}(&u)
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	u, _ := uuid.Parse(tfPlan{{.Name}})
+	{{.SdkModelVarName}}.Set{{.Name}}(&u)
 	} else {
 		{{.PlanVar}} = types.StringNull()
 	}
@@ -53,8 +53,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringBase64UrlAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.AttributeName}} := {{.PlanVar}}.{{.PlanValueMethod}}()
-	{{.SdkModelVarName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.AttributeName}}))
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	{{.SdkModelVarName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	} else {
 		{{.PlanVar}} = types.StringNull()
 	}
@@ -62,8 +62,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateInt64Attribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.AttributeName}} := {{.PlanVar}}.{{.PlanValueMethod}}()
-	{{.SdkModelVarName}}.Set{{.AttributeName}}(&tfPlan{{.AttributeName}})
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		{{.PlanVar}} = types.Int64Null()
 	}
@@ -71,8 +71,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateInt32Attribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.AttributeName}} := int32({{.PlanVar}}.{{.PlanValueMethod}}())
-	{{.SdkModelVarName}}.Set{{.AttributeName}}(&tfPlan{{.AttributeName}})
+	tfPlan{{.Name}} := int32({{.PlanVar}}.{{.PlanValueMethod}}())
+	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		{{.PlanVar}} = types.Int64Null()
 	}
@@ -80,8 +80,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateBoolAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-	tfPlan{{.AttributeName}} := {{.PlanVar}}.{{.PlanValueMethod}}()
-	{{.SdkModelVarName}}.Set{{.AttributeName}}(&tfPlan{{.AttributeName}})
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.PlanValueMethod}}()
+	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		{{.PlanVar}} = types.BoolNull()
 	}
@@ -89,11 +89,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayStringAttribute" }}
 	if len({{.PlanVar}}.Elements()) > 0 {
-		var stringArray{{.AttributeName}} []string
+		var stringArray{{.Name}} []string
 		for _, i := range {{.PlanVar}}.Elements() {
-			stringArray{{.AttributeName}} = append(stringArray{{.AttributeName}}, i.String())
+			stringArray{{.Name}} = append(stringArray{{.Name}}, i.String())
 		}
-		{{.SdkModelVarName}}.Set{{.AttributeName}}(stringArray{{.AttributeName}})
+		{{.SdkModelVarName}}.Set{{.Name}}(stringArray{{.Name}})
 	} else {
 		{{.PlanVar}} = types.ListNull(types.StringType)
 	}
@@ -101,12 +101,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayUuidAttribute" }}
 	if len({{.PlanVar}}.Elements()) > 0 {
-		var uuidArray{{.AttributeName}} []uuid.UUID
+		var uuidArray{{.Name}} []uuid.UUID
 		for _, i := range {{.PlanVar}}.Elements() {
 			u, _ := uuid.Parse(i.String())
-			uuidArray{{.AttributeName}} = append(uuidArray{{.AttributeName}}, u)
+			uuidArray{{.Name}} = append(uuidArray{{.Name}}, u)
 		}
-		{{.SdkModelVarName}}.Set{{.AttributeName}}(uuidArray{{.AttributeName}})
+		{{.SdkModelVarName}}.Set{{.Name}}(uuidArray{{.Name}})
 	} else {
 		{{.PlanVar}} = types.ListNull(types.StringType)
 	}
@@ -114,14 +114,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	if len({{.PlanVar}}.Elements()) > 0 {
-		var tfPlan{{.AttributeName}} []models.{{.NewModelMethod}}able
+		var tfPlan{{.Name}} []models.{{.NewModelMethod}}able
 		for _, i := range {{.PlanVar}}.Elements() {
 			{{.SdkModelVarName}} := models.New{{.NewModelMethod}}()
 			{{.TfModelVarName}} := {{.ModelName}}{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.TfModelVarName}})
 			{{template "generate_create" .NestedCreate}}
 		}
-		{{.ParentSdkModelVarName}}.Set{{.AttributeName}}(tfPlan{{.AttributeName}})
+		{{.ParentSdkModelVarName}}.Set{{.Name}}(tfPlan{{.Name}})
 	} else {
 		{{.PlanVar}} = types.ListNull({{.PlanVar}}.ElementType(ctx))
 	}
@@ -133,7 +133,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		{{.TfModelVarName}} := {{.ModelName}}{}
 		{{.NestedPlan}}.As(ctx, &{{.TfModelVarName}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
-		{{.ParentSdkModelVarName}}.Set{{.AttributeName}}({{.SdkModelVarName}})
+		{{.ParentSdkModelVarName}}.Set{{.Name}}({{.SdkModelVarName}})
 		objectValue, _ := types.ObjectValueFrom(ctx, {{.TfModelVarName}}.AttributeTypes(), {{.SdkModelVarName}})
 		{{.ParentPlanVar}} = objectValue
 	} else {

@@ -99,7 +99,7 @@ type createRequestAttribute struct {
 	Parent        *createRequestAttribute
 }
 
-func (cra createRequestAttribute) AttributeName() string {
+func (cra createRequestAttribute) Name() string {
 	return upperFirst(cra.Property.Name)
 }
 
@@ -149,11 +149,11 @@ func (cra createRequestAttribute) AttributeType() string {
 func (cra createRequestAttribute) PlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "." + cra.AttributeName()
+		return cra.Parent.TfModelVarName() + "." + cra.Name()
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "." + cra.AttributeName()
+		return cra.Parent.TfModelVarName() + "." + cra.Name()
 	} else {
-		return "tfPlan." + cra.AttributeName()
+		return "tfPlan." + cra.Name()
 	}
 
 }
@@ -189,9 +189,9 @@ func (cra createRequestAttribute) PlanValueMethod() string {
 func (cra createRequestAttribute) NestedPlan() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "." + cra.AttributeName()
+		return cra.Parent.TfModelVarName() + "." + cra.Name()
 	} else {
-		return "tfPlan." + cra.AttributeName()
+		return "tfPlan." + cra.Name()
 	}
 
 }
@@ -284,17 +284,17 @@ func (cra createRequestAttribute) TfModelVarName() string {
 func (cra createRequestAttribute) ParentPlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "." + cra.AttributeName()
+		return cra.Parent.TfModelVarName() + "." + cra.Name()
 	} else {
-		return "tfPlan." + cra.AttributeName()
+		return "tfPlan." + cra.Name()
 	}
 
 }
 
 func (cra createRequestAttribute) SetModelMethod() string {
-	if cra.AttributeName() == "Type" {
+	if cra.Name() == "Type" {
 		return "TypeEscaped"
 	} else {
-		return cra.AttributeName()
+		return cra.Name()
 	}
 }
