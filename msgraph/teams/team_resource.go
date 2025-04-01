@@ -341,21 +341,25 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Generate API request body from Terraform plan
 	sdkModelTeam := models.NewTeam()
-
+	// START Id | CreateStringAttribute
 	if !tfPlan.Id.IsUnknown() {
 		tfPlanId := tfPlan.Id.ValueString()
 		sdkModelTeam.SetId(&tfPlanId)
 	} else {
 		tfPlan.Id = types.StringNull()
 	}
+	// END Id | CreateStringAttribute
 
+	// START Classification | CreateStringAttribute
 	if !tfPlan.Classification.IsUnknown() {
 		tfPlanClassification := tfPlan.Classification.ValueString()
 		sdkModelTeam.SetClassification(&tfPlanClassification)
 	} else {
 		tfPlan.Classification = types.StringNull()
 	}
+	// END Classification | CreateStringAttribute
 
+	// START CreatedDateTime | CreateStringTimeAttribute
 	if !tfPlan.CreatedDateTime.IsUnknown() {
 		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
@@ -363,47 +367,60 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	} else {
 		tfPlan.CreatedDateTime = types.StringNull()
 	}
+	// END CreatedDateTime | CreateStringTimeAttribute
 
+	// START Description | CreateStringAttribute
 	if !tfPlan.Description.IsUnknown() {
 		tfPlanDescription := tfPlan.Description.ValueString()
 		sdkModelTeam.SetDescription(&tfPlanDescription)
 	} else {
 		tfPlan.Description = types.StringNull()
 	}
+	// END Description | CreateStringAttribute
 
+	// START DisplayName | CreateStringAttribute
 	if !tfPlan.DisplayName.IsUnknown() {
 		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
 		sdkModelTeam.SetDisplayName(&tfPlanDisplayName)
 	} else {
 		tfPlan.DisplayName = types.StringNull()
 	}
+	// END DisplayName | CreateStringAttribute
 
+	// START FunSettings | CreateObjectAttribute
 	if !tfPlan.FunSettings.IsUnknown() {
 		sdkModelFunSettings := models.NewTeamFunSettings()
 		tfModelFunSettings := teamTeamFunSettingsModel{}
 		tfPlan.FunSettings.As(ctx, &tfModelFunSettings, basetypes.ObjectAsOptions{})
 
+		// START AllowCustomMemes | CreateBoolAttribute
 		if !tfModelFunSettings.AllowCustomMemes.IsUnknown() {
 			tfPlanAllowCustomMemes := tfModelFunSettings.AllowCustomMemes.ValueBool()
 			sdkModelFunSettings.SetAllowCustomMemes(&tfPlanAllowCustomMemes)
 		} else {
 			tfModelFunSettings.AllowCustomMemes = types.BoolNull()
 		}
+		// END AllowCustomMemes | CreateBoolAttribute
 
+		// START AllowGiphy | CreateBoolAttribute
 		if !tfModelFunSettings.AllowGiphy.IsUnknown() {
 			tfPlanAllowGiphy := tfModelFunSettings.AllowGiphy.ValueBool()
 			sdkModelFunSettings.SetAllowGiphy(&tfPlanAllowGiphy)
 		} else {
 			tfModelFunSettings.AllowGiphy = types.BoolNull()
 		}
+		// END AllowGiphy | CreateBoolAttribute
 
+		// START AllowStickersAndMemes | CreateBoolAttribute
 		if !tfModelFunSettings.AllowStickersAndMemes.IsUnknown() {
 			tfPlanAllowStickersAndMemes := tfModelFunSettings.AllowStickersAndMemes.ValueBool()
 			sdkModelFunSettings.SetAllowStickersAndMemes(&tfPlanAllowStickersAndMemes)
 		} else {
 			tfModelFunSettings.AllowStickersAndMemes = types.BoolNull()
 		}
+		// END AllowStickersAndMemes | CreateBoolAttribute
 
+		// START GiphyContentRating | CreateStringEnumAttribute
 		if !tfModelFunSettings.GiphyContentRating.IsUnknown() {
 			tfPlanGiphyContentRating := tfModelFunSettings.GiphyContentRating.ValueString()
 			parsedGiphyContentRating, _ := models.ParseGiphyRatingType(tfPlanGiphyContentRating)
@@ -412,151 +429,194 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			tfModelFunSettings.GiphyContentRating = types.StringNull()
 		}
+		// END GiphyContentRating | CreateStringEnumAttribute
+
 		sdkModelTeam.SetFunSettings(sdkModelFunSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, tfModelFunSettings.AttributeTypes(), sdkModelFunSettings)
 		tfPlan.FunSettings = objectValue
 	} else {
 		tfPlan.FunSettings = types.ObjectNull(tfPlan.FunSettings.AttributeTypes(ctx))
 	}
+	// END FunSettings | CreateObjectAttribute
 
+	// START GuestSettings | CreateObjectAttribute
 	if !tfPlan.GuestSettings.IsUnknown() {
 		sdkModelGuestSettings := models.NewTeamGuestSettings()
 		tfModelGuestSettings := teamTeamGuestSettingsModel{}
 		tfPlan.GuestSettings.As(ctx, &tfModelGuestSettings, basetypes.ObjectAsOptions{})
 
+		// START AllowCreateUpdateChannels | CreateBoolAttribute
 		if !tfModelGuestSettings.AllowCreateUpdateChannels.IsUnknown() {
 			tfPlanAllowCreateUpdateChannels := tfModelGuestSettings.AllowCreateUpdateChannels.ValueBool()
 			sdkModelGuestSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		} else {
 			tfModelGuestSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
+		// END AllowCreateUpdateChannels | CreateBoolAttribute
 
+		// START AllowDeleteChannels | CreateBoolAttribute
 		if !tfModelGuestSettings.AllowDeleteChannels.IsUnknown() {
 			tfPlanAllowDeleteChannels := tfModelGuestSettings.AllowDeleteChannels.ValueBool()
 			sdkModelGuestSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		} else {
 			tfModelGuestSettings.AllowDeleteChannels = types.BoolNull()
 		}
+		// END AllowDeleteChannels | CreateBoolAttribute
+
 		sdkModelTeam.SetGuestSettings(sdkModelGuestSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, tfModelGuestSettings.AttributeTypes(), sdkModelGuestSettings)
 		tfPlan.GuestSettings = objectValue
 	} else {
 		tfPlan.GuestSettings = types.ObjectNull(tfPlan.GuestSettings.AttributeTypes(ctx))
 	}
+	// END GuestSettings | CreateObjectAttribute
 
+	// START InternalId | CreateStringAttribute
 	if !tfPlan.InternalId.IsUnknown() {
 		tfPlanInternalId := tfPlan.InternalId.ValueString()
 		sdkModelTeam.SetInternalId(&tfPlanInternalId)
 	} else {
 		tfPlan.InternalId = types.StringNull()
 	}
+	// END InternalId | CreateStringAttribute
 
+	// START IsArchived | CreateBoolAttribute
 	if !tfPlan.IsArchived.IsUnknown() {
 		tfPlanIsArchived := tfPlan.IsArchived.ValueBool()
 		sdkModelTeam.SetIsArchived(&tfPlanIsArchived)
 	} else {
 		tfPlan.IsArchived = types.BoolNull()
 	}
+	// END IsArchived | CreateBoolAttribute
 
+	// START MemberSettings | CreateObjectAttribute
 	if !tfPlan.MemberSettings.IsUnknown() {
 		sdkModelMemberSettings := models.NewTeamMemberSettings()
 		tfModelMemberSettings := teamTeamMemberSettingsModel{}
 		tfPlan.MemberSettings.As(ctx, &tfModelMemberSettings, basetypes.ObjectAsOptions{})
 
+		// START AllowAddRemoveApps | CreateBoolAttribute
 		if !tfModelMemberSettings.AllowAddRemoveApps.IsUnknown() {
 			tfPlanAllowAddRemoveApps := tfModelMemberSettings.AllowAddRemoveApps.ValueBool()
 			sdkModelMemberSettings.SetAllowAddRemoveApps(&tfPlanAllowAddRemoveApps)
 		} else {
 			tfModelMemberSettings.AllowAddRemoveApps = types.BoolNull()
 		}
+		// END AllowAddRemoveApps | CreateBoolAttribute
 
+		// START AllowCreatePrivateChannels | CreateBoolAttribute
 		if !tfModelMemberSettings.AllowCreatePrivateChannels.IsUnknown() {
 			tfPlanAllowCreatePrivateChannels := tfModelMemberSettings.AllowCreatePrivateChannels.ValueBool()
 			sdkModelMemberSettings.SetAllowCreatePrivateChannels(&tfPlanAllowCreatePrivateChannels)
 		} else {
 			tfModelMemberSettings.AllowCreatePrivateChannels = types.BoolNull()
 		}
+		// END AllowCreatePrivateChannels | CreateBoolAttribute
 
+		// START AllowCreateUpdateChannels | CreateBoolAttribute
 		if !tfModelMemberSettings.AllowCreateUpdateChannels.IsUnknown() {
 			tfPlanAllowCreateUpdateChannels := tfModelMemberSettings.AllowCreateUpdateChannels.ValueBool()
 			sdkModelMemberSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		} else {
 			tfModelMemberSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
+		// END AllowCreateUpdateChannels | CreateBoolAttribute
 
+		// START AllowCreateUpdateRemoveConnectors | CreateBoolAttribute
 		if !tfModelMemberSettings.AllowCreateUpdateRemoveConnectors.IsUnknown() {
 			tfPlanAllowCreateUpdateRemoveConnectors := tfModelMemberSettings.AllowCreateUpdateRemoveConnectors.ValueBool()
 			sdkModelMemberSettings.SetAllowCreateUpdateRemoveConnectors(&tfPlanAllowCreateUpdateRemoveConnectors)
 		} else {
 			tfModelMemberSettings.AllowCreateUpdateRemoveConnectors = types.BoolNull()
 		}
+		// END AllowCreateUpdateRemoveConnectors | CreateBoolAttribute
 
+		// START AllowCreateUpdateRemoveTabs | CreateBoolAttribute
 		if !tfModelMemberSettings.AllowCreateUpdateRemoveTabs.IsUnknown() {
 			tfPlanAllowCreateUpdateRemoveTabs := tfModelMemberSettings.AllowCreateUpdateRemoveTabs.ValueBool()
 			sdkModelMemberSettings.SetAllowCreateUpdateRemoveTabs(&tfPlanAllowCreateUpdateRemoveTabs)
 		} else {
 			tfModelMemberSettings.AllowCreateUpdateRemoveTabs = types.BoolNull()
 		}
+		// END AllowCreateUpdateRemoveTabs | CreateBoolAttribute
 
+		// START AllowDeleteChannels | CreateBoolAttribute
 		if !tfModelMemberSettings.AllowDeleteChannels.IsUnknown() {
 			tfPlanAllowDeleteChannels := tfModelMemberSettings.AllowDeleteChannels.ValueBool()
 			sdkModelMemberSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		} else {
 			tfModelMemberSettings.AllowDeleteChannels = types.BoolNull()
 		}
+		// END AllowDeleteChannels | CreateBoolAttribute
+
 		sdkModelTeam.SetMemberSettings(sdkModelMemberSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, tfModelMemberSettings.AttributeTypes(), sdkModelMemberSettings)
 		tfPlan.MemberSettings = objectValue
 	} else {
 		tfPlan.MemberSettings = types.ObjectNull(tfPlan.MemberSettings.AttributeTypes(ctx))
 	}
+	// END MemberSettings | CreateObjectAttribute
 
+	// START MessagingSettings | CreateObjectAttribute
 	if !tfPlan.MessagingSettings.IsUnknown() {
 		sdkModelMessagingSettings := models.NewTeamMessagingSettings()
 		tfModelMessagingSettings := teamTeamMessagingSettingsModel{}
 		tfPlan.MessagingSettings.As(ctx, &tfModelMessagingSettings, basetypes.ObjectAsOptions{})
 
+		// START AllowChannelMentions | CreateBoolAttribute
 		if !tfModelMessagingSettings.AllowChannelMentions.IsUnknown() {
 			tfPlanAllowChannelMentions := tfModelMessagingSettings.AllowChannelMentions.ValueBool()
 			sdkModelMessagingSettings.SetAllowChannelMentions(&tfPlanAllowChannelMentions)
 		} else {
 			tfModelMessagingSettings.AllowChannelMentions = types.BoolNull()
 		}
+		// END AllowChannelMentions | CreateBoolAttribute
 
+		// START AllowOwnerDeleteMessages | CreateBoolAttribute
 		if !tfModelMessagingSettings.AllowOwnerDeleteMessages.IsUnknown() {
 			tfPlanAllowOwnerDeleteMessages := tfModelMessagingSettings.AllowOwnerDeleteMessages.ValueBool()
 			sdkModelMessagingSettings.SetAllowOwnerDeleteMessages(&tfPlanAllowOwnerDeleteMessages)
 		} else {
 			tfModelMessagingSettings.AllowOwnerDeleteMessages = types.BoolNull()
 		}
+		// END AllowOwnerDeleteMessages | CreateBoolAttribute
 
+		// START AllowTeamMentions | CreateBoolAttribute
 		if !tfModelMessagingSettings.AllowTeamMentions.IsUnknown() {
 			tfPlanAllowTeamMentions := tfModelMessagingSettings.AllowTeamMentions.ValueBool()
 			sdkModelMessagingSettings.SetAllowTeamMentions(&tfPlanAllowTeamMentions)
 		} else {
 			tfModelMessagingSettings.AllowTeamMentions = types.BoolNull()
 		}
+		// END AllowTeamMentions | CreateBoolAttribute
 
+		// START AllowUserDeleteMessages | CreateBoolAttribute
 		if !tfModelMessagingSettings.AllowUserDeleteMessages.IsUnknown() {
 			tfPlanAllowUserDeleteMessages := tfModelMessagingSettings.AllowUserDeleteMessages.ValueBool()
 			sdkModelMessagingSettings.SetAllowUserDeleteMessages(&tfPlanAllowUserDeleteMessages)
 		} else {
 			tfModelMessagingSettings.AllowUserDeleteMessages = types.BoolNull()
 		}
+		// END AllowUserDeleteMessages | CreateBoolAttribute
 
+		// START AllowUserEditMessages | CreateBoolAttribute
 		if !tfModelMessagingSettings.AllowUserEditMessages.IsUnknown() {
 			tfPlanAllowUserEditMessages := tfModelMessagingSettings.AllowUserEditMessages.ValueBool()
 			sdkModelMessagingSettings.SetAllowUserEditMessages(&tfPlanAllowUserEditMessages)
 		} else {
 			tfModelMessagingSettings.AllowUserEditMessages = types.BoolNull()
 		}
+		// END AllowUserEditMessages | CreateBoolAttribute
+
 		sdkModelTeam.SetMessagingSettings(sdkModelMessagingSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, tfModelMessagingSettings.AttributeTypes(), sdkModelMessagingSettings)
 		tfPlan.MessagingSettings = objectValue
 	} else {
 		tfPlan.MessagingSettings = types.ObjectNull(tfPlan.MessagingSettings.AttributeTypes(ctx))
 	}
+	// END MessagingSettings | CreateObjectAttribute
 
+	// START Specialization | CreateStringEnumAttribute
 	if !tfPlan.Specialization.IsUnknown() {
 		tfPlanSpecialization := tfPlan.Specialization.ValueString()
 		parsedSpecialization, _ := models.ParseTeamSpecialization(tfPlanSpecialization)
@@ -565,11 +625,22 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	} else {
 		tfPlan.Specialization = types.StringNull()
 	}
+	// END Specialization | CreateStringEnumAttribute
 
+	// START Summary | CreateObjectAttribute
 	if !tfPlan.Summary.IsUnknown() {
 		sdkModelSummary := models.NewTeamSummary()
 		tfModelSummary := teamTeamSummaryModel{}
 		tfPlan.Summary.As(ctx, &tfModelSummary, basetypes.ObjectAsOptions{})
+
+		// START GuestsCount | UNKNOWN
+		// END GuestsCount | UNKNOWN
+
+		// START MembersCount | UNKNOWN
+		// END MembersCount | UNKNOWN
+
+		// START OwnersCount | UNKNOWN
+		// END OwnersCount | UNKNOWN
 
 		sdkModelTeam.SetSummary(sdkModelSummary)
 		objectValue, _ := types.ObjectValueFrom(ctx, tfModelSummary.AttributeTypes(), sdkModelSummary)
@@ -577,14 +648,18 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	} else {
 		tfPlan.Summary = types.ObjectNull(tfPlan.Summary.AttributeTypes(ctx))
 	}
+	// END Summary | CreateObjectAttribute
 
+	// START TenantId | CreateStringAttribute
 	if !tfPlan.TenantId.IsUnknown() {
 		tfPlanTenantId := tfPlan.TenantId.ValueString()
 		sdkModelTeam.SetTenantId(&tfPlanTenantId)
 	} else {
 		tfPlan.TenantId = types.StringNull()
 	}
+	// END TenantId | CreateStringAttribute
 
+	// START Visibility | CreateStringEnumAttribute
 	if !tfPlan.Visibility.IsUnknown() {
 		tfPlanVisibility := tfPlan.Visibility.ValueString()
 		parsedVisibility, _ := models.ParseTeamVisibilityType(tfPlanVisibility)
@@ -593,13 +668,16 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	} else {
 		tfPlan.Visibility = types.StringNull()
 	}
+	// END Visibility | CreateStringEnumAttribute
 
+	// START WebUrl | CreateStringAttribute
 	if !tfPlan.WebUrl.IsUnknown() {
 		tfPlanWebUrl := tfPlan.WebUrl.ValueString()
 		sdkModelTeam.SetWebUrl(&tfPlanWebUrl)
 	} else {
 		tfPlan.WebUrl = types.StringNull()
 	}
+	// END WebUrl | CreateStringAttribute
 
 	// Create new team
 	result, err := r.client.Teams().Post(context.Background(), sdkModelTeam, nil)

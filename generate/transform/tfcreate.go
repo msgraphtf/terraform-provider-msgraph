@@ -154,6 +154,14 @@ func (cra createRequestAttribute) PlanVar() string {
 
 }
 
+func (cra createRequestAttribute) SetModelMethod() string {
+	if cra.Name() == "Type" {
+		return "TypeEscaped"
+	} else {
+		return cra.Name()
+	}
+}
+
 func (cra createRequestAttribute) NestedPlan() string {
 
 	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
@@ -186,14 +194,6 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	return cr
 }
 
-func (cra createRequestAttribute) NewModelMethod() string {
-	return upperFirst(cra.Property.ObjectOf.Title)
-}
-
-func (cra createRequestAttribute) ModelName() string {
-	return cra.CreateRequest.BlockName.LowerCamel() + upperFirst(cra.Property.ObjectOf.Title) + "Model"
-}
-
 // Generates the variable name of the SDK model (microsoftgraph/msgraph-sdk-go/models)
 // The variable is used as the request body when performing the Create/POST operation
 // Multiple models need to be created an assembled when there are nested objects
@@ -213,6 +213,11 @@ func (cra createRequestAttribute) SdkModelVarName() string {
 		return "sdkModel" + cra.CreateRequest.BlockName.UpperCamel()
 	}
 
+}
+
+// Generates the SDK Model name of the given attribute
+func (cra createRequestAttribute) SdkModelName() string {
+	return upperFirst(cra.Property.ObjectOf.Title)
 }
 
 // Gets or generates the variable name of the SDK model (microsoftgraph/msgraph-sdk-go/models)
@@ -249,6 +254,11 @@ func (cra createRequestAttribute) TfModelVarName() string {
 
 }
 
+// Generates the Terraform Model name of the given attribute
+func (cra createRequestAttribute) TfModelName() string {
+	return cra.CreateRequest.BlockName.LowerCamel() + upperFirst(cra.Property.ObjectOf.Title)
+}
+
 func (cra createRequestAttribute) ParentPlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
@@ -259,10 +269,3 @@ func (cra createRequestAttribute) ParentPlanVar() string {
 
 }
 
-func (cra createRequestAttribute) SetModelMethod() string {
-	if cra.Name() == "Type" {
-		return "TypeEscaped"
-	} else {
-		return cra.Name()
-	}
-}

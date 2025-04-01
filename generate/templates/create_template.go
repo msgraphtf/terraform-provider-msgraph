@@ -23,8 +23,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateStringEnumAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
 	tfPlan{{.Name}} := {{.PlanVar}}.ValueString()
-	parsed{{.Name}}, _ := models.Parse{{.NewModelMethod}}(tfPlan{{.Name}})
-	asserted{{.Name}} := parsed{{.Name}}.(models.{{.NewModelMethod}})
+	parsed{{.Name}}, _ := models.Parse{{.SdkModelName}}(tfPlan{{.Name}})
+	asserted{{.Name}} := parsed{{.Name}}.(models.{{.SdkModelName}})
 	{{.SdkModelVarName}}.Set{{.Name}}(&asserted{{.Name}})
 	} else {
 		{{.PlanVar}} = types.StringNull()
@@ -105,10 +105,10 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	if len({{.PlanVar}}.Elements()) > 0 {
-		var tfPlan{{.Name}} []models.{{.NewModelMethod}}able
+		var tfPlan{{.Name}} []models.{{.SdkModelName}}able
 		for _, i := range {{.PlanVar}}.Elements() {
-			{{.SdkModelVarName}} := models.New{{.NewModelMethod}}()
-			{{.TfModelVarName}} := {{.ModelName}}{}
+			{{.SdkModelVarName}} := models.New{{.SdkModelName}}()
+			{{.TfModelVarName}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.TfModelVarName}})
 			{{template "generate_create" .NestedCreate}}
 		}
@@ -120,8 +120,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateObjectAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
-		{{.SdkModelVarName}} := models.New{{.NewModelMethod}}()
-		{{.TfModelVarName}} := {{.ModelName}}{}
+		{{.SdkModelVarName}} := models.New{{.SdkModelName}}()
+		{{.TfModelVarName}} := {{.TfModelName}}Model{}
 		{{.NestedPlan}}.As(ctx, &{{.TfModelVarName}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
 		{{.ParentSdkModelVarName}}.Set{{.Name}}({{.SdkModelVarName}})
@@ -134,32 +134,34 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- block "generate_create" .Attributes}}
 	{{- range .}}
+	// START {{.Name}} | {{.Type -}}
 	{{- if eq .Type "CreateStringAttribute"}}
-	{{ template "CreateStringAttribute" .}}
+	{{- template "CreateStringAttribute" .}}
 	{{- else if eq .Type "CreateStringEnumAttribute"}}
-	{{ template "CreateStringEnumAttribute" .}}
+	{{- template "CreateStringEnumAttribute" .}}
 	{{- else if eq .Type "CreateStringTimeAttribute"}}
-	{{ template "CreateStringTimeAttribute" .}}
+	{{- template "CreateStringTimeAttribute" .}}
 	{{- else if eq .Type "CreateStringUuidAttribute"}}
-	{{ template "CreateStringUuidAttribute" .}}
+	{{- template "CreateStringUuidAttribute" .}}
 	{{- else if eq .Type "CreateStringBase64UrlAttribute"}}
-	{{ template "CreateStringBase64UrlAttribute" .}}
+	{{- template "CreateStringBase64UrlAttribute" .}}
 	{{- else if eq .Type "CreateInt64Attribute"}}
-	{{ template "CreateInt64Attribute" .}}
+	{{- template "CreateInt64Attribute" .}}
 	{{- else if eq .Type "CreateInt32Attribute"}}
-	{{ template "CreateInt32Attribute" .}}
+	{{- template "CreateInt32Attribute" .}}
 	{{- else if eq .Type "CreateBoolAttribute"}}
-	{{ template "CreateBoolAttribute" .}}
+	{{- template "CreateBoolAttribute" .}}
 	{{- else if eq .Type "CreateArrayStringAttribute"}}
-	{{ template "CreateArrayStringAttribute" .}}
+	{{- template "CreateArrayStringAttribute" .}}
 	{{- else if eq .Type "CreateArrayUuidAttribute"}}
-	{{ template "CreateArrayUuidAttribute" .}}
+	{{- template "CreateArrayUuidAttribute" .}}
 	{{ else if eq .Type "CreateArrayObjectAttribute" }}
-	{{ template "CreateArrayObjectAttribute" . }}
+	{{- template "CreateArrayObjectAttribute" . }}
 	{{- else if eq .Type "CreateObjectAttribute"}}
-	{{ template "CreateObjectAttribute" .}}
+	{{- template "CreateObjectAttribute" .}}
 	{{- end}}
-	{{- end}}
+	// END {{.Name}} | {{.Type}}
+	{{end}}
 	{{- end}}
 
 	// Create new {{.BlockName.LowerCamel}}
