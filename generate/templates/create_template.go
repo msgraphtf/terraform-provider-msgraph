@@ -108,8 +108,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		var tfPlan{{.Name}} []models.{{.SdkModelName}}able
 		for _, i := range {{.PlanVar}}.Elements() {
 			{{.SdkModelVarName}} := models.New{{.SdkModelName}}()
-			{{.TfPlanVarName}} := {{.TfModelName}}Model{}
-			types.ListValueFrom(ctx, i.Type(ctx), &{{.TfPlanVarName}})
+			tfPlan{{.Name}} := {{.TfModelName}}Model{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.Name}})
 			{{template "generate_create" .NestedCreate}}
 		}
 		{{.ParentSdkModelVarName}}.Set{{.Name}}(tfPlan{{.Name}})
@@ -121,11 +121,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateObjectAttribute" }}
 	if !{{.PlanVar}}.IsUnknown(){
 		{{.SdkModelVarName}} := models.New{{.SdkModelName}}()
-		{{.TfPlanVarName}} := {{.TfModelName}}Model{}
-		{{.PlanVar}}.As(ctx, &{{.TfPlanVarName}}, basetypes.ObjectAsOptions{})
+		tfPlan{{.Name}} := {{.TfModelName}}Model{}
+		{{.PlanVar}}.As(ctx, &tfPlan{{.Name}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
 		{{.ParentSdkModelVarName}}.Set{{.Name}}({{.SdkModelVarName}})
-		{{.ParentPlanVar}}, _ = types.ObjectValueFrom(ctx, {{.TfPlanVarName}}.AttributeTypes(), {{.SdkModelVarName}})
+		{{.ParentPlanVar}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.Name}}.AttributeTypes(), {{.SdkModelVarName}})
 	} else {
 		{{.PlanVar}} = types.ObjectNull({{.PlanVar}}.AttributeTypes(ctx))
 	}
