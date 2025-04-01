@@ -117,8 +117,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		var tfPlan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
 		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
 			{{.SdkModelVarName}} := models.New{{.NewModelMethod}}()
-			{{.SdkModelVarName}}Model := {{.ModelName}}{}
-			types.ListValueFrom(ctx, i.Type(ctx), &{{.SdkModelVarName}}Model)
+			{{.TfModelVarName}} := {{.ModelName}}{}
+			types.ListValueFrom(ctx, i.Type(ctx), &{{.TfModelVarName}})
 			{{template "generate_create" .NestedCreate}}
 		}
 		{{.ParentSdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(tfPlan{{.AttributeName.UpperCamel}})
@@ -130,11 +130,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateObjectAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
 		{{.SdkModelVarName}} := models.New{{.NewModelMethod}}()
-		{{.SdkModelVarName}}Model := {{.ModelName}}{}
-		{{.NestedPlan}}.As(ctx, &{{.SdkModelVarName}}Model, basetypes.ObjectAsOptions{})
+		{{.TfModelVarName}} := {{.ModelName}}{}
+		{{.NestedPlan}}.As(ctx, &{{.TfModelVarName}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
 		{{.ParentSdkModelVarName}}.Set{{.AttributeName.UpperCamel}}({{.SdkModelVarName}})
-		objectValue, _ := types.ObjectValueFrom(ctx, {{.SdkModelVarName}}Model.AttributeTypes(), {{.SdkModelVarName}}Model)
+		objectValue, _ := types.ObjectValueFrom(ctx, {{.TfModelVarName}}.AttributeTypes(), {{.SdkModelVarName}})
 		{{.ParentPlanVar}} = objectValue
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ObjectNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.AttributeTypes(ctx))

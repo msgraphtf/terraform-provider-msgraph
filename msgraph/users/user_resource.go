@@ -1186,26 +1186,26 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		var tfPlanAssignedLicenses []models.AssignedLicenseable
 		for _, i := range tfPlan.AssignedLicenses.Elements() {
 			sdkModelAssignedLicenses := models.NewAssignedLicense()
-			sdkModelAssignedLicensesModel := userAssignedLicenseModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelAssignedLicensesModel)
+			tfModelAssignedLicenses := userAssignedLicenseModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfModelAssignedLicenses)
 
-			if len(sdkModelAssignedLicensesModel.DisabledPlans.Elements()) > 0 {
+			if len(tfModelAssignedLicenses.DisabledPlans.Elements()) > 0 {
 				var DisabledPlans []uuid.UUID
-				for _, i := range sdkModelAssignedLicensesModel.DisabledPlans.Elements() {
+				for _, i := range tfModelAssignedLicenses.DisabledPlans.Elements() {
 					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
 				sdkModelAssignedLicenses.SetDisabledPlans(DisabledPlans)
 			} else {
-				sdkModelAssignedLicensesModel.DisabledPlans = types.ListNull(types.StringType)
+				tfModelAssignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !sdkModelAssignedLicensesModel.SkuId.IsUnknown() {
-				tfPlanSkuId := sdkModelAssignedLicensesModel.SkuId.ValueString()
+			if !tfModelAssignedLicenses.SkuId.IsUnknown() {
+				tfPlanSkuId := tfModelAssignedLicenses.SkuId.ValueString()
 				u, _ := uuid.Parse(tfPlanSkuId)
 				sdkModelAssignedLicenses.SetSkuId(&u)
 			} else {
-				sdkModelAssignedLicensesModel.SkuId = types.StringNull()
+				tfModelAssignedLicenses.SkuId = types.StringNull()
 			}
 		}
 		sdkModelUser.SetAssignedLicenses(tfPlanAssignedLicenses)
@@ -1217,37 +1217,37 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		var tfPlanAssignedPlans []models.AssignedPlanable
 		for _, i := range tfPlan.AssignedPlans.Elements() {
 			sdkModelAssignedPlans := models.NewAssignedPlan()
-			sdkModelAssignedPlansModel := userAssignedPlanModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelAssignedPlansModel)
+			tfModelAssignedPlans := userAssignedPlanModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfModelAssignedPlans)
 
-			if !sdkModelAssignedPlansModel.AssignedDateTime.IsUnknown() {
-				tfPlanAssignedDateTime := sdkModelAssignedPlansModel.AssignedDateTime.ValueString()
+			if !tfModelAssignedPlans.AssignedDateTime.IsUnknown() {
+				tfPlanAssignedDateTime := tfModelAssignedPlans.AssignedDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanAssignedDateTime)
 				sdkModelAssignedPlans.SetAssignedDateTime(&t)
 			} else {
-				sdkModelAssignedPlansModel.AssignedDateTime = types.StringNull()
+				tfModelAssignedPlans.AssignedDateTime = types.StringNull()
 			}
 
-			if !sdkModelAssignedPlansModel.CapabilityStatus.IsUnknown() {
-				tfPlanCapabilityStatus := sdkModelAssignedPlansModel.CapabilityStatus.ValueString()
+			if !tfModelAssignedPlans.CapabilityStatus.IsUnknown() {
+				tfPlanCapabilityStatus := tfModelAssignedPlans.CapabilityStatus.ValueString()
 				sdkModelAssignedPlans.SetCapabilityStatus(&tfPlanCapabilityStatus)
 			} else {
-				sdkModelAssignedPlansModel.CapabilityStatus = types.StringNull()
+				tfModelAssignedPlans.CapabilityStatus = types.StringNull()
 			}
 
-			if !sdkModelAssignedPlansModel.Service.IsUnknown() {
-				tfPlanService := sdkModelAssignedPlansModel.Service.ValueString()
+			if !tfModelAssignedPlans.Service.IsUnknown() {
+				tfPlanService := tfModelAssignedPlans.Service.ValueString()
 				sdkModelAssignedPlans.SetService(&tfPlanService)
 			} else {
-				sdkModelAssignedPlansModel.Service = types.StringNull()
+				tfModelAssignedPlans.Service = types.StringNull()
 			}
 
-			if !sdkModelAssignedPlansModel.ServicePlanId.IsUnknown() {
-				tfPlanServicePlanId := sdkModelAssignedPlansModel.ServicePlanId.ValueString()
+			if !tfModelAssignedPlans.ServicePlanId.IsUnknown() {
+				tfPlanServicePlanId := tfModelAssignedPlans.ServicePlanId.ValueString()
 				u, _ := uuid.Parse(tfPlanServicePlanId)
 				sdkModelAssignedPlans.SetServicePlanId(&u)
 			} else {
-				sdkModelAssignedPlansModel.ServicePlanId = types.StringNull()
+				tfModelAssignedPlans.ServicePlanId = types.StringNull()
 			}
 		}
 		sdkModelUser.SetAssignedPlans(tfPlanAssignedPlans)
@@ -1257,20 +1257,20 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.AuthorizationInfo.IsUnknown() {
 		sdkModelAuthorizationInfo := models.NewAuthorizationInfo()
-		sdkModelAuthorizationInfoModel := userAuthorizationInfoModel{}
-		tfPlan.AuthorizationInfo.As(ctx, &sdkModelAuthorizationInfoModel, basetypes.ObjectAsOptions{})
+		tfModelAuthorizationInfo := userAuthorizationInfoModel{}
+		tfPlan.AuthorizationInfo.As(ctx, &tfModelAuthorizationInfo, basetypes.ObjectAsOptions{})
 
-		if len(sdkModelAuthorizationInfoModel.CertificateUserIds.Elements()) > 0 {
+		if len(tfModelAuthorizationInfo.CertificateUserIds.Elements()) > 0 {
 			var certificateUserIds []string
-			for _, i := range sdkModelAuthorizationInfoModel.CertificateUserIds.Elements() {
+			for _, i := range tfModelAuthorizationInfo.CertificateUserIds.Elements() {
 				certificateUserIds = append(certificateUserIds, i.String())
 			}
 			sdkModelAuthorizationInfo.SetCertificateUserIds(certificateUserIds)
 		} else {
-			sdkModelAuthorizationInfoModel.CertificateUserIds = types.ListNull(types.StringType)
+			tfModelAuthorizationInfo.CertificateUserIds = types.ListNull(types.StringType)
 		}
 		sdkModelUser.SetAuthorizationInfo(sdkModelAuthorizationInfo)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelAuthorizationInfoModel.AttributeTypes(), sdkModelAuthorizationInfoModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelAuthorizationInfo.AttributeTypes(), sdkModelAuthorizationInfo)
 		tfPlan.AuthorizationInfo = objectValue
 	} else {
 		tfPlan.AuthorizationInfo = types.ObjectNull(tfPlan.AuthorizationInfo.AttributeTypes(ctx))
@@ -1376,24 +1376,24 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.EmployeeOrgData.IsUnknown() {
 		sdkModelEmployeeOrgData := models.NewEmployeeOrgData()
-		sdkModelEmployeeOrgDataModel := userEmployeeOrgDataModel{}
-		tfPlan.EmployeeOrgData.As(ctx, &sdkModelEmployeeOrgDataModel, basetypes.ObjectAsOptions{})
+		tfModelEmployeeOrgData := userEmployeeOrgDataModel{}
+		tfPlan.EmployeeOrgData.As(ctx, &tfModelEmployeeOrgData, basetypes.ObjectAsOptions{})
 
-		if !sdkModelEmployeeOrgDataModel.CostCenter.IsUnknown() {
-			tfPlanCostCenter := sdkModelEmployeeOrgDataModel.CostCenter.ValueString()
+		if !tfModelEmployeeOrgData.CostCenter.IsUnknown() {
+			tfPlanCostCenter := tfModelEmployeeOrgData.CostCenter.ValueString()
 			sdkModelEmployeeOrgData.SetCostCenter(&tfPlanCostCenter)
 		} else {
-			sdkModelEmployeeOrgDataModel.CostCenter = types.StringNull()
+			tfModelEmployeeOrgData.CostCenter = types.StringNull()
 		}
 
-		if !sdkModelEmployeeOrgDataModel.Division.IsUnknown() {
-			tfPlanDivision := sdkModelEmployeeOrgDataModel.Division.ValueString()
+		if !tfModelEmployeeOrgData.Division.IsUnknown() {
+			tfPlanDivision := tfModelEmployeeOrgData.Division.ValueString()
 			sdkModelEmployeeOrgData.SetDivision(&tfPlanDivision)
 		} else {
-			sdkModelEmployeeOrgDataModel.Division = types.StringNull()
+			tfModelEmployeeOrgData.Division = types.StringNull()
 		}
 		sdkModelUser.SetEmployeeOrgData(sdkModelEmployeeOrgData)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelEmployeeOrgDataModel.AttributeTypes(), sdkModelEmployeeOrgDataModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelEmployeeOrgData.AttributeTypes(), sdkModelEmployeeOrgData)
 		tfPlan.EmployeeOrgData = objectValue
 	} else {
 		tfPlan.EmployeeOrgData = types.ObjectNull(tfPlan.EmployeeOrgData.AttributeTypes(ctx))
@@ -1447,28 +1447,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		var tfPlanIdentities []models.ObjectIdentityable
 		for _, i := range tfPlan.Identities.Elements() {
 			sdkModelIdentities := models.NewObjectIdentity()
-			sdkModelIdentitiesModel := userObjectIdentityModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelIdentitiesModel)
+			tfModelIdentities := userObjectIdentityModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfModelIdentities)
 
-			if !sdkModelIdentitiesModel.Issuer.IsUnknown() {
-				tfPlanIssuer := sdkModelIdentitiesModel.Issuer.ValueString()
+			if !tfModelIdentities.Issuer.IsUnknown() {
+				tfPlanIssuer := tfModelIdentities.Issuer.ValueString()
 				sdkModelIdentities.SetIssuer(&tfPlanIssuer)
 			} else {
-				sdkModelIdentitiesModel.Issuer = types.StringNull()
+				tfModelIdentities.Issuer = types.StringNull()
 			}
 
-			if !sdkModelIdentitiesModel.IssuerAssignedId.IsUnknown() {
-				tfPlanIssuerAssignedId := sdkModelIdentitiesModel.IssuerAssignedId.ValueString()
+			if !tfModelIdentities.IssuerAssignedId.IsUnknown() {
+				tfPlanIssuerAssignedId := tfModelIdentities.IssuerAssignedId.ValueString()
 				sdkModelIdentities.SetIssuerAssignedId(&tfPlanIssuerAssignedId)
 			} else {
-				sdkModelIdentitiesModel.IssuerAssignedId = types.StringNull()
+				tfModelIdentities.IssuerAssignedId = types.StringNull()
 			}
 
-			if !sdkModelIdentitiesModel.SignInType.IsUnknown() {
-				tfPlanSignInType := sdkModelIdentitiesModel.SignInType.ValueString()
+			if !tfModelIdentities.SignInType.IsUnknown() {
+				tfPlanSignInType := tfModelIdentities.SignInType.ValueString()
 				sdkModelIdentities.SetSignInType(&tfPlanSignInType)
 			} else {
-				sdkModelIdentitiesModel.SignInType = types.StringNull()
+				tfModelIdentities.SignInType = types.StringNull()
 			}
 		}
 		sdkModelUser.SetIdentities(tfPlanIdentities)
@@ -1536,55 +1536,55 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		var tfPlanLicenseAssignmentStates []models.LicenseAssignmentStateable
 		for _, i := range tfPlan.LicenseAssignmentStates.Elements() {
 			sdkModelLicenseAssignmentStates := models.NewLicenseAssignmentState()
-			sdkModelLicenseAssignmentStatesModel := userLicenseAssignmentStateModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelLicenseAssignmentStatesModel)
+			tfModelLicenseAssignmentStates := userLicenseAssignmentStateModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfModelLicenseAssignmentStates)
 
-			if !sdkModelLicenseAssignmentStatesModel.AssignedByGroup.IsUnknown() {
-				tfPlanAssignedByGroup := sdkModelLicenseAssignmentStatesModel.AssignedByGroup.ValueString()
+			if !tfModelLicenseAssignmentStates.AssignedByGroup.IsUnknown() {
+				tfPlanAssignedByGroup := tfModelLicenseAssignmentStates.AssignedByGroup.ValueString()
 				sdkModelLicenseAssignmentStates.SetAssignedByGroup(&tfPlanAssignedByGroup)
 			} else {
-				sdkModelLicenseAssignmentStatesModel.AssignedByGroup = types.StringNull()
+				tfModelLicenseAssignmentStates.AssignedByGroup = types.StringNull()
 			}
 
-			if len(sdkModelLicenseAssignmentStatesModel.DisabledPlans.Elements()) > 0 {
+			if len(tfModelLicenseAssignmentStates.DisabledPlans.Elements()) > 0 {
 				var DisabledPlans []uuid.UUID
-				for _, i := range sdkModelLicenseAssignmentStatesModel.DisabledPlans.Elements() {
+				for _, i := range tfModelLicenseAssignmentStates.DisabledPlans.Elements() {
 					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
 				sdkModelLicenseAssignmentStates.SetDisabledPlans(DisabledPlans)
 			} else {
-				sdkModelLicenseAssignmentStatesModel.DisabledPlans = types.ListNull(types.StringType)
+				tfModelLicenseAssignmentStates.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			if !sdkModelLicenseAssignmentStatesModel.Error.IsUnknown() {
-				tfPlanError := sdkModelLicenseAssignmentStatesModel.Error.ValueString()
+			if !tfModelLicenseAssignmentStates.Error.IsUnknown() {
+				tfPlanError := tfModelLicenseAssignmentStates.Error.ValueString()
 				sdkModelLicenseAssignmentStates.SetError(&tfPlanError)
 			} else {
-				sdkModelLicenseAssignmentStatesModel.Error = types.StringNull()
+				tfModelLicenseAssignmentStates.Error = types.StringNull()
 			}
 
-			if !sdkModelLicenseAssignmentStatesModel.LastUpdatedDateTime.IsUnknown() {
-				tfPlanLastUpdatedDateTime := sdkModelLicenseAssignmentStatesModel.LastUpdatedDateTime.ValueString()
+			if !tfModelLicenseAssignmentStates.LastUpdatedDateTime.IsUnknown() {
+				tfPlanLastUpdatedDateTime := tfModelLicenseAssignmentStates.LastUpdatedDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanLastUpdatedDateTime)
 				sdkModelLicenseAssignmentStates.SetLastUpdatedDateTime(&t)
 			} else {
-				sdkModelLicenseAssignmentStatesModel.LastUpdatedDateTime = types.StringNull()
+				tfModelLicenseAssignmentStates.LastUpdatedDateTime = types.StringNull()
 			}
 
-			if !sdkModelLicenseAssignmentStatesModel.SkuId.IsUnknown() {
-				tfPlanSkuId := sdkModelLicenseAssignmentStatesModel.SkuId.ValueString()
+			if !tfModelLicenseAssignmentStates.SkuId.IsUnknown() {
+				tfPlanSkuId := tfModelLicenseAssignmentStates.SkuId.ValueString()
 				u, _ := uuid.Parse(tfPlanSkuId)
 				sdkModelLicenseAssignmentStates.SetSkuId(&u)
 			} else {
-				sdkModelLicenseAssignmentStatesModel.SkuId = types.StringNull()
+				tfModelLicenseAssignmentStates.SkuId = types.StringNull()
 			}
 
-			if !sdkModelLicenseAssignmentStatesModel.State.IsUnknown() {
-				tfPlanState := sdkModelLicenseAssignmentStatesModel.State.ValueString()
+			if !tfModelLicenseAssignmentStates.State.IsUnknown() {
+				tfPlanState := tfModelLicenseAssignmentStates.State.ValueString()
 				sdkModelLicenseAssignmentStates.SetState(&tfPlanState)
 			} else {
-				sdkModelLicenseAssignmentStatesModel.State = types.StringNull()
+				tfModelLicenseAssignmentStates.State = types.StringNull()
 			}
 		}
 		sdkModelUser.SetLicenseAssignmentStates(tfPlanLicenseAssignmentStates)
@@ -1643,115 +1643,115 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.OnPremisesExtensionAttributes.IsUnknown() {
 		sdkModelOnPremisesExtensionAttributes := models.NewOnPremisesExtensionAttributes()
-		sdkModelOnPremisesExtensionAttributesModel := userOnPremisesExtensionAttributesModel{}
-		tfPlan.OnPremisesExtensionAttributes.As(ctx, &sdkModelOnPremisesExtensionAttributesModel, basetypes.ObjectAsOptions{})
+		tfModelOnPremisesExtensionAttributes := userOnPremisesExtensionAttributesModel{}
+		tfPlan.OnPremisesExtensionAttributes.As(ctx, &tfModelOnPremisesExtensionAttributes, basetypes.ObjectAsOptions{})
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute1.IsUnknown() {
-			tfPlanExtensionAttribute1 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute1.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute1.IsUnknown() {
+			tfPlanExtensionAttribute1 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute1.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute1(&tfPlanExtensionAttribute1)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute1 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute1 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute10.IsUnknown() {
-			tfPlanExtensionAttribute10 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute10.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute10.IsUnknown() {
+			tfPlanExtensionAttribute10 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute10.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute10(&tfPlanExtensionAttribute10)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute10 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute10 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute11.IsUnknown() {
-			tfPlanExtensionAttribute11 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute11.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute11.IsUnknown() {
+			tfPlanExtensionAttribute11 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute11.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute11(&tfPlanExtensionAttribute11)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute11 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute11 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute12.IsUnknown() {
-			tfPlanExtensionAttribute12 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute12.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute12.IsUnknown() {
+			tfPlanExtensionAttribute12 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute12.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute12(&tfPlanExtensionAttribute12)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute12 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute12 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute13.IsUnknown() {
-			tfPlanExtensionAttribute13 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute13.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute13.IsUnknown() {
+			tfPlanExtensionAttribute13 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute13.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute13(&tfPlanExtensionAttribute13)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute13 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute13 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute14.IsUnknown() {
-			tfPlanExtensionAttribute14 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute14.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute14.IsUnknown() {
+			tfPlanExtensionAttribute14 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute14.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute14(&tfPlanExtensionAttribute14)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute14 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute14 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute15.IsUnknown() {
-			tfPlanExtensionAttribute15 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute15.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute15.IsUnknown() {
+			tfPlanExtensionAttribute15 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute15.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute15(&tfPlanExtensionAttribute15)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute15 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute15 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute2.IsUnknown() {
-			tfPlanExtensionAttribute2 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute2.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute2.IsUnknown() {
+			tfPlanExtensionAttribute2 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute2.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute2(&tfPlanExtensionAttribute2)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute2 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute2 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute3.IsUnknown() {
-			tfPlanExtensionAttribute3 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute3.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute3.IsUnknown() {
+			tfPlanExtensionAttribute3 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute3.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute3(&tfPlanExtensionAttribute3)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute3 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute3 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute4.IsUnknown() {
-			tfPlanExtensionAttribute4 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute4.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute4.IsUnknown() {
+			tfPlanExtensionAttribute4 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute4.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute4(&tfPlanExtensionAttribute4)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute4 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute4 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute5.IsUnknown() {
-			tfPlanExtensionAttribute5 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute5.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute5.IsUnknown() {
+			tfPlanExtensionAttribute5 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute5.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute5(&tfPlanExtensionAttribute5)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute5 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute5 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute6.IsUnknown() {
-			tfPlanExtensionAttribute6 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute6.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute6.IsUnknown() {
+			tfPlanExtensionAttribute6 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute6.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute6(&tfPlanExtensionAttribute6)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute6 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute6 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute7.IsUnknown() {
-			tfPlanExtensionAttribute7 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute7.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute7.IsUnknown() {
+			tfPlanExtensionAttribute7 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute7.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute7(&tfPlanExtensionAttribute7)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute7 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute7 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute8.IsUnknown() {
-			tfPlanExtensionAttribute8 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute8.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute8.IsUnknown() {
+			tfPlanExtensionAttribute8 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute8.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute8(&tfPlanExtensionAttribute8)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute8 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute8 = types.StringNull()
 		}
 
-		if !sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute9.IsUnknown() {
-			tfPlanExtensionAttribute9 := sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute9.ValueString()
+		if !tfModelOnPremisesExtensionAttributes.ExtensionAttribute9.IsUnknown() {
+			tfPlanExtensionAttribute9 := tfModelOnPremisesExtensionAttributes.ExtensionAttribute9.ValueString()
 			sdkModelOnPremisesExtensionAttributes.SetExtensionAttribute9(&tfPlanExtensionAttribute9)
 		} else {
-			sdkModelOnPremisesExtensionAttributesModel.ExtensionAttribute9 = types.StringNull()
+			tfModelOnPremisesExtensionAttributes.ExtensionAttribute9 = types.StringNull()
 		}
 		sdkModelUser.SetOnPremisesExtensionAttributes(sdkModelOnPremisesExtensionAttributes)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelOnPremisesExtensionAttributesModel.AttributeTypes(), sdkModelOnPremisesExtensionAttributesModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelOnPremisesExtensionAttributes.AttributeTypes(), sdkModelOnPremisesExtensionAttributes)
 		tfPlan.OnPremisesExtensionAttributes = objectValue
 	} else {
 		tfPlan.OnPremisesExtensionAttributes = types.ObjectNull(tfPlan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
@@ -1776,36 +1776,36 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		var tfPlanOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for _, i := range tfPlan.OnPremisesProvisioningErrors.Elements() {
 			sdkModelOnPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
-			sdkModelOnPremisesProvisioningErrorsModel := userOnPremisesProvisioningErrorModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelOnPremisesProvisioningErrorsModel)
+			tfModelOnPremisesProvisioningErrors := userOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfModelOnPremisesProvisioningErrors)
 
-			if !sdkModelOnPremisesProvisioningErrorsModel.Category.IsUnknown() {
-				tfPlanCategory := sdkModelOnPremisesProvisioningErrorsModel.Category.ValueString()
+			if !tfModelOnPremisesProvisioningErrors.Category.IsUnknown() {
+				tfPlanCategory := tfModelOnPremisesProvisioningErrors.Category.ValueString()
 				sdkModelOnPremisesProvisioningErrors.SetCategory(&tfPlanCategory)
 			} else {
-				sdkModelOnPremisesProvisioningErrorsModel.Category = types.StringNull()
+				tfModelOnPremisesProvisioningErrors.Category = types.StringNull()
 			}
 
-			if !sdkModelOnPremisesProvisioningErrorsModel.OccurredDateTime.IsUnknown() {
-				tfPlanOccurredDateTime := sdkModelOnPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
+			if !tfModelOnPremisesProvisioningErrors.OccurredDateTime.IsUnknown() {
+				tfPlanOccurredDateTime := tfModelOnPremisesProvisioningErrors.OccurredDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanOccurredDateTime)
 				sdkModelOnPremisesProvisioningErrors.SetOccurredDateTime(&t)
 			} else {
-				sdkModelOnPremisesProvisioningErrorsModel.OccurredDateTime = types.StringNull()
+				tfModelOnPremisesProvisioningErrors.OccurredDateTime = types.StringNull()
 			}
 
-			if !sdkModelOnPremisesProvisioningErrorsModel.PropertyCausingError.IsUnknown() {
-				tfPlanPropertyCausingError := sdkModelOnPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
+			if !tfModelOnPremisesProvisioningErrors.PropertyCausingError.IsUnknown() {
+				tfPlanPropertyCausingError := tfModelOnPremisesProvisioningErrors.PropertyCausingError.ValueString()
 				sdkModelOnPremisesProvisioningErrors.SetPropertyCausingError(&tfPlanPropertyCausingError)
 			} else {
-				sdkModelOnPremisesProvisioningErrorsModel.PropertyCausingError = types.StringNull()
+				tfModelOnPremisesProvisioningErrors.PropertyCausingError = types.StringNull()
 			}
 
-			if !sdkModelOnPremisesProvisioningErrorsModel.Value.IsUnknown() {
-				tfPlanValue := sdkModelOnPremisesProvisioningErrorsModel.Value.ValueString()
+			if !tfModelOnPremisesProvisioningErrors.Value.IsUnknown() {
+				tfPlanValue := tfModelOnPremisesProvisioningErrors.Value.ValueString()
 				sdkModelOnPremisesProvisioningErrors.SetValue(&tfPlanValue)
 			} else {
-				sdkModelOnPremisesProvisioningErrorsModel.Value = types.StringNull()
+				tfModelOnPremisesProvisioningErrors.Value = types.StringNull()
 			}
 		}
 		sdkModelUser.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
@@ -1860,31 +1860,31 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.PasswordProfile.IsUnknown() {
 		sdkModelPasswordProfile := models.NewPasswordProfile()
-		sdkModelPasswordProfileModel := userPasswordProfileModel{}
-		tfPlan.PasswordProfile.As(ctx, &sdkModelPasswordProfileModel, basetypes.ObjectAsOptions{})
+		tfModelPasswordProfile := userPasswordProfileModel{}
+		tfPlan.PasswordProfile.As(ctx, &tfModelPasswordProfile, basetypes.ObjectAsOptions{})
 
-		if !sdkModelPasswordProfileModel.ForceChangePasswordNextSignIn.IsUnknown() {
-			tfPlanForceChangePasswordNextSignIn := sdkModelPasswordProfileModel.ForceChangePasswordNextSignIn.ValueBool()
+		if !tfModelPasswordProfile.ForceChangePasswordNextSignIn.IsUnknown() {
+			tfPlanForceChangePasswordNextSignIn := tfModelPasswordProfile.ForceChangePasswordNextSignIn.ValueBool()
 			sdkModelPasswordProfile.SetForceChangePasswordNextSignIn(&tfPlanForceChangePasswordNextSignIn)
 		} else {
-			sdkModelPasswordProfileModel.ForceChangePasswordNextSignIn = types.BoolNull()
+			tfModelPasswordProfile.ForceChangePasswordNextSignIn = types.BoolNull()
 		}
 
-		if !sdkModelPasswordProfileModel.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
-			tfPlanForceChangePasswordNextSignInWithMfa := sdkModelPasswordProfileModel.ForceChangePasswordNextSignInWithMfa.ValueBool()
+		if !tfModelPasswordProfile.ForceChangePasswordNextSignInWithMfa.IsUnknown() {
+			tfPlanForceChangePasswordNextSignInWithMfa := tfModelPasswordProfile.ForceChangePasswordNextSignInWithMfa.ValueBool()
 			sdkModelPasswordProfile.SetForceChangePasswordNextSignInWithMfa(&tfPlanForceChangePasswordNextSignInWithMfa)
 		} else {
-			sdkModelPasswordProfileModel.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
+			tfModelPasswordProfile.ForceChangePasswordNextSignInWithMfa = types.BoolNull()
 		}
 
-		if !sdkModelPasswordProfileModel.Password.IsUnknown() {
-			tfPlanPassword := sdkModelPasswordProfileModel.Password.ValueString()
+		if !tfModelPasswordProfile.Password.IsUnknown() {
+			tfPlanPassword := tfModelPasswordProfile.Password.ValueString()
 			sdkModelPasswordProfile.SetPassword(&tfPlanPassword)
 		} else {
-			sdkModelPasswordProfileModel.Password = types.StringNull()
+			tfModelPasswordProfile.Password = types.StringNull()
 		}
 		sdkModelUser.SetPasswordProfile(sdkModelPasswordProfile)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelPasswordProfileModel.AttributeTypes(), sdkModelPasswordProfileModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelPasswordProfile.AttributeTypes(), sdkModelPasswordProfile)
 		tfPlan.PasswordProfile = objectValue
 	} else {
 		tfPlan.PasswordProfile = types.ObjectNull(tfPlan.PasswordProfile.AttributeTypes(ctx))
@@ -1932,28 +1932,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		var tfPlanProvisionedPlans []models.ProvisionedPlanable
 		for _, i := range tfPlan.ProvisionedPlans.Elements() {
 			sdkModelProvisionedPlans := models.NewProvisionedPlan()
-			sdkModelProvisionedPlansModel := userProvisionedPlanModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelProvisionedPlansModel)
+			tfModelProvisionedPlans := userProvisionedPlanModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfModelProvisionedPlans)
 
-			if !sdkModelProvisionedPlansModel.CapabilityStatus.IsUnknown() {
-				tfPlanCapabilityStatus := sdkModelProvisionedPlansModel.CapabilityStatus.ValueString()
+			if !tfModelProvisionedPlans.CapabilityStatus.IsUnknown() {
+				tfPlanCapabilityStatus := tfModelProvisionedPlans.CapabilityStatus.ValueString()
 				sdkModelProvisionedPlans.SetCapabilityStatus(&tfPlanCapabilityStatus)
 			} else {
-				sdkModelProvisionedPlansModel.CapabilityStatus = types.StringNull()
+				tfModelProvisionedPlans.CapabilityStatus = types.StringNull()
 			}
 
-			if !sdkModelProvisionedPlansModel.ProvisioningStatus.IsUnknown() {
-				tfPlanProvisioningStatus := sdkModelProvisionedPlansModel.ProvisioningStatus.ValueString()
+			if !tfModelProvisionedPlans.ProvisioningStatus.IsUnknown() {
+				tfPlanProvisioningStatus := tfModelProvisionedPlans.ProvisioningStatus.ValueString()
 				sdkModelProvisionedPlans.SetProvisioningStatus(&tfPlanProvisioningStatus)
 			} else {
-				sdkModelProvisionedPlansModel.ProvisioningStatus = types.StringNull()
+				tfModelProvisionedPlans.ProvisioningStatus = types.StringNull()
 			}
 
-			if !sdkModelProvisionedPlansModel.Service.IsUnknown() {
-				tfPlanService := sdkModelProvisionedPlansModel.Service.ValueString()
+			if !tfModelProvisionedPlans.Service.IsUnknown() {
+				tfPlanService := tfModelProvisionedPlans.Service.ValueString()
 				sdkModelProvisionedPlans.SetService(&tfPlanService)
 			} else {
-				sdkModelProvisionedPlansModel.Service = types.StringNull()
+				tfModelProvisionedPlans.Service = types.StringNull()
 			}
 		}
 		sdkModelUser.SetProvisionedPlans(tfPlanProvisionedPlans)
@@ -2002,29 +2002,29 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		var tfPlanServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for _, i := range tfPlan.ServiceProvisioningErrors.Elements() {
 			sdkModelServiceProvisioningErrors := models.NewServiceProvisioningError()
-			sdkModelServiceProvisioningErrorsModel := userServiceProvisioningErrorModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelServiceProvisioningErrorsModel)
+			tfModelServiceProvisioningErrors := userServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfModelServiceProvisioningErrors)
 
-			if !sdkModelServiceProvisioningErrorsModel.CreatedDateTime.IsUnknown() {
-				tfPlanCreatedDateTime := sdkModelServiceProvisioningErrorsModel.CreatedDateTime.ValueString()
+			if !tfModelServiceProvisioningErrors.CreatedDateTime.IsUnknown() {
+				tfPlanCreatedDateTime := tfModelServiceProvisioningErrors.CreatedDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 				sdkModelServiceProvisioningErrors.SetCreatedDateTime(&t)
 			} else {
-				sdkModelServiceProvisioningErrorsModel.CreatedDateTime = types.StringNull()
+				tfModelServiceProvisioningErrors.CreatedDateTime = types.StringNull()
 			}
 
-			if !sdkModelServiceProvisioningErrorsModel.IsResolved.IsUnknown() {
-				tfPlanIsResolved := sdkModelServiceProvisioningErrorsModel.IsResolved.ValueBool()
+			if !tfModelServiceProvisioningErrors.IsResolved.IsUnknown() {
+				tfPlanIsResolved := tfModelServiceProvisioningErrors.IsResolved.ValueBool()
 				sdkModelServiceProvisioningErrors.SetIsResolved(&tfPlanIsResolved)
 			} else {
-				sdkModelServiceProvisioningErrorsModel.IsResolved = types.BoolNull()
+				tfModelServiceProvisioningErrors.IsResolved = types.BoolNull()
 			}
 
-			if !sdkModelServiceProvisioningErrorsModel.ServiceInstance.IsUnknown() {
-				tfPlanServiceInstance := sdkModelServiceProvisioningErrorsModel.ServiceInstance.ValueString()
+			if !tfModelServiceProvisioningErrors.ServiceInstance.IsUnknown() {
+				tfPlanServiceInstance := tfModelServiceProvisioningErrors.ServiceInstance.ValueString()
 				sdkModelServiceProvisioningErrors.SetServiceInstance(&tfPlanServiceInstance)
 			} else {
-				sdkModelServiceProvisioningErrorsModel.ServiceInstance = types.StringNull()
+				tfModelServiceProvisioningErrors.ServiceInstance = types.StringNull()
 			}
 		}
 		sdkModelUser.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
@@ -2041,55 +2041,55 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.SignInActivity.IsUnknown() {
 		sdkModelSignInActivity := models.NewSignInActivity()
-		sdkModelSignInActivityModel := userSignInActivityModel{}
-		tfPlan.SignInActivity.As(ctx, &sdkModelSignInActivityModel, basetypes.ObjectAsOptions{})
+		tfModelSignInActivity := userSignInActivityModel{}
+		tfPlan.SignInActivity.As(ctx, &tfModelSignInActivity, basetypes.ObjectAsOptions{})
 
-		if !sdkModelSignInActivityModel.LastNonInteractiveSignInDateTime.IsUnknown() {
-			tfPlanLastNonInteractiveSignInDateTime := sdkModelSignInActivityModel.LastNonInteractiveSignInDateTime.ValueString()
+		if !tfModelSignInActivity.LastNonInteractiveSignInDateTime.IsUnknown() {
+			tfPlanLastNonInteractiveSignInDateTime := tfModelSignInActivity.LastNonInteractiveSignInDateTime.ValueString()
 			t, _ := time.Parse(time.RFC3339, tfPlanLastNonInteractiveSignInDateTime)
 			sdkModelSignInActivity.SetLastNonInteractiveSignInDateTime(&t)
 		} else {
-			sdkModelSignInActivityModel.LastNonInteractiveSignInDateTime = types.StringNull()
+			tfModelSignInActivity.LastNonInteractiveSignInDateTime = types.StringNull()
 		}
 
-		if !sdkModelSignInActivityModel.LastNonInteractiveSignInRequestId.IsUnknown() {
-			tfPlanLastNonInteractiveSignInRequestId := sdkModelSignInActivityModel.LastNonInteractiveSignInRequestId.ValueString()
+		if !tfModelSignInActivity.LastNonInteractiveSignInRequestId.IsUnknown() {
+			tfPlanLastNonInteractiveSignInRequestId := tfModelSignInActivity.LastNonInteractiveSignInRequestId.ValueString()
 			sdkModelSignInActivity.SetLastNonInteractiveSignInRequestId(&tfPlanLastNonInteractiveSignInRequestId)
 		} else {
-			sdkModelSignInActivityModel.LastNonInteractiveSignInRequestId = types.StringNull()
+			tfModelSignInActivity.LastNonInteractiveSignInRequestId = types.StringNull()
 		}
 
-		if !sdkModelSignInActivityModel.LastSignInDateTime.IsUnknown() {
-			tfPlanLastSignInDateTime := sdkModelSignInActivityModel.LastSignInDateTime.ValueString()
+		if !tfModelSignInActivity.LastSignInDateTime.IsUnknown() {
+			tfPlanLastSignInDateTime := tfModelSignInActivity.LastSignInDateTime.ValueString()
 			t, _ := time.Parse(time.RFC3339, tfPlanLastSignInDateTime)
 			sdkModelSignInActivity.SetLastSignInDateTime(&t)
 		} else {
-			sdkModelSignInActivityModel.LastSignInDateTime = types.StringNull()
+			tfModelSignInActivity.LastSignInDateTime = types.StringNull()
 		}
 
-		if !sdkModelSignInActivityModel.LastSignInRequestId.IsUnknown() {
-			tfPlanLastSignInRequestId := sdkModelSignInActivityModel.LastSignInRequestId.ValueString()
+		if !tfModelSignInActivity.LastSignInRequestId.IsUnknown() {
+			tfPlanLastSignInRequestId := tfModelSignInActivity.LastSignInRequestId.ValueString()
 			sdkModelSignInActivity.SetLastSignInRequestId(&tfPlanLastSignInRequestId)
 		} else {
-			sdkModelSignInActivityModel.LastSignInRequestId = types.StringNull()
+			tfModelSignInActivity.LastSignInRequestId = types.StringNull()
 		}
 
-		if !sdkModelSignInActivityModel.LastSuccessfulSignInDateTime.IsUnknown() {
-			tfPlanLastSuccessfulSignInDateTime := sdkModelSignInActivityModel.LastSuccessfulSignInDateTime.ValueString()
+		if !tfModelSignInActivity.LastSuccessfulSignInDateTime.IsUnknown() {
+			tfPlanLastSuccessfulSignInDateTime := tfModelSignInActivity.LastSuccessfulSignInDateTime.ValueString()
 			t, _ := time.Parse(time.RFC3339, tfPlanLastSuccessfulSignInDateTime)
 			sdkModelSignInActivity.SetLastSuccessfulSignInDateTime(&t)
 		} else {
-			sdkModelSignInActivityModel.LastSuccessfulSignInDateTime = types.StringNull()
+			tfModelSignInActivity.LastSuccessfulSignInDateTime = types.StringNull()
 		}
 
-		if !sdkModelSignInActivityModel.LastSuccessfulSignInRequestId.IsUnknown() {
-			tfPlanLastSuccessfulSignInRequestId := sdkModelSignInActivityModel.LastSuccessfulSignInRequestId.ValueString()
+		if !tfModelSignInActivity.LastSuccessfulSignInRequestId.IsUnknown() {
+			tfPlanLastSuccessfulSignInRequestId := tfModelSignInActivity.LastSuccessfulSignInRequestId.ValueString()
 			sdkModelSignInActivity.SetLastSuccessfulSignInRequestId(&tfPlanLastSuccessfulSignInRequestId)
 		} else {
-			sdkModelSignInActivityModel.LastSuccessfulSignInRequestId = types.StringNull()
+			tfModelSignInActivity.LastSuccessfulSignInRequestId = types.StringNull()
 		}
 		sdkModelUser.SetSignInActivity(sdkModelSignInActivity)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelSignInActivityModel.AttributeTypes(), sdkModelSignInActivityModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelSignInActivity.AttributeTypes(), sdkModelSignInActivity)
 		tfPlan.SignInActivity = objectValue
 	} else {
 		tfPlan.SignInActivity = types.ObjectNull(tfPlan.SignInActivity.AttributeTypes(ctx))

@@ -149,9 +149,9 @@ func (cra createRequestAttribute) AttributeType() string {
 func (cra createRequestAttribute) PlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.SdkModelVarName() + "Model."
+		return cra.Parent.TfModelVarName() + "."
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return cra.Parent.SdkModelVarName() + "Model."
+		return cra.Parent.TfModelVarName() + "."
 	} else {
 		return "tfPlan."
 	}
@@ -189,7 +189,7 @@ func (cra createRequestAttribute) PlanValueMethod() string {
 func (cra createRequestAttribute) NestedPlan() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.SdkModelVarName() + "Model." + cra.AttributeName().UpperCamel()
+		return cra.Parent.TfModelVarName() + "." + cra.AttributeName().UpperCamel()
 	} else {
 		return "tfPlan." + cra.AttributeName().UpperCamel()
 	}
@@ -284,7 +284,7 @@ func (cra createRequestAttribute) TfModelVarName() string {
 func (cra createRequestAttribute) ParentPlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.SdkModelVarName() + "Model." + cra.AttributeName().UpperCamel()
+		return cra.Parent.TfModelVarName() + "." + cra.AttributeName().UpperCamel()
 	} else {
 		return "tfPlan." + cra.AttributeName().UpperCamel()
 	}

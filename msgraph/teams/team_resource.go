@@ -380,40 +380,40 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.FunSettings.IsUnknown() {
 		sdkModelFunSettings := models.NewTeamFunSettings()
-		sdkModelFunSettingsModel := teamTeamFunSettingsModel{}
-		tfPlan.FunSettings.As(ctx, &sdkModelFunSettingsModel, basetypes.ObjectAsOptions{})
+		tfModelFunSettings := teamTeamFunSettingsModel{}
+		tfPlan.FunSettings.As(ctx, &tfModelFunSettings, basetypes.ObjectAsOptions{})
 
-		if !sdkModelFunSettingsModel.AllowCustomMemes.IsUnknown() {
-			tfPlanAllowCustomMemes := sdkModelFunSettingsModel.AllowCustomMemes.ValueBool()
+		if !tfModelFunSettings.AllowCustomMemes.IsUnknown() {
+			tfPlanAllowCustomMemes := tfModelFunSettings.AllowCustomMemes.ValueBool()
 			sdkModelFunSettings.SetAllowCustomMemes(&tfPlanAllowCustomMemes)
 		} else {
-			sdkModelFunSettingsModel.AllowCustomMemes = types.BoolNull()
+			tfModelFunSettings.AllowCustomMemes = types.BoolNull()
 		}
 
-		if !sdkModelFunSettingsModel.AllowGiphy.IsUnknown() {
-			tfPlanAllowGiphy := sdkModelFunSettingsModel.AllowGiphy.ValueBool()
+		if !tfModelFunSettings.AllowGiphy.IsUnknown() {
+			tfPlanAllowGiphy := tfModelFunSettings.AllowGiphy.ValueBool()
 			sdkModelFunSettings.SetAllowGiphy(&tfPlanAllowGiphy)
 		} else {
-			sdkModelFunSettingsModel.AllowGiphy = types.BoolNull()
+			tfModelFunSettings.AllowGiphy = types.BoolNull()
 		}
 
-		if !sdkModelFunSettingsModel.AllowStickersAndMemes.IsUnknown() {
-			tfPlanAllowStickersAndMemes := sdkModelFunSettingsModel.AllowStickersAndMemes.ValueBool()
+		if !tfModelFunSettings.AllowStickersAndMemes.IsUnknown() {
+			tfPlanAllowStickersAndMemes := tfModelFunSettings.AllowStickersAndMemes.ValueBool()
 			sdkModelFunSettings.SetAllowStickersAndMemes(&tfPlanAllowStickersAndMemes)
 		} else {
-			sdkModelFunSettingsModel.AllowStickersAndMemes = types.BoolNull()
+			tfModelFunSettings.AllowStickersAndMemes = types.BoolNull()
 		}
 
-		if !sdkModelFunSettingsModel.GiphyContentRating.IsUnknown() {
-			tfPlanGiphyContentRating := sdkModelFunSettingsModel.GiphyContentRating.ValueString()
+		if !tfModelFunSettings.GiphyContentRating.IsUnknown() {
+			tfPlanGiphyContentRating := tfModelFunSettings.GiphyContentRating.ValueString()
 			parsedGiphyContentRating, _ := models.ParseGiphyRatingType(tfPlanGiphyContentRating)
 			assertedGiphyContentRating := parsedGiphyContentRating.(models.GiphyRatingType)
 			sdkModelFunSettings.SetGiphyContentRating(&assertedGiphyContentRating)
 		} else {
-			sdkModelFunSettingsModel.GiphyContentRating = types.StringNull()
+			tfModelFunSettings.GiphyContentRating = types.StringNull()
 		}
 		sdkModelTeam.SetFunSettings(sdkModelFunSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelFunSettingsModel.AttributeTypes(), sdkModelFunSettingsModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelFunSettings.AttributeTypes(), sdkModelFunSettings)
 		tfPlan.FunSettings = objectValue
 	} else {
 		tfPlan.FunSettings = types.ObjectNull(tfPlan.FunSettings.AttributeTypes(ctx))
@@ -421,24 +421,24 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.GuestSettings.IsUnknown() {
 		sdkModelGuestSettings := models.NewTeamGuestSettings()
-		sdkModelGuestSettingsModel := teamTeamGuestSettingsModel{}
-		tfPlan.GuestSettings.As(ctx, &sdkModelGuestSettingsModel, basetypes.ObjectAsOptions{})
+		tfModelGuestSettings := teamTeamGuestSettingsModel{}
+		tfPlan.GuestSettings.As(ctx, &tfModelGuestSettings, basetypes.ObjectAsOptions{})
 
-		if !sdkModelGuestSettingsModel.AllowCreateUpdateChannels.IsUnknown() {
-			tfPlanAllowCreateUpdateChannels := sdkModelGuestSettingsModel.AllowCreateUpdateChannels.ValueBool()
+		if !tfModelGuestSettings.AllowCreateUpdateChannels.IsUnknown() {
+			tfPlanAllowCreateUpdateChannels := tfModelGuestSettings.AllowCreateUpdateChannels.ValueBool()
 			sdkModelGuestSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		} else {
-			sdkModelGuestSettingsModel.AllowCreateUpdateChannels = types.BoolNull()
+			tfModelGuestSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
 
-		if !sdkModelGuestSettingsModel.AllowDeleteChannels.IsUnknown() {
-			tfPlanAllowDeleteChannels := sdkModelGuestSettingsModel.AllowDeleteChannels.ValueBool()
+		if !tfModelGuestSettings.AllowDeleteChannels.IsUnknown() {
+			tfPlanAllowDeleteChannels := tfModelGuestSettings.AllowDeleteChannels.ValueBool()
 			sdkModelGuestSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		} else {
-			sdkModelGuestSettingsModel.AllowDeleteChannels = types.BoolNull()
+			tfModelGuestSettings.AllowDeleteChannels = types.BoolNull()
 		}
 		sdkModelTeam.SetGuestSettings(sdkModelGuestSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelGuestSettingsModel.AttributeTypes(), sdkModelGuestSettingsModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelGuestSettings.AttributeTypes(), sdkModelGuestSettings)
 		tfPlan.GuestSettings = objectValue
 	} else {
 		tfPlan.GuestSettings = types.ObjectNull(tfPlan.GuestSettings.AttributeTypes(ctx))
@@ -460,52 +460,52 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.MemberSettings.IsUnknown() {
 		sdkModelMemberSettings := models.NewTeamMemberSettings()
-		sdkModelMemberSettingsModel := teamTeamMemberSettingsModel{}
-		tfPlan.MemberSettings.As(ctx, &sdkModelMemberSettingsModel, basetypes.ObjectAsOptions{})
+		tfModelMemberSettings := teamTeamMemberSettingsModel{}
+		tfPlan.MemberSettings.As(ctx, &tfModelMemberSettings, basetypes.ObjectAsOptions{})
 
-		if !sdkModelMemberSettingsModel.AllowAddRemoveApps.IsUnknown() {
-			tfPlanAllowAddRemoveApps := sdkModelMemberSettingsModel.AllowAddRemoveApps.ValueBool()
+		if !tfModelMemberSettings.AllowAddRemoveApps.IsUnknown() {
+			tfPlanAllowAddRemoveApps := tfModelMemberSettings.AllowAddRemoveApps.ValueBool()
 			sdkModelMemberSettings.SetAllowAddRemoveApps(&tfPlanAllowAddRemoveApps)
 		} else {
-			sdkModelMemberSettingsModel.AllowAddRemoveApps = types.BoolNull()
+			tfModelMemberSettings.AllowAddRemoveApps = types.BoolNull()
 		}
 
-		if !sdkModelMemberSettingsModel.AllowCreatePrivateChannels.IsUnknown() {
-			tfPlanAllowCreatePrivateChannels := sdkModelMemberSettingsModel.AllowCreatePrivateChannels.ValueBool()
+		if !tfModelMemberSettings.AllowCreatePrivateChannels.IsUnknown() {
+			tfPlanAllowCreatePrivateChannels := tfModelMemberSettings.AllowCreatePrivateChannels.ValueBool()
 			sdkModelMemberSettings.SetAllowCreatePrivateChannels(&tfPlanAllowCreatePrivateChannels)
 		} else {
-			sdkModelMemberSettingsModel.AllowCreatePrivateChannels = types.BoolNull()
+			tfModelMemberSettings.AllowCreatePrivateChannels = types.BoolNull()
 		}
 
-		if !sdkModelMemberSettingsModel.AllowCreateUpdateChannels.IsUnknown() {
-			tfPlanAllowCreateUpdateChannels := sdkModelMemberSettingsModel.AllowCreateUpdateChannels.ValueBool()
+		if !tfModelMemberSettings.AllowCreateUpdateChannels.IsUnknown() {
+			tfPlanAllowCreateUpdateChannels := tfModelMemberSettings.AllowCreateUpdateChannels.ValueBool()
 			sdkModelMemberSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		} else {
-			sdkModelMemberSettingsModel.AllowCreateUpdateChannels = types.BoolNull()
+			tfModelMemberSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
 
-		if !sdkModelMemberSettingsModel.AllowCreateUpdateRemoveConnectors.IsUnknown() {
-			tfPlanAllowCreateUpdateRemoveConnectors := sdkModelMemberSettingsModel.AllowCreateUpdateRemoveConnectors.ValueBool()
+		if !tfModelMemberSettings.AllowCreateUpdateRemoveConnectors.IsUnknown() {
+			tfPlanAllowCreateUpdateRemoveConnectors := tfModelMemberSettings.AllowCreateUpdateRemoveConnectors.ValueBool()
 			sdkModelMemberSettings.SetAllowCreateUpdateRemoveConnectors(&tfPlanAllowCreateUpdateRemoveConnectors)
 		} else {
-			sdkModelMemberSettingsModel.AllowCreateUpdateRemoveConnectors = types.BoolNull()
+			tfModelMemberSettings.AllowCreateUpdateRemoveConnectors = types.BoolNull()
 		}
 
-		if !sdkModelMemberSettingsModel.AllowCreateUpdateRemoveTabs.IsUnknown() {
-			tfPlanAllowCreateUpdateRemoveTabs := sdkModelMemberSettingsModel.AllowCreateUpdateRemoveTabs.ValueBool()
+		if !tfModelMemberSettings.AllowCreateUpdateRemoveTabs.IsUnknown() {
+			tfPlanAllowCreateUpdateRemoveTabs := tfModelMemberSettings.AllowCreateUpdateRemoveTabs.ValueBool()
 			sdkModelMemberSettings.SetAllowCreateUpdateRemoveTabs(&tfPlanAllowCreateUpdateRemoveTabs)
 		} else {
-			sdkModelMemberSettingsModel.AllowCreateUpdateRemoveTabs = types.BoolNull()
+			tfModelMemberSettings.AllowCreateUpdateRemoveTabs = types.BoolNull()
 		}
 
-		if !sdkModelMemberSettingsModel.AllowDeleteChannels.IsUnknown() {
-			tfPlanAllowDeleteChannels := sdkModelMemberSettingsModel.AllowDeleteChannels.ValueBool()
+		if !tfModelMemberSettings.AllowDeleteChannels.IsUnknown() {
+			tfPlanAllowDeleteChannels := tfModelMemberSettings.AllowDeleteChannels.ValueBool()
 			sdkModelMemberSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		} else {
-			sdkModelMemberSettingsModel.AllowDeleteChannels = types.BoolNull()
+			tfModelMemberSettings.AllowDeleteChannels = types.BoolNull()
 		}
 		sdkModelTeam.SetMemberSettings(sdkModelMemberSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelMemberSettingsModel.AttributeTypes(), sdkModelMemberSettingsModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelMemberSettings.AttributeTypes(), sdkModelMemberSettings)
 		tfPlan.MemberSettings = objectValue
 	} else {
 		tfPlan.MemberSettings = types.ObjectNull(tfPlan.MemberSettings.AttributeTypes(ctx))
@@ -513,45 +513,45 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.MessagingSettings.IsUnknown() {
 		sdkModelMessagingSettings := models.NewTeamMessagingSettings()
-		sdkModelMessagingSettingsModel := teamTeamMessagingSettingsModel{}
-		tfPlan.MessagingSettings.As(ctx, &sdkModelMessagingSettingsModel, basetypes.ObjectAsOptions{})
+		tfModelMessagingSettings := teamTeamMessagingSettingsModel{}
+		tfPlan.MessagingSettings.As(ctx, &tfModelMessagingSettings, basetypes.ObjectAsOptions{})
 
-		if !sdkModelMessagingSettingsModel.AllowChannelMentions.IsUnknown() {
-			tfPlanAllowChannelMentions := sdkModelMessagingSettingsModel.AllowChannelMentions.ValueBool()
+		if !tfModelMessagingSettings.AllowChannelMentions.IsUnknown() {
+			tfPlanAllowChannelMentions := tfModelMessagingSettings.AllowChannelMentions.ValueBool()
 			sdkModelMessagingSettings.SetAllowChannelMentions(&tfPlanAllowChannelMentions)
 		} else {
-			sdkModelMessagingSettingsModel.AllowChannelMentions = types.BoolNull()
+			tfModelMessagingSettings.AllowChannelMentions = types.BoolNull()
 		}
 
-		if !sdkModelMessagingSettingsModel.AllowOwnerDeleteMessages.IsUnknown() {
-			tfPlanAllowOwnerDeleteMessages := sdkModelMessagingSettingsModel.AllowOwnerDeleteMessages.ValueBool()
+		if !tfModelMessagingSettings.AllowOwnerDeleteMessages.IsUnknown() {
+			tfPlanAllowOwnerDeleteMessages := tfModelMessagingSettings.AllowOwnerDeleteMessages.ValueBool()
 			sdkModelMessagingSettings.SetAllowOwnerDeleteMessages(&tfPlanAllowOwnerDeleteMessages)
 		} else {
-			sdkModelMessagingSettingsModel.AllowOwnerDeleteMessages = types.BoolNull()
+			tfModelMessagingSettings.AllowOwnerDeleteMessages = types.BoolNull()
 		}
 
-		if !sdkModelMessagingSettingsModel.AllowTeamMentions.IsUnknown() {
-			tfPlanAllowTeamMentions := sdkModelMessagingSettingsModel.AllowTeamMentions.ValueBool()
+		if !tfModelMessagingSettings.AllowTeamMentions.IsUnknown() {
+			tfPlanAllowTeamMentions := tfModelMessagingSettings.AllowTeamMentions.ValueBool()
 			sdkModelMessagingSettings.SetAllowTeamMentions(&tfPlanAllowTeamMentions)
 		} else {
-			sdkModelMessagingSettingsModel.AllowTeamMentions = types.BoolNull()
+			tfModelMessagingSettings.AllowTeamMentions = types.BoolNull()
 		}
 
-		if !sdkModelMessagingSettingsModel.AllowUserDeleteMessages.IsUnknown() {
-			tfPlanAllowUserDeleteMessages := sdkModelMessagingSettingsModel.AllowUserDeleteMessages.ValueBool()
+		if !tfModelMessagingSettings.AllowUserDeleteMessages.IsUnknown() {
+			tfPlanAllowUserDeleteMessages := tfModelMessagingSettings.AllowUserDeleteMessages.ValueBool()
 			sdkModelMessagingSettings.SetAllowUserDeleteMessages(&tfPlanAllowUserDeleteMessages)
 		} else {
-			sdkModelMessagingSettingsModel.AllowUserDeleteMessages = types.BoolNull()
+			tfModelMessagingSettings.AllowUserDeleteMessages = types.BoolNull()
 		}
 
-		if !sdkModelMessagingSettingsModel.AllowUserEditMessages.IsUnknown() {
-			tfPlanAllowUserEditMessages := sdkModelMessagingSettingsModel.AllowUserEditMessages.ValueBool()
+		if !tfModelMessagingSettings.AllowUserEditMessages.IsUnknown() {
+			tfPlanAllowUserEditMessages := tfModelMessagingSettings.AllowUserEditMessages.ValueBool()
 			sdkModelMessagingSettings.SetAllowUserEditMessages(&tfPlanAllowUserEditMessages)
 		} else {
-			sdkModelMessagingSettingsModel.AllowUserEditMessages = types.BoolNull()
+			tfModelMessagingSettings.AllowUserEditMessages = types.BoolNull()
 		}
 		sdkModelTeam.SetMessagingSettings(sdkModelMessagingSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelMessagingSettingsModel.AttributeTypes(), sdkModelMessagingSettingsModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelMessagingSettings.AttributeTypes(), sdkModelMessagingSettings)
 		tfPlan.MessagingSettings = objectValue
 	} else {
 		tfPlan.MessagingSettings = types.ObjectNull(tfPlan.MessagingSettings.AttributeTypes(ctx))
@@ -568,11 +568,11 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.Summary.IsUnknown() {
 		sdkModelSummary := models.NewTeamSummary()
-		sdkModelSummaryModel := teamTeamSummaryModel{}
-		tfPlan.Summary.As(ctx, &sdkModelSummaryModel, basetypes.ObjectAsOptions{})
+		tfModelSummary := teamTeamSummaryModel{}
+		tfPlan.Summary.As(ctx, &tfModelSummary, basetypes.ObjectAsOptions{})
 
 		sdkModelTeam.SetSummary(sdkModelSummary)
-		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelSummaryModel.AttributeTypes(), sdkModelSummaryModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfModelSummary.AttributeTypes(), sdkModelSummary)
 		tfPlan.Summary = objectValue
 	} else {
 		tfPlan.Summary = types.ObjectNull(tfPlan.Summary.AttributeTypes(ctx))
