@@ -432,8 +432,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END GiphyContentRating | CreateStringEnumAttribute
 
 		sdkModelTeam.SetFunSettings(sdkModelFunSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelFunSettings.AttributeTypes(), sdkModelFunSettings)
-		tfPlan.FunSettings = objectValue
+		tfPlan.FunSettings, _ = types.ObjectValueFrom(ctx, tfModelFunSettings.AttributeTypes(), sdkModelFunSettings)
 	} else {
 		tfPlan.FunSettings = types.ObjectNull(tfPlan.FunSettings.AttributeTypes(ctx))
 	}
@@ -464,8 +463,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END AllowDeleteChannels | CreateBoolAttribute
 
 		sdkModelTeam.SetGuestSettings(sdkModelGuestSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelGuestSettings.AttributeTypes(), sdkModelGuestSettings)
-		tfPlan.GuestSettings = objectValue
+		tfPlan.GuestSettings, _ = types.ObjectValueFrom(ctx, tfModelGuestSettings.AttributeTypes(), sdkModelGuestSettings)
 	} else {
 		tfPlan.GuestSettings = types.ObjectNull(tfPlan.GuestSettings.AttributeTypes(ctx))
 	}
@@ -550,8 +548,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END AllowDeleteChannels | CreateBoolAttribute
 
 		sdkModelTeam.SetMemberSettings(sdkModelMemberSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelMemberSettings.AttributeTypes(), sdkModelMemberSettings)
-		tfPlan.MemberSettings = objectValue
+		tfPlan.MemberSettings, _ = types.ObjectValueFrom(ctx, tfModelMemberSettings.AttributeTypes(), sdkModelMemberSettings)
 	} else {
 		tfPlan.MemberSettings = types.ObjectNull(tfPlan.MemberSettings.AttributeTypes(ctx))
 	}
@@ -609,8 +606,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END AllowUserEditMessages | CreateBoolAttribute
 
 		sdkModelTeam.SetMessagingSettings(sdkModelMessagingSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelMessagingSettings.AttributeTypes(), sdkModelMessagingSettings)
-		tfPlan.MessagingSettings = objectValue
+		tfPlan.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfModelMessagingSettings.AttributeTypes(), sdkModelMessagingSettings)
 	} else {
 		tfPlan.MessagingSettings = types.ObjectNull(tfPlan.MessagingSettings.AttributeTypes(ctx))
 	}
@@ -643,8 +639,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END OwnersCount | UNKNOWN
 
 		sdkModelTeam.SetSummary(sdkModelSummary)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelSummary.AttributeTypes(), sdkModelSummary)
-		tfPlan.Summary = objectValue
+		tfPlan.Summary, _ = types.ObjectValueFrom(ctx, tfModelSummary.AttributeTypes(), sdkModelSummary)
 	} else {
 		tfPlan.Summary = types.ObjectNull(tfPlan.Summary.AttributeTypes(ctx))
 	}

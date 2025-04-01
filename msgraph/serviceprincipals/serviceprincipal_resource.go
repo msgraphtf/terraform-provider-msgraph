@@ -1051,8 +1051,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		tfPlan.CustomSecurityAttributes.As(ctx, &tfModelCustomSecurityAttributes, basetypes.ObjectAsOptions{})
 
 		sdkModelServicePrincipal.SetCustomSecurityAttributes(sdkModelCustomSecurityAttributes)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelCustomSecurityAttributes.AttributeTypes(), sdkModelCustomSecurityAttributes)
-		tfPlan.CustomSecurityAttributes = objectValue
+		tfPlan.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfModelCustomSecurityAttributes.AttributeTypes(), sdkModelCustomSecurityAttributes)
 	} else {
 		tfPlan.CustomSecurityAttributes = types.ObjectNull(tfPlan.CustomSecurityAttributes.AttributeTypes(ctx))
 	}
@@ -1146,8 +1145,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		// END TermsOfServiceUrl | CreateStringAttribute
 
 		sdkModelServicePrincipal.SetInfo(sdkModelInfo)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelInfo.AttributeTypes(), sdkModelInfo)
-		tfPlan.Info = objectValue
+		tfPlan.Info, _ = types.ObjectValueFrom(ctx, tfModelInfo.AttributeTypes(), sdkModelInfo)
 	} else {
 		tfPlan.Info = types.ObjectNull(tfPlan.Info.AttributeTypes(ctx))
 	}
@@ -1567,8 +1565,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		// END RelayState | CreateStringAttribute
 
 		sdkModelServicePrincipal.SetSamlSingleSignOnSettings(sdkModelSamlSingleSignOnSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelSamlSingleSignOnSettings.AttributeTypes(), sdkModelSamlSingleSignOnSettings)
-		tfPlan.SamlSingleSignOnSettings = objectValue
+		tfPlan.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, tfModelSamlSingleSignOnSettings.AttributeTypes(), sdkModelSamlSingleSignOnSettings)
 	} else {
 		tfPlan.SamlSingleSignOnSettings = types.ObjectNull(tfPlan.SamlSingleSignOnSettings.AttributeTypes(ctx))
 	}
@@ -1661,8 +1658,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		// END VerifiedPublisherId | CreateStringAttribute
 
 		sdkModelServicePrincipal.SetVerifiedPublisher(sdkModelVerifiedPublisher)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelVerifiedPublisher.AttributeTypes(), sdkModelVerifiedPublisher)
-		tfPlan.VerifiedPublisher = objectValue
+		tfPlan.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfModelVerifiedPublisher.AttributeTypes(), sdkModelVerifiedPublisher)
 	} else {
 		tfPlan.VerifiedPublisher = types.ObjectNull(tfPlan.VerifiedPublisher.AttributeTypes(ctx))
 	}

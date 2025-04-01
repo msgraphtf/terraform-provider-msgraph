@@ -1302,8 +1302,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END CertificateUserIds | CreateArrayStringAttribute
 
 		sdkModelUser.SetAuthorizationInfo(sdkModelAuthorizationInfo)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelAuthorizationInfo.AttributeTypes(), sdkModelAuthorizationInfo)
-		tfPlan.AuthorizationInfo = objectValue
+		tfPlan.AuthorizationInfo, _ = types.ObjectValueFrom(ctx, tfModelAuthorizationInfo.AttributeTypes(), sdkModelAuthorizationInfo)
 	} else {
 		tfPlan.AuthorizationInfo = types.ObjectNull(tfPlan.AuthorizationInfo.AttributeTypes(ctx))
 	}
@@ -1458,8 +1457,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END Division | CreateStringAttribute
 
 		sdkModelUser.SetEmployeeOrgData(sdkModelEmployeeOrgData)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelEmployeeOrgData.AttributeTypes(), sdkModelEmployeeOrgData)
-		tfPlan.EmployeeOrgData = objectValue
+		tfPlan.EmployeeOrgData, _ = types.ObjectValueFrom(ctx, tfModelEmployeeOrgData.AttributeTypes(), sdkModelEmployeeOrgData)
 	} else {
 		tfPlan.EmployeeOrgData = types.ObjectNull(tfPlan.EmployeeOrgData.AttributeTypes(ctx))
 	}
@@ -1914,8 +1912,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END ExtensionAttribute9 | CreateStringAttribute
 
 		sdkModelUser.SetOnPremisesExtensionAttributes(sdkModelOnPremisesExtensionAttributes)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelOnPremisesExtensionAttributes.AttributeTypes(), sdkModelOnPremisesExtensionAttributes)
-		tfPlan.OnPremisesExtensionAttributes = objectValue
+		tfPlan.OnPremisesExtensionAttributes, _ = types.ObjectValueFrom(ctx, tfModelOnPremisesExtensionAttributes.AttributeTypes(), sdkModelOnPremisesExtensionAttributes)
 	} else {
 		tfPlan.OnPremisesExtensionAttributes = types.ObjectNull(tfPlan.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
@@ -2083,8 +2080,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END Password | CreateStringAttribute
 
 		sdkModelUser.SetPasswordProfile(sdkModelPasswordProfile)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelPasswordProfile.AttributeTypes(), sdkModelPasswordProfile)
-		tfPlan.PasswordProfile = objectValue
+		tfPlan.PasswordProfile, _ = types.ObjectValueFrom(ctx, tfModelPasswordProfile.AttributeTypes(), sdkModelPasswordProfile)
 	} else {
 		tfPlan.PasswordProfile = types.ObjectNull(tfPlan.PasswordProfile.AttributeTypes(ctx))
 	}
@@ -2341,8 +2337,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END LastSuccessfulSignInRequestId | CreateStringAttribute
 
 		sdkModelUser.SetSignInActivity(sdkModelSignInActivity)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelSignInActivity.AttributeTypes(), sdkModelSignInActivity)
-		tfPlan.SignInActivity = objectValue
+		tfPlan.SignInActivity, _ = types.ObjectValueFrom(ctx, tfModelSignInActivity.AttributeTypes(), sdkModelSignInActivity)
 	} else {
 		tfPlan.SignInActivity = types.ObjectNull(tfPlan.SignInActivity.AttributeTypes(ctx))
 	}

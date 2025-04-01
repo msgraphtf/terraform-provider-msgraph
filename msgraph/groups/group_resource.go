@@ -652,8 +652,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		// END State | CreateStringAttribute
 
 		sdkModelGroup.SetLicenseProcessingState(sdkModelLicenseProcessingState)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelLicenseProcessingState.AttributeTypes(), sdkModelLicenseProcessingState)
-		tfPlan.LicenseProcessingState = objectValue
+		tfPlan.LicenseProcessingState, _ = types.ObjectValueFrom(ctx, tfModelLicenseProcessingState.AttributeTypes(), sdkModelLicenseProcessingState)
 	} else {
 		tfPlan.LicenseProcessingState = types.ObjectNull(tfPlan.LicenseProcessingState.AttributeTypes(ctx))
 	}

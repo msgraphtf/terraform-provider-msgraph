@@ -1475,8 +1475,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END RequestedAccessTokenVersion | UNKNOWN
 
 		sdkModelApplication.SetApi(sdkModelApi)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelApi.AttributeTypes(), sdkModelApi)
-		tfPlan.Api = objectValue
+		tfPlan.Api, _ = types.ObjectValueFrom(ctx, tfModelApi.AttributeTypes(), sdkModelApi)
 	} else {
 		tfPlan.Api = types.ObjectNull(tfPlan.Api.AttributeTypes(ctx))
 	}
@@ -1636,8 +1635,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END LastCertificationDateTime | CreateStringTimeAttribute
 
 		sdkModelApplication.SetCertification(sdkModelCertification)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelCertification.AttributeTypes(), sdkModelCertification)
-		tfPlan.Certification = objectValue
+		tfPlan.Certification, _ = types.ObjectValueFrom(ctx, tfModelCertification.AttributeTypes(), sdkModelCertification)
 	} else {
 		tfPlan.Certification = types.ObjectNull(tfPlan.Certification.AttributeTypes(ctx))
 	}
@@ -1762,8 +1760,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END TermsOfServiceUrl | CreateStringAttribute
 
 		sdkModelApplication.SetInfo(sdkModelInfo)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelInfo.AttributeTypes(), sdkModelInfo)
-		tfPlan.Info = objectValue
+		tfPlan.Info, _ = types.ObjectValueFrom(ctx, tfModelInfo.AttributeTypes(), sdkModelInfo)
 	} else {
 		tfPlan.Info = types.ObjectNull(tfPlan.Info.AttributeTypes(ctx))
 	}
@@ -2084,8 +2081,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END Saml2Token | CreateArrayObjectAttribute
 
 		sdkModelApplication.SetOptionalClaims(sdkModelOptionalClaims)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelOptionalClaims.AttributeTypes(), sdkModelOptionalClaims)
-		tfPlan.OptionalClaims = objectValue
+		tfPlan.OptionalClaims, _ = types.ObjectValueFrom(ctx, tfModelOptionalClaims.AttributeTypes(), sdkModelOptionalClaims)
 	} else {
 		tfPlan.OptionalClaims = types.ObjectNull(tfPlan.OptionalClaims.AttributeTypes(ctx))
 	}
@@ -2119,8 +2115,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END LegalAgeGroupRule | CreateStringAttribute
 
 		sdkModelApplication.SetParentalControlSettings(sdkModelParentalControlSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelParentalControlSettings.AttributeTypes(), sdkModelParentalControlSettings)
-		tfPlan.ParentalControlSettings = objectValue
+		tfPlan.ParentalControlSettings, _ = types.ObjectValueFrom(ctx, tfModelParentalControlSettings.AttributeTypes(), sdkModelParentalControlSettings)
 	} else {
 		tfPlan.ParentalControlSettings = types.ObjectNull(tfPlan.ParentalControlSettings.AttributeTypes(ctx))
 	}
@@ -2226,8 +2221,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END RedirectUris | CreateArrayStringAttribute
 
 		sdkModelApplication.SetPublicClient(sdkModelPublicClient)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelPublicClient.AttributeTypes(), sdkModelPublicClient)
-		tfPlan.PublicClient = objectValue
+		tfPlan.PublicClient, _ = types.ObjectValueFrom(ctx, tfModelPublicClient.AttributeTypes(), sdkModelPublicClient)
 	} else {
 		tfPlan.PublicClient = types.ObjectNull(tfPlan.PublicClient.AttributeTypes(ctx))
 	}
@@ -2269,8 +2263,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END IsSignedRequestRequired | CreateBoolAttribute
 
 		sdkModelApplication.SetRequestSignatureVerification(sdkModelRequestSignatureVerification)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelRequestSignatureVerification.AttributeTypes(), sdkModelRequestSignatureVerification)
-		tfPlan.RequestSignatureVerification = objectValue
+		tfPlan.RequestSignatureVerification, _ = types.ObjectValueFrom(ctx, tfModelRequestSignatureVerification.AttributeTypes(), sdkModelRequestSignatureVerification)
 	} else {
 		tfPlan.RequestSignatureVerification = types.ObjectNull(tfPlan.RequestSignatureVerification.AttributeTypes(ctx))
 	}
@@ -2404,8 +2397,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END TokenEncryptionKeyId | CreateBoolAttribute
 
 		sdkModelApplication.SetServicePrincipalLockConfiguration(sdkModelServicePrincipalLockConfiguration)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelServicePrincipalLockConfiguration.AttributeTypes(), sdkModelServicePrincipalLockConfiguration)
-		tfPlan.ServicePrincipalLockConfiguration = objectValue
+		tfPlan.ServicePrincipalLockConfiguration, _ = types.ObjectValueFrom(ctx, tfModelServicePrincipalLockConfiguration.AttributeTypes(), sdkModelServicePrincipalLockConfiguration)
 	} else {
 		tfPlan.ServicePrincipalLockConfiguration = types.ObjectNull(tfPlan.ServicePrincipalLockConfiguration.AttributeTypes(ctx))
 	}
@@ -2439,8 +2431,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END RedirectUris | CreateArrayStringAttribute
 
 		sdkModelApplication.SetSpa(sdkModelSpa)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelSpa.AttributeTypes(), sdkModelSpa)
-		tfPlan.Spa = objectValue
+		tfPlan.Spa, _ = types.ObjectValueFrom(ctx, tfModelSpa.AttributeTypes(), sdkModelSpa)
 	} else {
 		tfPlan.Spa = types.ObjectNull(tfPlan.Spa.AttributeTypes(ctx))
 	}
@@ -2512,8 +2503,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END VerifiedPublisherId | CreateStringAttribute
 
 		sdkModelApplication.SetVerifiedPublisher(sdkModelVerifiedPublisher)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelVerifiedPublisher.AttributeTypes(), sdkModelVerifiedPublisher)
-		tfPlan.VerifiedPublisher = objectValue
+		tfPlan.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfModelVerifiedPublisher.AttributeTypes(), sdkModelVerifiedPublisher)
 	} else {
 		tfPlan.VerifiedPublisher = types.ObjectNull(tfPlan.VerifiedPublisher.AttributeTypes(ctx))
 	}
@@ -2559,8 +2549,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END EnableIdTokenIssuance | CreateBoolAttribute
 
 			sdkModelWeb.SetImplicitGrantSettings(sdkModelImplicitGrantSettings)
-			objectValue, _ := types.ObjectValueFrom(ctx, tfModelImplicitGrantSettings.AttributeTypes(), sdkModelImplicitGrantSettings)
-			tfModelWeb.ImplicitGrantSettings = objectValue
+			tfModelWeb.ImplicitGrantSettings, _ = types.ObjectValueFrom(ctx, tfModelImplicitGrantSettings.AttributeTypes(), sdkModelImplicitGrantSettings)
 		} else {
 			tfModelWeb.ImplicitGrantSettings = types.ObjectNull(tfModelWeb.ImplicitGrantSettings.AttributeTypes(ctx))
 		}
@@ -2615,8 +2604,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		// END RedirectUris | CreateArrayStringAttribute
 
 		sdkModelApplication.SetWeb(sdkModelWeb)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfModelWeb.AttributeTypes(), sdkModelWeb)
-		tfPlan.Web = objectValue
+		tfPlan.Web, _ = types.ObjectValueFrom(ctx, tfModelWeb.AttributeTypes(), sdkModelWeb)
 	} else {
 		tfPlan.Web = types.ObjectNull(tfPlan.Web.AttributeTypes(ctx))
 	}
