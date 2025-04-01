@@ -145,41 +145,13 @@ func (cra createRequestAttribute) Type() string {
 func (cra createRequestAttribute) PlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return cra.Parent.TfPlanVarName() + "." + cra.Name()
+		return "tfPlan" + cra.Parent.Name() + "." + cra.Name()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
-		return cra.Parent.TfPlanVarName() + "." + cra.Name()
+		return "tfPlan" + cra.Parent.Name() + "." + cra.Name()
 	} else {
 		return "tfPlan." + cra.Name()
 	}
 
-}
-
-// Generates the variable name of the Terraform plan
-// The variable contains the terraform plan data for the given object
-func (cra createRequestAttribute) TfPlanVarName() string {
-
-	if cra.Type() == "CreateObjectAttribute" {
-		return "tfPlan" + cra.Name()
-	} else if cra.Type() == "CreateArrayObjectAttribute" {
-		return "tfPlan" + cra.Name()
-	} else if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return cra.Parent.TfPlanVarName()
-	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
-		return cra.Parent.TfPlanVarName()
-	} else if cra.Property.ArrayOf == "object" {
-		return "tfPlan" + upperFirst(cra.Property.ObjectOf.Title)
-	} else {
-		return "tfPlan" + cra.CreateRequest.BlockName.UpperCamel()
-	}
-}
-
-func (cra createRequestAttribute) ParentPlanVar() string {
-
-	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return cra.Parent.TfPlanVarName() + "." + cra.Name()
-	} else {
-		return "tfPlan." + cra.Name()
-	}
 }
 
 func (cra createRequestAttribute) SetModelMethod() string {
