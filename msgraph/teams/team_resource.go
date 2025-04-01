@@ -332,8 +332,8 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 // Create creates the resource and sets the initial Terraform state.
 func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from Terraform plan
-	var tfPlan teamModel
-	diags := req.Plan.Get(ctx, &tfPlan)
+	var tfPlanTeam teamModel
+	diags := req.Plan.Get(ctx, &tfPlanTeam)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -342,56 +342,56 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Generate API request body from Terraform plan
 	sdkModelTeam := models.NewTeam()
 	// START Id | CreateStringAttribute
-	if !tfPlan.Id.IsUnknown() {
-		tfPlanId := tfPlan.Id.ValueString()
+	if !tfPlanTeam.Id.IsUnknown() {
+		tfPlanId := tfPlanTeam.Id.ValueString()
 		sdkModelTeam.SetId(&tfPlanId)
 	} else {
-		tfPlan.Id = types.StringNull()
+		tfPlanTeam.Id = types.StringNull()
 	}
 	// END Id | CreateStringAttribute
 
 	// START Classification | CreateStringAttribute
-	if !tfPlan.Classification.IsUnknown() {
-		tfPlanClassification := tfPlan.Classification.ValueString()
+	if !tfPlanTeam.Classification.IsUnknown() {
+		tfPlanClassification := tfPlanTeam.Classification.ValueString()
 		sdkModelTeam.SetClassification(&tfPlanClassification)
 	} else {
-		tfPlan.Classification = types.StringNull()
+		tfPlanTeam.Classification = types.StringNull()
 	}
 	// END Classification | CreateStringAttribute
 
 	// START CreatedDateTime | CreateStringTimeAttribute
-	if !tfPlan.CreatedDateTime.IsUnknown() {
-		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
+	if !tfPlanTeam.CreatedDateTime.IsUnknown() {
+		tfPlanCreatedDateTime := tfPlanTeam.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 		sdkModelTeam.SetCreatedDateTime(&t)
 	} else {
-		tfPlan.CreatedDateTime = types.StringNull()
+		tfPlanTeam.CreatedDateTime = types.StringNull()
 	}
 	// END CreatedDateTime | CreateStringTimeAttribute
 
 	// START Description | CreateStringAttribute
-	if !tfPlan.Description.IsUnknown() {
-		tfPlanDescription := tfPlan.Description.ValueString()
+	if !tfPlanTeam.Description.IsUnknown() {
+		tfPlanDescription := tfPlanTeam.Description.ValueString()
 		sdkModelTeam.SetDescription(&tfPlanDescription)
 	} else {
-		tfPlan.Description = types.StringNull()
+		tfPlanTeam.Description = types.StringNull()
 	}
 	// END Description | CreateStringAttribute
 
 	// START DisplayName | CreateStringAttribute
-	if !tfPlan.DisplayName.IsUnknown() {
-		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
+	if !tfPlanTeam.DisplayName.IsUnknown() {
+		tfPlanDisplayName := tfPlanTeam.DisplayName.ValueString()
 		sdkModelTeam.SetDisplayName(&tfPlanDisplayName)
 	} else {
-		tfPlan.DisplayName = types.StringNull()
+		tfPlanTeam.DisplayName = types.StringNull()
 	}
 	// END DisplayName | CreateStringAttribute
 
 	// START FunSettings | CreateObjectAttribute
-	if !tfPlan.FunSettings.IsUnknown() {
+	if !tfPlanTeam.FunSettings.IsUnknown() {
 		sdkModelFunSettings := models.NewTeamFunSettings()
 		tfPlanFunSettings := teamTeamFunSettingsModel{}
-		tfPlan.FunSettings.As(ctx, &tfPlanFunSettings, basetypes.ObjectAsOptions{})
+		tfPlanTeam.FunSettings.As(ctx, &tfPlanFunSettings, basetypes.ObjectAsOptions{})
 
 		// START AllowCustomMemes | CreateBoolAttribute
 		if !tfPlanFunSettings.AllowCustomMemes.IsUnknown() {
@@ -432,17 +432,17 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END GiphyContentRating | CreateStringEnumAttribute
 
 		sdkModelTeam.SetFunSettings(sdkModelFunSettings)
-		tfPlan.FunSettings, _ = types.ObjectValueFrom(ctx, tfPlanFunSettings.AttributeTypes(), sdkModelFunSettings)
+		tfPlanTeam.FunSettings, _ = types.ObjectValueFrom(ctx, tfPlanFunSettings.AttributeTypes(), sdkModelFunSettings)
 	} else {
-		tfPlan.FunSettings = types.ObjectNull(tfPlan.FunSettings.AttributeTypes(ctx))
+		tfPlanTeam.FunSettings = types.ObjectNull(tfPlanTeam.FunSettings.AttributeTypes(ctx))
 	}
 	// END FunSettings | CreateObjectAttribute
 
 	// START GuestSettings | CreateObjectAttribute
-	if !tfPlan.GuestSettings.IsUnknown() {
+	if !tfPlanTeam.GuestSettings.IsUnknown() {
 		sdkModelGuestSettings := models.NewTeamGuestSettings()
 		tfPlanGuestSettings := teamTeamGuestSettingsModel{}
-		tfPlan.GuestSettings.As(ctx, &tfPlanGuestSettings, basetypes.ObjectAsOptions{})
+		tfPlanTeam.GuestSettings.As(ctx, &tfPlanGuestSettings, basetypes.ObjectAsOptions{})
 
 		// START AllowCreateUpdateChannels | CreateBoolAttribute
 		if !tfPlanGuestSettings.AllowCreateUpdateChannels.IsUnknown() {
@@ -463,35 +463,35 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END AllowDeleteChannels | CreateBoolAttribute
 
 		sdkModelTeam.SetGuestSettings(sdkModelGuestSettings)
-		tfPlan.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanGuestSettings.AttributeTypes(), sdkModelGuestSettings)
+		tfPlanTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanGuestSettings.AttributeTypes(), sdkModelGuestSettings)
 	} else {
-		tfPlan.GuestSettings = types.ObjectNull(tfPlan.GuestSettings.AttributeTypes(ctx))
+		tfPlanTeam.GuestSettings = types.ObjectNull(tfPlanTeam.GuestSettings.AttributeTypes(ctx))
 	}
 	// END GuestSettings | CreateObjectAttribute
 
 	// START InternalId | CreateStringAttribute
-	if !tfPlan.InternalId.IsUnknown() {
-		tfPlanInternalId := tfPlan.InternalId.ValueString()
+	if !tfPlanTeam.InternalId.IsUnknown() {
+		tfPlanInternalId := tfPlanTeam.InternalId.ValueString()
 		sdkModelTeam.SetInternalId(&tfPlanInternalId)
 	} else {
-		tfPlan.InternalId = types.StringNull()
+		tfPlanTeam.InternalId = types.StringNull()
 	}
 	// END InternalId | CreateStringAttribute
 
 	// START IsArchived | CreateBoolAttribute
-	if !tfPlan.IsArchived.IsUnknown() {
-		tfPlanIsArchived := tfPlan.IsArchived.ValueBool()
+	if !tfPlanTeam.IsArchived.IsUnknown() {
+		tfPlanIsArchived := tfPlanTeam.IsArchived.ValueBool()
 		sdkModelTeam.SetIsArchived(&tfPlanIsArchived)
 	} else {
-		tfPlan.IsArchived = types.BoolNull()
+		tfPlanTeam.IsArchived = types.BoolNull()
 	}
 	// END IsArchived | CreateBoolAttribute
 
 	// START MemberSettings | CreateObjectAttribute
-	if !tfPlan.MemberSettings.IsUnknown() {
+	if !tfPlanTeam.MemberSettings.IsUnknown() {
 		sdkModelMemberSettings := models.NewTeamMemberSettings()
 		tfPlanMemberSettings := teamTeamMemberSettingsModel{}
-		tfPlan.MemberSettings.As(ctx, &tfPlanMemberSettings, basetypes.ObjectAsOptions{})
+		tfPlanTeam.MemberSettings.As(ctx, &tfPlanMemberSettings, basetypes.ObjectAsOptions{})
 
 		// START AllowAddRemoveApps | CreateBoolAttribute
 		if !tfPlanMemberSettings.AllowAddRemoveApps.IsUnknown() {
@@ -548,17 +548,17 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END AllowDeleteChannels | CreateBoolAttribute
 
 		sdkModelTeam.SetMemberSettings(sdkModelMemberSettings)
-		tfPlan.MemberSettings, _ = types.ObjectValueFrom(ctx, tfPlanMemberSettings.AttributeTypes(), sdkModelMemberSettings)
+		tfPlanTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, tfPlanMemberSettings.AttributeTypes(), sdkModelMemberSettings)
 	} else {
-		tfPlan.MemberSettings = types.ObjectNull(tfPlan.MemberSettings.AttributeTypes(ctx))
+		tfPlanTeam.MemberSettings = types.ObjectNull(tfPlanTeam.MemberSettings.AttributeTypes(ctx))
 	}
 	// END MemberSettings | CreateObjectAttribute
 
 	// START MessagingSettings | CreateObjectAttribute
-	if !tfPlan.MessagingSettings.IsUnknown() {
+	if !tfPlanTeam.MessagingSettings.IsUnknown() {
 		sdkModelMessagingSettings := models.NewTeamMessagingSettings()
 		tfPlanMessagingSettings := teamTeamMessagingSettingsModel{}
-		tfPlan.MessagingSettings.As(ctx, &tfPlanMessagingSettings, basetypes.ObjectAsOptions{})
+		tfPlanTeam.MessagingSettings.As(ctx, &tfPlanMessagingSettings, basetypes.ObjectAsOptions{})
 
 		// START AllowChannelMentions | CreateBoolAttribute
 		if !tfPlanMessagingSettings.AllowChannelMentions.IsUnknown() {
@@ -606,28 +606,28 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END AllowUserEditMessages | CreateBoolAttribute
 
 		sdkModelTeam.SetMessagingSettings(sdkModelMessagingSettings)
-		tfPlan.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfPlanMessagingSettings.AttributeTypes(), sdkModelMessagingSettings)
+		tfPlanTeam.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfPlanMessagingSettings.AttributeTypes(), sdkModelMessagingSettings)
 	} else {
-		tfPlan.MessagingSettings = types.ObjectNull(tfPlan.MessagingSettings.AttributeTypes(ctx))
+		tfPlanTeam.MessagingSettings = types.ObjectNull(tfPlanTeam.MessagingSettings.AttributeTypes(ctx))
 	}
 	// END MessagingSettings | CreateObjectAttribute
 
 	// START Specialization | CreateStringEnumAttribute
-	if !tfPlan.Specialization.IsUnknown() {
-		tfPlanSpecialization := tfPlan.Specialization.ValueString()
+	if !tfPlanTeam.Specialization.IsUnknown() {
+		tfPlanSpecialization := tfPlanTeam.Specialization.ValueString()
 		parsedSpecialization, _ := models.ParseTeamSpecialization(tfPlanSpecialization)
 		assertedSpecialization := parsedSpecialization.(models.TeamSpecialization)
 		sdkModelTeam.SetSpecialization(&assertedSpecialization)
 	} else {
-		tfPlan.Specialization = types.StringNull()
+		tfPlanTeam.Specialization = types.StringNull()
 	}
 	// END Specialization | CreateStringEnumAttribute
 
 	// START Summary | CreateObjectAttribute
-	if !tfPlan.Summary.IsUnknown() {
+	if !tfPlanTeam.Summary.IsUnknown() {
 		sdkModelSummary := models.NewTeamSummary()
 		tfPlanSummary := teamTeamSummaryModel{}
-		tfPlan.Summary.As(ctx, &tfPlanSummary, basetypes.ObjectAsOptions{})
+		tfPlanTeam.Summary.As(ctx, &tfPlanSummary, basetypes.ObjectAsOptions{})
 
 		// START GuestsCount | UNKNOWN
 		// END GuestsCount | UNKNOWN
@@ -639,38 +639,38 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// END OwnersCount | UNKNOWN
 
 		sdkModelTeam.SetSummary(sdkModelSummary)
-		tfPlan.Summary, _ = types.ObjectValueFrom(ctx, tfPlanSummary.AttributeTypes(), sdkModelSummary)
+		tfPlanTeam.Summary, _ = types.ObjectValueFrom(ctx, tfPlanSummary.AttributeTypes(), sdkModelSummary)
 	} else {
-		tfPlan.Summary = types.ObjectNull(tfPlan.Summary.AttributeTypes(ctx))
+		tfPlanTeam.Summary = types.ObjectNull(tfPlanTeam.Summary.AttributeTypes(ctx))
 	}
 	// END Summary | CreateObjectAttribute
 
 	// START TenantId | CreateStringAttribute
-	if !tfPlan.TenantId.IsUnknown() {
-		tfPlanTenantId := tfPlan.TenantId.ValueString()
+	if !tfPlanTeam.TenantId.IsUnknown() {
+		tfPlanTenantId := tfPlanTeam.TenantId.ValueString()
 		sdkModelTeam.SetTenantId(&tfPlanTenantId)
 	} else {
-		tfPlan.TenantId = types.StringNull()
+		tfPlanTeam.TenantId = types.StringNull()
 	}
 	// END TenantId | CreateStringAttribute
 
 	// START Visibility | CreateStringEnumAttribute
-	if !tfPlan.Visibility.IsUnknown() {
-		tfPlanVisibility := tfPlan.Visibility.ValueString()
+	if !tfPlanTeam.Visibility.IsUnknown() {
+		tfPlanVisibility := tfPlanTeam.Visibility.ValueString()
 		parsedVisibility, _ := models.ParseTeamVisibilityType(tfPlanVisibility)
 		assertedVisibility := parsedVisibility.(models.TeamVisibilityType)
 		sdkModelTeam.SetVisibility(&assertedVisibility)
 	} else {
-		tfPlan.Visibility = types.StringNull()
+		tfPlanTeam.Visibility = types.StringNull()
 	}
 	// END Visibility | CreateStringEnumAttribute
 
 	// START WebUrl | CreateStringAttribute
-	if !tfPlan.WebUrl.IsUnknown() {
-		tfPlanWebUrl := tfPlan.WebUrl.ValueString()
+	if !tfPlanTeam.WebUrl.IsUnknown() {
+		tfPlanWebUrl := tfPlanTeam.WebUrl.ValueString()
 		sdkModelTeam.SetWebUrl(&tfPlanWebUrl)
 	} else {
-		tfPlan.WebUrl = types.StringNull()
+		tfPlanTeam.WebUrl = types.StringNull()
 	}
 	// END WebUrl | CreateStringAttribute
 
@@ -686,10 +686,10 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Map response body to schema and populate Computed attribute value
 	// TODO: Add support for other Computed values
-	tfPlan.Id = types.StringValue(*result.GetId())
+	tfPlanTeam.Id = types.StringValue(*result.GetId())
 
 	// Set state to fully populated data
-	diags = resp.State.Set(ctx, tfPlan)
+	diags = resp.State.Set(ctx, tfPlanTeam)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

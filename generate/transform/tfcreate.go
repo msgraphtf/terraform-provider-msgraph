@@ -150,7 +150,7 @@ func (cra createRequestAttribute) ParentName() string {
 	if cra.Parent != nil {
 		return cra.Parent.Name()
 	} else {
-		return ""
+		return cra.CreateRequest.BlockName.UpperCamel()
 	}
 
 }

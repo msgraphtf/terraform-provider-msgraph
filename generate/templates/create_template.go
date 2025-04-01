@@ -1,8 +1,8 @@
 // Create creates the resource and sets the initial Terraform state.
 func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from Terraform plan
-	var tfPlan {{.BlockName.LowerCamel}}Model
-	diags := req.Plan.Get(ctx, &tfPlan)
+	var tfPlan{{.BlockName.UpperCamel}} {{.BlockName.LowerCamel}}Model
+	diags := req.Plan.Get(ctx, &tfPlan{{.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -175,10 +175,10 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	// Map response body to schema and populate Computed attribute value
 	// TODO: Add support for other Computed values
-	tfPlan.Id = types.StringValue(*result.GetId())
+	tfPlan{{.BlockName.UpperCamel}}.Id = types.StringValue(*result.GetId())
 
 	// Set state to fully populated data
-	diags = resp.State.Set(ctx, tfPlan)
+	diags = resp.State.Set(ctx, tfPlan{{.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

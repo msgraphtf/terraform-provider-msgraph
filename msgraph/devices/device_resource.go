@@ -330,8 +330,8 @@ func (d *deviceResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 // Create creates the resource and sets the initial Terraform state.
 func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from Terraform plan
-	var tfPlan deviceModel
-	diags := req.Plan.Get(ctx, &tfPlan)
+	var tfPlanDevice deviceModel
+	diags := req.Plan.Get(ctx, &tfPlanDevice)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -340,37 +340,37 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	// Generate API request body from Terraform plan
 	sdkModelDevice := models.NewDevice()
 	// START Id | CreateStringAttribute
-	if !tfPlan.Id.IsUnknown() {
-		tfPlanId := tfPlan.Id.ValueString()
+	if !tfPlanDevice.Id.IsUnknown() {
+		tfPlanId := tfPlanDevice.Id.ValueString()
 		sdkModelDevice.SetId(&tfPlanId)
 	} else {
-		tfPlan.Id = types.StringNull()
+		tfPlanDevice.Id = types.StringNull()
 	}
 	// END Id | CreateStringAttribute
 
 	// START DeletedDateTime | CreateStringTimeAttribute
-	if !tfPlan.DeletedDateTime.IsUnknown() {
-		tfPlanDeletedDateTime := tfPlan.DeletedDateTime.ValueString()
+	if !tfPlanDevice.DeletedDateTime.IsUnknown() {
+		tfPlanDeletedDateTime := tfPlanDevice.DeletedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
 		sdkModelDevice.SetDeletedDateTime(&t)
 	} else {
-		tfPlan.DeletedDateTime = types.StringNull()
+		tfPlanDevice.DeletedDateTime = types.StringNull()
 	}
 	// END DeletedDateTime | CreateStringTimeAttribute
 
 	// START AccountEnabled | CreateBoolAttribute
-	if !tfPlan.AccountEnabled.IsUnknown() {
-		tfPlanAccountEnabled := tfPlan.AccountEnabled.ValueBool()
+	if !tfPlanDevice.AccountEnabled.IsUnknown() {
+		tfPlanAccountEnabled := tfPlanDevice.AccountEnabled.ValueBool()
 		sdkModelDevice.SetAccountEnabled(&tfPlanAccountEnabled)
 	} else {
-		tfPlan.AccountEnabled = types.BoolNull()
+		tfPlanDevice.AccountEnabled = types.BoolNull()
 	}
 	// END AccountEnabled | CreateBoolAttribute
 
 	// START AlternativeSecurityIds | CreateArrayObjectAttribute
-	if len(tfPlan.AlternativeSecurityIds.Elements()) > 0 {
+	if len(tfPlanDevice.AlternativeSecurityIds.Elements()) > 0 {
 		var tfPlanAlternativeSecurityIds []models.AlternativeSecurityIdable
-		for _, i := range tfPlan.AlternativeSecurityIds.Elements() {
+		for _, i := range tfPlanDevice.AlternativeSecurityIds.Elements() {
 			sdkModelAlternativeSecurityIds := models.NewAlternativeSecurityId()
 			tfPlanAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAlternativeSecurityIds)
@@ -399,63 +399,63 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		}
 		sdkModelDevice.SetAlternativeSecurityIds(tfPlanAlternativeSecurityIds)
 	} else {
-		tfPlan.AlternativeSecurityIds = types.ListNull(tfPlan.AlternativeSecurityIds.ElementType(ctx))
+		tfPlanDevice.AlternativeSecurityIds = types.ListNull(tfPlanDevice.AlternativeSecurityIds.ElementType(ctx))
 	}
 	// END AlternativeSecurityIds | CreateArrayObjectAttribute
 
 	// START ApproximateLastSignInDateTime | CreateStringTimeAttribute
-	if !tfPlan.ApproximateLastSignInDateTime.IsUnknown() {
-		tfPlanApproximateLastSignInDateTime := tfPlan.ApproximateLastSignInDateTime.ValueString()
+	if !tfPlanDevice.ApproximateLastSignInDateTime.IsUnknown() {
+		tfPlanApproximateLastSignInDateTime := tfPlanDevice.ApproximateLastSignInDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanApproximateLastSignInDateTime)
 		sdkModelDevice.SetApproximateLastSignInDateTime(&t)
 	} else {
-		tfPlan.ApproximateLastSignInDateTime = types.StringNull()
+		tfPlanDevice.ApproximateLastSignInDateTime = types.StringNull()
 	}
 	// END ApproximateLastSignInDateTime | CreateStringTimeAttribute
 
 	// START ComplianceExpirationDateTime | CreateStringTimeAttribute
-	if !tfPlan.ComplianceExpirationDateTime.IsUnknown() {
-		tfPlanComplianceExpirationDateTime := tfPlan.ComplianceExpirationDateTime.ValueString()
+	if !tfPlanDevice.ComplianceExpirationDateTime.IsUnknown() {
+		tfPlanComplianceExpirationDateTime := tfPlanDevice.ComplianceExpirationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanComplianceExpirationDateTime)
 		sdkModelDevice.SetComplianceExpirationDateTime(&t)
 	} else {
-		tfPlan.ComplianceExpirationDateTime = types.StringNull()
+		tfPlanDevice.ComplianceExpirationDateTime = types.StringNull()
 	}
 	// END ComplianceExpirationDateTime | CreateStringTimeAttribute
 
 	// START DeviceCategory | CreateStringAttribute
-	if !tfPlan.DeviceCategory.IsUnknown() {
-		tfPlanDeviceCategory := tfPlan.DeviceCategory.ValueString()
+	if !tfPlanDevice.DeviceCategory.IsUnknown() {
+		tfPlanDeviceCategory := tfPlanDevice.DeviceCategory.ValueString()
 		sdkModelDevice.SetDeviceCategory(&tfPlanDeviceCategory)
 	} else {
-		tfPlan.DeviceCategory = types.StringNull()
+		tfPlanDevice.DeviceCategory = types.StringNull()
 	}
 	// END DeviceCategory | CreateStringAttribute
 
 	// START DeviceId | CreateStringAttribute
-	if !tfPlan.DeviceId.IsUnknown() {
-		tfPlanDeviceId := tfPlan.DeviceId.ValueString()
+	if !tfPlanDevice.DeviceId.IsUnknown() {
+		tfPlanDeviceId := tfPlanDevice.DeviceId.ValueString()
 		sdkModelDevice.SetDeviceId(&tfPlanDeviceId)
 	} else {
-		tfPlan.DeviceId = types.StringNull()
+		tfPlanDevice.DeviceId = types.StringNull()
 	}
 	// END DeviceId | CreateStringAttribute
 
 	// START DeviceMetadata | CreateStringAttribute
-	if !tfPlan.DeviceMetadata.IsUnknown() {
-		tfPlanDeviceMetadata := tfPlan.DeviceMetadata.ValueString()
+	if !tfPlanDevice.DeviceMetadata.IsUnknown() {
+		tfPlanDeviceMetadata := tfPlanDevice.DeviceMetadata.ValueString()
 		sdkModelDevice.SetDeviceMetadata(&tfPlanDeviceMetadata)
 	} else {
-		tfPlan.DeviceMetadata = types.StringNull()
+		tfPlanDevice.DeviceMetadata = types.StringNull()
 	}
 	// END DeviceMetadata | CreateStringAttribute
 
 	// START DeviceOwnership | CreateStringAttribute
-	if !tfPlan.DeviceOwnership.IsUnknown() {
-		tfPlanDeviceOwnership := tfPlan.DeviceOwnership.ValueString()
+	if !tfPlanDevice.DeviceOwnership.IsUnknown() {
+		tfPlanDeviceOwnership := tfPlanDevice.DeviceOwnership.ValueString()
 		sdkModelDevice.SetDeviceOwnership(&tfPlanDeviceOwnership)
 	} else {
-		tfPlan.DeviceOwnership = types.StringNull()
+		tfPlanDevice.DeviceOwnership = types.StringNull()
 	}
 	// END DeviceOwnership | CreateStringAttribute
 
@@ -463,199 +463,199 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	// END DeviceVersion | UNKNOWN
 
 	// START DisplayName | CreateStringAttribute
-	if !tfPlan.DisplayName.IsUnknown() {
-		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
+	if !tfPlanDevice.DisplayName.IsUnknown() {
+		tfPlanDisplayName := tfPlanDevice.DisplayName.ValueString()
 		sdkModelDevice.SetDisplayName(&tfPlanDisplayName)
 	} else {
-		tfPlan.DisplayName = types.StringNull()
+		tfPlanDevice.DisplayName = types.StringNull()
 	}
 	// END DisplayName | CreateStringAttribute
 
 	// START EnrollmentProfileName | CreateStringAttribute
-	if !tfPlan.EnrollmentProfileName.IsUnknown() {
-		tfPlanEnrollmentProfileName := tfPlan.EnrollmentProfileName.ValueString()
+	if !tfPlanDevice.EnrollmentProfileName.IsUnknown() {
+		tfPlanEnrollmentProfileName := tfPlanDevice.EnrollmentProfileName.ValueString()
 		sdkModelDevice.SetEnrollmentProfileName(&tfPlanEnrollmentProfileName)
 	} else {
-		tfPlan.EnrollmentProfileName = types.StringNull()
+		tfPlanDevice.EnrollmentProfileName = types.StringNull()
 	}
 	// END EnrollmentProfileName | CreateStringAttribute
 
 	// START EnrollmentType | CreateStringAttribute
-	if !tfPlan.EnrollmentType.IsUnknown() {
-		tfPlanEnrollmentType := tfPlan.EnrollmentType.ValueString()
+	if !tfPlanDevice.EnrollmentType.IsUnknown() {
+		tfPlanEnrollmentType := tfPlanDevice.EnrollmentType.ValueString()
 		sdkModelDevice.SetEnrollmentType(&tfPlanEnrollmentType)
 	} else {
-		tfPlan.EnrollmentType = types.StringNull()
+		tfPlanDevice.EnrollmentType = types.StringNull()
 	}
 	// END EnrollmentType | CreateStringAttribute
 
 	// START IsCompliant | CreateBoolAttribute
-	if !tfPlan.IsCompliant.IsUnknown() {
-		tfPlanIsCompliant := tfPlan.IsCompliant.ValueBool()
+	if !tfPlanDevice.IsCompliant.IsUnknown() {
+		tfPlanIsCompliant := tfPlanDevice.IsCompliant.ValueBool()
 		sdkModelDevice.SetIsCompliant(&tfPlanIsCompliant)
 	} else {
-		tfPlan.IsCompliant = types.BoolNull()
+		tfPlanDevice.IsCompliant = types.BoolNull()
 	}
 	// END IsCompliant | CreateBoolAttribute
 
 	// START IsManaged | CreateBoolAttribute
-	if !tfPlan.IsManaged.IsUnknown() {
-		tfPlanIsManaged := tfPlan.IsManaged.ValueBool()
+	if !tfPlanDevice.IsManaged.IsUnknown() {
+		tfPlanIsManaged := tfPlanDevice.IsManaged.ValueBool()
 		sdkModelDevice.SetIsManaged(&tfPlanIsManaged)
 	} else {
-		tfPlan.IsManaged = types.BoolNull()
+		tfPlanDevice.IsManaged = types.BoolNull()
 	}
 	// END IsManaged | CreateBoolAttribute
 
 	// START IsManagementRestricted | CreateBoolAttribute
-	if !tfPlan.IsManagementRestricted.IsUnknown() {
-		tfPlanIsManagementRestricted := tfPlan.IsManagementRestricted.ValueBool()
+	if !tfPlanDevice.IsManagementRestricted.IsUnknown() {
+		tfPlanIsManagementRestricted := tfPlanDevice.IsManagementRestricted.ValueBool()
 		sdkModelDevice.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
 	} else {
-		tfPlan.IsManagementRestricted = types.BoolNull()
+		tfPlanDevice.IsManagementRestricted = types.BoolNull()
 	}
 	// END IsManagementRestricted | CreateBoolAttribute
 
 	// START IsRooted | CreateBoolAttribute
-	if !tfPlan.IsRooted.IsUnknown() {
-		tfPlanIsRooted := tfPlan.IsRooted.ValueBool()
+	if !tfPlanDevice.IsRooted.IsUnknown() {
+		tfPlanIsRooted := tfPlanDevice.IsRooted.ValueBool()
 		sdkModelDevice.SetIsRooted(&tfPlanIsRooted)
 	} else {
-		tfPlan.IsRooted = types.BoolNull()
+		tfPlanDevice.IsRooted = types.BoolNull()
 	}
 	// END IsRooted | CreateBoolAttribute
 
 	// START ManagementType | CreateStringAttribute
-	if !tfPlan.ManagementType.IsUnknown() {
-		tfPlanManagementType := tfPlan.ManagementType.ValueString()
+	if !tfPlanDevice.ManagementType.IsUnknown() {
+		tfPlanManagementType := tfPlanDevice.ManagementType.ValueString()
 		sdkModelDevice.SetManagementType(&tfPlanManagementType)
 	} else {
-		tfPlan.ManagementType = types.StringNull()
+		tfPlanDevice.ManagementType = types.StringNull()
 	}
 	// END ManagementType | CreateStringAttribute
 
 	// START Manufacturer | CreateStringAttribute
-	if !tfPlan.Manufacturer.IsUnknown() {
-		tfPlanManufacturer := tfPlan.Manufacturer.ValueString()
+	if !tfPlanDevice.Manufacturer.IsUnknown() {
+		tfPlanManufacturer := tfPlanDevice.Manufacturer.ValueString()
 		sdkModelDevice.SetManufacturer(&tfPlanManufacturer)
 	} else {
-		tfPlan.Manufacturer = types.StringNull()
+		tfPlanDevice.Manufacturer = types.StringNull()
 	}
 	// END Manufacturer | CreateStringAttribute
 
 	// START MdmAppId | CreateStringAttribute
-	if !tfPlan.MdmAppId.IsUnknown() {
-		tfPlanMdmAppId := tfPlan.MdmAppId.ValueString()
+	if !tfPlanDevice.MdmAppId.IsUnknown() {
+		tfPlanMdmAppId := tfPlanDevice.MdmAppId.ValueString()
 		sdkModelDevice.SetMdmAppId(&tfPlanMdmAppId)
 	} else {
-		tfPlan.MdmAppId = types.StringNull()
+		tfPlanDevice.MdmAppId = types.StringNull()
 	}
 	// END MdmAppId | CreateStringAttribute
 
 	// START Model | CreateStringAttribute
-	if !tfPlan.Model.IsUnknown() {
-		tfPlanModel := tfPlan.Model.ValueString()
+	if !tfPlanDevice.Model.IsUnknown() {
+		tfPlanModel := tfPlanDevice.Model.ValueString()
 		sdkModelDevice.SetModel(&tfPlanModel)
 	} else {
-		tfPlan.Model = types.StringNull()
+		tfPlanDevice.Model = types.StringNull()
 	}
 	// END Model | CreateStringAttribute
 
 	// START OnPremisesLastSyncDateTime | CreateStringTimeAttribute
-	if !tfPlan.OnPremisesLastSyncDateTime.IsUnknown() {
-		tfPlanOnPremisesLastSyncDateTime := tfPlan.OnPremisesLastSyncDateTime.ValueString()
+	if !tfPlanDevice.OnPremisesLastSyncDateTime.IsUnknown() {
+		tfPlanOnPremisesLastSyncDateTime := tfPlanDevice.OnPremisesLastSyncDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanOnPremisesLastSyncDateTime)
 		sdkModelDevice.SetOnPremisesLastSyncDateTime(&t)
 	} else {
-		tfPlan.OnPremisesLastSyncDateTime = types.StringNull()
+		tfPlanDevice.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 	// END OnPremisesLastSyncDateTime | CreateStringTimeAttribute
 
 	// START OnPremisesSecurityIdentifier | CreateStringAttribute
-	if !tfPlan.OnPremisesSecurityIdentifier.IsUnknown() {
-		tfPlanOnPremisesSecurityIdentifier := tfPlan.OnPremisesSecurityIdentifier.ValueString()
+	if !tfPlanDevice.OnPremisesSecurityIdentifier.IsUnknown() {
+		tfPlanOnPremisesSecurityIdentifier := tfPlanDevice.OnPremisesSecurityIdentifier.ValueString()
 		sdkModelDevice.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
 	} else {
-		tfPlan.OnPremisesSecurityIdentifier = types.StringNull()
+		tfPlanDevice.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 	// END OnPremisesSecurityIdentifier | CreateStringAttribute
 
 	// START OnPremisesSyncEnabled | CreateBoolAttribute
-	if !tfPlan.OnPremisesSyncEnabled.IsUnknown() {
-		tfPlanOnPremisesSyncEnabled := tfPlan.OnPremisesSyncEnabled.ValueBool()
+	if !tfPlanDevice.OnPremisesSyncEnabled.IsUnknown() {
+		tfPlanOnPremisesSyncEnabled := tfPlanDevice.OnPremisesSyncEnabled.ValueBool()
 		sdkModelDevice.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
 	} else {
-		tfPlan.OnPremisesSyncEnabled = types.BoolNull()
+		tfPlanDevice.OnPremisesSyncEnabled = types.BoolNull()
 	}
 	// END OnPremisesSyncEnabled | CreateBoolAttribute
 
 	// START OperatingSystem | CreateStringAttribute
-	if !tfPlan.OperatingSystem.IsUnknown() {
-		tfPlanOperatingSystem := tfPlan.OperatingSystem.ValueString()
+	if !tfPlanDevice.OperatingSystem.IsUnknown() {
+		tfPlanOperatingSystem := tfPlanDevice.OperatingSystem.ValueString()
 		sdkModelDevice.SetOperatingSystem(&tfPlanOperatingSystem)
 	} else {
-		tfPlan.OperatingSystem = types.StringNull()
+		tfPlanDevice.OperatingSystem = types.StringNull()
 	}
 	// END OperatingSystem | CreateStringAttribute
 
 	// START OperatingSystemVersion | CreateStringAttribute
-	if !tfPlan.OperatingSystemVersion.IsUnknown() {
-		tfPlanOperatingSystemVersion := tfPlan.OperatingSystemVersion.ValueString()
+	if !tfPlanDevice.OperatingSystemVersion.IsUnknown() {
+		tfPlanOperatingSystemVersion := tfPlanDevice.OperatingSystemVersion.ValueString()
 		sdkModelDevice.SetOperatingSystemVersion(&tfPlanOperatingSystemVersion)
 	} else {
-		tfPlan.OperatingSystemVersion = types.StringNull()
+		tfPlanDevice.OperatingSystemVersion = types.StringNull()
 	}
 	// END OperatingSystemVersion | CreateStringAttribute
 
 	// START PhysicalIds | CreateArrayStringAttribute
-	if len(tfPlan.PhysicalIds.Elements()) > 0 {
+	if len(tfPlanDevice.PhysicalIds.Elements()) > 0 {
 		var stringArrayPhysicalIds []string
-		for _, i := range tfPlan.PhysicalIds.Elements() {
+		for _, i := range tfPlanDevice.PhysicalIds.Elements() {
 			stringArrayPhysicalIds = append(stringArrayPhysicalIds, i.String())
 		}
 		sdkModelDevice.SetPhysicalIds(stringArrayPhysicalIds)
 	} else {
-		tfPlan.PhysicalIds = types.ListNull(types.StringType)
+		tfPlanDevice.PhysicalIds = types.ListNull(types.StringType)
 	}
 	// END PhysicalIds | CreateArrayStringAttribute
 
 	// START ProfileType | CreateStringAttribute
-	if !tfPlan.ProfileType.IsUnknown() {
-		tfPlanProfileType := tfPlan.ProfileType.ValueString()
+	if !tfPlanDevice.ProfileType.IsUnknown() {
+		tfPlanProfileType := tfPlanDevice.ProfileType.ValueString()
 		sdkModelDevice.SetProfileType(&tfPlanProfileType)
 	} else {
-		tfPlan.ProfileType = types.StringNull()
+		tfPlanDevice.ProfileType = types.StringNull()
 	}
 	// END ProfileType | CreateStringAttribute
 
 	// START RegistrationDateTime | CreateStringTimeAttribute
-	if !tfPlan.RegistrationDateTime.IsUnknown() {
-		tfPlanRegistrationDateTime := tfPlan.RegistrationDateTime.ValueString()
+	if !tfPlanDevice.RegistrationDateTime.IsUnknown() {
+		tfPlanRegistrationDateTime := tfPlanDevice.RegistrationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanRegistrationDateTime)
 		sdkModelDevice.SetRegistrationDateTime(&t)
 	} else {
-		tfPlan.RegistrationDateTime = types.StringNull()
+		tfPlanDevice.RegistrationDateTime = types.StringNull()
 	}
 	// END RegistrationDateTime | CreateStringTimeAttribute
 
 	// START SystemLabels | CreateArrayStringAttribute
-	if len(tfPlan.SystemLabels.Elements()) > 0 {
+	if len(tfPlanDevice.SystemLabels.Elements()) > 0 {
 		var stringArraySystemLabels []string
-		for _, i := range tfPlan.SystemLabels.Elements() {
+		for _, i := range tfPlanDevice.SystemLabels.Elements() {
 			stringArraySystemLabels = append(stringArraySystemLabels, i.String())
 		}
 		sdkModelDevice.SetSystemLabels(stringArraySystemLabels)
 	} else {
-		tfPlan.SystemLabels = types.ListNull(types.StringType)
+		tfPlanDevice.SystemLabels = types.ListNull(types.StringType)
 	}
 	// END SystemLabels | CreateArrayStringAttribute
 
 	// START TrustType | CreateStringAttribute
-	if !tfPlan.TrustType.IsUnknown() {
-		tfPlanTrustType := tfPlan.TrustType.ValueString()
+	if !tfPlanDevice.TrustType.IsUnknown() {
+		tfPlanTrustType := tfPlanDevice.TrustType.ValueString()
 		sdkModelDevice.SetTrustType(&tfPlanTrustType)
 	} else {
-		tfPlan.TrustType = types.StringNull()
+		tfPlanDevice.TrustType = types.StringNull()
 	}
 	// END TrustType | CreateStringAttribute
 
@@ -671,10 +671,10 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	// Map response body to schema and populate Computed attribute value
 	// TODO: Add support for other Computed values
-	tfPlan.Id = types.StringValue(*result.GetId())
+	tfPlanDevice.Id = types.StringValue(*result.GetId())
 
 	// Set state to fully populated data
-	diags = resp.State.Set(ctx, tfPlan)
+	diags = resp.State.Set(ctx, tfPlanDevice)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
