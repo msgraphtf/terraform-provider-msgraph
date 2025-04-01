@@ -142,6 +142,8 @@ func (cra createRequestAttribute) Type() string {
 	return "UNKNOWN"
 }
 
+// Generates the variable name that contains the Terraform plan
+// New plans need to be created, and eventually combined, when dealing with nested objects
 func (cra createRequestAttribute) PlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
@@ -154,6 +156,8 @@ func (cra createRequestAttribute) PlanVar() string {
 
 }
 
+// Infuriatingly, Kiota (the tool that generates msgraph-sdk-go) suffixes any attributes named "Type" with "Escaped"
+// If it didn't, we could get rid of this and just use {{.Name}} in the template
 func (cra createRequestAttribute) SetModelMethod() string {
 	if cra.Name() == "Type" {
 		return "TypeEscaped"
