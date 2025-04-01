@@ -187,40 +187,9 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	return cr
 }
 
-// Generates the variable name of the SDK model (microsoftgraph/msgraph-sdk-go/models)
-// The variable is used as the request body when performing the Create/POST operation
-// Multiple models need to be created an assembled when there are nested objects
-func (cra createRequestAttribute) SdkModelVarName() string {
-
-	if cra.Type() == "CreateObjectAttribute" {
-		return cra.Name()
-	} else if cra.Type() == "CreateArrayObjectAttribute" {
-		return cra.Name()
-	} else if cra.Parent != nil {
-		return cra.Parent.SdkModelVarName()
-	} else {
-		return cra.CreateRequest.BlockName.UpperCamel()
-	}
-
-}
-
 // Generates the SDK Model name of the given attribute
 func (cra createRequestAttribute) SdkModelName() string {
 	return upperFirst(cra.Property.ObjectOf.Title)
-}
-
-// Gets or generates the variable name of the SDK model (microsoftgraph/msgraph-sdk-go/models)
-// This is used in Object attributes
-func (cra createRequestAttribute) ParentSdkModelVarName() string {
-
-	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return cra.Parent.SdkModelVarName()
-	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
-		return cra.Parent.SdkModelVarName()
-	} else {
-		return cra.CreateRequest.BlockName.UpperCamel()
-	}
-
 }
 
 // Generates the Terraform Model name of the given attribute
