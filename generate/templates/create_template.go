@@ -105,14 +105,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	if len(tfPlan{{.ParentName}}.{{.Name}}.Elements()) > 0 {
-		var requestBody{{.Name}} []models.{{.ObjectOf}}able
+		var requestBody{{.ObjectOf}} []models.{{.ObjectOf}}able
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			requestBody{{.Name}} := models.New{{.ObjectOf}}()
 			tfPlan{{.Name}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.Name}})
 			{{template "generate_create" .NestedCreate}}
 		}
-		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.ObjectOf}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(tfPlan{{.ParentName}}.{{.Name}}.ElementType(ctx))
 	}

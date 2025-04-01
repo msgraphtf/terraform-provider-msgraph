@@ -1193,7 +1193,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START AssignedLicenses | CreateArrayObjectAttribute
 	if len(tfPlanUser.AssignedLicenses.Elements()) > 0 {
-		var requestBodyAssignedLicenses []models.AssignedLicenseable
+		var requestBodyAssignedLicense []models.AssignedLicenseable
 		for _, i := range tfPlanUser.AssignedLicenses.Elements() {
 			requestBodyAssignedLicenses := models.NewAssignedLicense()
 			tfPlanAssignedLicenses := userAssignedLicenseModel{}
@@ -1224,7 +1224,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			// END SkuId | CreateStringUuidAttribute
 
 		}
-		requestBodyUser.SetAssignedLicenses(requestBodyAssignedLicenses)
+		requestBodyUser.SetAssignedLicenses(requestBodyAssignedLicense)
 	} else {
 		tfPlanUser.AssignedLicenses = types.ListNull(tfPlanUser.AssignedLicenses.ElementType(ctx))
 	}
@@ -1232,7 +1232,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START AssignedPlans | CreateArrayObjectAttribute
 	if len(tfPlanUser.AssignedPlans.Elements()) > 0 {
-		var requestBodyAssignedPlans []models.AssignedPlanable
+		var requestBodyAssignedPlan []models.AssignedPlanable
 		for _, i := range tfPlanUser.AssignedPlans.Elements() {
 			requestBodyAssignedPlans := models.NewAssignedPlan()
 			tfPlanAssignedPlans := userAssignedPlanModel{}
@@ -1277,7 +1277,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			// END ServicePlanId | CreateStringUuidAttribute
 
 		}
-		requestBodyUser.SetAssignedPlans(requestBodyAssignedPlans)
+		requestBodyUser.SetAssignedPlans(requestBodyAssignedPlan)
 	} else {
 		tfPlanUser.AssignedPlans = types.ListNull(tfPlanUser.AssignedPlans.ElementType(ctx))
 	}
@@ -1521,7 +1521,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START Identities | CreateArrayObjectAttribute
 	if len(tfPlanUser.Identities.Elements()) > 0 {
-		var requestBodyIdentities []models.ObjectIdentityable
+		var requestBodyObjectIdentity []models.ObjectIdentityable
 		for _, i := range tfPlanUser.Identities.Elements() {
 			requestBodyIdentities := models.NewObjectIdentity()
 			tfPlanIdentities := userObjectIdentityModel{}
@@ -1555,7 +1555,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			// END SignInType | CreateStringAttribute
 
 		}
-		requestBodyUser.SetIdentities(requestBodyIdentities)
+		requestBodyUser.SetIdentities(requestBodyObjectIdentity)
 	} else {
 		tfPlanUser.Identities = types.ListNull(tfPlanUser.Identities.ElementType(ctx))
 	}
@@ -1633,7 +1633,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START LicenseAssignmentStates | CreateArrayObjectAttribute
 	if len(tfPlanUser.LicenseAssignmentStates.Elements()) > 0 {
-		var requestBodyLicenseAssignmentStates []models.LicenseAssignmentStateable
+		var requestBodyLicenseAssignmentState []models.LicenseAssignmentStateable
 		for _, i := range tfPlanUser.LicenseAssignmentStates.Elements() {
 			requestBodyLicenseAssignmentStates := models.NewLicenseAssignmentState()
 			tfPlanLicenseAssignmentStates := userLicenseAssignmentStateModel{}
@@ -1701,7 +1701,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			// END State | CreateStringAttribute
 
 		}
-		requestBodyUser.SetLicenseAssignmentStates(requestBodyLicenseAssignmentStates)
+		requestBodyUser.SetLicenseAssignmentStates(requestBodyLicenseAssignmentState)
 	} else {
 		tfPlanUser.LicenseAssignmentStates = types.ListNull(tfPlanUser.LicenseAssignmentStates.ElementType(ctx))
 	}
@@ -1939,7 +1939,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START OnPremisesProvisioningErrors | CreateArrayObjectAttribute
 	if len(tfPlanUser.OnPremisesProvisioningErrors.Elements()) > 0 {
-		var requestBodyOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
+		var requestBodyOnPremisesProvisioningError []models.OnPremisesProvisioningErrorable
 		for _, i := range tfPlanUser.OnPremisesProvisioningErrors.Elements() {
 			requestBodyOnPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
 			tfPlanOnPremisesProvisioningErrors := userOnPremisesProvisioningErrorModel{}
@@ -1983,7 +1983,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			// END Value | CreateStringAttribute
 
 		}
-		requestBodyUser.SetOnPremisesProvisioningErrors(requestBodyOnPremisesProvisioningErrors)
+		requestBodyUser.SetOnPremisesProvisioningErrors(requestBodyOnPremisesProvisioningError)
 	} else {
 		tfPlanUser.OnPremisesProvisioningErrors = types.ListNull(tfPlanUser.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
@@ -2136,7 +2136,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START ProvisionedPlans | CreateArrayObjectAttribute
 	if len(tfPlanUser.ProvisionedPlans.Elements()) > 0 {
-		var requestBodyProvisionedPlans []models.ProvisionedPlanable
+		var requestBodyProvisionedPlan []models.ProvisionedPlanable
 		for _, i := range tfPlanUser.ProvisionedPlans.Elements() {
 			requestBodyProvisionedPlans := models.NewProvisionedPlan()
 			tfPlanProvisionedPlans := userProvisionedPlanModel{}
@@ -2170,7 +2170,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			// END Service | CreateStringAttribute
 
 		}
-		requestBodyUser.SetProvisionedPlans(requestBodyProvisionedPlans)
+		requestBodyUser.SetProvisionedPlans(requestBodyProvisionedPlan)
 	} else {
 		tfPlanUser.ProvisionedPlans = types.ListNull(tfPlanUser.ProvisionedPlans.ElementType(ctx))
 	}
@@ -2223,7 +2223,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START ServiceProvisioningErrors | CreateArrayObjectAttribute
 	if len(tfPlanUser.ServiceProvisioningErrors.Elements()) > 0 {
-		var requestBodyServiceProvisioningErrors []models.ServiceProvisioningErrorable
+		var requestBodyServiceProvisioningError []models.ServiceProvisioningErrorable
 		for _, i := range tfPlanUser.ServiceProvisioningErrors.Elements() {
 			requestBodyServiceProvisioningErrors := models.NewServiceProvisioningError()
 			tfPlanServiceProvisioningErrors := userServiceProvisioningErrorModel{}
@@ -2258,7 +2258,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			// END ServiceInstance | CreateStringAttribute
 
 		}
-		requestBodyUser.SetServiceProvisioningErrors(requestBodyServiceProvisioningErrors)
+		requestBodyUser.SetServiceProvisioningErrors(requestBodyServiceProvisioningError)
 	} else {
 		tfPlanUser.ServiceProvisioningErrors = types.ListNull(tfPlanUser.ServiceProvisioningErrors.ElementType(ctx))
 	}
