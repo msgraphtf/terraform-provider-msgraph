@@ -9,7 +9,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	}
 
 	// Generate API request body from Terraform plan
-	requestBody := models.New{{.BlockName.UpperCamel}}()
+	sdkRequestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
@@ -172,7 +172,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	// Create new {{.BlockName.LowerCamel}}
-	result, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Post(context.Background(), requestBody, nil)
+	result, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Post(context.Background(), sdkRequestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating {{.BlockName.Snake}}",

@@ -339,19 +339,19 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 
-	// Generate API request body from Plan
-	requestBody := models.NewTeam()
+	// Generate API request body from Terraform plan
+	sdkRequestBody := models.NewTeam()
 
 	if !tfPlan.Id.IsUnknown() {
 		tfPlanId := tfPlan.Id.ValueString()
-		requestBody.SetId(&tfPlanId)
+		sdkRequestBody.SetId(&tfPlanId)
 	} else {
 		tfPlan.Id = types.StringNull()
 	}
 
 	if !tfPlan.Classification.IsUnknown() {
 		tfPlanClassification := tfPlan.Classification.ValueString()
-		requestBody.SetClassification(&tfPlanClassification)
+		sdkRequestBody.SetClassification(&tfPlanClassification)
 	} else {
 		tfPlan.Classification = types.StringNull()
 	}
@@ -359,21 +359,21 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlan.CreatedDateTime.IsUnknown() {
 		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
-		requestBody.SetCreatedDateTime(&t)
+		sdkRequestBody.SetCreatedDateTime(&t)
 	} else {
 		tfPlan.CreatedDateTime = types.StringNull()
 	}
 
 	if !tfPlan.Description.IsUnknown() {
 		tfPlanDescription := tfPlan.Description.ValueString()
-		requestBody.SetDescription(&tfPlanDescription)
+		sdkRequestBody.SetDescription(&tfPlanDescription)
 	} else {
 		tfPlan.Description = types.StringNull()
 	}
 
 	if !tfPlan.DisplayName.IsUnknown() {
 		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
-		requestBody.SetDisplayName(&tfPlanDisplayName)
+		sdkRequestBody.SetDisplayName(&tfPlanDisplayName)
 	} else {
 		tfPlan.DisplayName = types.StringNull()
 	}
@@ -412,7 +412,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			funSettingsModel.GiphyContentRating = types.StringNull()
 		}
-		requestBody.SetFunSettings(funSettings)
+		sdkRequestBody.SetFunSettings(funSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, funSettingsModel.AttributeTypes(), funSettingsModel)
 		tfPlan.FunSettings = objectValue
 	} else {
@@ -437,7 +437,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			guestSettingsModel.AllowDeleteChannels = types.BoolNull()
 		}
-		requestBody.SetGuestSettings(guestSettings)
+		sdkRequestBody.SetGuestSettings(guestSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, guestSettingsModel.AttributeTypes(), guestSettingsModel)
 		tfPlan.GuestSettings = objectValue
 	} else {
@@ -446,14 +446,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.InternalId.IsUnknown() {
 		tfPlanInternalId := tfPlan.InternalId.ValueString()
-		requestBody.SetInternalId(&tfPlanInternalId)
+		sdkRequestBody.SetInternalId(&tfPlanInternalId)
 	} else {
 		tfPlan.InternalId = types.StringNull()
 	}
 
 	if !tfPlan.IsArchived.IsUnknown() {
 		tfPlanIsArchived := tfPlan.IsArchived.ValueBool()
-		requestBody.SetIsArchived(&tfPlanIsArchived)
+		sdkRequestBody.SetIsArchived(&tfPlanIsArchived)
 	} else {
 		tfPlan.IsArchived = types.BoolNull()
 	}
@@ -504,7 +504,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			memberSettingsModel.AllowDeleteChannels = types.BoolNull()
 		}
-		requestBody.SetMemberSettings(memberSettings)
+		sdkRequestBody.SetMemberSettings(memberSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, memberSettingsModel.AttributeTypes(), memberSettingsModel)
 		tfPlan.MemberSettings = objectValue
 	} else {
@@ -550,7 +550,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		} else {
 			messagingSettingsModel.AllowUserEditMessages = types.BoolNull()
 		}
-		requestBody.SetMessagingSettings(messagingSettings)
+		sdkRequestBody.SetMessagingSettings(messagingSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, messagingSettingsModel.AttributeTypes(), messagingSettingsModel)
 		tfPlan.MessagingSettings = objectValue
 	} else {
@@ -561,7 +561,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanSpecialization := tfPlan.Specialization.ValueString()
 		parsedSpecialization, _ := models.ParseTeamSpecialization(tfPlanSpecialization)
 		assertedSpecialization := parsedSpecialization.(models.TeamSpecialization)
-		requestBody.SetSpecialization(&assertedSpecialization)
+		sdkRequestBody.SetSpecialization(&assertedSpecialization)
 	} else {
 		tfPlan.Specialization = types.StringNull()
 	}
@@ -571,7 +571,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		summaryModel := teamTeamSummaryModel{}
 		tfPlan.Summary.As(ctx, &summaryModel, basetypes.ObjectAsOptions{})
 
-		requestBody.SetSummary(summary)
+		sdkRequestBody.SetSummary(summary)
 		objectValue, _ := types.ObjectValueFrom(ctx, summaryModel.AttributeTypes(), summaryModel)
 		tfPlan.Summary = objectValue
 	} else {
@@ -580,7 +580,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if !tfPlan.TenantId.IsUnknown() {
 		tfPlanTenantId := tfPlan.TenantId.ValueString()
-		requestBody.SetTenantId(&tfPlanTenantId)
+		sdkRequestBody.SetTenantId(&tfPlanTenantId)
 	} else {
 		tfPlan.TenantId = types.StringNull()
 	}
@@ -589,20 +589,20 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanVisibility := tfPlan.Visibility.ValueString()
 		parsedVisibility, _ := models.ParseTeamVisibilityType(tfPlanVisibility)
 		assertedVisibility := parsedVisibility.(models.TeamVisibilityType)
-		requestBody.SetVisibility(&assertedVisibility)
+		sdkRequestBody.SetVisibility(&assertedVisibility)
 	} else {
 		tfPlan.Visibility = types.StringNull()
 	}
 
 	if !tfPlan.WebUrl.IsUnknown() {
 		tfPlanWebUrl := tfPlan.WebUrl.ValueString()
-		requestBody.SetWebUrl(&tfPlanWebUrl)
+		sdkRequestBody.SetWebUrl(&tfPlanWebUrl)
 	} else {
 		tfPlan.WebUrl = types.StringNull()
 	}
 
 	// Create new team
-	result, err := r.client.Teams().Post(context.Background(), requestBody, nil)
+	result, err := r.client.Teams().Post(context.Background(), sdkRequestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating team",

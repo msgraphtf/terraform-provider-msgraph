@@ -337,12 +337,12 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
-	// Generate API request body from Plan
-	requestBody := models.NewDevice()
+	// Generate API request body from Terraform plan
+	sdkRequestBody := models.NewDevice()
 
 	if !tfPlan.Id.IsUnknown() {
 		tfPlanId := tfPlan.Id.ValueString()
-		requestBody.SetId(&tfPlanId)
+		sdkRequestBody.SetId(&tfPlanId)
 	} else {
 		tfPlan.Id = types.StringNull()
 	}
@@ -350,14 +350,14 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	if !tfPlan.DeletedDateTime.IsUnknown() {
 		tfPlanDeletedDateTime := tfPlan.DeletedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBody.SetDeletedDateTime(&t)
+		sdkRequestBody.SetDeletedDateTime(&t)
 	} else {
 		tfPlan.DeletedDateTime = types.StringNull()
 	}
 
 	if !tfPlan.AccountEnabled.IsUnknown() {
 		tfPlanAccountEnabled := tfPlan.AccountEnabled.ValueBool()
-		requestBody.SetAccountEnabled(&tfPlanAccountEnabled)
+		sdkRequestBody.SetAccountEnabled(&tfPlanAccountEnabled)
 	} else {
 		tfPlan.AccountEnabled = types.BoolNull()
 	}
@@ -383,7 +383,7 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 				alternativeSecurityIdsModel.Key = types.StringNull()
 			}
 		}
-		requestBody.SetAlternativeSecurityIds(tfPlanAlternativeSecurityIds)
+		sdkRequestBody.SetAlternativeSecurityIds(tfPlanAlternativeSecurityIds)
 	} else {
 		tfPlan.AlternativeSecurityIds = types.ListNull(tfPlan.AlternativeSecurityIds.ElementType(ctx))
 	}
@@ -391,7 +391,7 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	if !tfPlan.ApproximateLastSignInDateTime.IsUnknown() {
 		tfPlanApproximateLastSignInDateTime := tfPlan.ApproximateLastSignInDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanApproximateLastSignInDateTime)
-		requestBody.SetApproximateLastSignInDateTime(&t)
+		sdkRequestBody.SetApproximateLastSignInDateTime(&t)
 	} else {
 		tfPlan.ApproximateLastSignInDateTime = types.StringNull()
 	}
@@ -399,112 +399,112 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	if !tfPlan.ComplianceExpirationDateTime.IsUnknown() {
 		tfPlanComplianceExpirationDateTime := tfPlan.ComplianceExpirationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanComplianceExpirationDateTime)
-		requestBody.SetComplianceExpirationDateTime(&t)
+		sdkRequestBody.SetComplianceExpirationDateTime(&t)
 	} else {
 		tfPlan.ComplianceExpirationDateTime = types.StringNull()
 	}
 
 	if !tfPlan.DeviceCategory.IsUnknown() {
 		tfPlanDeviceCategory := tfPlan.DeviceCategory.ValueString()
-		requestBody.SetDeviceCategory(&tfPlanDeviceCategory)
+		sdkRequestBody.SetDeviceCategory(&tfPlanDeviceCategory)
 	} else {
 		tfPlan.DeviceCategory = types.StringNull()
 	}
 
 	if !tfPlan.DeviceId.IsUnknown() {
 		tfPlanDeviceId := tfPlan.DeviceId.ValueString()
-		requestBody.SetDeviceId(&tfPlanDeviceId)
+		sdkRequestBody.SetDeviceId(&tfPlanDeviceId)
 	} else {
 		tfPlan.DeviceId = types.StringNull()
 	}
 
 	if !tfPlan.DeviceMetadata.IsUnknown() {
 		tfPlanDeviceMetadata := tfPlan.DeviceMetadata.ValueString()
-		requestBody.SetDeviceMetadata(&tfPlanDeviceMetadata)
+		sdkRequestBody.SetDeviceMetadata(&tfPlanDeviceMetadata)
 	} else {
 		tfPlan.DeviceMetadata = types.StringNull()
 	}
 
 	if !tfPlan.DeviceOwnership.IsUnknown() {
 		tfPlanDeviceOwnership := tfPlan.DeviceOwnership.ValueString()
-		requestBody.SetDeviceOwnership(&tfPlanDeviceOwnership)
+		sdkRequestBody.SetDeviceOwnership(&tfPlanDeviceOwnership)
 	} else {
 		tfPlan.DeviceOwnership = types.StringNull()
 	}
 
 	if !tfPlan.DisplayName.IsUnknown() {
 		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
-		requestBody.SetDisplayName(&tfPlanDisplayName)
+		sdkRequestBody.SetDisplayName(&tfPlanDisplayName)
 	} else {
 		tfPlan.DisplayName = types.StringNull()
 	}
 
 	if !tfPlan.EnrollmentProfileName.IsUnknown() {
 		tfPlanEnrollmentProfileName := tfPlan.EnrollmentProfileName.ValueString()
-		requestBody.SetEnrollmentProfileName(&tfPlanEnrollmentProfileName)
+		sdkRequestBody.SetEnrollmentProfileName(&tfPlanEnrollmentProfileName)
 	} else {
 		tfPlan.EnrollmentProfileName = types.StringNull()
 	}
 
 	if !tfPlan.EnrollmentType.IsUnknown() {
 		tfPlanEnrollmentType := tfPlan.EnrollmentType.ValueString()
-		requestBody.SetEnrollmentType(&tfPlanEnrollmentType)
+		sdkRequestBody.SetEnrollmentType(&tfPlanEnrollmentType)
 	} else {
 		tfPlan.EnrollmentType = types.StringNull()
 	}
 
 	if !tfPlan.IsCompliant.IsUnknown() {
 		tfPlanIsCompliant := tfPlan.IsCompliant.ValueBool()
-		requestBody.SetIsCompliant(&tfPlanIsCompliant)
+		sdkRequestBody.SetIsCompliant(&tfPlanIsCompliant)
 	} else {
 		tfPlan.IsCompliant = types.BoolNull()
 	}
 
 	if !tfPlan.IsManaged.IsUnknown() {
 		tfPlanIsManaged := tfPlan.IsManaged.ValueBool()
-		requestBody.SetIsManaged(&tfPlanIsManaged)
+		sdkRequestBody.SetIsManaged(&tfPlanIsManaged)
 	} else {
 		tfPlan.IsManaged = types.BoolNull()
 	}
 
 	if !tfPlan.IsManagementRestricted.IsUnknown() {
 		tfPlanIsManagementRestricted := tfPlan.IsManagementRestricted.ValueBool()
-		requestBody.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
+		sdkRequestBody.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
 	} else {
 		tfPlan.IsManagementRestricted = types.BoolNull()
 	}
 
 	if !tfPlan.IsRooted.IsUnknown() {
 		tfPlanIsRooted := tfPlan.IsRooted.ValueBool()
-		requestBody.SetIsRooted(&tfPlanIsRooted)
+		sdkRequestBody.SetIsRooted(&tfPlanIsRooted)
 	} else {
 		tfPlan.IsRooted = types.BoolNull()
 	}
 
 	if !tfPlan.ManagementType.IsUnknown() {
 		tfPlanManagementType := tfPlan.ManagementType.ValueString()
-		requestBody.SetManagementType(&tfPlanManagementType)
+		sdkRequestBody.SetManagementType(&tfPlanManagementType)
 	} else {
 		tfPlan.ManagementType = types.StringNull()
 	}
 
 	if !tfPlan.Manufacturer.IsUnknown() {
 		tfPlanManufacturer := tfPlan.Manufacturer.ValueString()
-		requestBody.SetManufacturer(&tfPlanManufacturer)
+		sdkRequestBody.SetManufacturer(&tfPlanManufacturer)
 	} else {
 		tfPlan.Manufacturer = types.StringNull()
 	}
 
 	if !tfPlan.MdmAppId.IsUnknown() {
 		tfPlanMdmAppId := tfPlan.MdmAppId.ValueString()
-		requestBody.SetMdmAppId(&tfPlanMdmAppId)
+		sdkRequestBody.SetMdmAppId(&tfPlanMdmAppId)
 	} else {
 		tfPlan.MdmAppId = types.StringNull()
 	}
 
 	if !tfPlan.Model.IsUnknown() {
 		tfPlanModel := tfPlan.Model.ValueString()
-		requestBody.SetModel(&tfPlanModel)
+		sdkRequestBody.SetModel(&tfPlanModel)
 	} else {
 		tfPlan.Model = types.StringNull()
 	}
@@ -512,35 +512,35 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	if !tfPlan.OnPremisesLastSyncDateTime.IsUnknown() {
 		tfPlanOnPremisesLastSyncDateTime := tfPlan.OnPremisesLastSyncDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanOnPremisesLastSyncDateTime)
-		requestBody.SetOnPremisesLastSyncDateTime(&t)
+		sdkRequestBody.SetOnPremisesLastSyncDateTime(&t)
 	} else {
 		tfPlan.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesSecurityIdentifier.IsUnknown() {
 		tfPlanOnPremisesSecurityIdentifier := tfPlan.OnPremisesSecurityIdentifier.ValueString()
-		requestBody.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
+		sdkRequestBody.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
 	} else {
 		tfPlan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
 	if !tfPlan.OnPremisesSyncEnabled.IsUnknown() {
 		tfPlanOnPremisesSyncEnabled := tfPlan.OnPremisesSyncEnabled.ValueBool()
-		requestBody.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
+		sdkRequestBody.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
 	} else {
 		tfPlan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
 	if !tfPlan.OperatingSystem.IsUnknown() {
 		tfPlanOperatingSystem := tfPlan.OperatingSystem.ValueString()
-		requestBody.SetOperatingSystem(&tfPlanOperatingSystem)
+		sdkRequestBody.SetOperatingSystem(&tfPlanOperatingSystem)
 	} else {
 		tfPlan.OperatingSystem = types.StringNull()
 	}
 
 	if !tfPlan.OperatingSystemVersion.IsUnknown() {
 		tfPlanOperatingSystemVersion := tfPlan.OperatingSystemVersion.ValueString()
-		requestBody.SetOperatingSystemVersion(&tfPlanOperatingSystemVersion)
+		sdkRequestBody.SetOperatingSystemVersion(&tfPlanOperatingSystemVersion)
 	} else {
 		tfPlan.OperatingSystemVersion = types.StringNull()
 	}
@@ -550,14 +550,14 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		for _, i := range tfPlan.PhysicalIds.Elements() {
 			physicalIds = append(physicalIds, i.String())
 		}
-		requestBody.SetPhysicalIds(physicalIds)
+		sdkRequestBody.SetPhysicalIds(physicalIds)
 	} else {
 		tfPlan.PhysicalIds = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.ProfileType.IsUnknown() {
 		tfPlanProfileType := tfPlan.ProfileType.ValueString()
-		requestBody.SetProfileType(&tfPlanProfileType)
+		sdkRequestBody.SetProfileType(&tfPlanProfileType)
 	} else {
 		tfPlan.ProfileType = types.StringNull()
 	}
@@ -565,7 +565,7 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	if !tfPlan.RegistrationDateTime.IsUnknown() {
 		tfPlanRegistrationDateTime := tfPlan.RegistrationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanRegistrationDateTime)
-		requestBody.SetRegistrationDateTime(&t)
+		sdkRequestBody.SetRegistrationDateTime(&t)
 	} else {
 		tfPlan.RegistrationDateTime = types.StringNull()
 	}
@@ -575,20 +575,20 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		for _, i := range tfPlan.SystemLabels.Elements() {
 			systemLabels = append(systemLabels, i.String())
 		}
-		requestBody.SetSystemLabels(systemLabels)
+		sdkRequestBody.SetSystemLabels(systemLabels)
 	} else {
 		tfPlan.SystemLabels = types.ListNull(types.StringType)
 	}
 
 	if !tfPlan.TrustType.IsUnknown() {
 		tfPlanTrustType := tfPlan.TrustType.ValueString()
-		requestBody.SetTrustType(&tfPlanTrustType)
+		sdkRequestBody.SetTrustType(&tfPlanTrustType)
 	} else {
 		tfPlan.TrustType = types.StringNull()
 	}
 
 	// Create new device
-	result, err := r.client.Devices().Post(context.Background(), requestBody, nil)
+	result, err := r.client.Devices().Post(context.Background(), sdkRequestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating device",
