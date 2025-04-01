@@ -1223,6 +1223,8 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Generate API request body from Terraform plan
 	sdkModelApplication := models.NewApplication()
+
+	// WARN SHITS FUCKED!!!
 	// START Id | CreateStringAttribute
 	if !tfPlanApplication.Id.IsUnknown() {
 		tfPlanId := tfPlanApplication.Id.ValueString()
@@ -1244,7 +1246,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START AddIns | CreateArrayObjectAttribute
 	if len(tfPlanApplication.AddIns.Elements()) > 0 {
-		var tfPlanAddIns []models.AddInable
+		var sdkModelAddIns []models.AddInable
 		for _, i := range tfPlanApplication.AddIns.Elements() {
 			sdkModelAddIns := models.NewAddIn()
 			tfPlanAddIns := applicationAddInModel{}
@@ -1262,7 +1264,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 			// START Properties | CreateArrayObjectAttribute
 			if len(tfPlanAddIns.Properties.Elements()) > 0 {
-				var tfPlanProperties []models.KeyValueable
+				var sdkModelProperties []models.KeyValueable
 				for _, i := range tfPlanAddIns.Properties.Elements() {
 					sdkModelProperties := models.NewKeyValue()
 					tfPlanProperties := applicationKeyValueModel{}
@@ -1287,7 +1289,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 					// END Value | CreateStringAttribute
 
 				}
-				sdkModelAddIns.SetProperties(tfPlanProperties)
+				sdkModelAddIns.SetProperties(sdkModelProperties)
 			} else {
 				tfPlanAddIns.Properties = types.ListNull(tfPlanAddIns.Properties.ElementType(ctx))
 			}
@@ -1303,7 +1305,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END Type | CreateStringAttribute
 
 		}
-		sdkModelApplication.SetAddIns(tfPlanAddIns)
+		sdkModelApplication.SetAddIns(sdkModelAddIns)
 	} else {
 		tfPlanApplication.AddIns = types.ListNull(tfPlanApplication.AddIns.ElementType(ctx))
 	}
@@ -1340,7 +1342,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START Oauth2PermissionScopes | CreateArrayObjectAttribute
 		if len(tfPlanApi.Oauth2PermissionScopes.Elements()) > 0 {
-			var tfPlanOauth2PermissionScopes []models.PermissionScopeable
+			var sdkModelOauth2PermissionScopes []models.PermissionScopeable
 			for _, i := range tfPlanApi.Oauth2PermissionScopes.Elements() {
 				sdkModelOauth2PermissionScopes := models.NewPermissionScope()
 				tfPlanOauth2PermissionScopes := applicationPermissionScopeModel{}
@@ -1429,7 +1431,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Value | CreateStringAttribute
 
 			}
-			sdkModelApi.SetOauth2PermissionScopes(tfPlanOauth2PermissionScopes)
+			sdkModelApi.SetOauth2PermissionScopes(sdkModelOauth2PermissionScopes)
 		} else {
 			tfPlanApi.Oauth2PermissionScopes = types.ListNull(tfPlanApi.Oauth2PermissionScopes.ElementType(ctx))
 		}
@@ -1437,7 +1439,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START PreAuthorizedApplications | CreateArrayObjectAttribute
 		if len(tfPlanApi.PreAuthorizedApplications.Elements()) > 0 {
-			var tfPlanPreAuthorizedApplications []models.PreAuthorizedApplicationable
+			var sdkModelPreAuthorizedApplications []models.PreAuthorizedApplicationable
 			for _, i := range tfPlanApi.PreAuthorizedApplications.Elements() {
 				sdkModelPreAuthorizedApplications := models.NewPreAuthorizedApplication()
 				tfPlanPreAuthorizedApplications := applicationPreAuthorizedApplicationModel{}
@@ -1465,7 +1467,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END DelegatedPermissionIds | CreateArrayStringAttribute
 
 			}
-			sdkModelApi.SetPreAuthorizedApplications(tfPlanPreAuthorizedApplications)
+			sdkModelApi.SetPreAuthorizedApplications(sdkModelPreAuthorizedApplications)
 		} else {
 			tfPlanApi.PreAuthorizedApplications = types.ListNull(tfPlanApi.PreAuthorizedApplications.ElementType(ctx))
 		}
@@ -1492,7 +1494,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START AppRoles | CreateArrayObjectAttribute
 	if len(tfPlanApplication.AppRoles.Elements()) > 0 {
-		var tfPlanAppRoles []models.AppRoleable
+		var sdkModelAppRoles []models.AppRoleable
 		for _, i := range tfPlanApplication.AppRoles.Elements() {
 			sdkModelAppRoles := models.NewAppRole()
 			tfPlanAppRoles := applicationAppRoleModel{}
@@ -1566,7 +1568,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END Value | CreateStringAttribute
 
 		}
-		sdkModelApplication.SetAppRoles(tfPlanAppRoles)
+		sdkModelApplication.SetAppRoles(sdkModelAppRoles)
 	} else {
 		tfPlanApplication.AppRoles = types.ListNull(tfPlanApplication.AppRoles.ElementType(ctx))
 	}
@@ -1786,7 +1788,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START KeyCredentials | CreateArrayObjectAttribute
 	if len(tfPlanApplication.KeyCredentials.Elements()) > 0 {
-		var tfPlanKeyCredentials []models.KeyCredentialable
+		var sdkModelKeyCredentials []models.KeyCredentialable
 		for _, i := range tfPlanApplication.KeyCredentials.Elements() {
 			sdkModelKeyCredentials := models.NewKeyCredential()
 			tfPlanKeyCredentials := applicationKeyCredentialModel{}
@@ -1868,7 +1870,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END Usage | CreateStringAttribute
 
 		}
-		sdkModelApplication.SetKeyCredentials(tfPlanKeyCredentials)
+		sdkModelApplication.SetKeyCredentials(sdkModelKeyCredentials)
 	} else {
 		tfPlanApplication.KeyCredentials = types.ListNull(tfPlanApplication.KeyCredentials.ElementType(ctx))
 	}
@@ -1920,7 +1922,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START AccessToken | CreateArrayObjectAttribute
 		if len(tfPlanOptionalClaims.AccessToken.Elements()) > 0 {
-			var tfPlanAccessToken []models.OptionalClaimable
+			var sdkModelAccessToken []models.OptionalClaimable
 			for _, i := range tfPlanOptionalClaims.AccessToken.Elements() {
 				sdkModelAccessToken := models.NewOptionalClaim()
 				tfPlanAccessToken := applicationOptionalClaimModel{}
@@ -1966,7 +1968,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Source | CreateStringAttribute
 
 			}
-			sdkModelOptionalClaims.SetAccessToken(tfPlanAccessToken)
+			sdkModelOptionalClaims.SetAccessToken(sdkModelAccessToken)
 		} else {
 			tfPlanOptionalClaims.AccessToken = types.ListNull(tfPlanOptionalClaims.AccessToken.ElementType(ctx))
 		}
@@ -1974,7 +1976,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START IdToken | CreateArrayObjectAttribute
 		if len(tfPlanOptionalClaims.IdToken.Elements()) > 0 {
-			var tfPlanIdToken []models.OptionalClaimable
+			var sdkModelIdToken []models.OptionalClaimable
 			for _, i := range tfPlanOptionalClaims.IdToken.Elements() {
 				sdkModelIdToken := models.NewOptionalClaim()
 				tfPlanIdToken := applicationOptionalClaimModel{}
@@ -2020,7 +2022,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Source | CreateStringAttribute
 
 			}
-			sdkModelOptionalClaims.SetIdToken(tfPlanIdToken)
+			sdkModelOptionalClaims.SetIdToken(sdkModelIdToken)
 		} else {
 			tfPlanOptionalClaims.IdToken = types.ListNull(tfPlanOptionalClaims.IdToken.ElementType(ctx))
 		}
@@ -2028,7 +2030,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START Saml2Token | CreateArrayObjectAttribute
 		if len(tfPlanOptionalClaims.Saml2Token.Elements()) > 0 {
-			var tfPlanSaml2Token []models.OptionalClaimable
+			var sdkModelSaml2Token []models.OptionalClaimable
 			for _, i := range tfPlanOptionalClaims.Saml2Token.Elements() {
 				sdkModelSaml2Token := models.NewOptionalClaim()
 				tfPlanSaml2Token := applicationOptionalClaimModel{}
@@ -2074,7 +2076,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Source | CreateStringAttribute
 
 			}
-			sdkModelOptionalClaims.SetSaml2Token(tfPlanSaml2Token)
+			sdkModelOptionalClaims.SetSaml2Token(sdkModelSaml2Token)
 		} else {
 			tfPlanOptionalClaims.Saml2Token = types.ListNull(tfPlanOptionalClaims.Saml2Token.ElementType(ctx))
 		}
@@ -2123,7 +2125,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START PasswordCredentials | CreateArrayObjectAttribute
 	if len(tfPlanApplication.PasswordCredentials.Elements()) > 0 {
-		var tfPlanPasswordCredentials []models.PasswordCredentialable
+		var sdkModelPasswordCredentials []models.PasswordCredentialable
 		for _, i := range tfPlanApplication.PasswordCredentials.Elements() {
 			sdkModelPasswordCredentials := models.NewPasswordCredential()
 			tfPlanPasswordCredentials := applicationPasswordCredentialModel{}
@@ -2196,7 +2198,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END StartDateTime | CreateStringTimeAttribute
 
 		}
-		sdkModelApplication.SetPasswordCredentials(tfPlanPasswordCredentials)
+		sdkModelApplication.SetPasswordCredentials(sdkModelPasswordCredentials)
 	} else {
 		tfPlanApplication.PasswordCredentials = types.ListNull(tfPlanApplication.PasswordCredentials.ElementType(ctx))
 	}
@@ -2271,7 +2273,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START RequiredResourceAccess | CreateArrayObjectAttribute
 	if len(tfPlanApplication.RequiredResourceAccess.Elements()) > 0 {
-		var tfPlanRequiredResourceAccess []models.RequiredResourceAccessable
+		var sdkModelRequiredResourceAccess []models.RequiredResourceAccessable
 		for _, i := range tfPlanApplication.RequiredResourceAccess.Elements() {
 			sdkModelRequiredResourceAccess := models.NewRequiredResourceAccess()
 			tfPlanRequiredResourceAccess := applicationRequiredResourceAccessModel{}
@@ -2279,7 +2281,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 			// START ResourceAccess | CreateArrayObjectAttribute
 			if len(tfPlanRequiredResourceAccess.ResourceAccess.Elements()) > 0 {
-				var tfPlanResourceAccess []models.ResourceAccessable
+				var sdkModelResourceAccess []models.ResourceAccessable
 				for _, i := range tfPlanRequiredResourceAccess.ResourceAccess.Elements() {
 					sdkModelResourceAccess := models.NewResourceAccess()
 					tfPlanResourceAccess := applicationResourceAccessModel{}
@@ -2305,7 +2307,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 					// END Type | CreateStringAttribute
 
 				}
-				sdkModelRequiredResourceAccess.SetResourceAccess(tfPlanResourceAccess)
+				sdkModelRequiredResourceAccess.SetResourceAccess(sdkModelResourceAccess)
 			} else {
 				tfPlanRequiredResourceAccess.ResourceAccess = types.ListNull(tfPlanRequiredResourceAccess.ResourceAccess.ElementType(ctx))
 			}
@@ -2321,7 +2323,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END ResourceAppId | CreateStringAttribute
 
 		}
-		sdkModelApplication.SetRequiredResourceAccess(tfPlanRequiredResourceAccess)
+		sdkModelApplication.SetRequiredResourceAccess(sdkModelRequiredResourceAccess)
 	} else {
 		tfPlanApplication.RequiredResourceAccess = types.ListNull(tfPlanApplication.RequiredResourceAccess.ElementType(ctx))
 	}
@@ -2566,7 +2568,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START RedirectUriSettings | CreateArrayObjectAttribute
 		if len(tfPlanWeb.RedirectUriSettings.Elements()) > 0 {
-			var tfPlanRedirectUriSettings []models.RedirectUriSettingsable
+			var sdkModelRedirectUriSettings []models.RedirectUriSettingsable
 			for _, i := range tfPlanWeb.RedirectUriSettings.Elements() {
 				sdkModelRedirectUriSettings := models.NewRedirectUriSettings()
 				tfPlanRedirectUriSettings := applicationRedirectUriSettingsModel{}
@@ -2585,7 +2587,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Uri | CreateStringAttribute
 
 			}
-			sdkModelWeb.SetRedirectUriSettings(tfPlanRedirectUriSettings)
+			sdkModelWeb.SetRedirectUriSettings(sdkModelRedirectUriSettings)
 		} else {
 			tfPlanWeb.RedirectUriSettings = types.ListNull(tfPlanWeb.RedirectUriSettings.ElementType(ctx))
 		}

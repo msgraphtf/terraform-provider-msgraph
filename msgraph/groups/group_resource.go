@@ -468,6 +468,8 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// Generate API request body from Terraform plan
 	sdkModelGroup := models.NewGroup()
+
+	// WARN SHITS FUCKED!!!
 	// START Id | CreateStringAttribute
 	if !tfPlanGroup.Id.IsUnknown() {
 		tfPlanId := tfPlanGroup.Id.ValueString()
@@ -489,7 +491,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// START AssignedLabels | CreateArrayObjectAttribute
 	if len(tfPlanGroup.AssignedLabels.Elements()) > 0 {
-		var tfPlanAssignedLabels []models.AssignedLabelable
+		var sdkModelAssignedLabels []models.AssignedLabelable
 		for _, i := range tfPlanGroup.AssignedLabels.Elements() {
 			sdkModelAssignedLabels := models.NewAssignedLabel()
 			tfPlanAssignedLabels := groupAssignedLabelModel{}
@@ -514,7 +516,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			// END LabelId | CreateStringAttribute
 
 		}
-		sdkModelGroup.SetAssignedLabels(tfPlanAssignedLabels)
+		sdkModelGroup.SetAssignedLabels(sdkModelAssignedLabels)
 	} else {
 		tfPlanGroup.AssignedLabels = types.ListNull(tfPlanGroup.AssignedLabels.ElementType(ctx))
 	}
@@ -522,7 +524,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// START AssignedLicenses | CreateArrayObjectAttribute
 	if len(tfPlanGroup.AssignedLicenses.Elements()) > 0 {
-		var tfPlanAssignedLicenses []models.AssignedLicenseable
+		var sdkModelAssignedLicenses []models.AssignedLicenseable
 		for _, i := range tfPlanGroup.AssignedLicenses.Elements() {
 			sdkModelAssignedLicenses := models.NewAssignedLicense()
 			tfPlanAssignedLicenses := groupAssignedLicenseModel{}
@@ -553,7 +555,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			// END SkuId | CreateStringUuidAttribute
 
 		}
-		sdkModelGroup.SetAssignedLicenses(tfPlanAssignedLicenses)
+		sdkModelGroup.SetAssignedLicenses(sdkModelAssignedLicenses)
 	} else {
 		tfPlanGroup.AssignedLicenses = types.ListNull(tfPlanGroup.AssignedLicenses.ElementType(ctx))
 	}
@@ -733,7 +735,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// START OnPremisesProvisioningErrors | CreateArrayObjectAttribute
 	if len(tfPlanGroup.OnPremisesProvisioningErrors.Elements()) > 0 {
-		var tfPlanOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
+		var sdkModelOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for _, i := range tfPlanGroup.OnPremisesProvisioningErrors.Elements() {
 			sdkModelOnPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
 			tfPlanOnPremisesProvisioningErrors := groupOnPremisesProvisioningErrorModel{}
@@ -777,7 +779,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			// END Value | CreateStringAttribute
 
 		}
-		sdkModelGroup.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
+		sdkModelGroup.SetOnPremisesProvisioningErrors(sdkModelOnPremisesProvisioningErrors)
 	} else {
 		tfPlanGroup.OnPremisesProvisioningErrors = types.ListNull(tfPlanGroup.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
@@ -870,7 +872,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// START ServiceProvisioningErrors | CreateArrayObjectAttribute
 	if len(tfPlanGroup.ServiceProvisioningErrors.Elements()) > 0 {
-		var tfPlanServiceProvisioningErrors []models.ServiceProvisioningErrorable
+		var sdkModelServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for _, i := range tfPlanGroup.ServiceProvisioningErrors.Elements() {
 			sdkModelServiceProvisioningErrors := models.NewServiceProvisioningError()
 			tfPlanServiceProvisioningErrors := groupServiceProvisioningErrorModel{}
@@ -905,7 +907,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			// END ServiceInstance | CreateStringAttribute
 
 		}
-		sdkModelGroup.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
+		sdkModelGroup.SetServiceProvisioningErrors(sdkModelServiceProvisioningErrors)
 	} else {
 		tfPlanGroup.ServiceProvisioningErrors = types.ListNull(tfPlanGroup.ServiceProvisioningErrors.ElementType(ctx))
 	}

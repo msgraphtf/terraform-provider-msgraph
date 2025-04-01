@@ -341,6 +341,8 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Generate API request body from Terraform plan
 	sdkModelTeam := models.NewTeam()
+
+	// WARN SHITS FUCKED!!!
 	// START Id | CreateStringAttribute
 	if !tfPlanTeam.Id.IsUnknown() {
 		tfPlanId := tfPlanTeam.Id.ValueString()

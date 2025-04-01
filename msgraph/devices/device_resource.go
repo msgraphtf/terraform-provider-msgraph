@@ -339,6 +339,8 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	// Generate API request body from Terraform plan
 	sdkModelDevice := models.NewDevice()
+
+	// WARN SHITS FUCKED!!!
 	// START Id | CreateStringAttribute
 	if !tfPlanDevice.Id.IsUnknown() {
 		tfPlanId := tfPlanDevice.Id.ValueString()
@@ -369,7 +371,7 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	// START AlternativeSecurityIds | CreateArrayObjectAttribute
 	if len(tfPlanDevice.AlternativeSecurityIds.Elements()) > 0 {
-		var tfPlanAlternativeSecurityIds []models.AlternativeSecurityIdable
+		var sdkModelAlternativeSecurityIds []models.AlternativeSecurityIdable
 		for _, i := range tfPlanDevice.AlternativeSecurityIds.Elements() {
 			sdkModelAlternativeSecurityIds := models.NewAlternativeSecurityId()
 			tfPlanAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
@@ -397,7 +399,7 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 			// END Type | UNKNOWN
 
 		}
-		sdkModelDevice.SetAlternativeSecurityIds(tfPlanAlternativeSecurityIds)
+		sdkModelDevice.SetAlternativeSecurityIds(sdkModelAlternativeSecurityIds)
 	} else {
 		tfPlanDevice.AlternativeSecurityIds = types.ListNull(tfPlanDevice.AlternativeSecurityIds.ElementType(ctx))
 	}
