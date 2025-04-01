@@ -372,24 +372,24 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		var tfPlanAlternativeSecurityIds []models.AlternativeSecurityIdable
 		for _, i := range tfPlan.AlternativeSecurityIds.Elements() {
 			sdkModelAlternativeSecurityIds := models.NewAlternativeSecurityId()
-			tfModelAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfModelAlternativeSecurityIds)
+			tfPlanAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAlternativeSecurityIds)
 
 			// START IdentityProvider | CreateStringAttribute
-			if !tfModelAlternativeSecurityIds.IdentityProvider.IsUnknown() {
-				tfPlanIdentityProvider := tfModelAlternativeSecurityIds.IdentityProvider.ValueString()
+			if !tfPlanAlternativeSecurityIds.IdentityProvider.IsUnknown() {
+				tfPlanIdentityProvider := tfPlanAlternativeSecurityIds.IdentityProvider.ValueString()
 				sdkModelAlternativeSecurityIds.SetIdentityProvider(&tfPlanIdentityProvider)
 			} else {
-				tfModelAlternativeSecurityIds.IdentityProvider = types.StringNull()
+				tfPlanAlternativeSecurityIds.IdentityProvider = types.StringNull()
 			}
 			// END IdentityProvider | CreateStringAttribute
 
 			// START Key | CreateStringBase64UrlAttribute
-			if !tfModelAlternativeSecurityIds.Key.IsUnknown() {
-				tfPlanKey := tfModelAlternativeSecurityIds.Key.ValueString()
+			if !tfPlanAlternativeSecurityIds.Key.IsUnknown() {
+				tfPlanKey := tfPlanAlternativeSecurityIds.Key.ValueString()
 				sdkModelAlternativeSecurityIds.SetKey([]byte(tfPlanKey))
 			} else {
-				tfModelAlternativeSecurityIds.Key = types.StringNull()
+				tfPlanAlternativeSecurityIds.Key = types.StringNull()
 			}
 			// END Key | CreateStringBase64UrlAttribute
 

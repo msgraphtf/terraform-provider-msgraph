@@ -145,9 +145,9 @@ func (cra createRequestAttribute) Type() string {
 func (cra createRequestAttribute) PlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "." + cra.Name()
+		return cra.Parent.TfPlanVarName() + "." + cra.Name()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "." + cra.Name()
+		return cra.Parent.TfPlanVarName() + "." + cra.Name()
 	} else {
 		return "tfPlan." + cra.Name()
 	}
@@ -224,22 +224,22 @@ func (cra createRequestAttribute) ParentSdkModelVarName() string {
 
 }
 
-// Generates the variable name of the Terraform model
+// Generates the variable name of the Terraform plan
 // The variable contains the terraform plan data for the given object
-func (cra createRequestAttribute) TfModelVarName() string {
+func (cra createRequestAttribute) TfPlanVarName() string {
 
 	if cra.Type() == "CreateObjectAttribute" {
-		return "tfModel" + cra.Name()
+		return "tfPlan" + cra.Name()
 	} else if cra.Type() == "CreateArrayObjectAttribute" {
-		return "tfModel" + cra.Name()
+		return "tfPlan" + cra.Name()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return cra.Parent.TfModelVarName()
+		return cra.Parent.TfPlanVarName()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
-		return cra.Parent.TfModelVarName()
+		return cra.Parent.TfPlanVarName()
 	} else if cra.Property.ArrayOf == "object" {
-		return "tfModel" + upperFirst(cra.Property.ObjectOf.Title)
+		return "tfPlan" + upperFirst(cra.Property.ObjectOf.Title)
 	} else {
-		return "tfModel" + cra.CreateRequest.BlockName.UpperCamel()
+		return "tfPlan" + cra.CreateRequest.BlockName.UpperCamel()
 	}
 
 }
@@ -252,7 +252,7 @@ func (cra createRequestAttribute) TfModelName() string {
 func (cra createRequestAttribute) ParentPlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "." + cra.Name()
+		return cra.Parent.TfPlanVarName() + "." + cra.Name()
 	} else {
 		return "tfPlan." + cra.Name()
 	}
