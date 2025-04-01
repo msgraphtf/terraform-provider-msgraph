@@ -340,13 +340,11 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	// Generate API request body from Terraform plan
-	sdkModelTeam := models.NewTeam()
-
-	// WARN SHITS FUCKED!!!
+	requestBodyTeam := models.NewTeam()
 	// START Id | CreateStringAttribute
 	if !tfPlanTeam.Id.IsUnknown() {
 		tfPlanId := tfPlanTeam.Id.ValueString()
-		sdkModelTeam.SetId(&tfPlanId)
+		requestBodyTeam.SetId(&tfPlanId)
 	} else {
 		tfPlanTeam.Id = types.StringNull()
 	}
@@ -355,7 +353,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// START Classification | CreateStringAttribute
 	if !tfPlanTeam.Classification.IsUnknown() {
 		tfPlanClassification := tfPlanTeam.Classification.ValueString()
-		sdkModelTeam.SetClassification(&tfPlanClassification)
+		requestBodyTeam.SetClassification(&tfPlanClassification)
 	} else {
 		tfPlanTeam.Classification = types.StringNull()
 	}
@@ -365,7 +363,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !tfPlanTeam.CreatedDateTime.IsUnknown() {
 		tfPlanCreatedDateTime := tfPlanTeam.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
-		sdkModelTeam.SetCreatedDateTime(&t)
+		requestBodyTeam.SetCreatedDateTime(&t)
 	} else {
 		tfPlanTeam.CreatedDateTime = types.StringNull()
 	}
@@ -374,7 +372,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// START Description | CreateStringAttribute
 	if !tfPlanTeam.Description.IsUnknown() {
 		tfPlanDescription := tfPlanTeam.Description.ValueString()
-		sdkModelTeam.SetDescription(&tfPlanDescription)
+		requestBodyTeam.SetDescription(&tfPlanDescription)
 	} else {
 		tfPlanTeam.Description = types.StringNull()
 	}
@@ -383,7 +381,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// START DisplayName | CreateStringAttribute
 	if !tfPlanTeam.DisplayName.IsUnknown() {
 		tfPlanDisplayName := tfPlanTeam.DisplayName.ValueString()
-		sdkModelTeam.SetDisplayName(&tfPlanDisplayName)
+		requestBodyTeam.SetDisplayName(&tfPlanDisplayName)
 	} else {
 		tfPlanTeam.DisplayName = types.StringNull()
 	}
@@ -391,14 +389,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START FunSettings | CreateObjectAttribute
 	if !tfPlanTeam.FunSettings.IsUnknown() {
-		sdkModelFunSettings := models.NewTeamFunSettings()
+		requestBodyFunSettings := models.NewTeamFunSettings()
 		tfPlanFunSettings := teamTeamFunSettingsModel{}
 		tfPlanTeam.FunSettings.As(ctx, &tfPlanFunSettings, basetypes.ObjectAsOptions{})
 
 		// START AllowCustomMemes | CreateBoolAttribute
 		if !tfPlanFunSettings.AllowCustomMemes.IsUnknown() {
 			tfPlanAllowCustomMemes := tfPlanFunSettings.AllowCustomMemes.ValueBool()
-			sdkModelFunSettings.SetAllowCustomMemes(&tfPlanAllowCustomMemes)
+			requestBodyFunSettings.SetAllowCustomMemes(&tfPlanAllowCustomMemes)
 		} else {
 			tfPlanFunSettings.AllowCustomMemes = types.BoolNull()
 		}
@@ -407,7 +405,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowGiphy | CreateBoolAttribute
 		if !tfPlanFunSettings.AllowGiphy.IsUnknown() {
 			tfPlanAllowGiphy := tfPlanFunSettings.AllowGiphy.ValueBool()
-			sdkModelFunSettings.SetAllowGiphy(&tfPlanAllowGiphy)
+			requestBodyFunSettings.SetAllowGiphy(&tfPlanAllowGiphy)
 		} else {
 			tfPlanFunSettings.AllowGiphy = types.BoolNull()
 		}
@@ -416,7 +414,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowStickersAndMemes | CreateBoolAttribute
 		if !tfPlanFunSettings.AllowStickersAndMemes.IsUnknown() {
 			tfPlanAllowStickersAndMemes := tfPlanFunSettings.AllowStickersAndMemes.ValueBool()
-			sdkModelFunSettings.SetAllowStickersAndMemes(&tfPlanAllowStickersAndMemes)
+			requestBodyFunSettings.SetAllowStickersAndMemes(&tfPlanAllowStickersAndMemes)
 		} else {
 			tfPlanFunSettings.AllowStickersAndMemes = types.BoolNull()
 		}
@@ -427,14 +425,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 			tfPlanGiphyContentRating := tfPlanFunSettings.GiphyContentRating.ValueString()
 			parsedGiphyContentRating, _ := models.ParseGiphyRatingType(tfPlanGiphyContentRating)
 			assertedGiphyContentRating := parsedGiphyContentRating.(models.GiphyRatingType)
-			sdkModelFunSettings.SetGiphyContentRating(&assertedGiphyContentRating)
+			requestBodyFunSettings.SetGiphyContentRating(&assertedGiphyContentRating)
 		} else {
 			tfPlanFunSettings.GiphyContentRating = types.StringNull()
 		}
 		// END GiphyContentRating | CreateStringEnumAttribute
 
-		sdkModelTeam.SetFunSettings(sdkModelFunSettings)
-		tfPlanTeam.FunSettings, _ = types.ObjectValueFrom(ctx, tfPlanFunSettings.AttributeTypes(), sdkModelFunSettings)
+		requestBodyTeam.SetFunSettings(requestBodyFunSettings)
+		tfPlanTeam.FunSettings, _ = types.ObjectValueFrom(ctx, tfPlanFunSettings.AttributeTypes(), requestBodyFunSettings)
 	} else {
 		tfPlanTeam.FunSettings = types.ObjectNull(tfPlanTeam.FunSettings.AttributeTypes(ctx))
 	}
@@ -442,14 +440,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START GuestSettings | CreateObjectAttribute
 	if !tfPlanTeam.GuestSettings.IsUnknown() {
-		sdkModelGuestSettings := models.NewTeamGuestSettings()
+		requestBodyGuestSettings := models.NewTeamGuestSettings()
 		tfPlanGuestSettings := teamTeamGuestSettingsModel{}
 		tfPlanTeam.GuestSettings.As(ctx, &tfPlanGuestSettings, basetypes.ObjectAsOptions{})
 
 		// START AllowCreateUpdateChannels | CreateBoolAttribute
 		if !tfPlanGuestSettings.AllowCreateUpdateChannels.IsUnknown() {
 			tfPlanAllowCreateUpdateChannels := tfPlanGuestSettings.AllowCreateUpdateChannels.ValueBool()
-			sdkModelGuestSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
+			requestBodyGuestSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		} else {
 			tfPlanGuestSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
@@ -458,14 +456,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowDeleteChannels | CreateBoolAttribute
 		if !tfPlanGuestSettings.AllowDeleteChannels.IsUnknown() {
 			tfPlanAllowDeleteChannels := tfPlanGuestSettings.AllowDeleteChannels.ValueBool()
-			sdkModelGuestSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
+			requestBodyGuestSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		} else {
 			tfPlanGuestSettings.AllowDeleteChannels = types.BoolNull()
 		}
 		// END AllowDeleteChannels | CreateBoolAttribute
 
-		sdkModelTeam.SetGuestSettings(sdkModelGuestSettings)
-		tfPlanTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanGuestSettings.AttributeTypes(), sdkModelGuestSettings)
+		requestBodyTeam.SetGuestSettings(requestBodyGuestSettings)
+		tfPlanTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanGuestSettings.AttributeTypes(), requestBodyGuestSettings)
 	} else {
 		tfPlanTeam.GuestSettings = types.ObjectNull(tfPlanTeam.GuestSettings.AttributeTypes(ctx))
 	}
@@ -474,7 +472,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// START InternalId | CreateStringAttribute
 	if !tfPlanTeam.InternalId.IsUnknown() {
 		tfPlanInternalId := tfPlanTeam.InternalId.ValueString()
-		sdkModelTeam.SetInternalId(&tfPlanInternalId)
+		requestBodyTeam.SetInternalId(&tfPlanInternalId)
 	} else {
 		tfPlanTeam.InternalId = types.StringNull()
 	}
@@ -483,7 +481,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// START IsArchived | CreateBoolAttribute
 	if !tfPlanTeam.IsArchived.IsUnknown() {
 		tfPlanIsArchived := tfPlanTeam.IsArchived.ValueBool()
-		sdkModelTeam.SetIsArchived(&tfPlanIsArchived)
+		requestBodyTeam.SetIsArchived(&tfPlanIsArchived)
 	} else {
 		tfPlanTeam.IsArchived = types.BoolNull()
 	}
@@ -491,14 +489,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START MemberSettings | CreateObjectAttribute
 	if !tfPlanTeam.MemberSettings.IsUnknown() {
-		sdkModelMemberSettings := models.NewTeamMemberSettings()
+		requestBodyMemberSettings := models.NewTeamMemberSettings()
 		tfPlanMemberSettings := teamTeamMemberSettingsModel{}
 		tfPlanTeam.MemberSettings.As(ctx, &tfPlanMemberSettings, basetypes.ObjectAsOptions{})
 
 		// START AllowAddRemoveApps | CreateBoolAttribute
 		if !tfPlanMemberSettings.AllowAddRemoveApps.IsUnknown() {
 			tfPlanAllowAddRemoveApps := tfPlanMemberSettings.AllowAddRemoveApps.ValueBool()
-			sdkModelMemberSettings.SetAllowAddRemoveApps(&tfPlanAllowAddRemoveApps)
+			requestBodyMemberSettings.SetAllowAddRemoveApps(&tfPlanAllowAddRemoveApps)
 		} else {
 			tfPlanMemberSettings.AllowAddRemoveApps = types.BoolNull()
 		}
@@ -507,7 +505,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowCreatePrivateChannels | CreateBoolAttribute
 		if !tfPlanMemberSettings.AllowCreatePrivateChannels.IsUnknown() {
 			tfPlanAllowCreatePrivateChannels := tfPlanMemberSettings.AllowCreatePrivateChannels.ValueBool()
-			sdkModelMemberSettings.SetAllowCreatePrivateChannels(&tfPlanAllowCreatePrivateChannels)
+			requestBodyMemberSettings.SetAllowCreatePrivateChannels(&tfPlanAllowCreatePrivateChannels)
 		} else {
 			tfPlanMemberSettings.AllowCreatePrivateChannels = types.BoolNull()
 		}
@@ -516,7 +514,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowCreateUpdateChannels | CreateBoolAttribute
 		if !tfPlanMemberSettings.AllowCreateUpdateChannels.IsUnknown() {
 			tfPlanAllowCreateUpdateChannels := tfPlanMemberSettings.AllowCreateUpdateChannels.ValueBool()
-			sdkModelMemberSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
+			requestBodyMemberSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		} else {
 			tfPlanMemberSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
@@ -525,7 +523,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowCreateUpdateRemoveConnectors | CreateBoolAttribute
 		if !tfPlanMemberSettings.AllowCreateUpdateRemoveConnectors.IsUnknown() {
 			tfPlanAllowCreateUpdateRemoveConnectors := tfPlanMemberSettings.AllowCreateUpdateRemoveConnectors.ValueBool()
-			sdkModelMemberSettings.SetAllowCreateUpdateRemoveConnectors(&tfPlanAllowCreateUpdateRemoveConnectors)
+			requestBodyMemberSettings.SetAllowCreateUpdateRemoveConnectors(&tfPlanAllowCreateUpdateRemoveConnectors)
 		} else {
 			tfPlanMemberSettings.AllowCreateUpdateRemoveConnectors = types.BoolNull()
 		}
@@ -534,7 +532,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowCreateUpdateRemoveTabs | CreateBoolAttribute
 		if !tfPlanMemberSettings.AllowCreateUpdateRemoveTabs.IsUnknown() {
 			tfPlanAllowCreateUpdateRemoveTabs := tfPlanMemberSettings.AllowCreateUpdateRemoveTabs.ValueBool()
-			sdkModelMemberSettings.SetAllowCreateUpdateRemoveTabs(&tfPlanAllowCreateUpdateRemoveTabs)
+			requestBodyMemberSettings.SetAllowCreateUpdateRemoveTabs(&tfPlanAllowCreateUpdateRemoveTabs)
 		} else {
 			tfPlanMemberSettings.AllowCreateUpdateRemoveTabs = types.BoolNull()
 		}
@@ -543,14 +541,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowDeleteChannels | CreateBoolAttribute
 		if !tfPlanMemberSettings.AllowDeleteChannels.IsUnknown() {
 			tfPlanAllowDeleteChannels := tfPlanMemberSettings.AllowDeleteChannels.ValueBool()
-			sdkModelMemberSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
+			requestBodyMemberSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		} else {
 			tfPlanMemberSettings.AllowDeleteChannels = types.BoolNull()
 		}
 		// END AllowDeleteChannels | CreateBoolAttribute
 
-		sdkModelTeam.SetMemberSettings(sdkModelMemberSettings)
-		tfPlanTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, tfPlanMemberSettings.AttributeTypes(), sdkModelMemberSettings)
+		requestBodyTeam.SetMemberSettings(requestBodyMemberSettings)
+		tfPlanTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, tfPlanMemberSettings.AttributeTypes(), requestBodyMemberSettings)
 	} else {
 		tfPlanTeam.MemberSettings = types.ObjectNull(tfPlanTeam.MemberSettings.AttributeTypes(ctx))
 	}
@@ -558,14 +556,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START MessagingSettings | CreateObjectAttribute
 	if !tfPlanTeam.MessagingSettings.IsUnknown() {
-		sdkModelMessagingSettings := models.NewTeamMessagingSettings()
+		requestBodyMessagingSettings := models.NewTeamMessagingSettings()
 		tfPlanMessagingSettings := teamTeamMessagingSettingsModel{}
 		tfPlanTeam.MessagingSettings.As(ctx, &tfPlanMessagingSettings, basetypes.ObjectAsOptions{})
 
 		// START AllowChannelMentions | CreateBoolAttribute
 		if !tfPlanMessagingSettings.AllowChannelMentions.IsUnknown() {
 			tfPlanAllowChannelMentions := tfPlanMessagingSettings.AllowChannelMentions.ValueBool()
-			sdkModelMessagingSettings.SetAllowChannelMentions(&tfPlanAllowChannelMentions)
+			requestBodyMessagingSettings.SetAllowChannelMentions(&tfPlanAllowChannelMentions)
 		} else {
 			tfPlanMessagingSettings.AllowChannelMentions = types.BoolNull()
 		}
@@ -574,7 +572,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowOwnerDeleteMessages | CreateBoolAttribute
 		if !tfPlanMessagingSettings.AllowOwnerDeleteMessages.IsUnknown() {
 			tfPlanAllowOwnerDeleteMessages := tfPlanMessagingSettings.AllowOwnerDeleteMessages.ValueBool()
-			sdkModelMessagingSettings.SetAllowOwnerDeleteMessages(&tfPlanAllowOwnerDeleteMessages)
+			requestBodyMessagingSettings.SetAllowOwnerDeleteMessages(&tfPlanAllowOwnerDeleteMessages)
 		} else {
 			tfPlanMessagingSettings.AllowOwnerDeleteMessages = types.BoolNull()
 		}
@@ -583,7 +581,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowTeamMentions | CreateBoolAttribute
 		if !tfPlanMessagingSettings.AllowTeamMentions.IsUnknown() {
 			tfPlanAllowTeamMentions := tfPlanMessagingSettings.AllowTeamMentions.ValueBool()
-			sdkModelMessagingSettings.SetAllowTeamMentions(&tfPlanAllowTeamMentions)
+			requestBodyMessagingSettings.SetAllowTeamMentions(&tfPlanAllowTeamMentions)
 		} else {
 			tfPlanMessagingSettings.AllowTeamMentions = types.BoolNull()
 		}
@@ -592,7 +590,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowUserDeleteMessages | CreateBoolAttribute
 		if !tfPlanMessagingSettings.AllowUserDeleteMessages.IsUnknown() {
 			tfPlanAllowUserDeleteMessages := tfPlanMessagingSettings.AllowUserDeleteMessages.ValueBool()
-			sdkModelMessagingSettings.SetAllowUserDeleteMessages(&tfPlanAllowUserDeleteMessages)
+			requestBodyMessagingSettings.SetAllowUserDeleteMessages(&tfPlanAllowUserDeleteMessages)
 		} else {
 			tfPlanMessagingSettings.AllowUserDeleteMessages = types.BoolNull()
 		}
@@ -601,14 +599,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START AllowUserEditMessages | CreateBoolAttribute
 		if !tfPlanMessagingSettings.AllowUserEditMessages.IsUnknown() {
 			tfPlanAllowUserEditMessages := tfPlanMessagingSettings.AllowUserEditMessages.ValueBool()
-			sdkModelMessagingSettings.SetAllowUserEditMessages(&tfPlanAllowUserEditMessages)
+			requestBodyMessagingSettings.SetAllowUserEditMessages(&tfPlanAllowUserEditMessages)
 		} else {
 			tfPlanMessagingSettings.AllowUserEditMessages = types.BoolNull()
 		}
 		// END AllowUserEditMessages | CreateBoolAttribute
 
-		sdkModelTeam.SetMessagingSettings(sdkModelMessagingSettings)
-		tfPlanTeam.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfPlanMessagingSettings.AttributeTypes(), sdkModelMessagingSettings)
+		requestBodyTeam.SetMessagingSettings(requestBodyMessagingSettings)
+		tfPlanTeam.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfPlanMessagingSettings.AttributeTypes(), requestBodyMessagingSettings)
 	} else {
 		tfPlanTeam.MessagingSettings = types.ObjectNull(tfPlanTeam.MessagingSettings.AttributeTypes(ctx))
 	}
@@ -619,7 +617,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanSpecialization := tfPlanTeam.Specialization.ValueString()
 		parsedSpecialization, _ := models.ParseTeamSpecialization(tfPlanSpecialization)
 		assertedSpecialization := parsedSpecialization.(models.TeamSpecialization)
-		sdkModelTeam.SetSpecialization(&assertedSpecialization)
+		requestBodyTeam.SetSpecialization(&assertedSpecialization)
 	} else {
 		tfPlanTeam.Specialization = types.StringNull()
 	}
@@ -627,7 +625,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// START Summary | CreateObjectAttribute
 	if !tfPlanTeam.Summary.IsUnknown() {
-		sdkModelSummary := models.NewTeamSummary()
+		requestBodySummary := models.NewTeamSummary()
 		tfPlanSummary := teamTeamSummaryModel{}
 		tfPlanTeam.Summary.As(ctx, &tfPlanSummary, basetypes.ObjectAsOptions{})
 
@@ -640,8 +638,8 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// START OwnersCount | UNKNOWN
 		// END OwnersCount | UNKNOWN
 
-		sdkModelTeam.SetSummary(sdkModelSummary)
-		tfPlanTeam.Summary, _ = types.ObjectValueFrom(ctx, tfPlanSummary.AttributeTypes(), sdkModelSummary)
+		requestBodyTeam.SetSummary(requestBodySummary)
+		tfPlanTeam.Summary, _ = types.ObjectValueFrom(ctx, tfPlanSummary.AttributeTypes(), requestBodySummary)
 	} else {
 		tfPlanTeam.Summary = types.ObjectNull(tfPlanTeam.Summary.AttributeTypes(ctx))
 	}
@@ -650,7 +648,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// START TenantId | CreateStringAttribute
 	if !tfPlanTeam.TenantId.IsUnknown() {
 		tfPlanTenantId := tfPlanTeam.TenantId.ValueString()
-		sdkModelTeam.SetTenantId(&tfPlanTenantId)
+		requestBodyTeam.SetTenantId(&tfPlanTenantId)
 	} else {
 		tfPlanTeam.TenantId = types.StringNull()
 	}
@@ -661,7 +659,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanVisibility := tfPlanTeam.Visibility.ValueString()
 		parsedVisibility, _ := models.ParseTeamVisibilityType(tfPlanVisibility)
 		assertedVisibility := parsedVisibility.(models.TeamVisibilityType)
-		sdkModelTeam.SetVisibility(&assertedVisibility)
+		requestBodyTeam.SetVisibility(&assertedVisibility)
 	} else {
 		tfPlanTeam.Visibility = types.StringNull()
 	}
@@ -670,14 +668,14 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// START WebUrl | CreateStringAttribute
 	if !tfPlanTeam.WebUrl.IsUnknown() {
 		tfPlanWebUrl := tfPlanTeam.WebUrl.ValueString()
-		sdkModelTeam.SetWebUrl(&tfPlanWebUrl)
+		requestBodyTeam.SetWebUrl(&tfPlanWebUrl)
 	} else {
 		tfPlanTeam.WebUrl = types.StringNull()
 	}
 	// END WebUrl | CreateStringAttribute
 
 	// Create new team
-	result, err := r.client.Teams().Post(context.Background(), sdkModelTeam, nil)
+	result, err := r.client.Teams().Post(context.Background(), requestBodyTeam, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating team",

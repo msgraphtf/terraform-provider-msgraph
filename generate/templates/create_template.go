@@ -9,12 +9,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	}
 
 	// Generate API request body from Terraform plan
-	sdkModel{{.BlockName.UpperCamel}} := models.New{{.BlockName.UpperCamel}}()
+	requestBody{{.BlockName.UpperCamel}} := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
-	sdkModel{{.ParentName}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
+	requestBody{{.ParentName}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -25,7 +25,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	parsed{{.Name}}, _ := models.Parse{{.ObjectOf}}(tfPlan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.ObjectOf}})
-	sdkModel{{.ParentName}}.Set{{.Name}}(&asserted{{.Name}})
+	requestBody{{.ParentName}}.Set{{.Name}}(&asserted{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -35,7 +35,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
-	sdkModel{{.ParentName}}.Set{{.Name}}(&t)
+	requestBody{{.ParentName}}.Set{{.Name}}(&t)
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -45,7 +45,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	u, _ := uuid.Parse(tfPlan{{.Name}})
-	sdkModel{{.ParentName}}.Set{{.Name}}(&u)
+	requestBody{{.ParentName}}.Set{{.Name}}(&u)
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -54,7 +54,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateStringBase64UrlAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
-	sdkModel{{.ParentName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
+	requestBody{{.ParentName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -63,7 +63,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateInt64Attribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueInt64()
-	sdkModel{{.ParentName}}.Set{{.Name}}(&tfPlan{{.Name}})
+	requestBody{{.ParentName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.Int64Null()
 	}
@@ -72,7 +72,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateBoolAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueBool()
-	sdkModel{{.ParentName}}.Set{{.Name}}(&tfPlan{{.Name}})
+	requestBody{{.ParentName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.BoolNull()
 	}
@@ -84,7 +84,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			stringArray{{.Name}} = append(stringArray{{.Name}}, i.String())
 		}
-		sdkModel{{.ParentName}}.Set{{.Name}}(stringArray{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(stringArray{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(types.StringType)
 	}
@@ -97,7 +97,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 			u, _ := uuid.Parse(i.String())
 			uuidArray{{.Name}} = append(uuidArray{{.Name}}, u)
 		}
-		sdkModel{{.ParentName}}.Set{{.Name}}(uuidArray{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(uuidArray{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(types.StringType)
 	}
@@ -105,14 +105,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	if len(tfPlan{{.ParentName}}.{{.Name}}.Elements()) > 0 {
-		var sdkModel{{.Name}} []models.{{.ObjectOf}}able
+		var requestBody{{.Name}} []models.{{.ObjectOf}}able
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
-			sdkModel{{.Name}} := models.New{{.ObjectOf}}()
+			requestBody{{.Name}} := models.New{{.ObjectOf}}()
 			tfPlan{{.Name}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.Name}})
 			{{template "generate_create" .NestedCreate}}
 		}
-		sdkModel{{.ParentName}}.Set{{.Name}}(sdkModel{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(tfPlan{{.ParentName}}.{{.Name}}.ElementType(ctx))
 	}
@@ -120,12 +120,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateObjectAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
-		sdkModel{{.Name}} := models.New{{.ObjectOf}}()
+		requestBody{{.Name}} := models.New{{.ObjectOf}}()
 		tfPlan{{.Name}} := {{.TfModelName}}Model{}
 		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.Name}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
-		sdkModel{{.ParentName}}.Set{{.Name}}(sdkModel{{.Name}})
-		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.Name}}.AttributeTypes(), sdkModel{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.Name}})
+		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.Name}}.AttributeTypes(), requestBody{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ObjectNull(tfPlan{{.ParentName}}.{{.Name}}.AttributeTypes(ctx))
 	}
@@ -164,7 +164,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- end}}
 
 	// Create new {{.BlockName.LowerCamel}}
-	result, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Post(context.Background(), sdkModel{{.BlockName.UpperCamel}}, nil)
+	result, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Post(context.Background(), requestBody{{.BlockName.UpperCamel}}, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating {{.BlockName.Snake}}",
