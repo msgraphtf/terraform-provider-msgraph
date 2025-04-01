@@ -14,7 +14,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateStringAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
-	{{.SdkModelVarName}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
+	sdkModel{{.SdkModelVarName}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -25,7 +25,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	parsed{{.Name}}, _ := models.Parse{{.SdkModelName}}(tfPlan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.SdkModelName}})
-	{{.SdkModelVarName}}.Set{{.Name}}(&asserted{{.Name}})
+	sdkModel{{.SdkModelVarName}}.Set{{.Name}}(&asserted{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -35,7 +35,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
-	{{.SdkModelVarName}}.Set{{.Name}}(&t)
+	sdkModel{{.SdkModelVarName}}.Set{{.Name}}(&t)
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -45,7 +45,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	u, _ := uuid.Parse(tfPlan{{.Name}})
-	{{.SdkModelVarName}}.Set{{.Name}}(&u)
+	sdkModel{{.SdkModelVarName}}.Set{{.Name}}(&u)
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -54,7 +54,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateStringBase64UrlAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
-	{{.SdkModelVarName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
+	sdkModel{{.SdkModelVarName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.StringNull()
 	}
@@ -63,7 +63,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateInt64Attribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueInt64()
-	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
+	sdkModel{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.Int64Null()
 	}
@@ -72,7 +72,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- define "CreateBoolAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueBool()
-	{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
+	sdkModel{{.SdkModelVarName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.BoolNull()
 	}
@@ -84,7 +84,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			stringArray{{.Name}} = append(stringArray{{.Name}}, i.String())
 		}
-		{{.SdkModelVarName}}.Set{{.Name}}(stringArray{{.Name}})
+		sdkModel{{.SdkModelVarName}}.Set{{.Name}}(stringArray{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(types.StringType)
 	}
@@ -97,7 +97,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 			u, _ := uuid.Parse(i.String())
 			uuidArray{{.Name}} = append(uuidArray{{.Name}}, u)
 		}
-		{{.SdkModelVarName}}.Set{{.Name}}(uuidArray{{.Name}})
+		sdkModel{{.SdkModelVarName}}.Set{{.Name}}(uuidArray{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(types.StringType)
 	}
@@ -112,7 +112,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.Name}})
 			{{template "generate_create" .NestedCreate}}
 		}
-		{{.ParentSdkModelVarName}}.Set{{.Name}}(tfPlan{{.Name}})
+		sdkModel{{.ParentSdkModelVarName}}.Set{{.Name}}(tfPlan{{.Name}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ListNull(tfPlan{{.ParentName}}.{{.Name}}.ElementType(ctx))
 	}
@@ -124,8 +124,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		tfPlan{{.Name}} := {{.TfModelName}}Model{}
 		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.Name}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
-		{{.ParentSdkModelVarName}}.Set{{.Name}}({{.SdkModelVarName}})
-		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.Name}}.AttributeTypes(), {{.SdkModelVarName}})
+		sdkModel{{.ParentSdkModelVarName}}.Set{{.Name}}(sdkModel{{.SdkModelVarName}})
+		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.Name}}.AttributeTypes(), sdkModel{{.SdkModelVarName}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ObjectNull(tfPlan{{.ParentName}}.{{.Name}}.AttributeTypes(ctx))
 	}

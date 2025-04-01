@@ -193,17 +193,17 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 func (cra createRequestAttribute) SdkModelVarName() string {
 
 	if cra.Type() == "CreateObjectAttribute" {
-		return "sdkModel" + cra.Name()
+		return cra.Name()
 	} else if cra.Type() == "CreateArrayObjectAttribute" {
-		return "sdkModel" + cra.Name()
+		return cra.Name()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.SdkModelVarName()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
 		return cra.Parent.SdkModelVarName()
 	} else if cra.Property.ArrayOf == "object" {
-		return "sdkModel" + upperFirst(cra.Property.ObjectOf.Title)
+		return upperFirst(cra.Property.ObjectOf.Title)
 	} else {
-		return "sdkModel" + cra.CreateRequest.BlockName.UpperCamel()
+		return cra.CreateRequest.BlockName.UpperCamel()
 	}
 
 }
@@ -222,7 +222,7 @@ func (cra createRequestAttribute) ParentSdkModelVarName() string {
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
 		return cra.Parent.SdkModelVarName()
 	} else {
-		return "sdkModel" + cra.CreateRequest.BlockName.UpperCamel()
+		return cra.CreateRequest.BlockName.UpperCamel()
 	}
 
 }
