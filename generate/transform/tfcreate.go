@@ -229,9 +229,9 @@ func (cra createRequestAttribute) ParentSdkModelVarName() string {
 func (cra createRequestAttribute) TfModelVarName() string {
 
 	if cra.Type() == "CreateObjectAttribute" {
-		return "tfModel" + upperFirst(cra.Property.Name)
+		return "tfModel" + cra.Name()
 	} else if cra.Type() == "CreateArrayObjectAttribute" {
-		return "tfModel" + upperFirst(cra.Property.Name)
+		return "tfModel" + cra.Name()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateObjectAttribute" {
 		return cra.Parent.TfModelVarName()
 	} else if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
