@@ -489,9 +489,9 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// START AssignedLabels | CreateArrayObjectAttribute
 	if len(tfPlanGroup.AssignedLabels.Elements()) > 0 {
-		var requestBodyAssignedLabel []models.AssignedLabelable
+		var requestBodyAssignedLabels []models.AssignedLabelable
 		for _, i := range tfPlanGroup.AssignedLabels.Elements() {
-			requestBodyAssignedLabels := models.NewAssignedLabel()
+			requestBodyAssignedLabel := models.NewAssignedLabel()
 			tfPlanAssignedLabels := groupAssignedLabelModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLabels)
 
@@ -514,7 +514,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			// END LabelId | CreateStringAttribute
 
 		}
-		requestBodyGroup.SetAssignedLabels(requestBodyAssignedLabel)
+		requestBodyGroup.SetAssignedLabels(requestBodyAssignedLabels)
 	} else {
 		tfPlanGroup.AssignedLabels = types.ListNull(tfPlanGroup.AssignedLabels.ElementType(ctx))
 	}
@@ -522,9 +522,9 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// START AssignedLicenses | CreateArrayObjectAttribute
 	if len(tfPlanGroup.AssignedLicenses.Elements()) > 0 {
-		var requestBodyAssignedLicense []models.AssignedLicenseable
+		var requestBodyAssignedLicenses []models.AssignedLicenseable
 		for _, i := range tfPlanGroup.AssignedLicenses.Elements() {
-			requestBodyAssignedLicenses := models.NewAssignedLicense()
+			requestBodyAssignedLicense := models.NewAssignedLicense()
 			tfPlanAssignedLicenses := groupAssignedLicenseModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLicenses)
 
@@ -553,7 +553,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			// END SkuId | CreateStringUuidAttribute
 
 		}
-		requestBodyGroup.SetAssignedLicenses(requestBodyAssignedLicense)
+		requestBodyGroup.SetAssignedLicenses(requestBodyAssignedLicenses)
 	} else {
 		tfPlanGroup.AssignedLicenses = types.ListNull(tfPlanGroup.AssignedLicenses.ElementType(ctx))
 	}
@@ -733,9 +733,9 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// START OnPremisesProvisioningErrors | CreateArrayObjectAttribute
 	if len(tfPlanGroup.OnPremisesProvisioningErrors.Elements()) > 0 {
-		var requestBodyOnPremisesProvisioningError []models.OnPremisesProvisioningErrorable
+		var requestBodyOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for _, i := range tfPlanGroup.OnPremisesProvisioningErrors.Elements() {
-			requestBodyOnPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
+			requestBodyOnPremisesProvisioningError := models.NewOnPremisesProvisioningError()
 			tfPlanOnPremisesProvisioningErrors := groupOnPremisesProvisioningErrorModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanOnPremisesProvisioningErrors)
 
@@ -777,7 +777,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			// END Value | CreateStringAttribute
 
 		}
-		requestBodyGroup.SetOnPremisesProvisioningErrors(requestBodyOnPremisesProvisioningError)
+		requestBodyGroup.SetOnPremisesProvisioningErrors(requestBodyOnPremisesProvisioningErrors)
 	} else {
 		tfPlanGroup.OnPremisesProvisioningErrors = types.ListNull(tfPlanGroup.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
@@ -870,9 +870,9 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// START ServiceProvisioningErrors | CreateArrayObjectAttribute
 	if len(tfPlanGroup.ServiceProvisioningErrors.Elements()) > 0 {
-		var requestBodyServiceProvisioningError []models.ServiceProvisioningErrorable
+		var requestBodyServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for _, i := range tfPlanGroup.ServiceProvisioningErrors.Elements() {
-			requestBodyServiceProvisioningErrors := models.NewServiceProvisioningError()
+			requestBodyServiceProvisioningError := models.NewServiceProvisioningError()
 			tfPlanServiceProvisioningErrors := groupServiceProvisioningErrorModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanServiceProvisioningErrors)
 
@@ -905,7 +905,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			// END ServiceInstance | CreateStringAttribute
 
 		}
-		requestBodyGroup.SetServiceProvisioningErrors(requestBodyServiceProvisioningError)
+		requestBodyGroup.SetServiceProvisioningErrors(requestBodyServiceProvisioningErrors)
 	} else {
 		tfPlanGroup.ServiceProvisioningErrors = types.ListNull(tfPlanGroup.ServiceProvisioningErrors.ElementType(ctx))
 	}

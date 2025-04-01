@@ -1244,9 +1244,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START AddIns | CreateArrayObjectAttribute
 	if len(tfPlanApplication.AddIns.Elements()) > 0 {
-		var requestBodyAddIn []models.AddInable
+		var requestBodyAddIns []models.AddInable
 		for _, i := range tfPlanApplication.AddIns.Elements() {
-			requestBodyAddIns := models.NewAddIn()
+			requestBodyAddIn := models.NewAddIn()
 			tfPlanAddIns := applicationAddInModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAddIns)
 
@@ -1262,9 +1262,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 			// START Properties | CreateArrayObjectAttribute
 			if len(tfPlanAddIns.Properties.Elements()) > 0 {
-				var requestBodyKeyValue []models.KeyValueable
+				var requestBodyProperties []models.KeyValueable
 				for _, i := range tfPlanAddIns.Properties.Elements() {
-					requestBodyProperties := models.NewKeyValue()
+					requestBodyKeyValue := models.NewKeyValue()
 					tfPlanProperties := applicationKeyValueModel{}
 					types.ListValueFrom(ctx, i.Type(ctx), &tfPlanProperties)
 
@@ -1287,7 +1287,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 					// END Value | CreateStringAttribute
 
 				}
-				requestBodyAddIns.SetProperties(requestBodyKeyValue)
+				requestBodyAddIns.SetProperties(requestBodyProperties)
 			} else {
 				tfPlanAddIns.Properties = types.ListNull(tfPlanAddIns.Properties.ElementType(ctx))
 			}
@@ -1303,7 +1303,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END Type | CreateStringAttribute
 
 		}
-		requestBodyApplication.SetAddIns(requestBodyAddIn)
+		requestBodyApplication.SetAddIns(requestBodyAddIns)
 	} else {
 		tfPlanApplication.AddIns = types.ListNull(tfPlanApplication.AddIns.ElementType(ctx))
 	}
@@ -1340,9 +1340,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START Oauth2PermissionScopes | CreateArrayObjectAttribute
 		if len(tfPlanApi.Oauth2PermissionScopes.Elements()) > 0 {
-			var requestBodyPermissionScope []models.PermissionScopeable
+			var requestBodyOauth2PermissionScopes []models.PermissionScopeable
 			for _, i := range tfPlanApi.Oauth2PermissionScopes.Elements() {
-				requestBodyOauth2PermissionScopes := models.NewPermissionScope()
+				requestBodyPermissionScope := models.NewPermissionScope()
 				tfPlanOauth2PermissionScopes := applicationPermissionScopeModel{}
 				types.ListValueFrom(ctx, i.Type(ctx), &tfPlanOauth2PermissionScopes)
 
@@ -1429,7 +1429,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Value | CreateStringAttribute
 
 			}
-			requestBodyApi.SetOauth2PermissionScopes(requestBodyPermissionScope)
+			requestBodyApi.SetOauth2PermissionScopes(requestBodyOauth2PermissionScopes)
 		} else {
 			tfPlanApi.Oauth2PermissionScopes = types.ListNull(tfPlanApi.Oauth2PermissionScopes.ElementType(ctx))
 		}
@@ -1437,9 +1437,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START PreAuthorizedApplications | CreateArrayObjectAttribute
 		if len(tfPlanApi.PreAuthorizedApplications.Elements()) > 0 {
-			var requestBodyPreAuthorizedApplication []models.PreAuthorizedApplicationable
+			var requestBodyPreAuthorizedApplications []models.PreAuthorizedApplicationable
 			for _, i := range tfPlanApi.PreAuthorizedApplications.Elements() {
-				requestBodyPreAuthorizedApplications := models.NewPreAuthorizedApplication()
+				requestBodyPreAuthorizedApplication := models.NewPreAuthorizedApplication()
 				tfPlanPreAuthorizedApplications := applicationPreAuthorizedApplicationModel{}
 				types.ListValueFrom(ctx, i.Type(ctx), &tfPlanPreAuthorizedApplications)
 
@@ -1465,7 +1465,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END DelegatedPermissionIds | CreateArrayStringAttribute
 
 			}
-			requestBodyApi.SetPreAuthorizedApplications(requestBodyPreAuthorizedApplication)
+			requestBodyApi.SetPreAuthorizedApplications(requestBodyPreAuthorizedApplications)
 		} else {
 			tfPlanApi.PreAuthorizedApplications = types.ListNull(tfPlanApi.PreAuthorizedApplications.ElementType(ctx))
 		}
@@ -1492,9 +1492,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START AppRoles | CreateArrayObjectAttribute
 	if len(tfPlanApplication.AppRoles.Elements()) > 0 {
-		var requestBodyAppRole []models.AppRoleable
+		var requestBodyAppRoles []models.AppRoleable
 		for _, i := range tfPlanApplication.AppRoles.Elements() {
-			requestBodyAppRoles := models.NewAppRole()
+			requestBodyAppRole := models.NewAppRole()
 			tfPlanAppRoles := applicationAppRoleModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAppRoles)
 
@@ -1566,7 +1566,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END Value | CreateStringAttribute
 
 		}
-		requestBodyApplication.SetAppRoles(requestBodyAppRole)
+		requestBodyApplication.SetAppRoles(requestBodyAppRoles)
 	} else {
 		tfPlanApplication.AppRoles = types.ListNull(tfPlanApplication.AppRoles.ElementType(ctx))
 	}
@@ -1786,9 +1786,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START KeyCredentials | CreateArrayObjectAttribute
 	if len(tfPlanApplication.KeyCredentials.Elements()) > 0 {
-		var requestBodyKeyCredential []models.KeyCredentialable
+		var requestBodyKeyCredentials []models.KeyCredentialable
 		for _, i := range tfPlanApplication.KeyCredentials.Elements() {
-			requestBodyKeyCredentials := models.NewKeyCredential()
+			requestBodyKeyCredential := models.NewKeyCredential()
 			tfPlanKeyCredentials := applicationKeyCredentialModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanKeyCredentials)
 
@@ -1868,7 +1868,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END Usage | CreateStringAttribute
 
 		}
-		requestBodyApplication.SetKeyCredentials(requestBodyKeyCredential)
+		requestBodyApplication.SetKeyCredentials(requestBodyKeyCredentials)
 	} else {
 		tfPlanApplication.KeyCredentials = types.ListNull(tfPlanApplication.KeyCredentials.ElementType(ctx))
 	}
@@ -1920,9 +1920,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START AccessToken | CreateArrayObjectAttribute
 		if len(tfPlanOptionalClaims.AccessToken.Elements()) > 0 {
-			var requestBodyOptionalClaim []models.OptionalClaimable
+			var requestBodyAccessToken []models.OptionalClaimable
 			for _, i := range tfPlanOptionalClaims.AccessToken.Elements() {
-				requestBodyAccessToken := models.NewOptionalClaim()
+				requestBodyOptionalClaim := models.NewOptionalClaim()
 				tfPlanAccessToken := applicationOptionalClaimModel{}
 				types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAccessToken)
 
@@ -1966,7 +1966,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Source | CreateStringAttribute
 
 			}
-			requestBodyOptionalClaims.SetAccessToken(requestBodyOptionalClaim)
+			requestBodyOptionalClaims.SetAccessToken(requestBodyAccessToken)
 		} else {
 			tfPlanOptionalClaims.AccessToken = types.ListNull(tfPlanOptionalClaims.AccessToken.ElementType(ctx))
 		}
@@ -1974,9 +1974,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START IdToken | CreateArrayObjectAttribute
 		if len(tfPlanOptionalClaims.IdToken.Elements()) > 0 {
-			var requestBodyOptionalClaim []models.OptionalClaimable
+			var requestBodyIdToken []models.OptionalClaimable
 			for _, i := range tfPlanOptionalClaims.IdToken.Elements() {
-				requestBodyIdToken := models.NewOptionalClaim()
+				requestBodyOptionalClaim := models.NewOptionalClaim()
 				tfPlanIdToken := applicationOptionalClaimModel{}
 				types.ListValueFrom(ctx, i.Type(ctx), &tfPlanIdToken)
 
@@ -2020,7 +2020,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Source | CreateStringAttribute
 
 			}
-			requestBodyOptionalClaims.SetIdToken(requestBodyOptionalClaim)
+			requestBodyOptionalClaims.SetIdToken(requestBodyIdToken)
 		} else {
 			tfPlanOptionalClaims.IdToken = types.ListNull(tfPlanOptionalClaims.IdToken.ElementType(ctx))
 		}
@@ -2028,9 +2028,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 		// START Saml2Token | CreateArrayObjectAttribute
 		if len(tfPlanOptionalClaims.Saml2Token.Elements()) > 0 {
-			var requestBodyOptionalClaim []models.OptionalClaimable
+			var requestBodySaml2Token []models.OptionalClaimable
 			for _, i := range tfPlanOptionalClaims.Saml2Token.Elements() {
-				requestBodySaml2Token := models.NewOptionalClaim()
+				requestBodyOptionalClaim := models.NewOptionalClaim()
 				tfPlanSaml2Token := applicationOptionalClaimModel{}
 				types.ListValueFrom(ctx, i.Type(ctx), &tfPlanSaml2Token)
 
@@ -2074,7 +2074,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Source | CreateStringAttribute
 
 			}
-			requestBodyOptionalClaims.SetSaml2Token(requestBodyOptionalClaim)
+			requestBodyOptionalClaims.SetSaml2Token(requestBodySaml2Token)
 		} else {
 			tfPlanOptionalClaims.Saml2Token = types.ListNull(tfPlanOptionalClaims.Saml2Token.ElementType(ctx))
 		}
@@ -2123,9 +2123,9 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START PasswordCredentials | CreateArrayObjectAttribute
 	if len(tfPlanApplication.PasswordCredentials.Elements()) > 0 {
-		var requestBodyPasswordCredential []models.PasswordCredentialable
+		var requestBodyPasswordCredentials []models.PasswordCredentialable
 		for _, i := range tfPlanApplication.PasswordCredentials.Elements() {
-			requestBodyPasswordCredentials := models.NewPasswordCredential()
+			requestBodyPasswordCredential := models.NewPasswordCredential()
 			tfPlanPasswordCredentials := applicationPasswordCredentialModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanPasswordCredentials)
 
@@ -2196,7 +2196,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			// END StartDateTime | CreateStringTimeAttribute
 
 		}
-		requestBodyApplication.SetPasswordCredentials(requestBodyPasswordCredential)
+		requestBodyApplication.SetPasswordCredentials(requestBodyPasswordCredentials)
 	} else {
 		tfPlanApplication.PasswordCredentials = types.ListNull(tfPlanApplication.PasswordCredentials.ElementType(ctx))
 	}

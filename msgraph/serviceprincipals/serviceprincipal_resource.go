@@ -830,9 +830,9 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// START AddIns | CreateArrayObjectAttribute
 	if len(tfPlanServicePrincipal.AddIns.Elements()) > 0 {
-		var requestBodyAddIn []models.AddInable
+		var requestBodyAddIns []models.AddInable
 		for _, i := range tfPlanServicePrincipal.AddIns.Elements() {
-			requestBodyAddIns := models.NewAddIn()
+			requestBodyAddIn := models.NewAddIn()
 			tfPlanAddIns := servicePrincipalAddInModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAddIns)
 
@@ -848,9 +848,9 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 			// START Properties | CreateArrayObjectAttribute
 			if len(tfPlanAddIns.Properties.Elements()) > 0 {
-				var requestBodyKeyValue []models.KeyValueable
+				var requestBodyProperties []models.KeyValueable
 				for _, i := range tfPlanAddIns.Properties.Elements() {
-					requestBodyProperties := models.NewKeyValue()
+					requestBodyKeyValue := models.NewKeyValue()
 					tfPlanProperties := servicePrincipalKeyValueModel{}
 					types.ListValueFrom(ctx, i.Type(ctx), &tfPlanProperties)
 
@@ -873,7 +873,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 					// END Value | CreateStringAttribute
 
 				}
-				requestBodyAddIns.SetProperties(requestBodyKeyValue)
+				requestBodyAddIns.SetProperties(requestBodyProperties)
 			} else {
 				tfPlanAddIns.Properties = types.ListNull(tfPlanAddIns.Properties.ElementType(ctx))
 			}
@@ -889,7 +889,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 			// END Type | CreateStringAttribute
 
 		}
-		requestBodyServicePrincipal.SetAddIns(requestBodyAddIn)
+		requestBodyServicePrincipal.SetAddIns(requestBodyAddIns)
 	} else {
 		tfPlanServicePrincipal.AddIns = types.ListNull(tfPlanServicePrincipal.AddIns.ElementType(ctx))
 	}
@@ -955,9 +955,9 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// START AppRoles | CreateArrayObjectAttribute
 	if len(tfPlanServicePrincipal.AppRoles.Elements()) > 0 {
-		var requestBodyAppRole []models.AppRoleable
+		var requestBodyAppRoles []models.AppRoleable
 		for _, i := range tfPlanServicePrincipal.AppRoles.Elements() {
-			requestBodyAppRoles := models.NewAppRole()
+			requestBodyAppRole := models.NewAppRole()
 			tfPlanAppRoles := servicePrincipalAppRoleModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAppRoles)
 
@@ -1029,7 +1029,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 			// END Value | CreateStringAttribute
 
 		}
-		requestBodyServicePrincipal.SetAppRoles(requestBodyAppRole)
+		requestBodyServicePrincipal.SetAppRoles(requestBodyAppRoles)
 	} else {
 		tfPlanServicePrincipal.AppRoles = types.ListNull(tfPlanServicePrincipal.AppRoles.ElementType(ctx))
 	}
@@ -1153,9 +1153,9 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// START KeyCredentials | CreateArrayObjectAttribute
 	if len(tfPlanServicePrincipal.KeyCredentials.Elements()) > 0 {
-		var requestBodyKeyCredential []models.KeyCredentialable
+		var requestBodyKeyCredentials []models.KeyCredentialable
 		for _, i := range tfPlanServicePrincipal.KeyCredentials.Elements() {
-			requestBodyKeyCredentials := models.NewKeyCredential()
+			requestBodyKeyCredential := models.NewKeyCredential()
 			tfPlanKeyCredentials := servicePrincipalKeyCredentialModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanKeyCredentials)
 
@@ -1235,7 +1235,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 			// END Usage | CreateStringAttribute
 
 		}
-		requestBodyServicePrincipal.SetKeyCredentials(requestBodyKeyCredential)
+		requestBodyServicePrincipal.SetKeyCredentials(requestBodyKeyCredentials)
 	} else {
 		tfPlanServicePrincipal.KeyCredentials = types.ListNull(tfPlanServicePrincipal.KeyCredentials.ElementType(ctx))
 	}
@@ -1282,9 +1282,9 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// START Oauth2PermissionScopes | CreateArrayObjectAttribute
 	if len(tfPlanServicePrincipal.Oauth2PermissionScopes.Elements()) > 0 {
-		var requestBodyPermissionScope []models.PermissionScopeable
+		var requestBodyOauth2PermissionScopes []models.PermissionScopeable
 		for _, i := range tfPlanServicePrincipal.Oauth2PermissionScopes.Elements() {
-			requestBodyOauth2PermissionScopes := models.NewPermissionScope()
+			requestBodyPermissionScope := models.NewPermissionScope()
 			tfPlanOauth2PermissionScopes := servicePrincipalPermissionScopeModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanOauth2PermissionScopes)
 
@@ -1371,7 +1371,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 			// END Value | CreateStringAttribute
 
 		}
-		requestBodyServicePrincipal.SetOauth2PermissionScopes(requestBodyPermissionScope)
+		requestBodyServicePrincipal.SetOauth2PermissionScopes(requestBodyOauth2PermissionScopes)
 	} else {
 		tfPlanServicePrincipal.Oauth2PermissionScopes = types.ListNull(tfPlanServicePrincipal.Oauth2PermissionScopes.ElementType(ctx))
 	}
@@ -1379,9 +1379,9 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// START PasswordCredentials | CreateArrayObjectAttribute
 	if len(tfPlanServicePrincipal.PasswordCredentials.Elements()) > 0 {
-		var requestBodyPasswordCredential []models.PasswordCredentialable
+		var requestBodyPasswordCredentials []models.PasswordCredentialable
 		for _, i := range tfPlanServicePrincipal.PasswordCredentials.Elements() {
-			requestBodyPasswordCredentials := models.NewPasswordCredential()
+			requestBodyPasswordCredential := models.NewPasswordCredential()
 			tfPlanPasswordCredentials := servicePrincipalPasswordCredentialModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanPasswordCredentials)
 
@@ -1452,7 +1452,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 			// END StartDateTime | CreateStringTimeAttribute
 
 		}
-		requestBodyServicePrincipal.SetPasswordCredentials(requestBodyPasswordCredential)
+		requestBodyServicePrincipal.SetPasswordCredentials(requestBodyPasswordCredentials)
 	} else {
 		tfPlanServicePrincipal.PasswordCredentials = types.ListNull(tfPlanServicePrincipal.PasswordCredentials.ElementType(ctx))
 	}
@@ -1490,9 +1490,9 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// START ResourceSpecificApplicationPermissions | CreateArrayObjectAttribute
 	if len(tfPlanServicePrincipal.ResourceSpecificApplicationPermissions.Elements()) > 0 {
-		var requestBodyResourceSpecificPermission []models.ResourceSpecificPermissionable
+		var requestBodyResourceSpecificApplicationPermissions []models.ResourceSpecificPermissionable
 		for _, i := range tfPlanServicePrincipal.ResourceSpecificApplicationPermissions.Elements() {
-			requestBodyResourceSpecificApplicationPermissions := models.NewResourceSpecificPermission()
+			requestBodyResourceSpecificPermission := models.NewResourceSpecificPermission()
 			tfPlanResourceSpecificApplicationPermissions := servicePrincipalResourceSpecificPermissionModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanResourceSpecificApplicationPermissions)
 
@@ -1543,7 +1543,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 			// END Value | CreateStringAttribute
 
 		}
-		requestBodyServicePrincipal.SetResourceSpecificApplicationPermissions(requestBodyResourceSpecificPermission)
+		requestBodyServicePrincipal.SetResourceSpecificApplicationPermissions(requestBodyResourceSpecificApplicationPermissions)
 	} else {
 		tfPlanServicePrincipal.ResourceSpecificApplicationPermissions = types.ListNull(tfPlanServicePrincipal.ResourceSpecificApplicationPermissions.ElementType(ctx))
 	}

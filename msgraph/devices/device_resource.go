@@ -369,9 +369,9 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	// START AlternativeSecurityIds | CreateArrayObjectAttribute
 	if len(tfPlanDevice.AlternativeSecurityIds.Elements()) > 0 {
-		var requestBodyAlternativeSecurityId []models.AlternativeSecurityIdable
+		var requestBodyAlternativeSecurityIds []models.AlternativeSecurityIdable
 		for _, i := range tfPlanDevice.AlternativeSecurityIds.Elements() {
-			requestBodyAlternativeSecurityIds := models.NewAlternativeSecurityId()
+			requestBodyAlternativeSecurityId := models.NewAlternativeSecurityId()
 			tfPlanAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAlternativeSecurityIds)
 
@@ -397,7 +397,7 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 			// END Type | UNKNOWN
 
 		}
-		requestBodyDevice.SetAlternativeSecurityIds(requestBodyAlternativeSecurityId)
+		requestBodyDevice.SetAlternativeSecurityIds(requestBodyAlternativeSecurityIds)
 	} else {
 		tfPlanDevice.AlternativeSecurityIds = types.ListNull(tfPlanDevice.AlternativeSecurityIds.ElementType(ctx))
 	}
