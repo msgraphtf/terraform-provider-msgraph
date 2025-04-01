@@ -331,9 +331,9 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 
 // Create creates the resource and sets the initial Terraform state.
 func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	// Retrieve values from plan
-	var plan teamModel
-	diags := req.Plan.Get(ctx, &plan)
+	// Retrieve values from Terraform plan
+	var tfPlan teamModel
+	diags := req.Plan.Get(ctx, &tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -342,71 +342,71 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Generate API request body from Plan
 	requestBody := models.NewTeam()
 
-	if !plan.Id.IsUnknown() {
-		planId := plan.Id.ValueString()
-		requestBody.SetId(&planId)
+	if !tfPlan.Id.IsUnknown() {
+		tfPlanId := tfPlan.Id.ValueString()
+		requestBody.SetId(&tfPlanId)
 	} else {
-		plan.Id = types.StringNull()
+		tfPlan.Id = types.StringNull()
 	}
 
-	if !plan.Classification.IsUnknown() {
-		planClassification := plan.Classification.ValueString()
-		requestBody.SetClassification(&planClassification)
+	if !tfPlan.Classification.IsUnknown() {
+		tfPlanClassification := tfPlan.Classification.ValueString()
+		requestBody.SetClassification(&tfPlanClassification)
 	} else {
-		plan.Classification = types.StringNull()
+		tfPlan.Classification = types.StringNull()
 	}
 
-	if !plan.CreatedDateTime.IsUnknown() {
-		planCreatedDateTime := plan.CreatedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
+	if !tfPlan.CreatedDateTime.IsUnknown() {
+		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	} else {
-		plan.CreatedDateTime = types.StringNull()
+		tfPlan.CreatedDateTime = types.StringNull()
 	}
 
-	if !plan.Description.IsUnknown() {
-		planDescription := plan.Description.ValueString()
-		requestBody.SetDescription(&planDescription)
+	if !tfPlan.Description.IsUnknown() {
+		tfPlanDescription := tfPlan.Description.ValueString()
+		requestBody.SetDescription(&tfPlanDescription)
 	} else {
-		plan.Description = types.StringNull()
+		tfPlan.Description = types.StringNull()
 	}
 
-	if !plan.DisplayName.IsUnknown() {
-		planDisplayName := plan.DisplayName.ValueString()
-		requestBody.SetDisplayName(&planDisplayName)
+	if !tfPlan.DisplayName.IsUnknown() {
+		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
+		requestBody.SetDisplayName(&tfPlanDisplayName)
 	} else {
-		plan.DisplayName = types.StringNull()
+		tfPlan.DisplayName = types.StringNull()
 	}
 
-	if !plan.FunSettings.IsUnknown() {
+	if !tfPlan.FunSettings.IsUnknown() {
 		funSettings := models.NewTeamFunSettings()
 		funSettingsModel := teamTeamFunSettingsModel{}
-		plan.FunSettings.As(ctx, &funSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlan.FunSettings.As(ctx, &funSettingsModel, basetypes.ObjectAsOptions{})
 
 		if !funSettingsModel.AllowCustomMemes.IsUnknown() {
-			planAllowCustomMemes := funSettingsModel.AllowCustomMemes.ValueBool()
-			funSettings.SetAllowCustomMemes(&planAllowCustomMemes)
+			tfPlanAllowCustomMemes := funSettingsModel.AllowCustomMemes.ValueBool()
+			funSettings.SetAllowCustomMemes(&tfPlanAllowCustomMemes)
 		} else {
 			funSettingsModel.AllowCustomMemes = types.BoolNull()
 		}
 
 		if !funSettingsModel.AllowGiphy.IsUnknown() {
-			planAllowGiphy := funSettingsModel.AllowGiphy.ValueBool()
-			funSettings.SetAllowGiphy(&planAllowGiphy)
+			tfPlanAllowGiphy := funSettingsModel.AllowGiphy.ValueBool()
+			funSettings.SetAllowGiphy(&tfPlanAllowGiphy)
 		} else {
 			funSettingsModel.AllowGiphy = types.BoolNull()
 		}
 
 		if !funSettingsModel.AllowStickersAndMemes.IsUnknown() {
-			planAllowStickersAndMemes := funSettingsModel.AllowStickersAndMemes.ValueBool()
-			funSettings.SetAllowStickersAndMemes(&planAllowStickersAndMemes)
+			tfPlanAllowStickersAndMemes := funSettingsModel.AllowStickersAndMemes.ValueBool()
+			funSettings.SetAllowStickersAndMemes(&tfPlanAllowStickersAndMemes)
 		} else {
 			funSettingsModel.AllowStickersAndMemes = types.BoolNull()
 		}
 
 		if !funSettingsModel.GiphyContentRating.IsUnknown() {
-			planGiphyContentRating := funSettingsModel.GiphyContentRating.ValueString()
-			parsedGiphyContentRating, _ := models.ParseGiphyRatingType(planGiphyContentRating)
+			tfPlanGiphyContentRating := funSettingsModel.GiphyContentRating.ValueString()
+			parsedGiphyContentRating, _ := models.ParseGiphyRatingType(tfPlanGiphyContentRating)
 			assertedGiphyContentRating := parsedGiphyContentRating.(models.GiphyRatingType)
 			funSettings.SetGiphyContentRating(&assertedGiphyContentRating)
 		} else {
@@ -414,191 +414,191 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 		requestBody.SetFunSettings(funSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, funSettingsModel.AttributeTypes(), funSettingsModel)
-		plan.FunSettings = objectValue
+		tfPlan.FunSettings = objectValue
 	} else {
-		plan.FunSettings = types.ObjectNull(plan.FunSettings.AttributeTypes(ctx))
+		tfPlan.FunSettings = types.ObjectNull(tfPlan.FunSettings.AttributeTypes(ctx))
 	}
 
-	if !plan.GuestSettings.IsUnknown() {
+	if !tfPlan.GuestSettings.IsUnknown() {
 		guestSettings := models.NewTeamGuestSettings()
 		guestSettingsModel := teamTeamGuestSettingsModel{}
-		plan.GuestSettings.As(ctx, &guestSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlan.GuestSettings.As(ctx, &guestSettingsModel, basetypes.ObjectAsOptions{})
 
 		if !guestSettingsModel.AllowCreateUpdateChannels.IsUnknown() {
-			planAllowCreateUpdateChannels := guestSettingsModel.AllowCreateUpdateChannels.ValueBool()
-			guestSettings.SetAllowCreateUpdateChannels(&planAllowCreateUpdateChannels)
+			tfPlanAllowCreateUpdateChannels := guestSettingsModel.AllowCreateUpdateChannels.ValueBool()
+			guestSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		} else {
 			guestSettingsModel.AllowCreateUpdateChannels = types.BoolNull()
 		}
 
 		if !guestSettingsModel.AllowDeleteChannels.IsUnknown() {
-			planAllowDeleteChannels := guestSettingsModel.AllowDeleteChannels.ValueBool()
-			guestSettings.SetAllowDeleteChannels(&planAllowDeleteChannels)
+			tfPlanAllowDeleteChannels := guestSettingsModel.AllowDeleteChannels.ValueBool()
+			guestSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		} else {
 			guestSettingsModel.AllowDeleteChannels = types.BoolNull()
 		}
 		requestBody.SetGuestSettings(guestSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, guestSettingsModel.AttributeTypes(), guestSettingsModel)
-		plan.GuestSettings = objectValue
+		tfPlan.GuestSettings = objectValue
 	} else {
-		plan.GuestSettings = types.ObjectNull(plan.GuestSettings.AttributeTypes(ctx))
+		tfPlan.GuestSettings = types.ObjectNull(tfPlan.GuestSettings.AttributeTypes(ctx))
 	}
 
-	if !plan.InternalId.IsUnknown() {
-		planInternalId := plan.InternalId.ValueString()
-		requestBody.SetInternalId(&planInternalId)
+	if !tfPlan.InternalId.IsUnknown() {
+		tfPlanInternalId := tfPlan.InternalId.ValueString()
+		requestBody.SetInternalId(&tfPlanInternalId)
 	} else {
-		plan.InternalId = types.StringNull()
+		tfPlan.InternalId = types.StringNull()
 	}
 
-	if !plan.IsArchived.IsUnknown() {
-		planIsArchived := plan.IsArchived.ValueBool()
-		requestBody.SetIsArchived(&planIsArchived)
+	if !tfPlan.IsArchived.IsUnknown() {
+		tfPlanIsArchived := tfPlan.IsArchived.ValueBool()
+		requestBody.SetIsArchived(&tfPlanIsArchived)
 	} else {
-		plan.IsArchived = types.BoolNull()
+		tfPlan.IsArchived = types.BoolNull()
 	}
 
-	if !plan.MemberSettings.IsUnknown() {
+	if !tfPlan.MemberSettings.IsUnknown() {
 		memberSettings := models.NewTeamMemberSettings()
 		memberSettingsModel := teamTeamMemberSettingsModel{}
-		plan.MemberSettings.As(ctx, &memberSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlan.MemberSettings.As(ctx, &memberSettingsModel, basetypes.ObjectAsOptions{})
 
 		if !memberSettingsModel.AllowAddRemoveApps.IsUnknown() {
-			planAllowAddRemoveApps := memberSettingsModel.AllowAddRemoveApps.ValueBool()
-			memberSettings.SetAllowAddRemoveApps(&planAllowAddRemoveApps)
+			tfPlanAllowAddRemoveApps := memberSettingsModel.AllowAddRemoveApps.ValueBool()
+			memberSettings.SetAllowAddRemoveApps(&tfPlanAllowAddRemoveApps)
 		} else {
 			memberSettingsModel.AllowAddRemoveApps = types.BoolNull()
 		}
 
 		if !memberSettingsModel.AllowCreatePrivateChannels.IsUnknown() {
-			planAllowCreatePrivateChannels := memberSettingsModel.AllowCreatePrivateChannels.ValueBool()
-			memberSettings.SetAllowCreatePrivateChannels(&planAllowCreatePrivateChannels)
+			tfPlanAllowCreatePrivateChannels := memberSettingsModel.AllowCreatePrivateChannels.ValueBool()
+			memberSettings.SetAllowCreatePrivateChannels(&tfPlanAllowCreatePrivateChannels)
 		} else {
 			memberSettingsModel.AllowCreatePrivateChannels = types.BoolNull()
 		}
 
 		if !memberSettingsModel.AllowCreateUpdateChannels.IsUnknown() {
-			planAllowCreateUpdateChannels := memberSettingsModel.AllowCreateUpdateChannels.ValueBool()
-			memberSettings.SetAllowCreateUpdateChannels(&planAllowCreateUpdateChannels)
+			tfPlanAllowCreateUpdateChannels := memberSettingsModel.AllowCreateUpdateChannels.ValueBool()
+			memberSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		} else {
 			memberSettingsModel.AllowCreateUpdateChannels = types.BoolNull()
 		}
 
 		if !memberSettingsModel.AllowCreateUpdateRemoveConnectors.IsUnknown() {
-			planAllowCreateUpdateRemoveConnectors := memberSettingsModel.AllowCreateUpdateRemoveConnectors.ValueBool()
-			memberSettings.SetAllowCreateUpdateRemoveConnectors(&planAllowCreateUpdateRemoveConnectors)
+			tfPlanAllowCreateUpdateRemoveConnectors := memberSettingsModel.AllowCreateUpdateRemoveConnectors.ValueBool()
+			memberSettings.SetAllowCreateUpdateRemoveConnectors(&tfPlanAllowCreateUpdateRemoveConnectors)
 		} else {
 			memberSettingsModel.AllowCreateUpdateRemoveConnectors = types.BoolNull()
 		}
 
 		if !memberSettingsModel.AllowCreateUpdateRemoveTabs.IsUnknown() {
-			planAllowCreateUpdateRemoveTabs := memberSettingsModel.AllowCreateUpdateRemoveTabs.ValueBool()
-			memberSettings.SetAllowCreateUpdateRemoveTabs(&planAllowCreateUpdateRemoveTabs)
+			tfPlanAllowCreateUpdateRemoveTabs := memberSettingsModel.AllowCreateUpdateRemoveTabs.ValueBool()
+			memberSettings.SetAllowCreateUpdateRemoveTabs(&tfPlanAllowCreateUpdateRemoveTabs)
 		} else {
 			memberSettingsModel.AllowCreateUpdateRemoveTabs = types.BoolNull()
 		}
 
 		if !memberSettingsModel.AllowDeleteChannels.IsUnknown() {
-			planAllowDeleteChannels := memberSettingsModel.AllowDeleteChannels.ValueBool()
-			memberSettings.SetAllowDeleteChannels(&planAllowDeleteChannels)
+			tfPlanAllowDeleteChannels := memberSettingsModel.AllowDeleteChannels.ValueBool()
+			memberSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		} else {
 			memberSettingsModel.AllowDeleteChannels = types.BoolNull()
 		}
 		requestBody.SetMemberSettings(memberSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, memberSettingsModel.AttributeTypes(), memberSettingsModel)
-		plan.MemberSettings = objectValue
+		tfPlan.MemberSettings = objectValue
 	} else {
-		plan.MemberSettings = types.ObjectNull(plan.MemberSettings.AttributeTypes(ctx))
+		tfPlan.MemberSettings = types.ObjectNull(tfPlan.MemberSettings.AttributeTypes(ctx))
 	}
 
-	if !plan.MessagingSettings.IsUnknown() {
+	if !tfPlan.MessagingSettings.IsUnknown() {
 		messagingSettings := models.NewTeamMessagingSettings()
 		messagingSettingsModel := teamTeamMessagingSettingsModel{}
-		plan.MessagingSettings.As(ctx, &messagingSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlan.MessagingSettings.As(ctx, &messagingSettingsModel, basetypes.ObjectAsOptions{})
 
 		if !messagingSettingsModel.AllowChannelMentions.IsUnknown() {
-			planAllowChannelMentions := messagingSettingsModel.AllowChannelMentions.ValueBool()
-			messagingSettings.SetAllowChannelMentions(&planAllowChannelMentions)
+			tfPlanAllowChannelMentions := messagingSettingsModel.AllowChannelMentions.ValueBool()
+			messagingSettings.SetAllowChannelMentions(&tfPlanAllowChannelMentions)
 		} else {
 			messagingSettingsModel.AllowChannelMentions = types.BoolNull()
 		}
 
 		if !messagingSettingsModel.AllowOwnerDeleteMessages.IsUnknown() {
-			planAllowOwnerDeleteMessages := messagingSettingsModel.AllowOwnerDeleteMessages.ValueBool()
-			messagingSettings.SetAllowOwnerDeleteMessages(&planAllowOwnerDeleteMessages)
+			tfPlanAllowOwnerDeleteMessages := messagingSettingsModel.AllowOwnerDeleteMessages.ValueBool()
+			messagingSettings.SetAllowOwnerDeleteMessages(&tfPlanAllowOwnerDeleteMessages)
 		} else {
 			messagingSettingsModel.AllowOwnerDeleteMessages = types.BoolNull()
 		}
 
 		if !messagingSettingsModel.AllowTeamMentions.IsUnknown() {
-			planAllowTeamMentions := messagingSettingsModel.AllowTeamMentions.ValueBool()
-			messagingSettings.SetAllowTeamMentions(&planAllowTeamMentions)
+			tfPlanAllowTeamMentions := messagingSettingsModel.AllowTeamMentions.ValueBool()
+			messagingSettings.SetAllowTeamMentions(&tfPlanAllowTeamMentions)
 		} else {
 			messagingSettingsModel.AllowTeamMentions = types.BoolNull()
 		}
 
 		if !messagingSettingsModel.AllowUserDeleteMessages.IsUnknown() {
-			planAllowUserDeleteMessages := messagingSettingsModel.AllowUserDeleteMessages.ValueBool()
-			messagingSettings.SetAllowUserDeleteMessages(&planAllowUserDeleteMessages)
+			tfPlanAllowUserDeleteMessages := messagingSettingsModel.AllowUserDeleteMessages.ValueBool()
+			messagingSettings.SetAllowUserDeleteMessages(&tfPlanAllowUserDeleteMessages)
 		} else {
 			messagingSettingsModel.AllowUserDeleteMessages = types.BoolNull()
 		}
 
 		if !messagingSettingsModel.AllowUserEditMessages.IsUnknown() {
-			planAllowUserEditMessages := messagingSettingsModel.AllowUserEditMessages.ValueBool()
-			messagingSettings.SetAllowUserEditMessages(&planAllowUserEditMessages)
+			tfPlanAllowUserEditMessages := messagingSettingsModel.AllowUserEditMessages.ValueBool()
+			messagingSettings.SetAllowUserEditMessages(&tfPlanAllowUserEditMessages)
 		} else {
 			messagingSettingsModel.AllowUserEditMessages = types.BoolNull()
 		}
 		requestBody.SetMessagingSettings(messagingSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, messagingSettingsModel.AttributeTypes(), messagingSettingsModel)
-		plan.MessagingSettings = objectValue
+		tfPlan.MessagingSettings = objectValue
 	} else {
-		plan.MessagingSettings = types.ObjectNull(plan.MessagingSettings.AttributeTypes(ctx))
+		tfPlan.MessagingSettings = types.ObjectNull(tfPlan.MessagingSettings.AttributeTypes(ctx))
 	}
 
-	if !plan.Specialization.IsUnknown() {
-		planSpecialization := plan.Specialization.ValueString()
-		parsedSpecialization, _ := models.ParseTeamSpecialization(planSpecialization)
+	if !tfPlan.Specialization.IsUnknown() {
+		tfPlanSpecialization := tfPlan.Specialization.ValueString()
+		parsedSpecialization, _ := models.ParseTeamSpecialization(tfPlanSpecialization)
 		assertedSpecialization := parsedSpecialization.(models.TeamSpecialization)
 		requestBody.SetSpecialization(&assertedSpecialization)
 	} else {
-		plan.Specialization = types.StringNull()
+		tfPlan.Specialization = types.StringNull()
 	}
 
-	if !plan.Summary.IsUnknown() {
+	if !tfPlan.Summary.IsUnknown() {
 		summary := models.NewTeamSummary()
 		summaryModel := teamTeamSummaryModel{}
-		plan.Summary.As(ctx, &summaryModel, basetypes.ObjectAsOptions{})
+		tfPlan.Summary.As(ctx, &summaryModel, basetypes.ObjectAsOptions{})
 
 		requestBody.SetSummary(summary)
 		objectValue, _ := types.ObjectValueFrom(ctx, summaryModel.AttributeTypes(), summaryModel)
-		plan.Summary = objectValue
+		tfPlan.Summary = objectValue
 	} else {
-		plan.Summary = types.ObjectNull(plan.Summary.AttributeTypes(ctx))
+		tfPlan.Summary = types.ObjectNull(tfPlan.Summary.AttributeTypes(ctx))
 	}
 
-	if !plan.TenantId.IsUnknown() {
-		planTenantId := plan.TenantId.ValueString()
-		requestBody.SetTenantId(&planTenantId)
+	if !tfPlan.TenantId.IsUnknown() {
+		tfPlanTenantId := tfPlan.TenantId.ValueString()
+		requestBody.SetTenantId(&tfPlanTenantId)
 	} else {
-		plan.TenantId = types.StringNull()
+		tfPlan.TenantId = types.StringNull()
 	}
 
-	if !plan.Visibility.IsUnknown() {
-		planVisibility := plan.Visibility.ValueString()
-		parsedVisibility, _ := models.ParseTeamVisibilityType(planVisibility)
+	if !tfPlan.Visibility.IsUnknown() {
+		tfPlanVisibility := tfPlan.Visibility.ValueString()
+		parsedVisibility, _ := models.ParseTeamVisibilityType(tfPlanVisibility)
 		assertedVisibility := parsedVisibility.(models.TeamVisibilityType)
 		requestBody.SetVisibility(&assertedVisibility)
 	} else {
-		plan.Visibility = types.StringNull()
+		tfPlan.Visibility = types.StringNull()
 	}
 
-	if !plan.WebUrl.IsUnknown() {
-		planWebUrl := plan.WebUrl.ValueString()
-		requestBody.SetWebUrl(&planWebUrl)
+	if !tfPlan.WebUrl.IsUnknown() {
+		tfPlanWebUrl := tfPlan.WebUrl.ValueString()
+		requestBody.SetWebUrl(&tfPlanWebUrl)
 	} else {
-		plan.WebUrl = types.StringNull()
+		tfPlan.WebUrl = types.StringNull()
 	}
 
 	// Create new team
@@ -613,10 +613,10 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Map response body to schema and populate Computed attribute value
 	// TODO: Add support for other Computed values
-	plan.Id = types.StringValue(*result.GetId())
+	tfPlan.Id = types.StringValue(*result.GetId())
 
 	// Set state to fully populated data
-	diags = resp.State.Set(ctx, plan)
+	diags = resp.State.Set(ctx, tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

@@ -458,9 +458,9 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 
 // Create creates the resource and sets the initial Terraform state.
 func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	// Retrieve values from plan
-	var plan groupModel
-	diags := req.Plan.Get(ctx, &plan)
+	// Retrieve values from Terraform plan
+	var tfPlan groupModel
+	diags := req.Plan.Get(ctx, &tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -469,50 +469,50 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	// Generate API request body from Plan
 	requestBody := models.NewGroup()
 
-	if !plan.Id.IsUnknown() {
-		planId := plan.Id.ValueString()
-		requestBody.SetId(&planId)
+	if !tfPlan.Id.IsUnknown() {
+		tfPlanId := tfPlan.Id.ValueString()
+		requestBody.SetId(&tfPlanId)
 	} else {
-		plan.Id = types.StringNull()
+		tfPlan.Id = types.StringNull()
 	}
 
-	if !plan.DeletedDateTime.IsUnknown() {
-		planDeletedDateTime := plan.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, planDeletedDateTime)
+	if !tfPlan.DeletedDateTime.IsUnknown() {
+		tfPlanDeletedDateTime := tfPlan.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
 	} else {
-		plan.DeletedDateTime = types.StringNull()
+		tfPlan.DeletedDateTime = types.StringNull()
 	}
 
-	if len(plan.AssignedLabels.Elements()) > 0 {
-		var planAssignedLabels []models.AssignedLabelable
-		for _, i := range plan.AssignedLabels.Elements() {
+	if len(tfPlan.AssignedLabels.Elements()) > 0 {
+		var tfPlanAssignedLabels []models.AssignedLabelable
+		for _, i := range tfPlan.AssignedLabels.Elements() {
 			assignedLabels := models.NewAssignedLabel()
 			assignedLabelsModel := groupAssignedLabelModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &assignedLabelsModel)
 
 			if !assignedLabelsModel.DisplayName.IsUnknown() {
-				planDisplayName := assignedLabelsModel.DisplayName.ValueString()
-				assignedLabels.SetDisplayName(&planDisplayName)
+				tfPlanDisplayName := assignedLabelsModel.DisplayName.ValueString()
+				assignedLabels.SetDisplayName(&tfPlanDisplayName)
 			} else {
 				assignedLabelsModel.DisplayName = types.StringNull()
 			}
 
 			if !assignedLabelsModel.LabelId.IsUnknown() {
-				planLabelId := assignedLabelsModel.LabelId.ValueString()
-				assignedLabels.SetLabelId(&planLabelId)
+				tfPlanLabelId := assignedLabelsModel.LabelId.ValueString()
+				assignedLabels.SetLabelId(&tfPlanLabelId)
 			} else {
 				assignedLabelsModel.LabelId = types.StringNull()
 			}
 		}
-		requestBody.SetAssignedLabels(planAssignedLabels)
+		requestBody.SetAssignedLabels(tfPlanAssignedLabels)
 	} else {
-		plan.AssignedLabels = types.ListNull(plan.AssignedLabels.ElementType(ctx))
+		tfPlan.AssignedLabels = types.ListNull(tfPlan.AssignedLabels.ElementType(ctx))
 	}
 
-	if len(plan.AssignedLicenses.Elements()) > 0 {
-		var planAssignedLicenses []models.AssignedLicenseable
-		for _, i := range plan.AssignedLicenses.Elements() {
+	if len(tfPlan.AssignedLicenses.Elements()) > 0 {
+		var tfPlanAssignedLicenses []models.AssignedLicenseable
+		for _, i := range tfPlan.AssignedLicenses.Elements() {
 			assignedLicenses := models.NewAssignedLicense()
 			assignedLicensesModel := groupAssignedLicenseModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicensesModel)
@@ -529,315 +529,315 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			}
 
 			if !assignedLicensesModel.SkuId.IsUnknown() {
-				planSkuId := assignedLicensesModel.SkuId.ValueString()
-				u, _ := uuid.Parse(planSkuId)
+				tfPlanSkuId := assignedLicensesModel.SkuId.ValueString()
+				u, _ := uuid.Parse(tfPlanSkuId)
 				assignedLicenses.SetSkuId(&u)
 			} else {
 				assignedLicensesModel.SkuId = types.StringNull()
 			}
 		}
-		requestBody.SetAssignedLicenses(planAssignedLicenses)
+		requestBody.SetAssignedLicenses(tfPlanAssignedLicenses)
 	} else {
-		plan.AssignedLicenses = types.ListNull(plan.AssignedLicenses.ElementType(ctx))
+		tfPlan.AssignedLicenses = types.ListNull(tfPlan.AssignedLicenses.ElementType(ctx))
 	}
 
-	if !plan.Classification.IsUnknown() {
-		planClassification := plan.Classification.ValueString()
-		requestBody.SetClassification(&planClassification)
+	if !tfPlan.Classification.IsUnknown() {
+		tfPlanClassification := tfPlan.Classification.ValueString()
+		requestBody.SetClassification(&tfPlanClassification)
 	} else {
-		plan.Classification = types.StringNull()
+		tfPlan.Classification = types.StringNull()
 	}
 
-	if !plan.CreatedDateTime.IsUnknown() {
-		planCreatedDateTime := plan.CreatedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
+	if !tfPlan.CreatedDateTime.IsUnknown() {
+		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	} else {
-		plan.CreatedDateTime = types.StringNull()
+		tfPlan.CreatedDateTime = types.StringNull()
 	}
 
-	if !plan.Description.IsUnknown() {
-		planDescription := plan.Description.ValueString()
-		requestBody.SetDescription(&planDescription)
+	if !tfPlan.Description.IsUnknown() {
+		tfPlanDescription := tfPlan.Description.ValueString()
+		requestBody.SetDescription(&tfPlanDescription)
 	} else {
-		plan.Description = types.StringNull()
+		tfPlan.Description = types.StringNull()
 	}
 
-	if !plan.DisplayName.IsUnknown() {
-		planDisplayName := plan.DisplayName.ValueString()
-		requestBody.SetDisplayName(&planDisplayName)
+	if !tfPlan.DisplayName.IsUnknown() {
+		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
+		requestBody.SetDisplayName(&tfPlanDisplayName)
 	} else {
-		plan.DisplayName = types.StringNull()
+		tfPlan.DisplayName = types.StringNull()
 	}
 
-	if !plan.ExpirationDateTime.IsUnknown() {
-		planExpirationDateTime := plan.ExpirationDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, planExpirationDateTime)
+	if !tfPlan.ExpirationDateTime.IsUnknown() {
+		tfPlanExpirationDateTime := tfPlan.ExpirationDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanExpirationDateTime)
 		requestBody.SetExpirationDateTime(&t)
 	} else {
-		plan.ExpirationDateTime = types.StringNull()
+		tfPlan.ExpirationDateTime = types.StringNull()
 	}
 
-	if len(plan.GroupTypes.Elements()) > 0 {
+	if len(tfPlan.GroupTypes.Elements()) > 0 {
 		var groupTypes []string
-		for _, i := range plan.GroupTypes.Elements() {
+		for _, i := range tfPlan.GroupTypes.Elements() {
 			groupTypes = append(groupTypes, i.String())
 		}
 		requestBody.SetGroupTypes(groupTypes)
 	} else {
-		plan.GroupTypes = types.ListNull(types.StringType)
+		tfPlan.GroupTypes = types.ListNull(types.StringType)
 	}
 
-	if !plan.IsAssignableToRole.IsUnknown() {
-		planIsAssignableToRole := plan.IsAssignableToRole.ValueBool()
-		requestBody.SetIsAssignableToRole(&planIsAssignableToRole)
+	if !tfPlan.IsAssignableToRole.IsUnknown() {
+		tfPlanIsAssignableToRole := tfPlan.IsAssignableToRole.ValueBool()
+		requestBody.SetIsAssignableToRole(&tfPlanIsAssignableToRole)
 	} else {
-		plan.IsAssignableToRole = types.BoolNull()
+		tfPlan.IsAssignableToRole = types.BoolNull()
 	}
 
-	if !plan.IsManagementRestricted.IsUnknown() {
-		planIsManagementRestricted := plan.IsManagementRestricted.ValueBool()
-		requestBody.SetIsManagementRestricted(&planIsManagementRestricted)
+	if !tfPlan.IsManagementRestricted.IsUnknown() {
+		tfPlanIsManagementRestricted := tfPlan.IsManagementRestricted.ValueBool()
+		requestBody.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
 	} else {
-		plan.IsManagementRestricted = types.BoolNull()
+		tfPlan.IsManagementRestricted = types.BoolNull()
 	}
 
-	if !plan.LicenseProcessingState.IsUnknown() {
+	if !tfPlan.LicenseProcessingState.IsUnknown() {
 		licenseProcessingState := models.NewLicenseProcessingState()
 		licenseProcessingStateModel := groupLicenseProcessingStateModel{}
-		plan.LicenseProcessingState.As(ctx, &licenseProcessingStateModel, basetypes.ObjectAsOptions{})
+		tfPlan.LicenseProcessingState.As(ctx, &licenseProcessingStateModel, basetypes.ObjectAsOptions{})
 
 		if !licenseProcessingStateModel.State.IsUnknown() {
-			planState := licenseProcessingStateModel.State.ValueString()
-			licenseProcessingState.SetState(&planState)
+			tfPlanState := licenseProcessingStateModel.State.ValueString()
+			licenseProcessingState.SetState(&tfPlanState)
 		} else {
 			licenseProcessingStateModel.State = types.StringNull()
 		}
 		requestBody.SetLicenseProcessingState(licenseProcessingState)
 		objectValue, _ := types.ObjectValueFrom(ctx, licenseProcessingStateModel.AttributeTypes(), licenseProcessingStateModel)
-		plan.LicenseProcessingState = objectValue
+		tfPlan.LicenseProcessingState = objectValue
 	} else {
-		plan.LicenseProcessingState = types.ObjectNull(plan.LicenseProcessingState.AttributeTypes(ctx))
+		tfPlan.LicenseProcessingState = types.ObjectNull(tfPlan.LicenseProcessingState.AttributeTypes(ctx))
 	}
 
-	if !plan.Mail.IsUnknown() {
-		planMail := plan.Mail.ValueString()
-		requestBody.SetMail(&planMail)
+	if !tfPlan.Mail.IsUnknown() {
+		tfPlanMail := tfPlan.Mail.ValueString()
+		requestBody.SetMail(&tfPlanMail)
 	} else {
-		plan.Mail = types.StringNull()
+		tfPlan.Mail = types.StringNull()
 	}
 
-	if !plan.MailEnabled.IsUnknown() {
-		planMailEnabled := plan.MailEnabled.ValueBool()
-		requestBody.SetMailEnabled(&planMailEnabled)
+	if !tfPlan.MailEnabled.IsUnknown() {
+		tfPlanMailEnabled := tfPlan.MailEnabled.ValueBool()
+		requestBody.SetMailEnabled(&tfPlanMailEnabled)
 	} else {
-		plan.MailEnabled = types.BoolNull()
+		tfPlan.MailEnabled = types.BoolNull()
 	}
 
-	if !plan.MailNickname.IsUnknown() {
-		planMailNickname := plan.MailNickname.ValueString()
-		requestBody.SetMailNickname(&planMailNickname)
+	if !tfPlan.MailNickname.IsUnknown() {
+		tfPlanMailNickname := tfPlan.MailNickname.ValueString()
+		requestBody.SetMailNickname(&tfPlanMailNickname)
 	} else {
-		plan.MailNickname = types.StringNull()
+		tfPlan.MailNickname = types.StringNull()
 	}
 
-	if !plan.MembershipRule.IsUnknown() {
-		planMembershipRule := plan.MembershipRule.ValueString()
-		requestBody.SetMembershipRule(&planMembershipRule)
+	if !tfPlan.MembershipRule.IsUnknown() {
+		tfPlanMembershipRule := tfPlan.MembershipRule.ValueString()
+		requestBody.SetMembershipRule(&tfPlanMembershipRule)
 	} else {
-		plan.MembershipRule = types.StringNull()
+		tfPlan.MembershipRule = types.StringNull()
 	}
 
-	if !plan.MembershipRuleProcessingState.IsUnknown() {
-		planMembershipRuleProcessingState := plan.MembershipRuleProcessingState.ValueString()
-		requestBody.SetMembershipRuleProcessingState(&planMembershipRuleProcessingState)
+	if !tfPlan.MembershipRuleProcessingState.IsUnknown() {
+		tfPlanMembershipRuleProcessingState := tfPlan.MembershipRuleProcessingState.ValueString()
+		requestBody.SetMembershipRuleProcessingState(&tfPlanMembershipRuleProcessingState)
 	} else {
-		plan.MembershipRuleProcessingState = types.StringNull()
+		tfPlan.MembershipRuleProcessingState = types.StringNull()
 	}
 
-	if !plan.OnPremisesDomainName.IsUnknown() {
-		planOnPremisesDomainName := plan.OnPremisesDomainName.ValueString()
-		requestBody.SetOnPremisesDomainName(&planOnPremisesDomainName)
+	if !tfPlan.OnPremisesDomainName.IsUnknown() {
+		tfPlanOnPremisesDomainName := tfPlan.OnPremisesDomainName.ValueString()
+		requestBody.SetOnPremisesDomainName(&tfPlanOnPremisesDomainName)
 	} else {
-		plan.OnPremisesDomainName = types.StringNull()
+		tfPlan.OnPremisesDomainName = types.StringNull()
 	}
 
-	if !plan.OnPremisesLastSyncDateTime.IsUnknown() {
-		planOnPremisesLastSyncDateTime := plan.OnPremisesLastSyncDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, planOnPremisesLastSyncDateTime)
+	if !tfPlan.OnPremisesLastSyncDateTime.IsUnknown() {
+		tfPlanOnPremisesLastSyncDateTime := tfPlan.OnPremisesLastSyncDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
 	} else {
-		plan.OnPremisesLastSyncDateTime = types.StringNull()
+		tfPlan.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 
-	if !plan.OnPremisesNetBiosName.IsUnknown() {
-		planOnPremisesNetBiosName := plan.OnPremisesNetBiosName.ValueString()
-		requestBody.SetOnPremisesNetBiosName(&planOnPremisesNetBiosName)
+	if !tfPlan.OnPremisesNetBiosName.IsUnknown() {
+		tfPlanOnPremisesNetBiosName := tfPlan.OnPremisesNetBiosName.ValueString()
+		requestBody.SetOnPremisesNetBiosName(&tfPlanOnPremisesNetBiosName)
 	} else {
-		plan.OnPremisesNetBiosName = types.StringNull()
+		tfPlan.OnPremisesNetBiosName = types.StringNull()
 	}
 
-	if len(plan.OnPremisesProvisioningErrors.Elements()) > 0 {
-		var planOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
-		for _, i := range plan.OnPremisesProvisioningErrors.Elements() {
+	if len(tfPlan.OnPremisesProvisioningErrors.Elements()) > 0 {
+		var tfPlanOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
+		for _, i := range tfPlan.OnPremisesProvisioningErrors.Elements() {
 			onPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
 			onPremisesProvisioningErrorsModel := groupOnPremisesProvisioningErrorModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorsModel)
 
 			if !onPremisesProvisioningErrorsModel.Category.IsUnknown() {
-				planCategory := onPremisesProvisioningErrorsModel.Category.ValueString()
-				onPremisesProvisioningErrors.SetCategory(&planCategory)
+				tfPlanCategory := onPremisesProvisioningErrorsModel.Category.ValueString()
+				onPremisesProvisioningErrors.SetCategory(&tfPlanCategory)
 			} else {
 				onPremisesProvisioningErrorsModel.Category = types.StringNull()
 			}
 
 			if !onPremisesProvisioningErrorsModel.OccurredDateTime.IsUnknown() {
-				planOccurredDateTime := onPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
-				t, _ := time.Parse(time.RFC3339, planOccurredDateTime)
+				tfPlanOccurredDateTime := onPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, tfPlanOccurredDateTime)
 				onPremisesProvisioningErrors.SetOccurredDateTime(&t)
 			} else {
 				onPremisesProvisioningErrorsModel.OccurredDateTime = types.StringNull()
 			}
 
 			if !onPremisesProvisioningErrorsModel.PropertyCausingError.IsUnknown() {
-				planPropertyCausingError := onPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
-				onPremisesProvisioningErrors.SetPropertyCausingError(&planPropertyCausingError)
+				tfPlanPropertyCausingError := onPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
+				onPremisesProvisioningErrors.SetPropertyCausingError(&tfPlanPropertyCausingError)
 			} else {
 				onPremisesProvisioningErrorsModel.PropertyCausingError = types.StringNull()
 			}
 
 			if !onPremisesProvisioningErrorsModel.Value.IsUnknown() {
-				planValue := onPremisesProvisioningErrorsModel.Value.ValueString()
-				onPremisesProvisioningErrors.SetValue(&planValue)
+				tfPlanValue := onPremisesProvisioningErrorsModel.Value.ValueString()
+				onPremisesProvisioningErrors.SetValue(&tfPlanValue)
 			} else {
 				onPremisesProvisioningErrorsModel.Value = types.StringNull()
 			}
 		}
-		requestBody.SetOnPremisesProvisioningErrors(planOnPremisesProvisioningErrors)
+		requestBody.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
 	} else {
-		plan.OnPremisesProvisioningErrors = types.ListNull(plan.OnPremisesProvisioningErrors.ElementType(ctx))
+		tfPlan.OnPremisesProvisioningErrors = types.ListNull(tfPlan.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
 
-	if !plan.OnPremisesSamAccountName.IsUnknown() {
-		planOnPremisesSamAccountName := plan.OnPremisesSamAccountName.ValueString()
-		requestBody.SetOnPremisesSamAccountName(&planOnPremisesSamAccountName)
+	if !tfPlan.OnPremisesSamAccountName.IsUnknown() {
+		tfPlanOnPremisesSamAccountName := tfPlan.OnPremisesSamAccountName.ValueString()
+		requestBody.SetOnPremisesSamAccountName(&tfPlanOnPremisesSamAccountName)
 	} else {
-		plan.OnPremisesSamAccountName = types.StringNull()
+		tfPlan.OnPremisesSamAccountName = types.StringNull()
 	}
 
-	if !plan.OnPremisesSecurityIdentifier.IsUnknown() {
-		planOnPremisesSecurityIdentifier := plan.OnPremisesSecurityIdentifier.ValueString()
-		requestBody.SetOnPremisesSecurityIdentifier(&planOnPremisesSecurityIdentifier)
+	if !tfPlan.OnPremisesSecurityIdentifier.IsUnknown() {
+		tfPlanOnPremisesSecurityIdentifier := tfPlan.OnPremisesSecurityIdentifier.ValueString()
+		requestBody.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
 	} else {
-		plan.OnPremisesSecurityIdentifier = types.StringNull()
+		tfPlan.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 
-	if !plan.OnPremisesSyncEnabled.IsUnknown() {
-		planOnPremisesSyncEnabled := plan.OnPremisesSyncEnabled.ValueBool()
-		requestBody.SetOnPremisesSyncEnabled(&planOnPremisesSyncEnabled)
+	if !tfPlan.OnPremisesSyncEnabled.IsUnknown() {
+		tfPlanOnPremisesSyncEnabled := tfPlan.OnPremisesSyncEnabled.ValueBool()
+		requestBody.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
 	} else {
-		plan.OnPremisesSyncEnabled = types.BoolNull()
+		tfPlan.OnPremisesSyncEnabled = types.BoolNull()
 	}
 
-	if !plan.PreferredDataLocation.IsUnknown() {
-		planPreferredDataLocation := plan.PreferredDataLocation.ValueString()
-		requestBody.SetPreferredDataLocation(&planPreferredDataLocation)
+	if !tfPlan.PreferredDataLocation.IsUnknown() {
+		tfPlanPreferredDataLocation := tfPlan.PreferredDataLocation.ValueString()
+		requestBody.SetPreferredDataLocation(&tfPlanPreferredDataLocation)
 	} else {
-		plan.PreferredDataLocation = types.StringNull()
+		tfPlan.PreferredDataLocation = types.StringNull()
 	}
 
-	if !plan.PreferredLanguage.IsUnknown() {
-		planPreferredLanguage := plan.PreferredLanguage.ValueString()
-		requestBody.SetPreferredLanguage(&planPreferredLanguage)
+	if !tfPlan.PreferredLanguage.IsUnknown() {
+		tfPlanPreferredLanguage := tfPlan.PreferredLanguage.ValueString()
+		requestBody.SetPreferredLanguage(&tfPlanPreferredLanguage)
 	} else {
-		plan.PreferredLanguage = types.StringNull()
+		tfPlan.PreferredLanguage = types.StringNull()
 	}
 
-	if len(plan.ProxyAddresses.Elements()) > 0 {
+	if len(tfPlan.ProxyAddresses.Elements()) > 0 {
 		var proxyAddresses []string
-		for _, i := range plan.ProxyAddresses.Elements() {
+		for _, i := range tfPlan.ProxyAddresses.Elements() {
 			proxyAddresses = append(proxyAddresses, i.String())
 		}
 		requestBody.SetProxyAddresses(proxyAddresses)
 	} else {
-		plan.ProxyAddresses = types.ListNull(types.StringType)
+		tfPlan.ProxyAddresses = types.ListNull(types.StringType)
 	}
 
-	if !plan.RenewedDateTime.IsUnknown() {
-		planRenewedDateTime := plan.RenewedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, planRenewedDateTime)
+	if !tfPlan.RenewedDateTime.IsUnknown() {
+		tfPlanRenewedDateTime := tfPlan.RenewedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanRenewedDateTime)
 		requestBody.SetRenewedDateTime(&t)
 	} else {
-		plan.RenewedDateTime = types.StringNull()
+		tfPlan.RenewedDateTime = types.StringNull()
 	}
 
-	if !plan.SecurityEnabled.IsUnknown() {
-		planSecurityEnabled := plan.SecurityEnabled.ValueBool()
-		requestBody.SetSecurityEnabled(&planSecurityEnabled)
+	if !tfPlan.SecurityEnabled.IsUnknown() {
+		tfPlanSecurityEnabled := tfPlan.SecurityEnabled.ValueBool()
+		requestBody.SetSecurityEnabled(&tfPlanSecurityEnabled)
 	} else {
-		plan.SecurityEnabled = types.BoolNull()
+		tfPlan.SecurityEnabled = types.BoolNull()
 	}
 
-	if !plan.SecurityIdentifier.IsUnknown() {
-		planSecurityIdentifier := plan.SecurityIdentifier.ValueString()
-		requestBody.SetSecurityIdentifier(&planSecurityIdentifier)
+	if !tfPlan.SecurityIdentifier.IsUnknown() {
+		tfPlanSecurityIdentifier := tfPlan.SecurityIdentifier.ValueString()
+		requestBody.SetSecurityIdentifier(&tfPlanSecurityIdentifier)
 	} else {
-		plan.SecurityIdentifier = types.StringNull()
+		tfPlan.SecurityIdentifier = types.StringNull()
 	}
 
-	if len(plan.ServiceProvisioningErrors.Elements()) > 0 {
-		var planServiceProvisioningErrors []models.ServiceProvisioningErrorable
-		for _, i := range plan.ServiceProvisioningErrors.Elements() {
+	if len(tfPlan.ServiceProvisioningErrors.Elements()) > 0 {
+		var tfPlanServiceProvisioningErrors []models.ServiceProvisioningErrorable
+		for _, i := range tfPlan.ServiceProvisioningErrors.Elements() {
 			serviceProvisioningErrors := models.NewServiceProvisioningError()
 			serviceProvisioningErrorsModel := groupServiceProvisioningErrorModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorsModel)
 
 			if !serviceProvisioningErrorsModel.CreatedDateTime.IsUnknown() {
-				planCreatedDateTime := serviceProvisioningErrorsModel.CreatedDateTime.ValueString()
-				t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
+				tfPlanCreatedDateTime := serviceProvisioningErrorsModel.CreatedDateTime.ValueString()
+				t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 				serviceProvisioningErrors.SetCreatedDateTime(&t)
 			} else {
 				serviceProvisioningErrorsModel.CreatedDateTime = types.StringNull()
 			}
 
 			if !serviceProvisioningErrorsModel.IsResolved.IsUnknown() {
-				planIsResolved := serviceProvisioningErrorsModel.IsResolved.ValueBool()
-				serviceProvisioningErrors.SetIsResolved(&planIsResolved)
+				tfPlanIsResolved := serviceProvisioningErrorsModel.IsResolved.ValueBool()
+				serviceProvisioningErrors.SetIsResolved(&tfPlanIsResolved)
 			} else {
 				serviceProvisioningErrorsModel.IsResolved = types.BoolNull()
 			}
 
 			if !serviceProvisioningErrorsModel.ServiceInstance.IsUnknown() {
-				planServiceInstance := serviceProvisioningErrorsModel.ServiceInstance.ValueString()
-				serviceProvisioningErrors.SetServiceInstance(&planServiceInstance)
+				tfPlanServiceInstance := serviceProvisioningErrorsModel.ServiceInstance.ValueString()
+				serviceProvisioningErrors.SetServiceInstance(&tfPlanServiceInstance)
 			} else {
 				serviceProvisioningErrorsModel.ServiceInstance = types.StringNull()
 			}
 		}
-		requestBody.SetServiceProvisioningErrors(planServiceProvisioningErrors)
+		requestBody.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
 	} else {
-		plan.ServiceProvisioningErrors = types.ListNull(plan.ServiceProvisioningErrors.ElementType(ctx))
+		tfPlan.ServiceProvisioningErrors = types.ListNull(tfPlan.ServiceProvisioningErrors.ElementType(ctx))
 	}
 
-	if !plan.Theme.IsUnknown() {
-		planTheme := plan.Theme.ValueString()
-		requestBody.SetTheme(&planTheme)
+	if !tfPlan.Theme.IsUnknown() {
+		tfPlanTheme := tfPlan.Theme.ValueString()
+		requestBody.SetTheme(&tfPlanTheme)
 	} else {
-		plan.Theme = types.StringNull()
+		tfPlan.Theme = types.StringNull()
 	}
 
-	if !plan.UniqueName.IsUnknown() {
-		planUniqueName := plan.UniqueName.ValueString()
-		requestBody.SetUniqueName(&planUniqueName)
+	if !tfPlan.UniqueName.IsUnknown() {
+		tfPlanUniqueName := tfPlan.UniqueName.ValueString()
+		requestBody.SetUniqueName(&tfPlanUniqueName)
 	} else {
-		plan.UniqueName = types.StringNull()
+		tfPlan.UniqueName = types.StringNull()
 	}
 
-	if !plan.Visibility.IsUnknown() {
-		planVisibility := plan.Visibility.ValueString()
-		requestBody.SetVisibility(&planVisibility)
+	if !tfPlan.Visibility.IsUnknown() {
+		tfPlanVisibility := tfPlan.Visibility.ValueString()
+		requestBody.SetVisibility(&tfPlanVisibility)
 	} else {
-		plan.Visibility = types.StringNull()
+		tfPlan.Visibility = types.StringNull()
 	}
 
 	// Create new group
@@ -852,10 +852,10 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// Map response body to schema and populate Computed attribute value
 	// TODO: Add support for other Computed values
-	plan.Id = types.StringValue(*result.GetId())
+	tfPlan.Id = types.StringValue(*result.GetId())
 
 	// Set state to fully populated data
-	diags = resp.State.Set(ctx, plan)
+	diags = resp.State.Set(ctx, tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

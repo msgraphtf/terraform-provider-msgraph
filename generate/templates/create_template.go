@@ -1,20 +1,20 @@
 // Create creates the resource and sets the initial Terraform state.
 func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	// Retrieve values from plan
-	var plan {{.BlockName.LowerCamel}}Model
-	diags := req.Plan.Get(ctx, &plan)
+	// Retrieve values from Terraform plan
+	var tfPlan {{.BlockName.LowerCamel}}Model
+	diags := req.Plan.Get(ctx, &tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Generate API request body from Plan
+	// Generate API request body from Terraform plan
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&plan{{.AttributeName.UpperCamel}})
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&tfPlan{{.AttributeName.UpperCamel}})
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
@@ -22,8 +22,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringEnumAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	parsed{{.AttributeName.UpperCamel}}, _ := models.Parse{{.NewModelMethod}}(plan{{.AttributeName.UpperCamel}})
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	parsed{{.AttributeName.UpperCamel}}, _ := models.Parse{{.NewModelMethod}}(tfPlan{{.AttributeName.UpperCamel}})
 	asserted{{.AttributeName.UpperCamel}} := parsed{{.AttributeName.UpperCamel}}.(models.{{.NewModelMethod}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&asserted{{.AttributeName.UpperCamel}})
 	} else {
@@ -33,8 +33,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringTimeAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	t, _ := time.Parse(time.RFC3339, plan{{.AttributeName.UpperCamel}})
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	t, _ := time.Parse(time.RFC3339, tfPlan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&t)
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
@@ -43,8 +43,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringUuidAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	u, _ := uuid.Parse(plan{{.AttributeName.UpperCamel}})
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	u, _ := uuid.Parse(tfPlan{{.AttributeName.UpperCamel}})
 	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&u)
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
@@ -53,8 +53,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateStringBase64UrlAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(plan{{.AttributeName.UpperCamel}}))
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.AttributeName.UpperCamel}}))
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
 	}
@@ -62,8 +62,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateInt64Attribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&tfPlan{{.AttributeName.UpperCamel}})
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.Int64Null()
 	}
@@ -71,8 +71,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateInt32Attribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	plan{{.AttributeName.UpperCamel}} := int32({{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}())
-	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	tfPlan{{.AttributeName.UpperCamel}} := int32({{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}())
+	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&tfPlan{{.AttributeName.UpperCamel}})
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.Int64Null()
 	}
@@ -80,8 +80,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateBoolAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	plan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&plan{{.AttributeName.UpperCamel}})
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(&tfPlan{{.AttributeName.UpperCamel}})
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.BoolNull()
 	}
@@ -114,14 +114,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateArrayObjectAttribute" }}
 	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
-		var plan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
+		var tfPlan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
 		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
 			{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 			{{.RequestBodyVar}}Model := {{.ModelName}}{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
 			{{template "generate_create" .NestedCreate}}
 		}
-		{{.ParentRequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(plan{{.AttributeName.UpperCamel}})
+		{{.ParentRequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(tfPlan{{.AttributeName.UpperCamel}})
 	} else {
 		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.ElementType(ctx))
 	}
@@ -183,10 +183,10 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	// Map response body to schema and populate Computed attribute value
 	// TODO: Add support for other Computed values
-	plan.Id = types.StringValue(*result.GetId())
+	tfPlan.Id = types.StringValue(*result.GetId())
 
 	// Set state to fully populated data
-	diags = resp.State.Set(ctx, plan)
+	diags = resp.State.Set(ctx, tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
