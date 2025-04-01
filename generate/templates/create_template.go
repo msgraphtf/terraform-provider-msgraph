@@ -12,110 +12,110 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	sdkModel{{.BlockName.UpperCamel}} := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	if !{{.PlanVar}}.IsUnknown(){
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}.{{.PlanValueMethod}}()
 	{{.SdkModelVarName}}.Set{{.SetModelMethod}}(&tfPlan{{.AttributeName.UpperCamel}})
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
+		{{.PlanVar}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringEnumAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	if !{{.PlanVar}}.IsUnknown(){
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}.{{.PlanValueMethod}}()
 	parsed{{.AttributeName.UpperCamel}}, _ := models.Parse{{.NewModelMethod}}(tfPlan{{.AttributeName.UpperCamel}})
 	asserted{{.AttributeName.UpperCamel}} := parsed{{.AttributeName.UpperCamel}}.(models.{{.NewModelMethod}})
 	{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(&asserted{{.AttributeName.UpperCamel}})
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
+		{{.PlanVar}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringTimeAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	if !{{.PlanVar}}.IsUnknown(){
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}.{{.PlanValueMethod}}()
 	t, _ := time.Parse(time.RFC3339, tfPlan{{.AttributeName.UpperCamel}})
 	{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(&t)
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
+		{{.PlanVar}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringUuidAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	if !{{.PlanVar}}.IsUnknown(){
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}.{{.PlanValueMethod}}()
 	u, _ := uuid.Parse(tfPlan{{.AttributeName.UpperCamel}})
 	{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(&u)
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
+		{{.PlanVar}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateStringBase64UrlAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	if !{{.PlanVar}}.IsUnknown(){
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}.{{.PlanValueMethod}}()
 	{{.SdkModelVarName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.AttributeName.UpperCamel}}))
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.StringNull()
+		{{.PlanVar}} = types.StringNull()
 	}
 	{{- end}}
 
 	{{- define "CreateInt64Attribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	if !{{.PlanVar}}.IsUnknown(){
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}.{{.PlanValueMethod}}()
 	{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(&tfPlan{{.AttributeName.UpperCamel}})
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.Int64Null()
+		{{.PlanVar}} = types.Int64Null()
 	}
 	{{- end}}
 
 	{{- define "CreateInt32Attribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	tfPlan{{.AttributeName.UpperCamel}} := int32({{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}())
+	if !{{.PlanVar}}.IsUnknown(){
+	tfPlan{{.AttributeName.UpperCamel}} := int32({{.PlanVar}}.{{.PlanValueMethod}}())
 	{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(&tfPlan{{.AttributeName.UpperCamel}})
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.Int64Null()
+		{{.PlanVar}} = types.Int64Null()
 	}
 	{{- end}}
 
 	{{- define "CreateBoolAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
-	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}{{.AttributeName.UpperCamel}}.{{.PlanValueMethod}}()
+	if !{{.PlanVar}}.IsUnknown(){
+	tfPlan{{.AttributeName.UpperCamel}} := {{.PlanVar}}.{{.PlanValueMethod}}()
 	{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(&tfPlan{{.AttributeName.UpperCamel}})
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.BoolNull()
+		{{.PlanVar}} = types.BoolNull()
 	}
 	{{- end}}
 
 	{{- define "CreateArrayStringAttribute" }}
-	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
+	if len({{.PlanVar}}.Elements()) > 0 {
 		var {{.AttributeName.LowerCamel}} []string
-		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
+		for _, i := range {{.PlanVar}}.Elements() {
 			{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
 		}
 		{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull(types.StringType)
+		{{.PlanVar}} = types.ListNull(types.StringType)
 	}
 	{{- end}}
 
 	{{- define "CreateArrayUuidAttribute" }}
-	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
+	if len({{.PlanVar}}.Elements()) > 0 {
 		var {{.AttributeName.UpperCamel}} []uuid.UUID
-		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
+		for _, i := range {{.PlanVar}}.Elements() {
 			u, _ := uuid.Parse(i.String())
 			{{.AttributeName.UpperCamel}} = append({{.AttributeName.UpperCamel}}, u)
 		}
 		{{.SdkModelVarName}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.UpperCamel}})
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull(types.StringType)
+		{{.PlanVar}} = types.ListNull(types.StringType)
 	}
 	{{- end}}
 
 	{{- define "CreateArrayObjectAttribute" }}
-	if len({{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements()) > 0 {
+	if len({{.PlanVar}}.Elements()) > 0 {
 		var tfPlan{{.AttributeName.UpperCamel}} []models.{{.NewModelMethod}}able
-		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
+		for _, i := range {{.PlanVar}}.Elements() {
 			{{.SdkModelVarName}} := models.New{{.NewModelMethod}}()
 			{{.TfModelVarName}} := {{.ModelName}}{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.TfModelVarName}})
@@ -123,12 +123,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		}
 		{{.ParentSdkModelVarName}}.Set{{.AttributeName.UpperCamel}}(tfPlan{{.AttributeName.UpperCamel}})
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ListNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.ElementType(ctx))
+		{{.PlanVar}} = types.ListNull({{.PlanVar}}.ElementType(ctx))
 	}
 	{{- end}}
 
 	{{- define "CreateObjectAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.IsUnknown(){
+	if !{{.PlanVar}}.IsUnknown(){
 		{{.SdkModelVarName}} := models.New{{.NewModelMethod}}()
 		{{.TfModelVarName}} := {{.ModelName}}{}
 		{{.NestedPlan}}.As(ctx, &{{.TfModelVarName}}, basetypes.ObjectAsOptions{})
@@ -137,7 +137,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		objectValue, _ := types.ObjectValueFrom(ctx, {{.TfModelVarName}}.AttributeTypes(), {{.SdkModelVarName}})
 		{{.ParentPlanVar}} = objectValue
 	} else {
-		{{.PlanVar}}{{.AttributeName.UpperCamel}} = types.ObjectNull({{.PlanVar}}{{.AttributeName.UpperCamel}}.AttributeTypes(ctx))
+		{{.PlanVar}} = types.ObjectNull({{.PlanVar}}.AttributeTypes(ctx))
 	}
 	{{- end}}
 

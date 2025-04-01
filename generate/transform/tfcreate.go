@@ -149,11 +149,11 @@ func (cra createRequestAttribute) AttributeType() string {
 func (cra createRequestAttribute) PlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "."
+		return cra.Parent.TfModelVarName() + "." + cra.AttributeName().UpperCamel()
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return cra.Parent.TfModelVarName() + "."
+		return cra.Parent.TfModelVarName() + "." + cra.AttributeName().UpperCamel()
 	} else {
-		return "tfPlan."
+		return "tfPlan." + cra.AttributeName().UpperCamel()
 	}
 
 }
