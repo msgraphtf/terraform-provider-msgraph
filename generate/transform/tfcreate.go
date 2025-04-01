@@ -149,9 +149,9 @@ func (cra createRequestAttribute) AttributeType() string {
 func (cra createRequestAttribute) PlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.RequestBodyVar() + "Model."
+		return cra.Parent.SdkModelVarName() + "Model."
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return cra.Parent.RequestBodyVar() + "Model."
+		return cra.Parent.SdkModelVarName() + "Model."
 	} else {
 		return "tfPlan."
 	}
@@ -189,7 +189,7 @@ func (cra createRequestAttribute) PlanValueMethod() string {
 func (cra createRequestAttribute) NestedPlan() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.RequestBodyVar() + "Model." + cra.AttributeName().UpperCamel()
+		return cra.Parent.SdkModelVarName() + "Model." + cra.AttributeName().UpperCamel()
 	} else {
 		return "tfPlan." + cra.AttributeName().UpperCamel()
 	}
@@ -226,32 +226,57 @@ func (cra createRequestAttribute) ModelName() string {
 	return cra.CreateRequest.BlockName.LowerCamel() + upperFirst(cra.Property.ObjectOf.Title) + "Model"
 }
 
-func (cra createRequestAttribute) RequestBodyVar() string {
+// Generates the variable name of the SDK model (microsoftgraph/msgraph-sdk-go/models)
+// The variable is used as the request body when performing the Create/POST operation
+// Multiple models need to be created an assembled when there are nested objects
+func (cra createRequestAttribute) SdkModelVarName() string {
 
 	if cra.AttributeType() == "CreateObjectAttribute" {
-		return cra.Property.Name
+		return "sdkModel" + upperFirst(cra.Property.Name)
 	} else if cra.AttributeType() == "CreateArrayObjectAttribute" {
-		return cra.Property.Name
+		return "sdkModel" + upperFirst(cra.Property.Name)
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.RequestBodyVar()
+		return cra.Parent.SdkModelVarName()
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return cra.Parent.RequestBodyVar()
+		return cra.Parent.SdkModelVarName()
 	} else if cra.Property.ArrayOf == "object" {
-		return cra.Property.ObjectOf.Title
+		return "sdkModel" + upperFirst(cra.Property.ObjectOf.Title)
 	} else {
 		return "sdkModel" + cra.CreateRequest.BlockName.UpperCamel()
 	}
 
 }
 
-func (cra createRequestAttribute) ParentRequestBodyVar() string {
+// Gets or generates the variable name of the SDK model (microsoftgraph/msgraph-sdk-go/models)
+// This is used in Object attributes
+func (cra createRequestAttribute) ParentSdkModelVarName() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.RequestBodyVar()
+		return cra.Parent.SdkModelVarName()
 	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
-		return cra.Parent.RequestBodyVar()
+		return cra.Parent.SdkModelVarName()
 	} else {
 		return "sdkModel" + cra.CreateRequest.BlockName.UpperCamel()
+	}
+
+}
+
+// Generates the variable name of the Terraform model
+// The variable contains the terraform plan data for the given object
+func (cra createRequestAttribute) TfModelVarName() string {
+
+	if cra.AttributeType() == "CreateObjectAttribute" {
+		return "tfModel" + upperFirst(cra.Property.Name)
+	} else if cra.AttributeType() == "CreateArrayObjectAttribute" {
+		return "tfModel" + upperFirst(cra.Property.Name)
+	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
+		return cra.Parent.TfModelVarName()
+	} else if cra.Parent != nil && cra.Parent.AttributeType() == "CreateArrayObjectAttribute" {
+		return cra.Parent.TfModelVarName()
+	} else if cra.Property.ArrayOf == "object" {
+		return "tfModel" + upperFirst(cra.Property.ObjectOf.Title)
+	} else {
+		return "tfModel" + cra.CreateRequest.BlockName.UpperCamel()
 	}
 
 }
@@ -259,7 +284,7 @@ func (cra createRequestAttribute) ParentRequestBodyVar() string {
 func (cra createRequestAttribute) ParentPlanVar() string {
 
 	if cra.Parent != nil && cra.Parent.AttributeType() == "CreateObjectAttribute" {
-		return cra.Parent.RequestBodyVar() + "Model." + cra.AttributeName().UpperCamel()
+		return cra.Parent.SdkModelVarName() + "Model." + cra.AttributeName().UpperCamel()
 	} else {
 		return "tfPlan." + cra.AttributeName().UpperCamel()
 	}

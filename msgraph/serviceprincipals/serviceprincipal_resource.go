@@ -826,49 +826,49 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	if len(tfPlan.AddIns.Elements()) > 0 {
 		var tfPlanAddIns []models.AddInable
 		for _, i := range tfPlan.AddIns.Elements() {
-			addIns := models.NewAddIn()
-			addInsModel := servicePrincipalAddInModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &addInsModel)
+			sdkModelAddIns := models.NewAddIn()
+			sdkModelAddInsModel := servicePrincipalAddInModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelAddInsModel)
 
-			if !addInsModel.Id.IsUnknown() {
-				tfPlanId := addInsModel.Id.ValueString()
+			if !sdkModelAddInsModel.Id.IsUnknown() {
+				tfPlanId := sdkModelAddInsModel.Id.ValueString()
 				u, _ := uuid.Parse(tfPlanId)
-				addIns.SetId(&u)
+				sdkModelAddIns.SetId(&u)
 			} else {
-				addInsModel.Id = types.StringNull()
+				sdkModelAddInsModel.Id = types.StringNull()
 			}
 
-			if len(addInsModel.Properties.Elements()) > 0 {
+			if len(sdkModelAddInsModel.Properties.Elements()) > 0 {
 				var tfPlanProperties []models.KeyValueable
-				for _, i := range addInsModel.Properties.Elements() {
-					properties := models.NewKeyValue()
-					propertiesModel := servicePrincipalKeyValueModel{}
-					types.ListValueFrom(ctx, i.Type(ctx), &propertiesModel)
+				for _, i := range sdkModelAddInsModel.Properties.Elements() {
+					sdkModelProperties := models.NewKeyValue()
+					sdkModelPropertiesModel := servicePrincipalKeyValueModel{}
+					types.ListValueFrom(ctx, i.Type(ctx), &sdkModelPropertiesModel)
 
-					if !propertiesModel.Key.IsUnknown() {
-						tfPlanKey := propertiesModel.Key.ValueString()
-						properties.SetKey(&tfPlanKey)
+					if !sdkModelPropertiesModel.Key.IsUnknown() {
+						tfPlanKey := sdkModelPropertiesModel.Key.ValueString()
+						sdkModelProperties.SetKey(&tfPlanKey)
 					} else {
-						propertiesModel.Key = types.StringNull()
+						sdkModelPropertiesModel.Key = types.StringNull()
 					}
 
-					if !propertiesModel.Value.IsUnknown() {
-						tfPlanValue := propertiesModel.Value.ValueString()
-						properties.SetValue(&tfPlanValue)
+					if !sdkModelPropertiesModel.Value.IsUnknown() {
+						tfPlanValue := sdkModelPropertiesModel.Value.ValueString()
+						sdkModelProperties.SetValue(&tfPlanValue)
 					} else {
-						propertiesModel.Value = types.StringNull()
+						sdkModelPropertiesModel.Value = types.StringNull()
 					}
 				}
-				addIns.SetProperties(tfPlanProperties)
+				sdkModelAddIns.SetProperties(tfPlanProperties)
 			} else {
-				addInsModel.Properties = types.ListNull(addInsModel.Properties.ElementType(ctx))
+				sdkModelAddInsModel.Properties = types.ListNull(sdkModelAddInsModel.Properties.ElementType(ctx))
 			}
 
-			if !addInsModel.Type.IsUnknown() {
-				tfPlanType := addInsModel.Type.ValueString()
-				addIns.SetTypeEscaped(&tfPlanType)
+			if !sdkModelAddInsModel.Type.IsUnknown() {
+				tfPlanType := sdkModelAddInsModel.Type.ValueString()
+				sdkModelAddIns.SetTypeEscaped(&tfPlanType)
 			} else {
-				addInsModel.Type = types.StringNull()
+				sdkModelAddInsModel.Type = types.StringNull()
 			}
 		}
 		sdkModelServicePrincipal.SetAddIns(tfPlanAddIns)
@@ -925,61 +925,61 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	if len(tfPlan.AppRoles.Elements()) > 0 {
 		var tfPlanAppRoles []models.AppRoleable
 		for _, i := range tfPlan.AppRoles.Elements() {
-			appRoles := models.NewAppRole()
-			appRolesModel := servicePrincipalAppRoleModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &appRolesModel)
+			sdkModelAppRoles := models.NewAppRole()
+			sdkModelAppRolesModel := servicePrincipalAppRoleModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelAppRolesModel)
 
-			if len(appRolesModel.AllowedMemberTypes.Elements()) > 0 {
+			if len(sdkModelAppRolesModel.AllowedMemberTypes.Elements()) > 0 {
 				var allowedMemberTypes []string
-				for _, i := range appRolesModel.AllowedMemberTypes.Elements() {
+				for _, i := range sdkModelAppRolesModel.AllowedMemberTypes.Elements() {
 					allowedMemberTypes = append(allowedMemberTypes, i.String())
 				}
-				appRoles.SetAllowedMemberTypes(allowedMemberTypes)
+				sdkModelAppRoles.SetAllowedMemberTypes(allowedMemberTypes)
 			} else {
-				appRolesModel.AllowedMemberTypes = types.ListNull(types.StringType)
+				sdkModelAppRolesModel.AllowedMemberTypes = types.ListNull(types.StringType)
 			}
 
-			if !appRolesModel.Description.IsUnknown() {
-				tfPlanDescription := appRolesModel.Description.ValueString()
-				appRoles.SetDescription(&tfPlanDescription)
+			if !sdkModelAppRolesModel.Description.IsUnknown() {
+				tfPlanDescription := sdkModelAppRolesModel.Description.ValueString()
+				sdkModelAppRoles.SetDescription(&tfPlanDescription)
 			} else {
-				appRolesModel.Description = types.StringNull()
+				sdkModelAppRolesModel.Description = types.StringNull()
 			}
 
-			if !appRolesModel.DisplayName.IsUnknown() {
-				tfPlanDisplayName := appRolesModel.DisplayName.ValueString()
-				appRoles.SetDisplayName(&tfPlanDisplayName)
+			if !sdkModelAppRolesModel.DisplayName.IsUnknown() {
+				tfPlanDisplayName := sdkModelAppRolesModel.DisplayName.ValueString()
+				sdkModelAppRoles.SetDisplayName(&tfPlanDisplayName)
 			} else {
-				appRolesModel.DisplayName = types.StringNull()
+				sdkModelAppRolesModel.DisplayName = types.StringNull()
 			}
 
-			if !appRolesModel.Id.IsUnknown() {
-				tfPlanId := appRolesModel.Id.ValueString()
+			if !sdkModelAppRolesModel.Id.IsUnknown() {
+				tfPlanId := sdkModelAppRolesModel.Id.ValueString()
 				u, _ := uuid.Parse(tfPlanId)
-				appRoles.SetId(&u)
+				sdkModelAppRoles.SetId(&u)
 			} else {
-				appRolesModel.Id = types.StringNull()
+				sdkModelAppRolesModel.Id = types.StringNull()
 			}
 
-			if !appRolesModel.IsEnabled.IsUnknown() {
-				tfPlanIsEnabled := appRolesModel.IsEnabled.ValueBool()
-				appRoles.SetIsEnabled(&tfPlanIsEnabled)
+			if !sdkModelAppRolesModel.IsEnabled.IsUnknown() {
+				tfPlanIsEnabled := sdkModelAppRolesModel.IsEnabled.ValueBool()
+				sdkModelAppRoles.SetIsEnabled(&tfPlanIsEnabled)
 			} else {
-				appRolesModel.IsEnabled = types.BoolNull()
+				sdkModelAppRolesModel.IsEnabled = types.BoolNull()
 			}
 
-			if !appRolesModel.Origin.IsUnknown() {
-				tfPlanOrigin := appRolesModel.Origin.ValueString()
-				appRoles.SetOrigin(&tfPlanOrigin)
+			if !sdkModelAppRolesModel.Origin.IsUnknown() {
+				tfPlanOrigin := sdkModelAppRolesModel.Origin.ValueString()
+				sdkModelAppRoles.SetOrigin(&tfPlanOrigin)
 			} else {
-				appRolesModel.Origin = types.StringNull()
+				sdkModelAppRolesModel.Origin = types.StringNull()
 			}
 
-			if !appRolesModel.Value.IsUnknown() {
-				tfPlanValue := appRolesModel.Value.ValueString()
-				appRoles.SetValue(&tfPlanValue)
+			if !sdkModelAppRolesModel.Value.IsUnknown() {
+				tfPlanValue := sdkModelAppRolesModel.Value.ValueString()
+				sdkModelAppRoles.SetValue(&tfPlanValue)
 			} else {
-				appRolesModel.Value = types.StringNull()
+				sdkModelAppRolesModel.Value = types.StringNull()
 			}
 		}
 		sdkModelServicePrincipal.SetAppRoles(tfPlanAppRoles)
@@ -995,12 +995,12 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if !tfPlan.CustomSecurityAttributes.IsUnknown() {
-		customSecurityAttributes := models.NewCustomSecurityAttributeValue()
-		customSecurityAttributesModel := servicePrincipalCustomSecurityAttributeValueModel{}
-		tfPlan.CustomSecurityAttributes.As(ctx, &customSecurityAttributesModel, basetypes.ObjectAsOptions{})
+		sdkModelCustomSecurityAttributes := models.NewCustomSecurityAttributeValue()
+		sdkModelCustomSecurityAttributesModel := servicePrincipalCustomSecurityAttributeValueModel{}
+		tfPlan.CustomSecurityAttributes.As(ctx, &sdkModelCustomSecurityAttributesModel, basetypes.ObjectAsOptions{})
 
-		sdkModelServicePrincipal.SetCustomSecurityAttributes(customSecurityAttributes)
-		objectValue, _ := types.ObjectValueFrom(ctx, customSecurityAttributesModel.AttributeTypes(), customSecurityAttributesModel)
+		sdkModelServicePrincipal.SetCustomSecurityAttributes(sdkModelCustomSecurityAttributes)
+		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelCustomSecurityAttributesModel.AttributeTypes(), sdkModelCustomSecurityAttributesModel)
 		tfPlan.CustomSecurityAttributes = objectValue
 	} else {
 		tfPlan.CustomSecurityAttributes = types.ObjectNull(tfPlan.CustomSecurityAttributes.AttributeTypes(ctx))
@@ -1035,46 +1035,46 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if !tfPlan.Info.IsUnknown() {
-		info := models.NewInformationalUrl()
-		infoModel := servicePrincipalInformationalUrlModel{}
-		tfPlan.Info.As(ctx, &infoModel, basetypes.ObjectAsOptions{})
+		sdkModelInfo := models.NewInformationalUrl()
+		sdkModelInfoModel := servicePrincipalInformationalUrlModel{}
+		tfPlan.Info.As(ctx, &sdkModelInfoModel, basetypes.ObjectAsOptions{})
 
-		if !infoModel.LogoUrl.IsUnknown() {
-			tfPlanLogoUrl := infoModel.LogoUrl.ValueString()
-			info.SetLogoUrl(&tfPlanLogoUrl)
+		if !sdkModelInfoModel.LogoUrl.IsUnknown() {
+			tfPlanLogoUrl := sdkModelInfoModel.LogoUrl.ValueString()
+			sdkModelInfo.SetLogoUrl(&tfPlanLogoUrl)
 		} else {
-			infoModel.LogoUrl = types.StringNull()
+			sdkModelInfoModel.LogoUrl = types.StringNull()
 		}
 
-		if !infoModel.MarketingUrl.IsUnknown() {
-			tfPlanMarketingUrl := infoModel.MarketingUrl.ValueString()
-			info.SetMarketingUrl(&tfPlanMarketingUrl)
+		if !sdkModelInfoModel.MarketingUrl.IsUnknown() {
+			tfPlanMarketingUrl := sdkModelInfoModel.MarketingUrl.ValueString()
+			sdkModelInfo.SetMarketingUrl(&tfPlanMarketingUrl)
 		} else {
-			infoModel.MarketingUrl = types.StringNull()
+			sdkModelInfoModel.MarketingUrl = types.StringNull()
 		}
 
-		if !infoModel.PrivacyStatementUrl.IsUnknown() {
-			tfPlanPrivacyStatementUrl := infoModel.PrivacyStatementUrl.ValueString()
-			info.SetPrivacyStatementUrl(&tfPlanPrivacyStatementUrl)
+		if !sdkModelInfoModel.PrivacyStatementUrl.IsUnknown() {
+			tfPlanPrivacyStatementUrl := sdkModelInfoModel.PrivacyStatementUrl.ValueString()
+			sdkModelInfo.SetPrivacyStatementUrl(&tfPlanPrivacyStatementUrl)
 		} else {
-			infoModel.PrivacyStatementUrl = types.StringNull()
+			sdkModelInfoModel.PrivacyStatementUrl = types.StringNull()
 		}
 
-		if !infoModel.SupportUrl.IsUnknown() {
-			tfPlanSupportUrl := infoModel.SupportUrl.ValueString()
-			info.SetSupportUrl(&tfPlanSupportUrl)
+		if !sdkModelInfoModel.SupportUrl.IsUnknown() {
+			tfPlanSupportUrl := sdkModelInfoModel.SupportUrl.ValueString()
+			sdkModelInfo.SetSupportUrl(&tfPlanSupportUrl)
 		} else {
-			infoModel.SupportUrl = types.StringNull()
+			sdkModelInfoModel.SupportUrl = types.StringNull()
 		}
 
-		if !infoModel.TermsOfServiceUrl.IsUnknown() {
-			tfPlanTermsOfServiceUrl := infoModel.TermsOfServiceUrl.ValueString()
-			info.SetTermsOfServiceUrl(&tfPlanTermsOfServiceUrl)
+		if !sdkModelInfoModel.TermsOfServiceUrl.IsUnknown() {
+			tfPlanTermsOfServiceUrl := sdkModelInfoModel.TermsOfServiceUrl.ValueString()
+			sdkModelInfo.SetTermsOfServiceUrl(&tfPlanTermsOfServiceUrl)
 		} else {
-			infoModel.TermsOfServiceUrl = types.StringNull()
+			sdkModelInfoModel.TermsOfServiceUrl = types.StringNull()
 		}
-		sdkModelServicePrincipal.SetInfo(info)
-		objectValue, _ := types.ObjectValueFrom(ctx, infoModel.AttributeTypes(), infoModel)
+		sdkModelServicePrincipal.SetInfo(sdkModelInfo)
+		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelInfoModel.AttributeTypes(), sdkModelInfoModel)
 		tfPlan.Info = objectValue
 	} else {
 		tfPlan.Info = types.ObjectNull(tfPlan.Info.AttributeTypes(ctx))
@@ -1083,67 +1083,67 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	if len(tfPlan.KeyCredentials.Elements()) > 0 {
 		var tfPlanKeyCredentials []models.KeyCredentialable
 		for _, i := range tfPlan.KeyCredentials.Elements() {
-			keyCredentials := models.NewKeyCredential()
-			keyCredentialsModel := servicePrincipalKeyCredentialModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &keyCredentialsModel)
+			sdkModelKeyCredentials := models.NewKeyCredential()
+			sdkModelKeyCredentialsModel := servicePrincipalKeyCredentialModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelKeyCredentialsModel)
 
-			if !keyCredentialsModel.CustomKeyIdentifier.IsUnknown() {
-				tfPlanCustomKeyIdentifier := keyCredentialsModel.CustomKeyIdentifier.ValueString()
-				keyCredentials.SetCustomKeyIdentifier([]byte(tfPlanCustomKeyIdentifier))
+			if !sdkModelKeyCredentialsModel.CustomKeyIdentifier.IsUnknown() {
+				tfPlanCustomKeyIdentifier := sdkModelKeyCredentialsModel.CustomKeyIdentifier.ValueString()
+				sdkModelKeyCredentials.SetCustomKeyIdentifier([]byte(tfPlanCustomKeyIdentifier))
 			} else {
-				keyCredentialsModel.CustomKeyIdentifier = types.StringNull()
+				sdkModelKeyCredentialsModel.CustomKeyIdentifier = types.StringNull()
 			}
 
-			if !keyCredentialsModel.DisplayName.IsUnknown() {
-				tfPlanDisplayName := keyCredentialsModel.DisplayName.ValueString()
-				keyCredentials.SetDisplayName(&tfPlanDisplayName)
+			if !sdkModelKeyCredentialsModel.DisplayName.IsUnknown() {
+				tfPlanDisplayName := sdkModelKeyCredentialsModel.DisplayName.ValueString()
+				sdkModelKeyCredentials.SetDisplayName(&tfPlanDisplayName)
 			} else {
-				keyCredentialsModel.DisplayName = types.StringNull()
+				sdkModelKeyCredentialsModel.DisplayName = types.StringNull()
 			}
 
-			if !keyCredentialsModel.EndDateTime.IsUnknown() {
-				tfPlanEndDateTime := keyCredentialsModel.EndDateTime.ValueString()
+			if !sdkModelKeyCredentialsModel.EndDateTime.IsUnknown() {
+				tfPlanEndDateTime := sdkModelKeyCredentialsModel.EndDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanEndDateTime)
-				keyCredentials.SetEndDateTime(&t)
+				sdkModelKeyCredentials.SetEndDateTime(&t)
 			} else {
-				keyCredentialsModel.EndDateTime = types.StringNull()
+				sdkModelKeyCredentialsModel.EndDateTime = types.StringNull()
 			}
 
-			if !keyCredentialsModel.Key.IsUnknown() {
-				tfPlanKey := keyCredentialsModel.Key.ValueString()
-				keyCredentials.SetKey([]byte(tfPlanKey))
+			if !sdkModelKeyCredentialsModel.Key.IsUnknown() {
+				tfPlanKey := sdkModelKeyCredentialsModel.Key.ValueString()
+				sdkModelKeyCredentials.SetKey([]byte(tfPlanKey))
 			} else {
-				keyCredentialsModel.Key = types.StringNull()
+				sdkModelKeyCredentialsModel.Key = types.StringNull()
 			}
 
-			if !keyCredentialsModel.KeyId.IsUnknown() {
-				tfPlanKeyId := keyCredentialsModel.KeyId.ValueString()
+			if !sdkModelKeyCredentialsModel.KeyId.IsUnknown() {
+				tfPlanKeyId := sdkModelKeyCredentialsModel.KeyId.ValueString()
 				u, _ := uuid.Parse(tfPlanKeyId)
-				keyCredentials.SetKeyId(&u)
+				sdkModelKeyCredentials.SetKeyId(&u)
 			} else {
-				keyCredentialsModel.KeyId = types.StringNull()
+				sdkModelKeyCredentialsModel.KeyId = types.StringNull()
 			}
 
-			if !keyCredentialsModel.StartDateTime.IsUnknown() {
-				tfPlanStartDateTime := keyCredentialsModel.StartDateTime.ValueString()
+			if !sdkModelKeyCredentialsModel.StartDateTime.IsUnknown() {
+				tfPlanStartDateTime := sdkModelKeyCredentialsModel.StartDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanStartDateTime)
-				keyCredentials.SetStartDateTime(&t)
+				sdkModelKeyCredentials.SetStartDateTime(&t)
 			} else {
-				keyCredentialsModel.StartDateTime = types.StringNull()
+				sdkModelKeyCredentialsModel.StartDateTime = types.StringNull()
 			}
 
-			if !keyCredentialsModel.Type.IsUnknown() {
-				tfPlanType := keyCredentialsModel.Type.ValueString()
-				keyCredentials.SetTypeEscaped(&tfPlanType)
+			if !sdkModelKeyCredentialsModel.Type.IsUnknown() {
+				tfPlanType := sdkModelKeyCredentialsModel.Type.ValueString()
+				sdkModelKeyCredentials.SetTypeEscaped(&tfPlanType)
 			} else {
-				keyCredentialsModel.Type = types.StringNull()
+				sdkModelKeyCredentialsModel.Type = types.StringNull()
 			}
 
-			if !keyCredentialsModel.Usage.IsUnknown() {
-				tfPlanUsage := keyCredentialsModel.Usage.ValueString()
-				keyCredentials.SetUsage(&tfPlanUsage)
+			if !sdkModelKeyCredentialsModel.Usage.IsUnknown() {
+				tfPlanUsage := sdkModelKeyCredentialsModel.Usage.ValueString()
+				sdkModelKeyCredentials.SetUsage(&tfPlanUsage)
 			} else {
-				keyCredentialsModel.Usage = types.StringNull()
+				sdkModelKeyCredentialsModel.Usage = types.StringNull()
 			}
 		}
 		sdkModelServicePrincipal.SetKeyCredentials(tfPlanKeyCredentials)
@@ -1185,72 +1185,72 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	if len(tfPlan.Oauth2PermissionScopes.Elements()) > 0 {
 		var tfPlanOauth2PermissionScopes []models.PermissionScopeable
 		for _, i := range tfPlan.Oauth2PermissionScopes.Elements() {
-			oauth2PermissionScopes := models.NewPermissionScope()
-			oauth2PermissionScopesModel := servicePrincipalPermissionScopeModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &oauth2PermissionScopesModel)
+			sdkModelOauth2PermissionScopes := models.NewPermissionScope()
+			sdkModelOauth2PermissionScopesModel := servicePrincipalPermissionScopeModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelOauth2PermissionScopesModel)
 
-			if !oauth2PermissionScopesModel.AdminConsentDescription.IsUnknown() {
-				tfPlanAdminConsentDescription := oauth2PermissionScopesModel.AdminConsentDescription.ValueString()
-				oauth2PermissionScopes.SetAdminConsentDescription(&tfPlanAdminConsentDescription)
+			if !sdkModelOauth2PermissionScopesModel.AdminConsentDescription.IsUnknown() {
+				tfPlanAdminConsentDescription := sdkModelOauth2PermissionScopesModel.AdminConsentDescription.ValueString()
+				sdkModelOauth2PermissionScopes.SetAdminConsentDescription(&tfPlanAdminConsentDescription)
 			} else {
-				oauth2PermissionScopesModel.AdminConsentDescription = types.StringNull()
+				sdkModelOauth2PermissionScopesModel.AdminConsentDescription = types.StringNull()
 			}
 
-			if !oauth2PermissionScopesModel.AdminConsentDisplayName.IsUnknown() {
-				tfPlanAdminConsentDisplayName := oauth2PermissionScopesModel.AdminConsentDisplayName.ValueString()
-				oauth2PermissionScopes.SetAdminConsentDisplayName(&tfPlanAdminConsentDisplayName)
+			if !sdkModelOauth2PermissionScopesModel.AdminConsentDisplayName.IsUnknown() {
+				tfPlanAdminConsentDisplayName := sdkModelOauth2PermissionScopesModel.AdminConsentDisplayName.ValueString()
+				sdkModelOauth2PermissionScopes.SetAdminConsentDisplayName(&tfPlanAdminConsentDisplayName)
 			} else {
-				oauth2PermissionScopesModel.AdminConsentDisplayName = types.StringNull()
+				sdkModelOauth2PermissionScopesModel.AdminConsentDisplayName = types.StringNull()
 			}
 
-			if !oauth2PermissionScopesModel.Id.IsUnknown() {
-				tfPlanId := oauth2PermissionScopesModel.Id.ValueString()
+			if !sdkModelOauth2PermissionScopesModel.Id.IsUnknown() {
+				tfPlanId := sdkModelOauth2PermissionScopesModel.Id.ValueString()
 				u, _ := uuid.Parse(tfPlanId)
-				oauth2PermissionScopes.SetId(&u)
+				sdkModelOauth2PermissionScopes.SetId(&u)
 			} else {
-				oauth2PermissionScopesModel.Id = types.StringNull()
+				sdkModelOauth2PermissionScopesModel.Id = types.StringNull()
 			}
 
-			if !oauth2PermissionScopesModel.IsEnabled.IsUnknown() {
-				tfPlanIsEnabled := oauth2PermissionScopesModel.IsEnabled.ValueBool()
-				oauth2PermissionScopes.SetIsEnabled(&tfPlanIsEnabled)
+			if !sdkModelOauth2PermissionScopesModel.IsEnabled.IsUnknown() {
+				tfPlanIsEnabled := sdkModelOauth2PermissionScopesModel.IsEnabled.ValueBool()
+				sdkModelOauth2PermissionScopes.SetIsEnabled(&tfPlanIsEnabled)
 			} else {
-				oauth2PermissionScopesModel.IsEnabled = types.BoolNull()
+				sdkModelOauth2PermissionScopesModel.IsEnabled = types.BoolNull()
 			}
 
-			if !oauth2PermissionScopesModel.Origin.IsUnknown() {
-				tfPlanOrigin := oauth2PermissionScopesModel.Origin.ValueString()
-				oauth2PermissionScopes.SetOrigin(&tfPlanOrigin)
+			if !sdkModelOauth2PermissionScopesModel.Origin.IsUnknown() {
+				tfPlanOrigin := sdkModelOauth2PermissionScopesModel.Origin.ValueString()
+				sdkModelOauth2PermissionScopes.SetOrigin(&tfPlanOrigin)
 			} else {
-				oauth2PermissionScopesModel.Origin = types.StringNull()
+				sdkModelOauth2PermissionScopesModel.Origin = types.StringNull()
 			}
 
-			if !oauth2PermissionScopesModel.Type.IsUnknown() {
-				tfPlanType := oauth2PermissionScopesModel.Type.ValueString()
-				oauth2PermissionScopes.SetTypeEscaped(&tfPlanType)
+			if !sdkModelOauth2PermissionScopesModel.Type.IsUnknown() {
+				tfPlanType := sdkModelOauth2PermissionScopesModel.Type.ValueString()
+				sdkModelOauth2PermissionScopes.SetTypeEscaped(&tfPlanType)
 			} else {
-				oauth2PermissionScopesModel.Type = types.StringNull()
+				sdkModelOauth2PermissionScopesModel.Type = types.StringNull()
 			}
 
-			if !oauth2PermissionScopesModel.UserConsentDescription.IsUnknown() {
-				tfPlanUserConsentDescription := oauth2PermissionScopesModel.UserConsentDescription.ValueString()
-				oauth2PermissionScopes.SetUserConsentDescription(&tfPlanUserConsentDescription)
+			if !sdkModelOauth2PermissionScopesModel.UserConsentDescription.IsUnknown() {
+				tfPlanUserConsentDescription := sdkModelOauth2PermissionScopesModel.UserConsentDescription.ValueString()
+				sdkModelOauth2PermissionScopes.SetUserConsentDescription(&tfPlanUserConsentDescription)
 			} else {
-				oauth2PermissionScopesModel.UserConsentDescription = types.StringNull()
+				sdkModelOauth2PermissionScopesModel.UserConsentDescription = types.StringNull()
 			}
 
-			if !oauth2PermissionScopesModel.UserConsentDisplayName.IsUnknown() {
-				tfPlanUserConsentDisplayName := oauth2PermissionScopesModel.UserConsentDisplayName.ValueString()
-				oauth2PermissionScopes.SetUserConsentDisplayName(&tfPlanUserConsentDisplayName)
+			if !sdkModelOauth2PermissionScopesModel.UserConsentDisplayName.IsUnknown() {
+				tfPlanUserConsentDisplayName := sdkModelOauth2PermissionScopesModel.UserConsentDisplayName.ValueString()
+				sdkModelOauth2PermissionScopes.SetUserConsentDisplayName(&tfPlanUserConsentDisplayName)
 			} else {
-				oauth2PermissionScopesModel.UserConsentDisplayName = types.StringNull()
+				sdkModelOauth2PermissionScopesModel.UserConsentDisplayName = types.StringNull()
 			}
 
-			if !oauth2PermissionScopesModel.Value.IsUnknown() {
-				tfPlanValue := oauth2PermissionScopesModel.Value.ValueString()
-				oauth2PermissionScopes.SetValue(&tfPlanValue)
+			if !sdkModelOauth2PermissionScopesModel.Value.IsUnknown() {
+				tfPlanValue := sdkModelOauth2PermissionScopesModel.Value.ValueString()
+				sdkModelOauth2PermissionScopes.SetValue(&tfPlanValue)
 			} else {
-				oauth2PermissionScopesModel.Value = types.StringNull()
+				sdkModelOauth2PermissionScopesModel.Value = types.StringNull()
 			}
 		}
 		sdkModelServicePrincipal.SetOauth2PermissionScopes(tfPlanOauth2PermissionScopes)
@@ -1261,60 +1261,60 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	if len(tfPlan.PasswordCredentials.Elements()) > 0 {
 		var tfPlanPasswordCredentials []models.PasswordCredentialable
 		for _, i := range tfPlan.PasswordCredentials.Elements() {
-			passwordCredentials := models.NewPasswordCredential()
-			passwordCredentialsModel := servicePrincipalPasswordCredentialModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &passwordCredentialsModel)
+			sdkModelPasswordCredentials := models.NewPasswordCredential()
+			sdkModelPasswordCredentialsModel := servicePrincipalPasswordCredentialModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelPasswordCredentialsModel)
 
-			if !passwordCredentialsModel.CustomKeyIdentifier.IsUnknown() {
-				tfPlanCustomKeyIdentifier := passwordCredentialsModel.CustomKeyIdentifier.ValueString()
-				passwordCredentials.SetCustomKeyIdentifier([]byte(tfPlanCustomKeyIdentifier))
+			if !sdkModelPasswordCredentialsModel.CustomKeyIdentifier.IsUnknown() {
+				tfPlanCustomKeyIdentifier := sdkModelPasswordCredentialsModel.CustomKeyIdentifier.ValueString()
+				sdkModelPasswordCredentials.SetCustomKeyIdentifier([]byte(tfPlanCustomKeyIdentifier))
 			} else {
-				passwordCredentialsModel.CustomKeyIdentifier = types.StringNull()
+				sdkModelPasswordCredentialsModel.CustomKeyIdentifier = types.StringNull()
 			}
 
-			if !passwordCredentialsModel.DisplayName.IsUnknown() {
-				tfPlanDisplayName := passwordCredentialsModel.DisplayName.ValueString()
-				passwordCredentials.SetDisplayName(&tfPlanDisplayName)
+			if !sdkModelPasswordCredentialsModel.DisplayName.IsUnknown() {
+				tfPlanDisplayName := sdkModelPasswordCredentialsModel.DisplayName.ValueString()
+				sdkModelPasswordCredentials.SetDisplayName(&tfPlanDisplayName)
 			} else {
-				passwordCredentialsModel.DisplayName = types.StringNull()
+				sdkModelPasswordCredentialsModel.DisplayName = types.StringNull()
 			}
 
-			if !passwordCredentialsModel.EndDateTime.IsUnknown() {
-				tfPlanEndDateTime := passwordCredentialsModel.EndDateTime.ValueString()
+			if !sdkModelPasswordCredentialsModel.EndDateTime.IsUnknown() {
+				tfPlanEndDateTime := sdkModelPasswordCredentialsModel.EndDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanEndDateTime)
-				passwordCredentials.SetEndDateTime(&t)
+				sdkModelPasswordCredentials.SetEndDateTime(&t)
 			} else {
-				passwordCredentialsModel.EndDateTime = types.StringNull()
+				sdkModelPasswordCredentialsModel.EndDateTime = types.StringNull()
 			}
 
-			if !passwordCredentialsModel.Hint.IsUnknown() {
-				tfPlanHint := passwordCredentialsModel.Hint.ValueString()
-				passwordCredentials.SetHint(&tfPlanHint)
+			if !sdkModelPasswordCredentialsModel.Hint.IsUnknown() {
+				tfPlanHint := sdkModelPasswordCredentialsModel.Hint.ValueString()
+				sdkModelPasswordCredentials.SetHint(&tfPlanHint)
 			} else {
-				passwordCredentialsModel.Hint = types.StringNull()
+				sdkModelPasswordCredentialsModel.Hint = types.StringNull()
 			}
 
-			if !passwordCredentialsModel.KeyId.IsUnknown() {
-				tfPlanKeyId := passwordCredentialsModel.KeyId.ValueString()
+			if !sdkModelPasswordCredentialsModel.KeyId.IsUnknown() {
+				tfPlanKeyId := sdkModelPasswordCredentialsModel.KeyId.ValueString()
 				u, _ := uuid.Parse(tfPlanKeyId)
-				passwordCredentials.SetKeyId(&u)
+				sdkModelPasswordCredentials.SetKeyId(&u)
 			} else {
-				passwordCredentialsModel.KeyId = types.StringNull()
+				sdkModelPasswordCredentialsModel.KeyId = types.StringNull()
 			}
 
-			if !passwordCredentialsModel.SecretText.IsUnknown() {
-				tfPlanSecretText := passwordCredentialsModel.SecretText.ValueString()
-				passwordCredentials.SetSecretText(&tfPlanSecretText)
+			if !sdkModelPasswordCredentialsModel.SecretText.IsUnknown() {
+				tfPlanSecretText := sdkModelPasswordCredentialsModel.SecretText.ValueString()
+				sdkModelPasswordCredentials.SetSecretText(&tfPlanSecretText)
 			} else {
-				passwordCredentialsModel.SecretText = types.StringNull()
+				sdkModelPasswordCredentialsModel.SecretText = types.StringNull()
 			}
 
-			if !passwordCredentialsModel.StartDateTime.IsUnknown() {
-				tfPlanStartDateTime := passwordCredentialsModel.StartDateTime.ValueString()
+			if !sdkModelPasswordCredentialsModel.StartDateTime.IsUnknown() {
+				tfPlanStartDateTime := sdkModelPasswordCredentialsModel.StartDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanStartDateTime)
-				passwordCredentials.SetStartDateTime(&t)
+				sdkModelPasswordCredentials.SetStartDateTime(&t)
 			} else {
-				passwordCredentialsModel.StartDateTime = types.StringNull()
+				sdkModelPasswordCredentialsModel.StartDateTime = types.StringNull()
 			}
 		}
 		sdkModelServicePrincipal.SetPasswordCredentials(tfPlanPasswordCredentials)
@@ -1349,44 +1349,44 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	if len(tfPlan.ResourceSpecificApplicationPermissions.Elements()) > 0 {
 		var tfPlanResourceSpecificApplicationPermissions []models.ResourceSpecificPermissionable
 		for _, i := range tfPlan.ResourceSpecificApplicationPermissions.Elements() {
-			resourceSpecificApplicationPermissions := models.NewResourceSpecificPermission()
-			resourceSpecificApplicationPermissionsModel := servicePrincipalResourceSpecificPermissionModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &resourceSpecificApplicationPermissionsModel)
+			sdkModelResourceSpecificApplicationPermissions := models.NewResourceSpecificPermission()
+			sdkModelResourceSpecificApplicationPermissionsModel := servicePrincipalResourceSpecificPermissionModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &sdkModelResourceSpecificApplicationPermissionsModel)
 
-			if !resourceSpecificApplicationPermissionsModel.Description.IsUnknown() {
-				tfPlanDescription := resourceSpecificApplicationPermissionsModel.Description.ValueString()
-				resourceSpecificApplicationPermissions.SetDescription(&tfPlanDescription)
+			if !sdkModelResourceSpecificApplicationPermissionsModel.Description.IsUnknown() {
+				tfPlanDescription := sdkModelResourceSpecificApplicationPermissionsModel.Description.ValueString()
+				sdkModelResourceSpecificApplicationPermissions.SetDescription(&tfPlanDescription)
 			} else {
-				resourceSpecificApplicationPermissionsModel.Description = types.StringNull()
+				sdkModelResourceSpecificApplicationPermissionsModel.Description = types.StringNull()
 			}
 
-			if !resourceSpecificApplicationPermissionsModel.DisplayName.IsUnknown() {
-				tfPlanDisplayName := resourceSpecificApplicationPermissionsModel.DisplayName.ValueString()
-				resourceSpecificApplicationPermissions.SetDisplayName(&tfPlanDisplayName)
+			if !sdkModelResourceSpecificApplicationPermissionsModel.DisplayName.IsUnknown() {
+				tfPlanDisplayName := sdkModelResourceSpecificApplicationPermissionsModel.DisplayName.ValueString()
+				sdkModelResourceSpecificApplicationPermissions.SetDisplayName(&tfPlanDisplayName)
 			} else {
-				resourceSpecificApplicationPermissionsModel.DisplayName = types.StringNull()
+				sdkModelResourceSpecificApplicationPermissionsModel.DisplayName = types.StringNull()
 			}
 
-			if !resourceSpecificApplicationPermissionsModel.Id.IsUnknown() {
-				tfPlanId := resourceSpecificApplicationPermissionsModel.Id.ValueString()
+			if !sdkModelResourceSpecificApplicationPermissionsModel.Id.IsUnknown() {
+				tfPlanId := sdkModelResourceSpecificApplicationPermissionsModel.Id.ValueString()
 				u, _ := uuid.Parse(tfPlanId)
-				resourceSpecificApplicationPermissions.SetId(&u)
+				sdkModelResourceSpecificApplicationPermissions.SetId(&u)
 			} else {
-				resourceSpecificApplicationPermissionsModel.Id = types.StringNull()
+				sdkModelResourceSpecificApplicationPermissionsModel.Id = types.StringNull()
 			}
 
-			if !resourceSpecificApplicationPermissionsModel.IsEnabled.IsUnknown() {
-				tfPlanIsEnabled := resourceSpecificApplicationPermissionsModel.IsEnabled.ValueBool()
-				resourceSpecificApplicationPermissions.SetIsEnabled(&tfPlanIsEnabled)
+			if !sdkModelResourceSpecificApplicationPermissionsModel.IsEnabled.IsUnknown() {
+				tfPlanIsEnabled := sdkModelResourceSpecificApplicationPermissionsModel.IsEnabled.ValueBool()
+				sdkModelResourceSpecificApplicationPermissions.SetIsEnabled(&tfPlanIsEnabled)
 			} else {
-				resourceSpecificApplicationPermissionsModel.IsEnabled = types.BoolNull()
+				sdkModelResourceSpecificApplicationPermissionsModel.IsEnabled = types.BoolNull()
 			}
 
-			if !resourceSpecificApplicationPermissionsModel.Value.IsUnknown() {
-				tfPlanValue := resourceSpecificApplicationPermissionsModel.Value.ValueString()
-				resourceSpecificApplicationPermissions.SetValue(&tfPlanValue)
+			if !sdkModelResourceSpecificApplicationPermissionsModel.Value.IsUnknown() {
+				tfPlanValue := sdkModelResourceSpecificApplicationPermissionsModel.Value.ValueString()
+				sdkModelResourceSpecificApplicationPermissions.SetValue(&tfPlanValue)
 			} else {
-				resourceSpecificApplicationPermissionsModel.Value = types.StringNull()
+				sdkModelResourceSpecificApplicationPermissionsModel.Value = types.StringNull()
 			}
 		}
 		sdkModelServicePrincipal.SetResourceSpecificApplicationPermissions(tfPlanResourceSpecificApplicationPermissions)
@@ -1395,18 +1395,18 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if !tfPlan.SamlSingleSignOnSettings.IsUnknown() {
-		samlSingleSignOnSettings := models.NewSamlSingleSignOnSettings()
-		samlSingleSignOnSettingsModel := servicePrincipalSamlSingleSignOnSettingsModel{}
-		tfPlan.SamlSingleSignOnSettings.As(ctx, &samlSingleSignOnSettingsModel, basetypes.ObjectAsOptions{})
+		sdkModelSamlSingleSignOnSettings := models.NewSamlSingleSignOnSettings()
+		sdkModelSamlSingleSignOnSettingsModel := servicePrincipalSamlSingleSignOnSettingsModel{}
+		tfPlan.SamlSingleSignOnSettings.As(ctx, &sdkModelSamlSingleSignOnSettingsModel, basetypes.ObjectAsOptions{})
 
-		if !samlSingleSignOnSettingsModel.RelayState.IsUnknown() {
-			tfPlanRelayState := samlSingleSignOnSettingsModel.RelayState.ValueString()
-			samlSingleSignOnSettings.SetRelayState(&tfPlanRelayState)
+		if !sdkModelSamlSingleSignOnSettingsModel.RelayState.IsUnknown() {
+			tfPlanRelayState := sdkModelSamlSingleSignOnSettingsModel.RelayState.ValueString()
+			sdkModelSamlSingleSignOnSettings.SetRelayState(&tfPlanRelayState)
 		} else {
-			samlSingleSignOnSettingsModel.RelayState = types.StringNull()
+			sdkModelSamlSingleSignOnSettingsModel.RelayState = types.StringNull()
 		}
-		sdkModelServicePrincipal.SetSamlSingleSignOnSettings(samlSingleSignOnSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, samlSingleSignOnSettingsModel.AttributeTypes(), samlSingleSignOnSettingsModel)
+		sdkModelServicePrincipal.SetSamlSingleSignOnSettings(sdkModelSamlSingleSignOnSettings)
+		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelSamlSingleSignOnSettingsModel.AttributeTypes(), sdkModelSamlSingleSignOnSettingsModel)
 		tfPlan.SamlSingleSignOnSettings = objectValue
 	} else {
 		tfPlan.SamlSingleSignOnSettings = types.ObjectNull(tfPlan.SamlSingleSignOnSettings.AttributeTypes(ctx))
@@ -1455,33 +1455,33 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if !tfPlan.VerifiedPublisher.IsUnknown() {
-		verifiedPublisher := models.NewVerifiedPublisher()
-		verifiedPublisherModel := servicePrincipalVerifiedPublisherModel{}
-		tfPlan.VerifiedPublisher.As(ctx, &verifiedPublisherModel, basetypes.ObjectAsOptions{})
+		sdkModelVerifiedPublisher := models.NewVerifiedPublisher()
+		sdkModelVerifiedPublisherModel := servicePrincipalVerifiedPublisherModel{}
+		tfPlan.VerifiedPublisher.As(ctx, &sdkModelVerifiedPublisherModel, basetypes.ObjectAsOptions{})
 
-		if !verifiedPublisherModel.AddedDateTime.IsUnknown() {
-			tfPlanAddedDateTime := verifiedPublisherModel.AddedDateTime.ValueString()
+		if !sdkModelVerifiedPublisherModel.AddedDateTime.IsUnknown() {
+			tfPlanAddedDateTime := sdkModelVerifiedPublisherModel.AddedDateTime.ValueString()
 			t, _ := time.Parse(time.RFC3339, tfPlanAddedDateTime)
-			verifiedPublisher.SetAddedDateTime(&t)
+			sdkModelVerifiedPublisher.SetAddedDateTime(&t)
 		} else {
-			verifiedPublisherModel.AddedDateTime = types.StringNull()
+			sdkModelVerifiedPublisherModel.AddedDateTime = types.StringNull()
 		}
 
-		if !verifiedPublisherModel.DisplayName.IsUnknown() {
-			tfPlanDisplayName := verifiedPublisherModel.DisplayName.ValueString()
-			verifiedPublisher.SetDisplayName(&tfPlanDisplayName)
+		if !sdkModelVerifiedPublisherModel.DisplayName.IsUnknown() {
+			tfPlanDisplayName := sdkModelVerifiedPublisherModel.DisplayName.ValueString()
+			sdkModelVerifiedPublisher.SetDisplayName(&tfPlanDisplayName)
 		} else {
-			verifiedPublisherModel.DisplayName = types.StringNull()
+			sdkModelVerifiedPublisherModel.DisplayName = types.StringNull()
 		}
 
-		if !verifiedPublisherModel.VerifiedPublisherId.IsUnknown() {
-			tfPlanVerifiedPublisherId := verifiedPublisherModel.VerifiedPublisherId.ValueString()
-			verifiedPublisher.SetVerifiedPublisherId(&tfPlanVerifiedPublisherId)
+		if !sdkModelVerifiedPublisherModel.VerifiedPublisherId.IsUnknown() {
+			tfPlanVerifiedPublisherId := sdkModelVerifiedPublisherModel.VerifiedPublisherId.ValueString()
+			sdkModelVerifiedPublisher.SetVerifiedPublisherId(&tfPlanVerifiedPublisherId)
 		} else {
-			verifiedPublisherModel.VerifiedPublisherId = types.StringNull()
+			sdkModelVerifiedPublisherModel.VerifiedPublisherId = types.StringNull()
 		}
-		sdkModelServicePrincipal.SetVerifiedPublisher(verifiedPublisher)
-		objectValue, _ := types.ObjectValueFrom(ctx, verifiedPublisherModel.AttributeTypes(), verifiedPublisherModel)
+		sdkModelServicePrincipal.SetVerifiedPublisher(sdkModelVerifiedPublisher)
+		objectValue, _ := types.ObjectValueFrom(ctx, sdkModelVerifiedPublisherModel.AttributeTypes(), sdkModelVerifiedPublisherModel)
 		tfPlan.VerifiedPublisher = objectValue
 	} else {
 		tfPlan.VerifiedPublisher = types.ObjectNull(tfPlan.VerifiedPublisher.AttributeTypes(ctx))
