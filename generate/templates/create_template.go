@@ -120,12 +120,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- define "CreateObjectAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
-		requestBody{{.Name}} := models.New{{.ObjectOf}}()
-		tfPlan{{.Name}} := {{.TfModelName}}Model{}
-		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.Name}}, basetypes.ObjectAsOptions{})
+		requestBody{{.ObjectOf}} := models.New{{.ObjectOf}}()
+		tfPlan{{.ObjectOf}} := {{.TfModelName}}Model{}
+		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.ObjectOf}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
-		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.Name}})
-		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.Name}}.AttributeTypes(), requestBody{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.ObjectOf}})
+		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.ObjectOf}}.AttributeTypes(), requestBody{{.ObjectOf}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ObjectNull(tfPlan{{.ParentName}}.{{.Name}}.AttributeTypes(ctx))
 	}

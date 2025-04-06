@@ -1311,37 +1311,37 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START Api | CreateObjectAttribute
 	if !tfPlanApplication.Api.IsUnknown() {
-		requestBodyApi := models.NewApiApplication()
-		tfPlanApi := applicationApiApplicationModel{}
-		tfPlanApplication.Api.As(ctx, &tfPlanApi, basetypes.ObjectAsOptions{})
+		requestBodyApiApplication := models.NewApiApplication()
+		tfPlanApiApplication := applicationApiApplicationModel{}
+		tfPlanApplication.Api.As(ctx, &tfPlanApiApplication, basetypes.ObjectAsOptions{})
 
 		// START AcceptMappedClaims | CreateBoolAttribute
-		if !tfPlanApi.AcceptMappedClaims.IsUnknown() {
-			tfPlanAcceptMappedClaims := tfPlanApi.AcceptMappedClaims.ValueBool()
-			requestBodyApi.SetAcceptMappedClaims(&tfPlanAcceptMappedClaims)
+		if !tfPlanApiApplication.AcceptMappedClaims.IsUnknown() {
+			tfPlanAcceptMappedClaims := tfPlanApiApplication.AcceptMappedClaims.ValueBool()
+			requestBodyApiApplication.SetAcceptMappedClaims(&tfPlanAcceptMappedClaims)
 		} else {
-			tfPlanApi.AcceptMappedClaims = types.BoolNull()
+			tfPlanApiApplication.AcceptMappedClaims = types.BoolNull()
 		}
 		// END AcceptMappedClaims | CreateBoolAttribute
 
 		// START KnownClientApplications | CreateArrayUuidAttribute
-		if len(tfPlanApi.KnownClientApplications.Elements()) > 0 {
+		if len(tfPlanApiApplication.KnownClientApplications.Elements()) > 0 {
 			var uuidArrayKnownClientApplications []uuid.UUID
-			for _, i := range tfPlanApi.KnownClientApplications.Elements() {
+			for _, i := range tfPlanApiApplication.KnownClientApplications.Elements() {
 				u, _ := uuid.Parse(i.String())
 				uuidArrayKnownClientApplications = append(uuidArrayKnownClientApplications, u)
 			}
-			requestBodyApi.SetKnownClientApplications(uuidArrayKnownClientApplications)
+			requestBodyApiApplication.SetKnownClientApplications(uuidArrayKnownClientApplications)
 		} else {
-			tfPlanApi.KnownClientApplications = types.ListNull(types.StringType)
+			tfPlanApiApplication.KnownClientApplications = types.ListNull(types.StringType)
 		}
 
 		// END KnownClientApplications | CreateArrayUuidAttribute
 
 		// START Oauth2PermissionScopes | CreateArrayObjectAttribute
-		if len(tfPlanApi.Oauth2PermissionScopes.Elements()) > 0 {
+		if len(tfPlanApiApplication.Oauth2PermissionScopes.Elements()) > 0 {
 			var requestBodyOauth2PermissionScopes []models.PermissionScopeable
-			for _, i := range tfPlanApi.Oauth2PermissionScopes.Elements() {
+			for _, i := range tfPlanApiApplication.Oauth2PermissionScopes.Elements() {
 				requestBodyPermissionScope := models.NewPermissionScope()
 				tfPlanPermissionScope := applicationPermissionScopeModel{}
 				types.ListValueFrom(ctx, i.Type(ctx), &tfPlanPermissionScope)
@@ -1429,16 +1429,16 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Value | CreateStringAttribute
 
 			}
-			requestBodyApi.SetOauth2PermissionScopes(requestBodyOauth2PermissionScopes)
+			requestBodyApiApplication.SetOauth2PermissionScopes(requestBodyOauth2PermissionScopes)
 		} else {
-			tfPlanApi.Oauth2PermissionScopes = types.ListNull(tfPlanApi.Oauth2PermissionScopes.ElementType(ctx))
+			tfPlanApiApplication.Oauth2PermissionScopes = types.ListNull(tfPlanApiApplication.Oauth2PermissionScopes.ElementType(ctx))
 		}
 		// END Oauth2PermissionScopes | CreateArrayObjectAttribute
 
 		// START PreAuthorizedApplications | CreateArrayObjectAttribute
-		if len(tfPlanApi.PreAuthorizedApplications.Elements()) > 0 {
+		if len(tfPlanApiApplication.PreAuthorizedApplications.Elements()) > 0 {
 			var requestBodyPreAuthorizedApplications []models.PreAuthorizedApplicationable
-			for _, i := range tfPlanApi.PreAuthorizedApplications.Elements() {
+			for _, i := range tfPlanApiApplication.PreAuthorizedApplications.Elements() {
 				requestBodyPreAuthorizedApplication := models.NewPreAuthorizedApplication()
 				tfPlanPreAuthorizedApplication := applicationPreAuthorizedApplicationModel{}
 				types.ListValueFrom(ctx, i.Type(ctx), &tfPlanPreAuthorizedApplication)
@@ -1465,17 +1465,17 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END DelegatedPermissionIds | CreateArrayStringAttribute
 
 			}
-			requestBodyApi.SetPreAuthorizedApplications(requestBodyPreAuthorizedApplications)
+			requestBodyApiApplication.SetPreAuthorizedApplications(requestBodyPreAuthorizedApplications)
 		} else {
-			tfPlanApi.PreAuthorizedApplications = types.ListNull(tfPlanApi.PreAuthorizedApplications.ElementType(ctx))
+			tfPlanApiApplication.PreAuthorizedApplications = types.ListNull(tfPlanApiApplication.PreAuthorizedApplications.ElementType(ctx))
 		}
 		// END PreAuthorizedApplications | CreateArrayObjectAttribute
 
 		// START RequestedAccessTokenVersion | UNKNOWN
 		// END RequestedAccessTokenVersion | UNKNOWN
 
-		requestBodyApplication.SetApi(requestBodyApi)
-		tfPlanApplication.Api, _ = types.ObjectValueFrom(ctx, tfPlanApi.AttributeTypes(), requestBodyApi)
+		requestBodyApplication.SetApi(requestBodyApiApplication)
+		tfPlanApplication.Api, _ = types.ObjectValueFrom(ctx, tfPlanApiApplication.AttributeTypes(), requestBodyApiApplication)
 	} else {
 		tfPlanApplication.Api = types.ObjectNull(tfPlanApplication.Api.AttributeTypes(ctx))
 	}
@@ -1710,57 +1710,57 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START Info | CreateObjectAttribute
 	if !tfPlanApplication.Info.IsUnknown() {
-		requestBodyInfo := models.NewInformationalUrl()
-		tfPlanInfo := applicationInformationalUrlModel{}
-		tfPlanApplication.Info.As(ctx, &tfPlanInfo, basetypes.ObjectAsOptions{})
+		requestBodyInformationalUrl := models.NewInformationalUrl()
+		tfPlanInformationalUrl := applicationInformationalUrlModel{}
+		tfPlanApplication.Info.As(ctx, &tfPlanInformationalUrl, basetypes.ObjectAsOptions{})
 
 		// START LogoUrl | CreateStringAttribute
-		if !tfPlanInfo.LogoUrl.IsUnknown() {
-			tfPlanLogoUrl := tfPlanInfo.LogoUrl.ValueString()
-			requestBodyInfo.SetLogoUrl(&tfPlanLogoUrl)
+		if !tfPlanInformationalUrl.LogoUrl.IsUnknown() {
+			tfPlanLogoUrl := tfPlanInformationalUrl.LogoUrl.ValueString()
+			requestBodyInformationalUrl.SetLogoUrl(&tfPlanLogoUrl)
 		} else {
-			tfPlanInfo.LogoUrl = types.StringNull()
+			tfPlanInformationalUrl.LogoUrl = types.StringNull()
 		}
 		// END LogoUrl | CreateStringAttribute
 
 		// START MarketingUrl | CreateStringAttribute
-		if !tfPlanInfo.MarketingUrl.IsUnknown() {
-			tfPlanMarketingUrl := tfPlanInfo.MarketingUrl.ValueString()
-			requestBodyInfo.SetMarketingUrl(&tfPlanMarketingUrl)
+		if !tfPlanInformationalUrl.MarketingUrl.IsUnknown() {
+			tfPlanMarketingUrl := tfPlanInformationalUrl.MarketingUrl.ValueString()
+			requestBodyInformationalUrl.SetMarketingUrl(&tfPlanMarketingUrl)
 		} else {
-			tfPlanInfo.MarketingUrl = types.StringNull()
+			tfPlanInformationalUrl.MarketingUrl = types.StringNull()
 		}
 		// END MarketingUrl | CreateStringAttribute
 
 		// START PrivacyStatementUrl | CreateStringAttribute
-		if !tfPlanInfo.PrivacyStatementUrl.IsUnknown() {
-			tfPlanPrivacyStatementUrl := tfPlanInfo.PrivacyStatementUrl.ValueString()
-			requestBodyInfo.SetPrivacyStatementUrl(&tfPlanPrivacyStatementUrl)
+		if !tfPlanInformationalUrl.PrivacyStatementUrl.IsUnknown() {
+			tfPlanPrivacyStatementUrl := tfPlanInformationalUrl.PrivacyStatementUrl.ValueString()
+			requestBodyInformationalUrl.SetPrivacyStatementUrl(&tfPlanPrivacyStatementUrl)
 		} else {
-			tfPlanInfo.PrivacyStatementUrl = types.StringNull()
+			tfPlanInformationalUrl.PrivacyStatementUrl = types.StringNull()
 		}
 		// END PrivacyStatementUrl | CreateStringAttribute
 
 		// START SupportUrl | CreateStringAttribute
-		if !tfPlanInfo.SupportUrl.IsUnknown() {
-			tfPlanSupportUrl := tfPlanInfo.SupportUrl.ValueString()
-			requestBodyInfo.SetSupportUrl(&tfPlanSupportUrl)
+		if !tfPlanInformationalUrl.SupportUrl.IsUnknown() {
+			tfPlanSupportUrl := tfPlanInformationalUrl.SupportUrl.ValueString()
+			requestBodyInformationalUrl.SetSupportUrl(&tfPlanSupportUrl)
 		} else {
-			tfPlanInfo.SupportUrl = types.StringNull()
+			tfPlanInformationalUrl.SupportUrl = types.StringNull()
 		}
 		// END SupportUrl | CreateStringAttribute
 
 		// START TermsOfServiceUrl | CreateStringAttribute
-		if !tfPlanInfo.TermsOfServiceUrl.IsUnknown() {
-			tfPlanTermsOfServiceUrl := tfPlanInfo.TermsOfServiceUrl.ValueString()
-			requestBodyInfo.SetTermsOfServiceUrl(&tfPlanTermsOfServiceUrl)
+		if !tfPlanInformationalUrl.TermsOfServiceUrl.IsUnknown() {
+			tfPlanTermsOfServiceUrl := tfPlanInformationalUrl.TermsOfServiceUrl.ValueString()
+			requestBodyInformationalUrl.SetTermsOfServiceUrl(&tfPlanTermsOfServiceUrl)
 		} else {
-			tfPlanInfo.TermsOfServiceUrl = types.StringNull()
+			tfPlanInformationalUrl.TermsOfServiceUrl = types.StringNull()
 		}
 		// END TermsOfServiceUrl | CreateStringAttribute
 
-		requestBodyApplication.SetInfo(requestBodyInfo)
-		tfPlanApplication.Info, _ = types.ObjectValueFrom(ctx, tfPlanInfo.AttributeTypes(), requestBodyInfo)
+		requestBodyApplication.SetInfo(requestBodyInformationalUrl)
+		tfPlanApplication.Info, _ = types.ObjectValueFrom(ctx, tfPlanInformationalUrl.AttributeTypes(), requestBodyInformationalUrl)
 	} else {
 		tfPlanApplication.Info = types.ObjectNull(tfPlanApplication.Info.AttributeTypes(ctx))
 	}
@@ -2204,24 +2204,24 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START PublicClient | CreateObjectAttribute
 	if !tfPlanApplication.PublicClient.IsUnknown() {
-		requestBodyPublicClient := models.NewPublicClientApplication()
-		tfPlanPublicClient := applicationPublicClientApplicationModel{}
-		tfPlanApplication.PublicClient.As(ctx, &tfPlanPublicClient, basetypes.ObjectAsOptions{})
+		requestBodyPublicClientApplication := models.NewPublicClientApplication()
+		tfPlanPublicClientApplication := applicationPublicClientApplicationModel{}
+		tfPlanApplication.PublicClient.As(ctx, &tfPlanPublicClientApplication, basetypes.ObjectAsOptions{})
 
 		// START RedirectUris | CreateArrayStringAttribute
-		if len(tfPlanPublicClient.RedirectUris.Elements()) > 0 {
+		if len(tfPlanPublicClientApplication.RedirectUris.Elements()) > 0 {
 			var stringArrayRedirectUris []string
-			for _, i := range tfPlanPublicClient.RedirectUris.Elements() {
+			for _, i := range tfPlanPublicClientApplication.RedirectUris.Elements() {
 				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			requestBodyPublicClient.SetRedirectUris(stringArrayRedirectUris)
+			requestBodyPublicClientApplication.SetRedirectUris(stringArrayRedirectUris)
 		} else {
-			tfPlanPublicClient.RedirectUris = types.ListNull(types.StringType)
+			tfPlanPublicClientApplication.RedirectUris = types.ListNull(types.StringType)
 		}
 		// END RedirectUris | CreateArrayStringAttribute
 
-		requestBodyApplication.SetPublicClient(requestBodyPublicClient)
-		tfPlanApplication.PublicClient, _ = types.ObjectValueFrom(ctx, tfPlanPublicClient.AttributeTypes(), requestBodyPublicClient)
+		requestBodyApplication.SetPublicClient(requestBodyPublicClientApplication)
+		tfPlanApplication.PublicClient, _ = types.ObjectValueFrom(ctx, tfPlanPublicClientApplication.AttributeTypes(), requestBodyPublicClientApplication)
 	} else {
 		tfPlanApplication.PublicClient = types.ObjectNull(tfPlanApplication.PublicClient.AttributeTypes(ctx))
 	}
@@ -2414,24 +2414,24 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START Spa | CreateObjectAttribute
 	if !tfPlanApplication.Spa.IsUnknown() {
-		requestBodySpa := models.NewSpaApplication()
-		tfPlanSpa := applicationSpaApplicationModel{}
-		tfPlanApplication.Spa.As(ctx, &tfPlanSpa, basetypes.ObjectAsOptions{})
+		requestBodySpaApplication := models.NewSpaApplication()
+		tfPlanSpaApplication := applicationSpaApplicationModel{}
+		tfPlanApplication.Spa.As(ctx, &tfPlanSpaApplication, basetypes.ObjectAsOptions{})
 
 		// START RedirectUris | CreateArrayStringAttribute
-		if len(tfPlanSpa.RedirectUris.Elements()) > 0 {
+		if len(tfPlanSpaApplication.RedirectUris.Elements()) > 0 {
 			var stringArrayRedirectUris []string
-			for _, i := range tfPlanSpa.RedirectUris.Elements() {
+			for _, i := range tfPlanSpaApplication.RedirectUris.Elements() {
 				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			requestBodySpa.SetRedirectUris(stringArrayRedirectUris)
+			requestBodySpaApplication.SetRedirectUris(stringArrayRedirectUris)
 		} else {
-			tfPlanSpa.RedirectUris = types.ListNull(types.StringType)
+			tfPlanSpaApplication.RedirectUris = types.ListNull(types.StringType)
 		}
 		// END RedirectUris | CreateArrayStringAttribute
 
-		requestBodyApplication.SetSpa(requestBodySpa)
-		tfPlanApplication.Spa, _ = types.ObjectValueFrom(ctx, tfPlanSpa.AttributeTypes(), requestBodySpa)
+		requestBodyApplication.SetSpa(requestBodySpaApplication)
+		tfPlanApplication.Spa, _ = types.ObjectValueFrom(ctx, tfPlanSpaApplication.AttributeTypes(), requestBodySpaApplication)
 	} else {
 		tfPlanApplication.Spa = types.ObjectNull(tfPlanApplication.Spa.AttributeTypes(ctx))
 	}
@@ -2511,24 +2511,24 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// START Web | CreateObjectAttribute
 	if !tfPlanApplication.Web.IsUnknown() {
-		requestBodyWeb := models.NewWebApplication()
-		tfPlanWeb := applicationWebApplicationModel{}
-		tfPlanApplication.Web.As(ctx, &tfPlanWeb, basetypes.ObjectAsOptions{})
+		requestBodyWebApplication := models.NewWebApplication()
+		tfPlanWebApplication := applicationWebApplicationModel{}
+		tfPlanApplication.Web.As(ctx, &tfPlanWebApplication, basetypes.ObjectAsOptions{})
 
 		// START HomePageUrl | CreateStringAttribute
-		if !tfPlanWeb.HomePageUrl.IsUnknown() {
-			tfPlanHomePageUrl := tfPlanWeb.HomePageUrl.ValueString()
-			requestBodyWeb.SetHomePageUrl(&tfPlanHomePageUrl)
+		if !tfPlanWebApplication.HomePageUrl.IsUnknown() {
+			tfPlanHomePageUrl := tfPlanWebApplication.HomePageUrl.ValueString()
+			requestBodyWebApplication.SetHomePageUrl(&tfPlanHomePageUrl)
 		} else {
-			tfPlanWeb.HomePageUrl = types.StringNull()
+			tfPlanWebApplication.HomePageUrl = types.StringNull()
 		}
 		// END HomePageUrl | CreateStringAttribute
 
 		// START ImplicitGrantSettings | CreateObjectAttribute
-		if !tfPlanWeb.ImplicitGrantSettings.IsUnknown() {
+		if !tfPlanWebApplication.ImplicitGrantSettings.IsUnknown() {
 			requestBodyImplicitGrantSettings := models.NewImplicitGrantSettings()
 			tfPlanImplicitGrantSettings := applicationImplicitGrantSettingsModel{}
-			tfPlanWeb.ImplicitGrantSettings.As(ctx, &tfPlanImplicitGrantSettings, basetypes.ObjectAsOptions{})
+			tfPlanWebApplication.ImplicitGrantSettings.As(ctx, &tfPlanImplicitGrantSettings, basetypes.ObjectAsOptions{})
 
 			// START EnableAccessTokenIssuance | CreateBoolAttribute
 			if !tfPlanImplicitGrantSettings.EnableAccessTokenIssuance.IsUnknown() {
@@ -2548,26 +2548,26 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			}
 			// END EnableIdTokenIssuance | CreateBoolAttribute
 
-			requestBodyWeb.SetImplicitGrantSettings(requestBodyImplicitGrantSettings)
-			tfPlanWeb.ImplicitGrantSettings, _ = types.ObjectValueFrom(ctx, tfPlanImplicitGrantSettings.AttributeTypes(), requestBodyImplicitGrantSettings)
+			requestBodyWebApplication.SetImplicitGrantSettings(requestBodyImplicitGrantSettings)
+			tfPlanWebApplication.ImplicitGrantSettings, _ = types.ObjectValueFrom(ctx, tfPlanImplicitGrantSettings.AttributeTypes(), requestBodyImplicitGrantSettings)
 		} else {
-			tfPlanWeb.ImplicitGrantSettings = types.ObjectNull(tfPlanWeb.ImplicitGrantSettings.AttributeTypes(ctx))
+			tfPlanWebApplication.ImplicitGrantSettings = types.ObjectNull(tfPlanWebApplication.ImplicitGrantSettings.AttributeTypes(ctx))
 		}
 		// END ImplicitGrantSettings | CreateObjectAttribute
 
 		// START LogoutUrl | CreateStringAttribute
-		if !tfPlanWeb.LogoutUrl.IsUnknown() {
-			tfPlanLogoutUrl := tfPlanWeb.LogoutUrl.ValueString()
-			requestBodyWeb.SetLogoutUrl(&tfPlanLogoutUrl)
+		if !tfPlanWebApplication.LogoutUrl.IsUnknown() {
+			tfPlanLogoutUrl := tfPlanWebApplication.LogoutUrl.ValueString()
+			requestBodyWebApplication.SetLogoutUrl(&tfPlanLogoutUrl)
 		} else {
-			tfPlanWeb.LogoutUrl = types.StringNull()
+			tfPlanWebApplication.LogoutUrl = types.StringNull()
 		}
 		// END LogoutUrl | CreateStringAttribute
 
 		// START RedirectUriSettings | CreateArrayObjectAttribute
-		if len(tfPlanWeb.RedirectUriSettings.Elements()) > 0 {
+		if len(tfPlanWebApplication.RedirectUriSettings.Elements()) > 0 {
 			var requestBodyRedirectUriSettings []models.RedirectUriSettingsable
-			for _, i := range tfPlanWeb.RedirectUriSettings.Elements() {
+			for _, i := range tfPlanWebApplication.RedirectUriSettings.Elements() {
 				requestBodyRedirectUriSettings := models.NewRedirectUriSettings()
 				tfPlanRedirectUriSettings := applicationRedirectUriSettingsModel{}
 				types.ListValueFrom(ctx, i.Type(ctx), &tfPlanRedirectUriSettings)
@@ -2585,26 +2585,26 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 				// END Uri | CreateStringAttribute
 
 			}
-			requestBodyWeb.SetRedirectUriSettings(requestBodyRedirectUriSettings)
+			requestBodyWebApplication.SetRedirectUriSettings(requestBodyRedirectUriSettings)
 		} else {
-			tfPlanWeb.RedirectUriSettings = types.ListNull(tfPlanWeb.RedirectUriSettings.ElementType(ctx))
+			tfPlanWebApplication.RedirectUriSettings = types.ListNull(tfPlanWebApplication.RedirectUriSettings.ElementType(ctx))
 		}
 		// END RedirectUriSettings | CreateArrayObjectAttribute
 
 		// START RedirectUris | CreateArrayStringAttribute
-		if len(tfPlanWeb.RedirectUris.Elements()) > 0 {
+		if len(tfPlanWebApplication.RedirectUris.Elements()) > 0 {
 			var stringArrayRedirectUris []string
-			for _, i := range tfPlanWeb.RedirectUris.Elements() {
+			for _, i := range tfPlanWebApplication.RedirectUris.Elements() {
 				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			requestBodyWeb.SetRedirectUris(stringArrayRedirectUris)
+			requestBodyWebApplication.SetRedirectUris(stringArrayRedirectUris)
 		} else {
-			tfPlanWeb.RedirectUris = types.ListNull(types.StringType)
+			tfPlanWebApplication.RedirectUris = types.ListNull(types.StringType)
 		}
 		// END RedirectUris | CreateArrayStringAttribute
 
-		requestBodyApplication.SetWeb(requestBodyWeb)
-		tfPlanApplication.Web, _ = types.ObjectValueFrom(ctx, tfPlanWeb.AttributeTypes(), requestBodyWeb)
+		requestBodyApplication.SetWeb(requestBodyWebApplication)
+		tfPlanApplication.Web, _ = types.ObjectValueFrom(ctx, tfPlanWebApplication.AttributeTypes(), requestBodyWebApplication)
 	} else {
 		tfPlanApplication.Web = types.ObjectNull(tfPlanApplication.Web.AttributeTypes(ctx))
 	}

@@ -1046,12 +1046,12 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// START CustomSecurityAttributes | CreateObjectAttribute
 	if !tfPlanServicePrincipal.CustomSecurityAttributes.IsUnknown() {
-		requestBodyCustomSecurityAttributes := models.NewCustomSecurityAttributeValue()
-		tfPlanCustomSecurityAttributes := servicePrincipalCustomSecurityAttributeValueModel{}
-		tfPlanServicePrincipal.CustomSecurityAttributes.As(ctx, &tfPlanCustomSecurityAttributes, basetypes.ObjectAsOptions{})
+		requestBodyCustomSecurityAttributeValue := models.NewCustomSecurityAttributeValue()
+		tfPlanCustomSecurityAttributeValue := servicePrincipalCustomSecurityAttributeValueModel{}
+		tfPlanServicePrincipal.CustomSecurityAttributes.As(ctx, &tfPlanCustomSecurityAttributeValue, basetypes.ObjectAsOptions{})
 
-		requestBodyServicePrincipal.SetCustomSecurityAttributes(requestBodyCustomSecurityAttributes)
-		tfPlanServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfPlanCustomSecurityAttributes.AttributeTypes(), requestBodyCustomSecurityAttributes)
+		requestBodyServicePrincipal.SetCustomSecurityAttributes(requestBodyCustomSecurityAttributeValue)
+		tfPlanServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfPlanCustomSecurityAttributeValue.AttributeTypes(), requestBodyCustomSecurityAttributeValue)
 	} else {
 		tfPlanServicePrincipal.CustomSecurityAttributes = types.ObjectNull(tfPlanServicePrincipal.CustomSecurityAttributes.AttributeTypes(ctx))
 	}
@@ -1095,57 +1095,57 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// START Info | CreateObjectAttribute
 	if !tfPlanServicePrincipal.Info.IsUnknown() {
-		requestBodyInfo := models.NewInformationalUrl()
-		tfPlanInfo := servicePrincipalInformationalUrlModel{}
-		tfPlanServicePrincipal.Info.As(ctx, &tfPlanInfo, basetypes.ObjectAsOptions{})
+		requestBodyInformationalUrl := models.NewInformationalUrl()
+		tfPlanInformationalUrl := servicePrincipalInformationalUrlModel{}
+		tfPlanServicePrincipal.Info.As(ctx, &tfPlanInformationalUrl, basetypes.ObjectAsOptions{})
 
 		// START LogoUrl | CreateStringAttribute
-		if !tfPlanInfo.LogoUrl.IsUnknown() {
-			tfPlanLogoUrl := tfPlanInfo.LogoUrl.ValueString()
-			requestBodyInfo.SetLogoUrl(&tfPlanLogoUrl)
+		if !tfPlanInformationalUrl.LogoUrl.IsUnknown() {
+			tfPlanLogoUrl := tfPlanInformationalUrl.LogoUrl.ValueString()
+			requestBodyInformationalUrl.SetLogoUrl(&tfPlanLogoUrl)
 		} else {
-			tfPlanInfo.LogoUrl = types.StringNull()
+			tfPlanInformationalUrl.LogoUrl = types.StringNull()
 		}
 		// END LogoUrl | CreateStringAttribute
 
 		// START MarketingUrl | CreateStringAttribute
-		if !tfPlanInfo.MarketingUrl.IsUnknown() {
-			tfPlanMarketingUrl := tfPlanInfo.MarketingUrl.ValueString()
-			requestBodyInfo.SetMarketingUrl(&tfPlanMarketingUrl)
+		if !tfPlanInformationalUrl.MarketingUrl.IsUnknown() {
+			tfPlanMarketingUrl := tfPlanInformationalUrl.MarketingUrl.ValueString()
+			requestBodyInformationalUrl.SetMarketingUrl(&tfPlanMarketingUrl)
 		} else {
-			tfPlanInfo.MarketingUrl = types.StringNull()
+			tfPlanInformationalUrl.MarketingUrl = types.StringNull()
 		}
 		// END MarketingUrl | CreateStringAttribute
 
 		// START PrivacyStatementUrl | CreateStringAttribute
-		if !tfPlanInfo.PrivacyStatementUrl.IsUnknown() {
-			tfPlanPrivacyStatementUrl := tfPlanInfo.PrivacyStatementUrl.ValueString()
-			requestBodyInfo.SetPrivacyStatementUrl(&tfPlanPrivacyStatementUrl)
+		if !tfPlanInformationalUrl.PrivacyStatementUrl.IsUnknown() {
+			tfPlanPrivacyStatementUrl := tfPlanInformationalUrl.PrivacyStatementUrl.ValueString()
+			requestBodyInformationalUrl.SetPrivacyStatementUrl(&tfPlanPrivacyStatementUrl)
 		} else {
-			tfPlanInfo.PrivacyStatementUrl = types.StringNull()
+			tfPlanInformationalUrl.PrivacyStatementUrl = types.StringNull()
 		}
 		// END PrivacyStatementUrl | CreateStringAttribute
 
 		// START SupportUrl | CreateStringAttribute
-		if !tfPlanInfo.SupportUrl.IsUnknown() {
-			tfPlanSupportUrl := tfPlanInfo.SupportUrl.ValueString()
-			requestBodyInfo.SetSupportUrl(&tfPlanSupportUrl)
+		if !tfPlanInformationalUrl.SupportUrl.IsUnknown() {
+			tfPlanSupportUrl := tfPlanInformationalUrl.SupportUrl.ValueString()
+			requestBodyInformationalUrl.SetSupportUrl(&tfPlanSupportUrl)
 		} else {
-			tfPlanInfo.SupportUrl = types.StringNull()
+			tfPlanInformationalUrl.SupportUrl = types.StringNull()
 		}
 		// END SupportUrl | CreateStringAttribute
 
 		// START TermsOfServiceUrl | CreateStringAttribute
-		if !tfPlanInfo.TermsOfServiceUrl.IsUnknown() {
-			tfPlanTermsOfServiceUrl := tfPlanInfo.TermsOfServiceUrl.ValueString()
-			requestBodyInfo.SetTermsOfServiceUrl(&tfPlanTermsOfServiceUrl)
+		if !tfPlanInformationalUrl.TermsOfServiceUrl.IsUnknown() {
+			tfPlanTermsOfServiceUrl := tfPlanInformationalUrl.TermsOfServiceUrl.ValueString()
+			requestBodyInformationalUrl.SetTermsOfServiceUrl(&tfPlanTermsOfServiceUrl)
 		} else {
-			tfPlanInfo.TermsOfServiceUrl = types.StringNull()
+			tfPlanInformationalUrl.TermsOfServiceUrl = types.StringNull()
 		}
 		// END TermsOfServiceUrl | CreateStringAttribute
 
-		requestBodyServicePrincipal.SetInfo(requestBodyInfo)
-		tfPlanServicePrincipal.Info, _ = types.ObjectValueFrom(ctx, tfPlanInfo.AttributeTypes(), requestBodyInfo)
+		requestBodyServicePrincipal.SetInfo(requestBodyInformationalUrl)
+		tfPlanServicePrincipal.Info, _ = types.ObjectValueFrom(ctx, tfPlanInformationalUrl.AttributeTypes(), requestBodyInformationalUrl)
 	} else {
 		tfPlanServicePrincipal.Info = types.ObjectNull(tfPlanServicePrincipal.Info.AttributeTypes(ctx))
 	}
