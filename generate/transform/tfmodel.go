@@ -134,8 +134,6 @@ func (mf ModelField) FieldType() string {
 	switch mf.Property.Type {
 	case "string":
 		return "types.String"
-	case "integer":
-		return "types.Int64"
 	case "number":
 		return "types.Int64"
 	case "boolean":
@@ -169,8 +167,6 @@ func (mf ModelField) AttributeType() string {
 	switch mf.Property.Type {
 	case "string":
 		return "types.StringType"
-	case "integer":
-		return "types.Int64Type"
 	case "number":
 		return "types.Int64Type"
 	case "boolean":
