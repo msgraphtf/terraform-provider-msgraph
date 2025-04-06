@@ -135,15 +135,6 @@ func (ura updateRequestAttribute) ObjectOf() string {
 	return upperFirst(ura.Property.ObjectOf.Title)
 }
 
-func (ura updateRequestAttribute) PlanVar() string {
-
-	if ura.Parent != nil {
-		return "tfPlan" + ura.Parent.RequestBodyVar()
-	} else {
-		return "tfPlan"
-	}
-}
-
 func (ura updateRequestAttribute) TfModelName() string {
 	return ura.UpdateRequest.BlockName.LowerCamel() + ura.ObjectOf()
 }
@@ -170,16 +161,6 @@ func (ura updateRequestAttribute) RequestBodyVar() string {
 	} else {
 		return "requestBody"
 	}
-}
-
-func (ura updateRequestAttribute) NestedPlan() string {
-
-	if ura.Parent != nil {
-		return "tfPlan" + ura.Parent.RequestBodyVar() + "." + ura.Name()
-	} else {
-		return "tfPlan." + ura.Name()
-	}
-
 }
 
 func (ura updateRequestAttribute) NestedState() string {
@@ -221,16 +202,6 @@ func (ura updateRequestAttribute) ParentRequestBodyVar() string {
 		return ura.Parent.RequestBodyVar()
 	} else {
 		return "requestBody"
-	}
-
-}
-
-func (ura updateRequestAttribute) ParentPlanVar() string {
-
-	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return "tfPlan" + ura.Parent.RequestBodyVar() + "." + ura.Name()
-	} else {
-		return "tfPlan." + ura.Name()
 	}
 
 }
