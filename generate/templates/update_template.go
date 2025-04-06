@@ -17,12 +17,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 
 	// Generate API request body from plan
-	requestBody := models.New{{.BlockName.UpperCamel}}()
+	requestBody{{.BlockName.UpperCamel}} := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "UpdateStringAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
-	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
+	requestBody{{.ParentName}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
@@ -31,7 +31,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	parsed{{.Name}}, _ := models.Parse{{.ObjectOf}}(tfPlan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.ObjectOf}})
-	{{.RequestBodyVar}}.Set{{.Name}}(&asserted{{.Name}})
+	requestBody{{.ParentName}}.Set{{.Name}}(&asserted{{.Name}})
 	}
 	{{- end}}
 
@@ -39,7 +39,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
-	{{.RequestBodyVar}}.Set{{.Name}}(&t)
+	requestBody{{.ParentName}}.Set{{.Name}}(&t)
 	}
 	{{- end}}
 
@@ -47,35 +47,35 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	u, _ := uuid.Parse(tfPlan{{.Name}})
-	{{.RequestBodyVar}}.Set{{.Name}}(&u)
+	requestBody{{.ParentName}}.Set{{.Name}}(&u)
 	}
 	{{- end}}
 
 	{{- define "UpdateStringBase64UrlAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
-	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
+	requestBody{{.ParentName}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	}
 	{{- end}}
 
 	{{- define "UpdateInt64Attribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueInt64()
-	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
+	requestBody{{.ParentName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateInt32Attribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := int32(tfPlan{{.ParentName}}.{{.Name}}.ValueInt64())
-	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
+	requestBody{{.ParentName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateBoolAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueBool()
-	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
+	requestBody{{.ParentName}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
@@ -85,7 +85,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			stringArray{{.Name}} = append(stringArray{{.Name}}, i.String())
 		}
-		{{.RequestBodyVar}}.Set{{.Name}}(stringArray{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(stringArray{{.Name}})
 	}
 	{{- end}}
 
@@ -96,7 +96,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 			u, _ := uuid.Parse(i.String())
 			{{.Name}} = append({{.Name}}, u)
 		}
-		{{.RequestBodyVar}}.Set{{.Name}}({{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}({{.Name}})
 	}
 	{{- end}}
 
@@ -104,26 +104,26 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}) {
 		var tfPlan{{.Name}} []models.{{.ObjectOf}}able
 		for k, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
-			{{.RequestBodyVar}} := models.New{{.ObjectOf}}()
+			requestBody{{.ObjectOf}} := models.New{{.ObjectOf}}()
 			tfPlan{{.ObjectOf}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.ObjectOf}})
 			tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, tfState{{.ParentName}}.{{.Name}}.Elements()[k].Type(ctx), &tfPlan{{.ObjectOf}})
 			{{template "generate_update" .NestedUpdate}}
 		}
-		{{.ParentRequestBodyVar}}.Set{{.Name}}(tfPlan{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateObjectAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
-		requestBody{{.Name}} := models.New{{.ObjectOf}}()
+		requestBody{{.ObjectOf}} := models.New{{.ObjectOf}}()
 		tfPlan{{.ObjectOf}} := {{.TfModelName}}Model{}
 		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.ObjectOf}}, basetypes.ObjectAsOptions{})
 		tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
 		tfState{{.ParentName}}.{{.Name}}.As(ctx, &tfState{{.ObjectOf}}, basetypes.ObjectAsOptions{})
 		{{template "generate_update" .NestedUpdate}}
-		{{.ParentRequestBodyVar}}.Set{{.Name}}(requestBody{{.Name}})
+		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.ObjectOf}})
 		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.ObjectOf}}.AttributeTypes(), tfPlan{{.ObjectOf}})
 	}
 	{{- end}}
@@ -160,7 +160,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 
 	// Update {{.BlockName.LowerCamel}}
-	_, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Patch(context.Background(), requestBody, nil)
+	_, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Patch(context.Background(), requestBody{{.BlockName.UpperCamel}}, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error updating {{.BlockName.Snake}}",

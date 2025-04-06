@@ -139,21 +139,6 @@ func (ura updateRequestAttribute) TfModelName() string {
 	return ura.UpdateRequest.BlockName.LowerCamel() + ura.ObjectOf()
 }
 
-func (ura updateRequestAttribute) RequestBodyVar() string {
-
-	if ura.AttributeType() == "UpdateObjectAttribute" {
-		return "requestBody" + ura.Name()
-	} else if ura.AttributeType() == "UpdateArrayObjectAttribute" {
-		return "requestBody" + ura.Name()
-	} else if ura.Parent != nil {
-		return ura.Parent.RequestBodyVar()
-	} else if ura.Property.ArrayOf == "object" {
-		return ura.Property.ObjectOf.Title
-	} else {
-		return "requestBody"
-	}
-}
-
 func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 
 	var newAttributes []updateRequestAttribute
@@ -175,16 +160,6 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 	}
 
 	return newAttributes
-}
-
-func (ura updateRequestAttribute) ParentRequestBodyVar() string {
-
-	if ura.Parent != nil {
-		return ura.Parent.RequestBodyVar()
-	} else {
-		return "requestBody"
-	}
-
 }
 
 func (ura updateRequestAttribute) SetModelMethod() string {
