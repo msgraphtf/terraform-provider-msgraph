@@ -116,6 +116,25 @@ func (ura updateRequestAttribute) AttributeType() string {
 
 }
 
+// Generates the name of the parent attribute
+// When the attribute is a child (of either an Object or Array), it will return the ObjectOf
+// When it is not a child, it will return the block name
+func (ura updateRequestAttribute) ParentName() string {
+	if ura.Parent != nil {
+		return ura.Parent.ObjectOf()
+	} else {
+		return ura.UpdateRequest.BlockName.UpperCamel()
+	}
+}
+
+
+// If this attribute is an object, returns the name of the object that is is.
+// This can be slightly (grammatically) different from the name of the attribute.
+// The attribute name may be plural if it's an array of some kind, but the ObjectOf will be singular
+func (ura updateRequestAttribute) ObjectOf() string {
+	return upperFirst(ura.Property.ObjectOf.Title)
+}
+
 func (ura updateRequestAttribute) PlanVar() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
