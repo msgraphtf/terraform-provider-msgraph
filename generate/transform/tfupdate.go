@@ -174,34 +174,6 @@ func (ura updateRequestAttribute) RequestBodyVar() string {
 	}
 }
 
-func (ura updateRequestAttribute) PlanValueMethod() string {
-
-	switch ura.Property.Type {
-	case "string":
-		return "ValueString"
-	case "integer":
-		return "ValueInt64"
-	case "boolean":
-		return "ValueBool"
-	case "array":
-		switch ura.Property.ArrayOf {
-		case "string":
-			if ura.Property.Format == "uuid" {
-				return "ValueString"
-			} else {
-				return "ValueString"
-			}
-		}
-	case "object":
-		if ura.Property.ObjectOf.Type == "string" { // This is a string enum
-			return "ValueString"
-		}
-	}
-
-	return "UNKNOWN"
-
-}
-
 func (ura updateRequestAttribute) NestedPlan() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {

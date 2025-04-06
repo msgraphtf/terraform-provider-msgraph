@@ -21,14 +21,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateStringAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
 	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&plan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateStringEnumAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
 	parsed{{.Name}}, _ := models.Parse{{.NewModelMethod}}(plan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.NewModelMethod}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&asserted{{.Name}})
@@ -37,7 +37,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateStringTimeAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
 	t, _ := time.Parse(time.RFC3339, plan{{.Name}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&t)
 	}
@@ -45,7 +45,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateStringUuidAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
 	u, _ := uuid.Parse(plan{{.Name}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&u)
 	}
@@ -53,28 +53,28 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateStringBase64UrlAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
 	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(plan{{.Name}}))
 	}
 	{{- end}}
 
 	{{- define "UpdateInt64Attribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueInt64()
 	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateInt32Attribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := int32({{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}())
+	plan{{.Name}} := int32({{.PlanVar}}{{.Name}}.ValueInt64())
 	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateBoolAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueBool()
 	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
 	}
 	{{- end}}
