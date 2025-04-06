@@ -25,25 +25,20 @@ type teamModel struct {
 }
 
 func (m teamModel) AttributeTypes() map[string]attr.Type {
-	teamFunSettings := teamTeamFunSettingsModel{}
-	teamGuestSettings := teamTeamGuestSettingsModel{}
-	teamMemberSettings := teamTeamMemberSettingsModel{}
-	teamMessagingSettings := teamTeamMessagingSettingsModel{}
-	teamSummary := teamTeamSummaryModel{}
 	return map[string]attr.Type{
 		"id":                 types.StringType,
 		"classification":     types.StringType,
 		"created_date_time":  types.StringType,
 		"description":        types.StringType,
 		"display_name":       types.StringType,
-		"fun_settings":       types.ObjectType{AttrTypes: teamFunSettings.AttributeTypes()},
-		"guest_settings":     types.ObjectType{AttrTypes: teamGuestSettings.AttributeTypes()},
+		"fun_settings":       types.ObjectType{AttrTypes: teamTeamFunSettingsModel{}.AttributeTypes()},
+		"guest_settings":     types.ObjectType{AttrTypes: teamTeamGuestSettingsModel{}.AttributeTypes()},
 		"internal_id":        types.StringType,
 		"is_archived":        types.BoolType,
-		"member_settings":    types.ObjectType{AttrTypes: teamMemberSettings.AttributeTypes()},
-		"messaging_settings": types.ObjectType{AttrTypes: teamMessagingSettings.AttributeTypes()},
+		"member_settings":    types.ObjectType{AttrTypes: teamTeamMemberSettingsModel{}.AttributeTypes()},
+		"messaging_settings": types.ObjectType{AttrTypes: teamTeamMessagingSettingsModel{}.AttributeTypes()},
 		"specialization":     types.StringType,
-		"summary":            types.ObjectType{AttrTypes: teamSummary.AttributeTypes()},
+		"summary":            types.ObjectType{AttrTypes: teamTeamSummaryModel{}.AttributeTypes()},
 		"tenant_id":          types.StringType,
 		"visibility":         types.StringType,
 		"web_url":            types.StringType,

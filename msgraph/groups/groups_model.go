@@ -10,9 +10,8 @@ type groupsModel struct {
 }
 
 func (m groupsModel) AttributeTypes() map[string]attr.Type {
-	groupsValue := groupsGroupModel{}
 	return map[string]attr.Type{
-		"value": types.ListType{ElemType: types.ObjectType{AttrTypes: groupsValue.AttributeTypes()}},
+		"value": types.ListType{ElemType: types.ObjectType{AttrTypes: groupsGroupModel{}.AttributeTypes()}},
 	}
 }
 
@@ -63,17 +62,12 @@ type groupsGroupModel struct {
 }
 
 func (m groupsGroupModel) AttributeTypes() map[string]attr.Type {
-	groupsAssignedLabels := groupsAssignedLabelModel{}
-	groupsAssignedLicenses := groupsAssignedLicenseModel{}
-	groupsLicenseProcessingState := groupsLicenseProcessingStateModel{}
-	groupsOnPremisesProvisioningErrors := groupsOnPremisesProvisioningErrorModel{}
-	groupsServiceProvisioningErrors := groupsServiceProvisioningErrorModel{}
 	return map[string]attr.Type{
 		"id":                               types.StringType,
 		"deleted_date_time":                types.StringType,
 		"allow_external_senders":           types.BoolType,
-		"assigned_labels":                  types.ListType{ElemType: types.ObjectType{AttrTypes: groupsAssignedLabels.AttributeTypes()}},
-		"assigned_licenses":                types.ListType{ElemType: types.ObjectType{AttrTypes: groupsAssignedLicenses.AttributeTypes()}},
+		"assigned_labels":                  types.ListType{ElemType: types.ObjectType{AttrTypes: groupsAssignedLabelModel{}.AttributeTypes()}},
+		"assigned_licenses":                types.ListType{ElemType: types.ObjectType{AttrTypes: groupsAssignedLicenseModel{}.AttributeTypes()}},
 		"auto_subscribe_new_members":       types.BoolType,
 		"classification":                   types.StringType,
 		"created_date_time":                types.StringType,
@@ -88,7 +82,7 @@ func (m groupsGroupModel) AttributeTypes() map[string]attr.Type {
 		"is_assignable_to_role":            types.BoolType,
 		"is_management_restricted":         types.BoolType,
 		"is_subscribed_by_mail":            types.BoolType,
-		"license_processing_state":         types.ObjectType{AttrTypes: groupsLicenseProcessingState.AttributeTypes()},
+		"license_processing_state":         types.ObjectType{AttrTypes: groupsLicenseProcessingStateModel{}.AttributeTypes()},
 		"mail":                             types.StringType,
 		"mail_enabled":                     types.BoolType,
 		"mail_nickname":                    types.StringType,
@@ -97,7 +91,7 @@ func (m groupsGroupModel) AttributeTypes() map[string]attr.Type {
 		"on_premises_domain_name":          types.StringType,
 		"on_premises_last_sync_date_time":  types.StringType,
 		"on_premises_net_bios_name":        types.StringType,
-		"on_premises_provisioning_errors":  types.ListType{ElemType: types.ObjectType{AttrTypes: groupsOnPremisesProvisioningErrors.AttributeTypes()}},
+		"on_premises_provisioning_errors":  types.ListType{ElemType: types.ObjectType{AttrTypes: groupsOnPremisesProvisioningErrorModel{}.AttributeTypes()}},
 		"on_premises_sam_account_name":     types.StringType,
 		"on_premises_security_identifier":  types.StringType,
 		"on_premises_sync_enabled":         types.BoolType,
@@ -107,7 +101,7 @@ func (m groupsGroupModel) AttributeTypes() map[string]attr.Type {
 		"renewed_date_time":                types.StringType,
 		"security_enabled":                 types.BoolType,
 		"security_identifier":              types.StringType,
-		"service_provisioning_errors":      types.ListType{ElemType: types.ObjectType{AttrTypes: groupsServiceProvisioningErrors.AttributeTypes()}},
+		"service_provisioning_errors":      types.ListType{ElemType: types.ObjectType{AttrTypes: groupsServiceProvisioningErrorModel{}.AttributeTypes()}},
 		"theme":                            types.StringType,
 		"unique_name":                      types.StringType,
 		"unseen_count":                     types.Int64Type,

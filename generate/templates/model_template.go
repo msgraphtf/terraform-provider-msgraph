@@ -14,11 +14,6 @@ type {{.ModelName}} struct {
 
 
 func (m {{.ModelName}}) AttributeTypes() map[string]attr.Type {
-	{{- range .ModelFields}}
-	{{- if .IfObjectType }}
-	{{.ModelVarName}} := {{.ModelName}}{}
-	{{- end}}
-	{{- end}}
 	return map[string]attr.Type{
 		{{- range .ModelFields}}
 		"{{.AttributeName}}": {{.AttributeType}},

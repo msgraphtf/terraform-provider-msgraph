@@ -49,31 +49,15 @@ type applicationModel struct {
 }
 
 func (m applicationModel) AttributeTypes() map[string]attr.Type {
-	applicationAddIns := applicationAddInModel{}
-	applicationApi := applicationApiApplicationModel{}
-	applicationAppRoles := applicationAppRoleModel{}
-	applicationCertification := applicationCertificationModel{}
-	applicationInfo := applicationInformationalUrlModel{}
-	applicationKeyCredentials := applicationKeyCredentialModel{}
-	applicationOptionalClaims := applicationOptionalClaimsModel{}
-	applicationParentalControlSettings := applicationParentalControlSettingsModel{}
-	applicationPasswordCredentials := applicationPasswordCredentialModel{}
-	applicationPublicClient := applicationPublicClientApplicationModel{}
-	applicationRequestSignatureVerification := applicationRequestSignatureVerificationModel{}
-	applicationRequiredResourceAccess := applicationRequiredResourceAccessModel{}
-	applicationServicePrincipalLockConfiguration := applicationServicePrincipalLockConfigurationModel{}
-	applicationSpa := applicationSpaApplicationModel{}
-	applicationVerifiedPublisher := applicationVerifiedPublisherModel{}
-	applicationWeb := applicationWebApplicationModel{}
 	return map[string]attr.Type{
 		"id":                                   types.StringType,
 		"deleted_date_time":                    types.StringType,
-		"add_ins":                              types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAddIns.AttributeTypes()}},
-		"api":                                  types.ObjectType{AttrTypes: applicationApi.AttributeTypes()},
+		"add_ins":                              types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAddInModel{}.AttributeTypes()}},
+		"api":                                  types.ObjectType{AttrTypes: applicationApiApplicationModel{}.AttributeTypes()},
 		"app_id":                               types.StringType,
-		"app_roles":                            types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAppRoles.AttributeTypes()}},
+		"app_roles":                            types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAppRoleModel{}.AttributeTypes()}},
 		"application_template_id":              types.StringType,
-		"certification":                        types.ObjectType{AttrTypes: applicationCertification.AttributeTypes()},
+		"certification":                        types.ObjectType{AttrTypes: applicationCertificationModel{}.AttributeTypes()},
 		"created_date_time":                    types.StringType,
 		"default_redirect_uri":                 types.StringType,
 		"description":                          types.StringType,
@@ -81,31 +65,31 @@ func (m applicationModel) AttributeTypes() map[string]attr.Type {
 		"display_name":                         types.StringType,
 		"group_membership_claims":              types.StringType,
 		"identifier_uris":                      types.ListType{ElemType: types.StringType},
-		"info":                                 types.ObjectType{AttrTypes: applicationInfo.AttributeTypes()},
+		"info":                                 types.ObjectType{AttrTypes: applicationInformationalUrlModel{}.AttributeTypes()},
 		"is_device_only_auth_supported":        types.BoolType,
 		"is_fallback_public_client":            types.BoolType,
-		"key_credentials":                      types.ListType{ElemType: types.ObjectType{AttrTypes: applicationKeyCredentials.AttributeTypes()}},
+		"key_credentials":                      types.ListType{ElemType: types.ObjectType{AttrTypes: applicationKeyCredentialModel{}.AttributeTypes()}},
 		"logo":                                 types.StringType,
 		"native_authentication_apis_enabled":   types.StringType,
 		"notes":                                types.StringType,
 		"oauth_2_require_post_response":        types.BoolType,
-		"optional_claims":                      types.ObjectType{AttrTypes: applicationOptionalClaims.AttributeTypes()},
-		"parental_control_settings":            types.ObjectType{AttrTypes: applicationParentalControlSettings.AttributeTypes()},
-		"password_credentials":                 types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPasswordCredentials.AttributeTypes()}},
-		"public_client":                        types.ObjectType{AttrTypes: applicationPublicClient.AttributeTypes()},
+		"optional_claims":                      types.ObjectType{AttrTypes: applicationOptionalClaimsModel{}.AttributeTypes()},
+		"parental_control_settings":            types.ObjectType{AttrTypes: applicationParentalControlSettingsModel{}.AttributeTypes()},
+		"password_credentials":                 types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPasswordCredentialModel{}.AttributeTypes()}},
+		"public_client":                        types.ObjectType{AttrTypes: applicationPublicClientApplicationModel{}.AttributeTypes()},
 		"publisher_domain":                     types.StringType,
-		"request_signature_verification":       types.ObjectType{AttrTypes: applicationRequestSignatureVerification.AttributeTypes()},
-		"required_resource_access":             types.ListType{ElemType: types.ObjectType{AttrTypes: applicationRequiredResourceAccess.AttributeTypes()}},
+		"request_signature_verification":       types.ObjectType{AttrTypes: applicationRequestSignatureVerificationModel{}.AttributeTypes()},
+		"required_resource_access":             types.ListType{ElemType: types.ObjectType{AttrTypes: applicationRequiredResourceAccessModel{}.AttributeTypes()}},
 		"saml_metadata_url":                    types.StringType,
 		"service_management_reference":         types.StringType,
-		"service_principal_lock_configuration": types.ObjectType{AttrTypes: applicationServicePrincipalLockConfiguration.AttributeTypes()},
+		"service_principal_lock_configuration": types.ObjectType{AttrTypes: applicationServicePrincipalLockConfigurationModel{}.AttributeTypes()},
 		"sign_in_audience":                     types.StringType,
-		"spa":                                  types.ObjectType{AttrTypes: applicationSpa.AttributeTypes()},
+		"spa":                                  types.ObjectType{AttrTypes: applicationSpaApplicationModel{}.AttributeTypes()},
 		"tags":                                 types.ListType{ElemType: types.StringType},
 		"token_encryption_key_id":              types.StringType,
 		"unique_name":                          types.StringType,
-		"verified_publisher":                   types.ObjectType{AttrTypes: applicationVerifiedPublisher.AttributeTypes()},
-		"web":                                  types.ObjectType{AttrTypes: applicationWeb.AttributeTypes()},
+		"verified_publisher":                   types.ObjectType{AttrTypes: applicationVerifiedPublisherModel{}.AttributeTypes()},
+		"web":                                  types.ObjectType{AttrTypes: applicationWebApplicationModel{}.AttributeTypes()},
 	}
 }
 
@@ -116,10 +100,9 @@ type applicationAddInModel struct {
 }
 
 func (m applicationAddInModel) AttributeTypes() map[string]attr.Type {
-	applicationProperties := applicationKeyValueModel{}
 	return map[string]attr.Type{
 		"id":         types.StringType,
-		"properties": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationProperties.AttributeTypes()}},
+		"properties": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationKeyValueModel{}.AttributeTypes()}},
 		"type":       types.StringType,
 	}
 }
@@ -145,13 +128,11 @@ type applicationApiApplicationModel struct {
 }
 
 func (m applicationApiApplicationModel) AttributeTypes() map[string]attr.Type {
-	applicationOauth2PermissionScopes := applicationPermissionScopeModel{}
-	applicationPreAuthorizedApplications := applicationPreAuthorizedApplicationModel{}
 	return map[string]attr.Type{
 		"accept_mapped_claims":           types.BoolType,
 		"known_client_applications":      types.ListType{ElemType: types.StringType},
-		"oauth_2_permission_scopes":      types.ListType{ElemType: types.ObjectType{AttrTypes: applicationOauth2PermissionScopes.AttributeTypes()}},
-		"pre_authorized_applications":    types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPreAuthorizedApplications.AttributeTypes()}},
+		"oauth_2_permission_scopes":      types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPermissionScopeModel{}.AttributeTypes()}},
+		"pre_authorized_applications":    types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPreAuthorizedApplicationModel{}.AttributeTypes()}},
 		"requested_access_token_version": types.Int64Type,
 	}
 }
@@ -283,13 +264,10 @@ type applicationOptionalClaimsModel struct {
 }
 
 func (m applicationOptionalClaimsModel) AttributeTypes() map[string]attr.Type {
-	applicationAccessToken := applicationOptionalClaimModel{}
-	applicationIdToken := applicationOptionalClaimModel{}
-	applicationSaml2Token := applicationOptionalClaimModel{}
 	return map[string]attr.Type{
-		"access_token": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAccessToken.AttributeTypes()}},
-		"id_token":     types.ListType{ElemType: types.ObjectType{AttrTypes: applicationIdToken.AttributeTypes()}},
-		"saml_2_token": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationSaml2Token.AttributeTypes()}},
+		"access_token": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationOptionalClaimModel{}.AttributeTypes()}},
+		"id_token":     types.ListType{ElemType: types.ObjectType{AttrTypes: applicationOptionalClaimModel{}.AttributeTypes()}},
+		"saml_2_token": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationOptionalClaimModel{}.AttributeTypes()}},
 	}
 }
 
@@ -371,9 +349,8 @@ type applicationRequiredResourceAccessModel struct {
 }
 
 func (m applicationRequiredResourceAccessModel) AttributeTypes() map[string]attr.Type {
-	applicationResourceAccess := applicationResourceAccessModel{}
 	return map[string]attr.Type{
-		"resource_access": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationResourceAccess.AttributeTypes()}},
+		"resource_access": types.ListType{ElemType: types.ObjectType{AttrTypes: applicationResourceAccessModel{}.AttributeTypes()}},
 		"resource_app_id": types.StringType,
 	}
 }
@@ -441,13 +418,11 @@ type applicationWebApplicationModel struct {
 }
 
 func (m applicationWebApplicationModel) AttributeTypes() map[string]attr.Type {
-	applicationImplicitGrantSettings := applicationImplicitGrantSettingsModel{}
-	applicationRedirectUriSettings := applicationRedirectUriSettingsModel{}
 	return map[string]attr.Type{
 		"home_page_url":           types.StringType,
-		"implicit_grant_settings": types.ObjectType{AttrTypes: applicationImplicitGrantSettings.AttributeTypes()},
+		"implicit_grant_settings": types.ObjectType{AttrTypes: applicationImplicitGrantSettingsModel{}.AttributeTypes()},
 		"logout_url":              types.StringType,
-		"redirect_uri_settings":   types.ListType{ElemType: types.ObjectType{AttrTypes: applicationRedirectUriSettings.AttributeTypes()}},
+		"redirect_uri_settings":   types.ListType{ElemType: types.ObjectType{AttrTypes: applicationRedirectUriSettingsModel{}.AttributeTypes()}},
 		"redirect_uris":           types.ListType{ElemType: types.StringType},
 	}
 }

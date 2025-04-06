@@ -10,9 +10,8 @@ type servicePrincipalsModel struct {
 }
 
 func (m servicePrincipalsModel) AttributeTypes() map[string]attr.Type {
-	servicePrincipalsValue := servicePrincipalsServicePrincipalModel{}
 	return map[string]attr.Type{
-		"value": types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsValue.AttributeTypes()}},
+		"value": types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsServicePrincipalModel{}.AttributeTypes()}},
 	}
 }
 
@@ -56,53 +55,43 @@ type servicePrincipalsServicePrincipalModel struct {
 }
 
 func (m servicePrincipalsServicePrincipalModel) AttributeTypes() map[string]attr.Type {
-	servicePrincipalsAddIns := servicePrincipalsAddInModel{}
-	servicePrincipalsAppRoles := servicePrincipalsAppRoleModel{}
-	servicePrincipalsCustomSecurityAttributes := servicePrincipalsCustomSecurityAttributeValueModel{}
-	servicePrincipalsInfo := servicePrincipalsInformationalUrlModel{}
-	servicePrincipalsKeyCredentials := servicePrincipalsKeyCredentialModel{}
-	servicePrincipalsOauth2PermissionScopes := servicePrincipalsPermissionScopeModel{}
-	servicePrincipalsPasswordCredentials := servicePrincipalsPasswordCredentialModel{}
-	servicePrincipalsResourceSpecificApplicationPermissions := servicePrincipalsResourceSpecificPermissionModel{}
-	servicePrincipalsSamlSingleSignOnSettings := servicePrincipalsSamlSingleSignOnSettingsModel{}
-	servicePrincipalsVerifiedPublisher := servicePrincipalsVerifiedPublisherModel{}
 	return map[string]attr.Type{
 		"id":                                     types.StringType,
 		"deleted_date_time":                      types.StringType,
 		"account_enabled":                        types.BoolType,
-		"add_ins":                                types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsAddIns.AttributeTypes()}},
+		"add_ins":                                types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsAddInModel{}.AttributeTypes()}},
 		"alternative_names":                      types.ListType{ElemType: types.StringType},
 		"app_description":                        types.StringType,
 		"app_display_name":                       types.StringType,
 		"app_id":                                 types.StringType,
 		"app_owner_organization_id":              types.StringType,
 		"app_role_assignment_required":           types.BoolType,
-		"app_roles":                              types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsAppRoles.AttributeTypes()}},
+		"app_roles":                              types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsAppRoleModel{}.AttributeTypes()}},
 		"application_template_id":                types.StringType,
-		"custom_security_attributes":             types.ObjectType{AttrTypes: servicePrincipalsCustomSecurityAttributes.AttributeTypes()},
+		"custom_security_attributes":             types.ObjectType{AttrTypes: servicePrincipalsCustomSecurityAttributeValueModel{}.AttributeTypes()},
 		"description":                            types.StringType,
 		"disabled_by_microsoft_status":           types.StringType,
 		"display_name":                           types.StringType,
 		"homepage":                               types.StringType,
-		"info":                                   types.ObjectType{AttrTypes: servicePrincipalsInfo.AttributeTypes()},
-		"key_credentials":                        types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsKeyCredentials.AttributeTypes()}},
+		"info":                                   types.ObjectType{AttrTypes: servicePrincipalsInformationalUrlModel{}.AttributeTypes()},
+		"key_credentials":                        types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsKeyCredentialModel{}.AttributeTypes()}},
 		"login_url":                              types.StringType,
 		"logout_url":                             types.StringType,
 		"notes":                                  types.StringType,
 		"notification_email_addresses":           types.ListType{ElemType: types.StringType},
-		"oauth_2_permission_scopes":              types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsOauth2PermissionScopes.AttributeTypes()}},
-		"password_credentials":                   types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsPasswordCredentials.AttributeTypes()}},
+		"oauth_2_permission_scopes":              types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsPermissionScopeModel{}.AttributeTypes()}},
+		"password_credentials":                   types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsPasswordCredentialModel{}.AttributeTypes()}},
 		"preferred_single_sign_on_mode":          types.StringType,
 		"preferred_token_signing_key_thumbprint": types.StringType,
 		"reply_urls":                             types.ListType{ElemType: types.StringType},
-		"resource_specific_application_permissions": types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsResourceSpecificApplicationPermissions.AttributeTypes()}},
-		"saml_single_sign_on_settings":              types.ObjectType{AttrTypes: servicePrincipalsSamlSingleSignOnSettings.AttributeTypes()},
+		"resource_specific_application_permissions": types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsResourceSpecificPermissionModel{}.AttributeTypes()}},
+		"saml_single_sign_on_settings":              types.ObjectType{AttrTypes: servicePrincipalsSamlSingleSignOnSettingsModel{}.AttributeTypes()},
 		"service_principal_names":                   types.ListType{ElemType: types.StringType},
 		"service_principal_type":                    types.StringType,
 		"sign_in_audience":                          types.StringType,
 		"tags":                                      types.ListType{ElemType: types.StringType},
 		"token_encryption_key_id":                   types.StringType,
-		"verified_publisher":                        types.ObjectType{AttrTypes: servicePrincipalsVerifiedPublisher.AttributeTypes()},
+		"verified_publisher":                        types.ObjectType{AttrTypes: servicePrincipalsVerifiedPublisherModel{}.AttributeTypes()},
 	}
 }
 
@@ -113,10 +102,9 @@ type servicePrincipalsAddInModel struct {
 }
 
 func (m servicePrincipalsAddInModel) AttributeTypes() map[string]attr.Type {
-	servicePrincipalsProperties := servicePrincipalsKeyValueModel{}
 	return map[string]attr.Type{
 		"id":         types.StringType,
-		"properties": types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsProperties.AttributeTypes()}},
+		"properties": types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsKeyValueModel{}.AttributeTypes()}},
 		"type":       types.StringType,
 	}
 }

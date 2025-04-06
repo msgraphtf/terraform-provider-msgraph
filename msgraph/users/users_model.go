@@ -10,9 +10,8 @@ type usersModel struct {
 }
 
 func (m usersModel) AttributeTypes() map[string]attr.Type {
-	usersValue := usersUserModel{}
 	return map[string]attr.Type{
-		"value": types.ListType{ElemType: types.ObjectType{AttrTypes: usersValue.AttributeTypes()}},
+		"value": types.ListType{ElemType: types.ObjectType{AttrTypes: usersUserModel{}.AttributeTypes()}},
 	}
 }
 
@@ -100,30 +99,15 @@ type usersUserModel struct {
 }
 
 func (m usersUserModel) AttributeTypes() map[string]attr.Type {
-	usersAssignedLicenses := usersAssignedLicenseModel{}
-	usersAssignedPlans := usersAssignedPlanModel{}
-	usersAuthorizationInfo := usersAuthorizationInfoModel{}
-	usersCustomSecurityAttributes := usersCustomSecurityAttributeValueModel{}
-	usersEmployeeOrgData := usersEmployeeOrgDataModel{}
-	usersIdentities := usersObjectIdentityModel{}
-	usersLicenseAssignmentStates := usersLicenseAssignmentStateModel{}
-	usersMailboxSettings := usersMailboxSettingsModel{}
-	usersOnPremisesExtensionAttributes := usersOnPremisesExtensionAttributesModel{}
-	usersOnPremisesProvisioningErrors := usersOnPremisesProvisioningErrorModel{}
-	usersPasswordProfile := usersPasswordProfileModel{}
-	usersPrint := usersUserPrintModel{}
-	usersProvisionedPlans := usersProvisionedPlanModel{}
-	usersServiceProvisioningErrors := usersServiceProvisioningErrorModel{}
-	usersSignInActivity := usersSignInActivityModel{}
 	return map[string]attr.Type{
 		"id":                                    types.StringType,
 		"deleted_date_time":                     types.StringType,
 		"about_me":                              types.StringType,
 		"account_enabled":                       types.BoolType,
 		"age_group":                             types.StringType,
-		"assigned_licenses":                     types.ListType{ElemType: types.ObjectType{AttrTypes: usersAssignedLicenses.AttributeTypes()}},
-		"assigned_plans":                        types.ListType{ElemType: types.ObjectType{AttrTypes: usersAssignedPlans.AttributeTypes()}},
-		"authorization_info":                    types.ObjectType{AttrTypes: usersAuthorizationInfo.AttributeTypes()},
+		"assigned_licenses":                     types.ListType{ElemType: types.ObjectType{AttrTypes: usersAssignedLicenseModel{}.AttributeTypes()}},
+		"assigned_plans":                        types.ListType{ElemType: types.ObjectType{AttrTypes: usersAssignedPlanModel{}.AttributeTypes()}},
+		"authorization_info":                    types.ObjectType{AttrTypes: usersAuthorizationInfoModel{}.AttributeTypes()},
 		"birthday":                              types.StringType,
 		"business_phones":                       types.ListType{ElemType: types.StringType},
 		"city":                                  types.StringType,
@@ -132,21 +116,21 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"country":                               types.StringType,
 		"created_date_time":                     types.StringType,
 		"creation_type":                         types.StringType,
-		"custom_security_attributes":            types.ObjectType{AttrTypes: usersCustomSecurityAttributes.AttributeTypes()},
+		"custom_security_attributes":            types.ObjectType{AttrTypes: usersCustomSecurityAttributeValueModel{}.AttributeTypes()},
 		"department":                            types.StringType,
 		"device_enrollment_limit":               types.Int64Type,
 		"display_name":                          types.StringType,
 		"employee_hire_date":                    types.StringType,
 		"employee_id":                           types.StringType,
 		"employee_leave_date_time":              types.StringType,
-		"employee_org_data":                     types.ObjectType{AttrTypes: usersEmployeeOrgData.AttributeTypes()},
+		"employee_org_data":                     types.ObjectType{AttrTypes: usersEmployeeOrgDataModel{}.AttributeTypes()},
 		"employee_type":                         types.StringType,
 		"external_user_state":                   types.StringType,
 		"external_user_state_change_date_time":  types.StringType,
 		"fax_number":                            types.StringType,
 		"given_name":                            types.StringType,
 		"hire_date":                             types.StringType,
-		"identities":                            types.ListType{ElemType: types.ObjectType{AttrTypes: usersIdentities.AttributeTypes()}},
+		"identities":                            types.ListType{ElemType: types.ObjectType{AttrTypes: usersObjectIdentityModel{}.AttributeTypes()}},
 		"im_addresses":                          types.ListType{ElemType: types.StringType},
 		"interests":                             types.ListType{ElemType: types.StringType},
 		"is_management_restricted":              types.BoolType,
@@ -154,40 +138,40 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"job_title":                             types.StringType,
 		"last_password_change_date_time":        types.StringType,
 		"legal_age_group_classification":        types.StringType,
-		"license_assignment_states":             types.ListType{ElemType: types.ObjectType{AttrTypes: usersLicenseAssignmentStates.AttributeTypes()}},
+		"license_assignment_states":             types.ListType{ElemType: types.ObjectType{AttrTypes: usersLicenseAssignmentStateModel{}.AttributeTypes()}},
 		"mail":                                  types.StringType,
 		"mail_nickname":                         types.StringType,
-		"mailbox_settings":                      types.ObjectType{AttrTypes: usersMailboxSettings.AttributeTypes()},
+		"mailbox_settings":                      types.ObjectType{AttrTypes: usersMailboxSettingsModel{}.AttributeTypes()},
 		"mobile_phone":                          types.StringType,
 		"my_site":                               types.StringType,
 		"office_location":                       types.StringType,
 		"on_premises_distinguished_name":        types.StringType,
 		"on_premises_domain_name":               types.StringType,
-		"on_premises_extension_attributes":      types.ObjectType{AttrTypes: usersOnPremisesExtensionAttributes.AttributeTypes()},
+		"on_premises_extension_attributes":      types.ObjectType{AttrTypes: usersOnPremisesExtensionAttributesModel{}.AttributeTypes()},
 		"on_premises_immutable_id":              types.StringType,
 		"on_premises_last_sync_date_time":       types.StringType,
-		"on_premises_provisioning_errors":       types.ListType{ElemType: types.ObjectType{AttrTypes: usersOnPremisesProvisioningErrors.AttributeTypes()}},
+		"on_premises_provisioning_errors":       types.ListType{ElemType: types.ObjectType{AttrTypes: usersOnPremisesProvisioningErrorModel{}.AttributeTypes()}},
 		"on_premises_sam_account_name":          types.StringType,
 		"on_premises_security_identifier":       types.StringType,
 		"on_premises_sync_enabled":              types.BoolType,
 		"on_premises_user_principal_name":       types.StringType,
 		"other_mails":                           types.ListType{ElemType: types.StringType},
 		"password_policies":                     types.StringType,
-		"password_profile":                      types.ObjectType{AttrTypes: usersPasswordProfile.AttributeTypes()},
+		"password_profile":                      types.ObjectType{AttrTypes: usersPasswordProfileModel{}.AttributeTypes()},
 		"past_projects":                         types.ListType{ElemType: types.StringType},
 		"postal_code":                           types.StringType,
 		"preferred_data_location":               types.StringType,
 		"preferred_language":                    types.StringType,
 		"preferred_name":                        types.StringType,
-		"print":                                 types.ObjectType{AttrTypes: usersPrint.AttributeTypes()},
-		"provisioned_plans":                     types.ListType{ElemType: types.ObjectType{AttrTypes: usersProvisionedPlans.AttributeTypes()}},
+		"print":                                 types.ObjectType{AttrTypes: usersUserPrintModel{}.AttributeTypes()},
+		"provisioned_plans":                     types.ListType{ElemType: types.ObjectType{AttrTypes: usersProvisionedPlanModel{}.AttributeTypes()}},
 		"proxy_addresses":                       types.ListType{ElemType: types.StringType},
 		"responsibilities":                      types.ListType{ElemType: types.StringType},
 		"schools":                               types.ListType{ElemType: types.StringType},
 		"security_identifier":                   types.StringType,
-		"service_provisioning_errors":           types.ListType{ElemType: types.ObjectType{AttrTypes: usersServiceProvisioningErrors.AttributeTypes()}},
+		"service_provisioning_errors":           types.ListType{ElemType: types.ObjectType{AttrTypes: usersServiceProvisioningErrorModel{}.AttributeTypes()}},
 		"show_in_address_list":                  types.BoolType,
-		"sign_in_activity":                      types.ObjectType{AttrTypes: usersSignInActivity.AttributeTypes()},
+		"sign_in_activity":                      types.ObjectType{AttrTypes: usersSignInActivityModel{}.AttributeTypes()},
 		"sign_in_sessions_valid_from_date_time": types.StringType,
 		"skills":                                types.ListType{ElemType: types.StringType},
 		"state":                                 types.StringType,
@@ -303,19 +287,16 @@ type usersMailboxSettingsModel struct {
 }
 
 func (m usersMailboxSettingsModel) AttributeTypes() map[string]attr.Type {
-	usersAutomaticRepliesSetting := usersAutomaticRepliesSettingModel{}
-	usersLanguage := usersLocaleInfoModel{}
-	usersWorkingHours := usersWorkingHoursModel{}
 	return map[string]attr.Type{
 		"archive_folder":                            types.StringType,
-		"automatic_replies_setting":                 types.ObjectType{AttrTypes: usersAutomaticRepliesSetting.AttributeTypes()},
+		"automatic_replies_setting":                 types.ObjectType{AttrTypes: usersAutomaticRepliesSettingModel{}.AttributeTypes()},
 		"date_format":                               types.StringType,
 		"delegate_meeting_message_delivery_options": types.StringType,
-		"language":                                  types.ObjectType{AttrTypes: usersLanguage.AttributeTypes()},
+		"language":                                  types.ObjectType{AttrTypes: usersLocaleInfoModel{}.AttributeTypes()},
 		"time_format":                               types.StringType,
 		"time_zone":                                 types.StringType,
 		"user_purpose":                              types.StringType,
-		"working_hours":                             types.ObjectType{AttrTypes: usersWorkingHours.AttributeTypes()},
+		"working_hours":                             types.ObjectType{AttrTypes: usersWorkingHoursModel{}.AttributeTypes()},
 	}
 }
 
@@ -329,14 +310,12 @@ type usersAutomaticRepliesSettingModel struct {
 }
 
 func (m usersAutomaticRepliesSettingModel) AttributeTypes() map[string]attr.Type {
-	usersScheduledEndDateTime := usersDateTimeTimeZoneModel{}
-	usersScheduledStartDateTime := usersDateTimeTimeZoneModel{}
 	return map[string]attr.Type{
 		"external_audience":         types.StringType,
 		"external_reply_message":    types.StringType,
 		"internal_reply_message":    types.StringType,
-		"scheduled_end_date_time":   types.ObjectType{AttrTypes: usersScheduledEndDateTime.AttributeTypes()},
-		"scheduled_start_date_time": types.ObjectType{AttrTypes: usersScheduledStartDateTime.AttributeTypes()},
+		"scheduled_end_date_time":   types.ObjectType{AttrTypes: usersDateTimeTimeZoneModel{}.AttributeTypes()},
+		"scheduled_start_date_time": types.ObjectType{AttrTypes: usersDateTimeTimeZoneModel{}.AttributeTypes()},
 		"status":                    types.StringType,
 	}
 }
@@ -373,12 +352,11 @@ type usersWorkingHoursModel struct {
 }
 
 func (m usersWorkingHoursModel) AttributeTypes() map[string]attr.Type {
-	usersTimeZone := usersTimeZoneBaseModel{}
 	return map[string]attr.Type{
 		"days_of_week": types.ListType{ElemType: types.StringType},
 		"end_time":     types.StringType,
 		"start_time":   types.StringType,
-		"time_zone":    types.ObjectType{AttrTypes: usersTimeZone.AttributeTypes()},
+		"time_zone":    types.ObjectType{AttrTypes: usersTimeZoneBaseModel{}.AttributeTypes()},
 	}
 }
 

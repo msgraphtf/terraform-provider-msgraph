@@ -41,12 +41,11 @@ type deviceModel struct {
 }
 
 func (m deviceModel) AttributeTypes() map[string]attr.Type {
-	deviceAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
 	return map[string]attr.Type{
 		"id":                                 types.StringType,
 		"deleted_date_time":                  types.StringType,
 		"account_enabled":                    types.BoolType,
-		"alternative_security_ids":           types.ListType{ElemType: types.ObjectType{AttrTypes: deviceAlternativeSecurityIds.AttributeTypes()}},
+		"alternative_security_ids":           types.ListType{ElemType: types.ObjectType{AttrTypes: deviceAlternativeSecurityIdModel{}.AttributeTypes()}},
 		"approximate_last_sign_in_date_time": types.StringType,
 		"compliance_expiration_date_time":    types.StringType,
 		"device_category":                    types.StringType,

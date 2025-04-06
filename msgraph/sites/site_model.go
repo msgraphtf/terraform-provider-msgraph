@@ -25,30 +25,23 @@ type siteModel struct {
 }
 
 func (m siteModel) AttributeTypes() map[string]attr.Type {
-	siteCreatedBy := siteIdentitySetModel{}
-	siteLastModifiedBy := siteIdentitySetModel{}
-	siteParentReference := siteItemReferenceModel{}
-	siteError := sitePublicErrorModel{}
-	siteRoot := siteRootModel{}
-	siteSharepointIds := siteSharepointIdsModel{}
-	siteSiteCollection := siteSiteCollectionModel{}
 	return map[string]attr.Type{
 		"id":                      types.StringType,
-		"created_by":              types.ObjectType{AttrTypes: siteCreatedBy.AttributeTypes()},
+		"created_by":              types.ObjectType{AttrTypes: siteIdentitySetModel{}.AttributeTypes()},
 		"created_date_time":       types.StringType,
 		"description":             types.StringType,
 		"e_tag":                   types.StringType,
-		"last_modified_by":        types.ObjectType{AttrTypes: siteLastModifiedBy.AttributeTypes()},
+		"last_modified_by":        types.ObjectType{AttrTypes: siteIdentitySetModel{}.AttributeTypes()},
 		"last_modified_date_time": types.StringType,
 		"name":                    types.StringType,
-		"parent_reference":        types.ObjectType{AttrTypes: siteParentReference.AttributeTypes()},
+		"parent_reference":        types.ObjectType{AttrTypes: siteItemReferenceModel{}.AttributeTypes()},
 		"web_url":                 types.StringType,
 		"display_name":            types.StringType,
-		"error":                   types.ObjectType{AttrTypes: siteError.AttributeTypes()},
+		"error":                   types.ObjectType{AttrTypes: sitePublicErrorModel{}.AttributeTypes()},
 		"is_personal_site":        types.BoolType,
-		"root":                    types.ObjectType{AttrTypes: siteRoot.AttributeTypes()},
-		"sharepoint_ids":          types.ObjectType{AttrTypes: siteSharepointIds.AttributeTypes()},
-		"site_collection":         types.ObjectType{AttrTypes: siteSiteCollection.AttributeTypes()},
+		"root":                    types.ObjectType{AttrTypes: siteRootModel{}.AttributeTypes()},
+		"sharepoint_ids":          types.ObjectType{AttrTypes: siteSharepointIdsModel{}.AttributeTypes()},
+		"site_collection":         types.ObjectType{AttrTypes: siteSiteCollectionModel{}.AttributeTypes()},
 	}
 }
 
@@ -59,13 +52,10 @@ type siteIdentitySetModel struct {
 }
 
 func (m siteIdentitySetModel) AttributeTypes() map[string]attr.Type {
-	siteApplication := siteIdentityModel{}
-	siteDevice := siteIdentityModel{}
-	siteUser := siteIdentityModel{}
 	return map[string]attr.Type{
-		"application": types.ObjectType{AttrTypes: siteApplication.AttributeTypes()},
-		"device":      types.ObjectType{AttrTypes: siteDevice.AttributeTypes()},
-		"user":        types.ObjectType{AttrTypes: siteUser.AttributeTypes()},
+		"application": types.ObjectType{AttrTypes: siteIdentityModel{}.AttributeTypes()},
+		"device":      types.ObjectType{AttrTypes: siteIdentityModel{}.AttributeTypes()},
+		"user":        types.ObjectType{AttrTypes: siteIdentityModel{}.AttributeTypes()},
 	}
 }
 
@@ -93,7 +83,6 @@ type siteItemReferenceModel struct {
 }
 
 func (m siteItemReferenceModel) AttributeTypes() map[string]attr.Type {
-	siteSharepointIds := siteSharepointIdsModel{}
 	return map[string]attr.Type{
 		"drive_id":       types.StringType,
 		"drive_type":     types.StringType,
@@ -101,7 +90,7 @@ func (m siteItemReferenceModel) AttributeTypes() map[string]attr.Type {
 		"name":           types.StringType,
 		"path":           types.StringType,
 		"share_id":       types.StringType,
-		"sharepoint_ids": types.ObjectType{AttrTypes: siteSharepointIds.AttributeTypes()},
+		"sharepoint_ids": types.ObjectType{AttrTypes: siteSharepointIdsModel{}.AttributeTypes()},
 		"site_id":        types.StringType,
 	}
 }
@@ -137,12 +126,10 @@ type sitePublicErrorModel struct {
 }
 
 func (m sitePublicErrorModel) AttributeTypes() map[string]attr.Type {
-	siteDetails := sitePublicErrorDetailModel{}
-	siteInnerError := sitePublicInnerErrorModel{}
 	return map[string]attr.Type{
 		"code":        types.StringType,
-		"details":     types.ListType{ElemType: types.ObjectType{AttrTypes: siteDetails.AttributeTypes()}},
-		"inner_error": types.ObjectType{AttrTypes: siteInnerError.AttributeTypes()},
+		"details":     types.ListType{ElemType: types.ObjectType{AttrTypes: sitePublicErrorDetailModel{}.AttributeTypes()}},
+		"inner_error": types.ObjectType{AttrTypes: sitePublicInnerErrorModel{}.AttributeTypes()},
 		"message":     types.StringType,
 		"target":      types.StringType,
 	}
@@ -170,10 +157,9 @@ type sitePublicInnerErrorModel struct {
 }
 
 func (m sitePublicInnerErrorModel) AttributeTypes() map[string]attr.Type {
-	siteDetails := sitePublicErrorDetailModel{}
 	return map[string]attr.Type{
 		"code":    types.StringType,
-		"details": types.ListType{ElemType: types.ObjectType{AttrTypes: siteDetails.AttributeTypes()}},
+		"details": types.ListType{ElemType: types.ObjectType{AttrTypes: sitePublicErrorDetailModel{}.AttributeTypes()}},
 		"message": types.StringType,
 		"target":  types.StringType,
 	}
@@ -194,13 +180,11 @@ type siteSiteCollectionModel struct {
 }
 
 func (m siteSiteCollectionModel) AttributeTypes() map[string]attr.Type {
-	siteArchivalDetails := siteSiteArchivalDetailsModel{}
-	siteRoot := siteRootModel{}
 	return map[string]attr.Type{
-		"archival_details":   types.ObjectType{AttrTypes: siteArchivalDetails.AttributeTypes()},
+		"archival_details":   types.ObjectType{AttrTypes: siteSiteArchivalDetailsModel{}.AttributeTypes()},
 		"data_location_code": types.StringType,
 		"hostname":           types.StringType,
-		"root":               types.ObjectType{AttrTypes: siteRoot.AttributeTypes()},
+		"root":               types.ObjectType{AttrTypes: siteRootModel{}.AttributeTypes()},
 	}
 }
 

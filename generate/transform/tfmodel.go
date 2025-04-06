@@ -175,7 +175,7 @@ func (mf ModelField) AttributeType() string {
 		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%s.AttributeTypes()}", mf.Definition.Model.BlockName+upperFirst(mf.Property.Name))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}", mf.Definition.Model.BlockName+upperFirst(mf.Property.ObjectOf.Title))
 		}
 	case "array":
 		switch mf.Property.ArrayOf {
@@ -183,7 +183,7 @@ func (mf ModelField) AttributeType() string {
 			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%s.AttributeTypes()}}", mf.Definition.Model.BlockName+upperFirst(mf.Property.Name))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}}", mf.Definition.Model.BlockName+upperFirst(mf.Property.ObjectOf.Title))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"
@@ -195,10 +195,3 @@ func (mf ModelField) AttributeType() string {
 
 }
 
-func (mf ModelField) ModelVarName() string {
-	return mf.Definition.Model.BlockName + upperFirst(mf.Property.Name)
-}
-
-func (mf ModelField) ModelName() string {
-	return mf.Definition.Model.BlockName + upperFirst(mf.Property.ObjectOf.Title) + "Model"
-}
