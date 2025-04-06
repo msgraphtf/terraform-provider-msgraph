@@ -137,11 +137,7 @@ func (mf ModelField) FieldType() string {
 	case "integer":
 		return "types.Int64"
 	case "number":
-		if mf.Property.Format == "int32" {
-			return "types.Int32"
-		} else if mf.Property.Format == "int64" {
-			return "types.Int64"
-		}
+		return "types.Int64"
 	case "boolean":
 		return "types.Bool"
 	case "object":
@@ -176,11 +172,7 @@ func (mf ModelField) AttributeType() string {
 	case "integer":
 		return "types.Int64Type"
 	case "number":
-		if mf.Property.Format == "int32" {
-			return "types.Int32Type"
-		} else if mf.Property.Format == "int64" {
-			return "types.Int64Type"
-		}
+		return "types.Int64Type"
 	case "boolean":
 		return "types.BoolType"
 	case "object":

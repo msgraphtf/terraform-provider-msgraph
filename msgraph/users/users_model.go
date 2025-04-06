@@ -35,7 +35,7 @@ type usersUserModel struct {
 	CreationType                    types.String `tfsdk:"creation_type"`
 	CustomSecurityAttributes        types.Object `tfsdk:"custom_security_attributes"`
 	Department                      types.String `tfsdk:"department"`
-	DeviceEnrollmentLimit           types.Int32  `tfsdk:"device_enrollment_limit"`
+	DeviceEnrollmentLimit           types.Int64  `tfsdk:"device_enrollment_limit"`
 	DisplayName                     types.String `tfsdk:"display_name"`
 	EmployeeHireDate                types.String `tfsdk:"employee_hire_date"`
 	EmployeeId                      types.String `tfsdk:"employee_id"`
@@ -134,7 +134,7 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"creation_type":                         types.StringType,
 		"custom_security_attributes":            types.ObjectType{AttrTypes: usersCustomSecurityAttributes.AttributeTypes()},
 		"department":                            types.StringType,
-		"device_enrollment_limit":               types.Int32Type,
+		"device_enrollment_limit":               types.Int64Type,
 		"display_name":                          types.StringType,
 		"employee_hire_date":                    types.StringType,
 		"employee_id":                           types.StringType,

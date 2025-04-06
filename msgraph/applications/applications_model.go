@@ -152,7 +152,7 @@ type applicationsApiApplicationModel struct {
 	KnownClientApplications     types.List  `tfsdk:"known_client_applications"`
 	Oauth2PermissionScopes      types.List  `tfsdk:"oauth_2_permission_scopes"`
 	PreAuthorizedApplications   types.List  `tfsdk:"pre_authorized_applications"`
-	RequestedAccessTokenVersion types.Int32 `tfsdk:"requested_access_token_version"`
+	RequestedAccessTokenVersion types.Int64 `tfsdk:"requested_access_token_version"`
 }
 
 func (m applicationsApiApplicationModel) AttributeTypes() map[string]attr.Type {
@@ -163,7 +163,7 @@ func (m applicationsApiApplicationModel) AttributeTypes() map[string]attr.Type {
 		"known_client_applications":      types.ListType{ElemType: types.StringType},
 		"oauth_2_permission_scopes":      types.ListType{ElemType: types.ObjectType{AttrTypes: applicationsOauth2PermissionScopes.AttributeTypes()}},
 		"pre_authorized_applications":    types.ListType{ElemType: types.ObjectType{AttrTypes: applicationsPreAuthorizedApplications.AttributeTypes()}},
-		"requested_access_token_version": types.Int32Type,
+		"requested_access_token_version": types.Int64Type,
 	}
 }
 
@@ -476,13 +476,13 @@ func (m applicationsImplicitGrantSettingsModel) AttributeTypes() map[string]attr
 }
 
 type applicationsRedirectUriSettingsModel struct {
-	Index types.Int32  `tfsdk:"index"`
+	Index types.Int64  `tfsdk:"index"`
 	Uri   types.String `tfsdk:"uri"`
 }
 
 func (m applicationsRedirectUriSettingsModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"index": types.Int32Type,
+		"index": types.Int64Type,
 		"uri":   types.StringType,
 	}
 }

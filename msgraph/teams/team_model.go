@@ -117,15 +117,15 @@ func (m teamTeamMessagingSettingsModel) AttributeTypes() map[string]attr.Type {
 }
 
 type teamTeamSummaryModel struct {
-	GuestsCount  types.Int32 `tfsdk:"guests_count"`
-	MembersCount types.Int32 `tfsdk:"members_count"`
-	OwnersCount  types.Int32 `tfsdk:"owners_count"`
+	GuestsCount  types.Int64 `tfsdk:"guests_count"`
+	MembersCount types.Int64 `tfsdk:"members_count"`
+	OwnersCount  types.Int64 `tfsdk:"owners_count"`
 }
 
 func (m teamTeamSummaryModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"guests_count":  types.Int32Type,
-		"members_count": types.Int32Type,
-		"owners_count":  types.Int32Type,
+		"guests_count":  types.Int64Type,
+		"members_count": types.Int64Type,
+		"owners_count":  types.Int64Type,
 	}
 }

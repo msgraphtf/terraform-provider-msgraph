@@ -16,7 +16,7 @@ type deviceModel struct {
 	DeviceId                      types.String `tfsdk:"device_id"`
 	DeviceMetadata                types.String `tfsdk:"device_metadata"`
 	DeviceOwnership               types.String `tfsdk:"device_ownership"`
-	DeviceVersion                 types.Int32  `tfsdk:"device_version"`
+	DeviceVersion                 types.Int64  `tfsdk:"device_version"`
 	DisplayName                   types.String `tfsdk:"display_name"`
 	EnrollmentProfileName         types.String `tfsdk:"enrollment_profile_name"`
 	EnrollmentType                types.String `tfsdk:"enrollment_type"`
@@ -53,7 +53,7 @@ func (m deviceModel) AttributeTypes() map[string]attr.Type {
 		"device_id":                          types.StringType,
 		"device_metadata":                    types.StringType,
 		"device_ownership":                   types.StringType,
-		"device_version":                     types.Int32Type,
+		"device_version":                     types.Int64Type,
 		"display_name":                       types.StringType,
 		"enrollment_profile_name":            types.StringType,
 		"enrollment_type":                    types.StringType,
@@ -81,13 +81,13 @@ func (m deviceModel) AttributeTypes() map[string]attr.Type {
 type deviceAlternativeSecurityIdModel struct {
 	IdentityProvider types.String `tfsdk:"identity_provider"`
 	Key              types.String `tfsdk:"key"`
-	Type             types.Int32  `tfsdk:"type"`
+	Type             types.Int64  `tfsdk:"type"`
 }
 
 func (m deviceAlternativeSecurityIdModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"identity_provider": types.StringType,
 		"key":               types.StringType,
-		"type":              types.Int32Type,
+		"type":              types.Int64Type,
 	}
 }

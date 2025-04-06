@@ -47,7 +47,7 @@ type groupModel struct {
 	ServiceProvisioningErrors     types.List   `tfsdk:"service_provisioning_errors"`
 	Theme                         types.String `tfsdk:"theme"`
 	UniqueName                    types.String `tfsdk:"unique_name"`
-	UnseenCount                   types.Int32  `tfsdk:"unseen_count"`
+	UnseenCount                   types.Int64  `tfsdk:"unseen_count"`
 	Visibility                    types.String `tfsdk:"visibility"`
 }
 
@@ -99,7 +99,7 @@ func (m groupModel) AttributeTypes() map[string]attr.Type {
 		"service_provisioning_errors":      types.ListType{ElemType: types.ObjectType{AttrTypes: groupServiceProvisioningErrors.AttributeTypes()}},
 		"theme":                            types.StringType,
 		"unique_name":                      types.StringType,
-		"unseen_count":                     types.Int32Type,
+		"unseen_count":                     types.Int64Type,
 		"visibility":                       types.StringType,
 	}
 }
