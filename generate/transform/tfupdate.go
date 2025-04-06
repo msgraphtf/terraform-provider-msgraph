@@ -137,9 +137,7 @@ func (ura updateRequestAttribute) ObjectOf() string {
 
 func (ura updateRequestAttribute) PlanVar() string {
 
-	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "Model."
-	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
+	if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar() + "Model."
 	} else {
 		return "tfPlan."
@@ -148,9 +146,7 @@ func (ura updateRequestAttribute) PlanVar() string {
 
 func (ura updateRequestAttribute) StateVar() string {
 
-	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "State."
-	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
+	if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar() + "State."
 	} else {
 		return "state."
@@ -163,9 +159,7 @@ func (ura updateRequestAttribute) RequestBodyVar() string {
 		return ura.Property.Name
 	} else if ura.AttributeType() == "UpdateArrayObjectAttribute" {
 		return ura.Property.Name
-	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar()
-	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
+	} else if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar()
 	} else if ura.Property.ArrayOf == "object" {
 		return ura.Property.ObjectOf.Title
@@ -176,7 +170,7 @@ func (ura updateRequestAttribute) RequestBodyVar() string {
 
 func (ura updateRequestAttribute) NestedPlan() string {
 
-	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+	if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar() + "Model." + ura.Name()
 	} else {
 		return "tfPlan." + ura.Name()
@@ -186,7 +180,7 @@ func (ura updateRequestAttribute) NestedPlan() string {
 
 func (ura updateRequestAttribute) NestedState() string {
 
-	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
+	if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar() + "State." + ura.Name()
 	} else {
 		return "state." + ura.Name()
@@ -227,9 +221,7 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 
 func (ura updateRequestAttribute) ParentRequestBodyVar() string {
 
-	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar()
-	} else if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateArrayObjectAttribute" {
+	if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar()
 	} else {
 		return "requestBody"
