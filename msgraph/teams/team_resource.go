@@ -935,7 +935,7 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	// Retrieve values from plan
+	// Retrieve values from Terraform plan
 	var tfPlan teamModel
 	diags := req.Plan.Get(ctx, &tfPlan)
 	resp.Diagnostics.Append(diags...)
@@ -943,9 +943,9 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		return
 	}
 
-	// Get current state
-	var state teamModel
-	diags = req.State.Get(ctx, &state)
+	// Get current Terraform state
+	var tfState teamModel
+	diags = req.State.Get(ctx, &tfState)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -954,38 +954,38 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	// Generate API request body from plan
 	requestBody := models.NewTeam()
 
-	if !tfPlan.Id.Equal(state.Id) {
+	if !tfPlan.Id.Equal(tfState.Id) {
 		tfPlanId := tfPlan.Id.ValueString()
 		requestBody.SetId(&tfPlanId)
 	}
 
-	if !tfPlan.Classification.Equal(state.Classification) {
+	if !tfPlan.Classification.Equal(tfState.Classification) {
 		tfPlanClassification := tfPlan.Classification.ValueString()
 		requestBody.SetClassification(&tfPlanClassification)
 	}
 
-	if !tfPlan.CreatedDateTime.Equal(state.CreatedDateTime) {
+	if !tfPlan.CreatedDateTime.Equal(tfState.CreatedDateTime) {
 		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	}
 
-	if !tfPlan.Description.Equal(state.Description) {
+	if !tfPlan.Description.Equal(tfState.Description) {
 		tfPlanDescription := tfPlan.Description.ValueString()
 		requestBody.SetDescription(&tfPlanDescription)
 	}
 
-	if !tfPlan.DisplayName.Equal(state.DisplayName) {
+	if !tfPlan.DisplayName.Equal(tfState.DisplayName) {
 		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
 		requestBody.SetDisplayName(&tfPlanDisplayName)
 	}
 
-	if !tfPlan.FunSettings.Equal(state.FunSettings) {
+	if !tfPlan.FunSettings.Equal(tfState.FunSettings) {
 		funSettings := models.NewTeamFunSettings()
 		funSettingsModel := teamTeamFunSettingsModel{}
 		tfPlan.FunSettings.As(ctx, &funSettingsModel, basetypes.ObjectAsOptions{})
 		funSettingsState := teamTeamFunSettingsModel{}
-		state.FunSettings.As(ctx, &funSettingsState, basetypes.ObjectAsOptions{})
+		tfState.FunSettings.As(ctx, &funSettingsState, basetypes.ObjectAsOptions{})
 
 		if !funSettingsModel.AllowCustomMemes.Equal(funSettingsState.AllowCustomMemes) {
 			tfPlanAllowCustomMemes := funSettingsModel.AllowCustomMemes.ValueBool()
@@ -1013,12 +1013,12 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		tfPlan.FunSettings = objectValue
 	}
 
-	if !tfPlan.GuestSettings.Equal(state.GuestSettings) {
+	if !tfPlan.GuestSettings.Equal(tfState.GuestSettings) {
 		guestSettings := models.NewTeamGuestSettings()
 		guestSettingsModel := teamTeamGuestSettingsModel{}
 		tfPlan.GuestSettings.As(ctx, &guestSettingsModel, basetypes.ObjectAsOptions{})
 		guestSettingsState := teamTeamGuestSettingsModel{}
-		state.GuestSettings.As(ctx, &guestSettingsState, basetypes.ObjectAsOptions{})
+		tfState.GuestSettings.As(ctx, &guestSettingsState, basetypes.ObjectAsOptions{})
 
 		if !guestSettingsModel.AllowCreateUpdateChannels.Equal(guestSettingsState.AllowCreateUpdateChannels) {
 			tfPlanAllowCreateUpdateChannels := guestSettingsModel.AllowCreateUpdateChannels.ValueBool()
@@ -1034,22 +1034,22 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		tfPlan.GuestSettings = objectValue
 	}
 
-	if !tfPlan.InternalId.Equal(state.InternalId) {
+	if !tfPlan.InternalId.Equal(tfState.InternalId) {
 		tfPlanInternalId := tfPlan.InternalId.ValueString()
 		requestBody.SetInternalId(&tfPlanInternalId)
 	}
 
-	if !tfPlan.IsArchived.Equal(state.IsArchived) {
+	if !tfPlan.IsArchived.Equal(tfState.IsArchived) {
 		tfPlanIsArchived := tfPlan.IsArchived.ValueBool()
 		requestBody.SetIsArchived(&tfPlanIsArchived)
 	}
 
-	if !tfPlan.MemberSettings.Equal(state.MemberSettings) {
+	if !tfPlan.MemberSettings.Equal(tfState.MemberSettings) {
 		memberSettings := models.NewTeamMemberSettings()
 		memberSettingsModel := teamTeamMemberSettingsModel{}
 		tfPlan.MemberSettings.As(ctx, &memberSettingsModel, basetypes.ObjectAsOptions{})
 		memberSettingsState := teamTeamMemberSettingsModel{}
-		state.MemberSettings.As(ctx, &memberSettingsState, basetypes.ObjectAsOptions{})
+		tfState.MemberSettings.As(ctx, &memberSettingsState, basetypes.ObjectAsOptions{})
 
 		if !memberSettingsModel.AllowAddRemoveApps.Equal(memberSettingsState.AllowAddRemoveApps) {
 			tfPlanAllowAddRemoveApps := memberSettingsModel.AllowAddRemoveApps.ValueBool()
@@ -1085,12 +1085,12 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		tfPlan.MemberSettings = objectValue
 	}
 
-	if !tfPlan.MessagingSettings.Equal(state.MessagingSettings) {
+	if !tfPlan.MessagingSettings.Equal(tfState.MessagingSettings) {
 		messagingSettings := models.NewTeamMessagingSettings()
 		messagingSettingsModel := teamTeamMessagingSettingsModel{}
 		tfPlan.MessagingSettings.As(ctx, &messagingSettingsModel, basetypes.ObjectAsOptions{})
 		messagingSettingsState := teamTeamMessagingSettingsModel{}
-		state.MessagingSettings.As(ctx, &messagingSettingsState, basetypes.ObjectAsOptions{})
+		tfState.MessagingSettings.As(ctx, &messagingSettingsState, basetypes.ObjectAsOptions{})
 
 		if !messagingSettingsModel.AllowChannelMentions.Equal(messagingSettingsState.AllowChannelMentions) {
 			tfPlanAllowChannelMentions := messagingSettingsModel.AllowChannelMentions.ValueBool()
@@ -1121,44 +1121,44 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		tfPlan.MessagingSettings = objectValue
 	}
 
-	if !tfPlan.Specialization.Equal(state.Specialization) {
+	if !tfPlan.Specialization.Equal(tfState.Specialization) {
 		tfPlanSpecialization := tfPlan.Specialization.ValueString()
 		parsedSpecialization, _ := models.ParseTeamSpecialization(tfPlanSpecialization)
 		assertedSpecialization := parsedSpecialization.(models.TeamSpecialization)
 		requestBody.SetSpecialization(&assertedSpecialization)
 	}
 
-	if !tfPlan.Summary.Equal(state.Summary) {
+	if !tfPlan.Summary.Equal(tfState.Summary) {
 		summary := models.NewTeamSummary()
 		summaryModel := teamTeamSummaryModel{}
 		tfPlan.Summary.As(ctx, &summaryModel, basetypes.ObjectAsOptions{})
 		summaryState := teamTeamSummaryModel{}
-		state.Summary.As(ctx, &summaryState, basetypes.ObjectAsOptions{})
+		tfState.Summary.As(ctx, &summaryState, basetypes.ObjectAsOptions{})
 
 		requestBody.SetSummary(summary)
 		objectValue, _ := types.ObjectValueFrom(ctx, summaryModel.AttributeTypes(), summaryModel)
 		tfPlan.Summary = objectValue
 	}
 
-	if !tfPlan.TenantId.Equal(state.TenantId) {
+	if !tfPlan.TenantId.Equal(tfState.TenantId) {
 		tfPlanTenantId := tfPlan.TenantId.ValueString()
 		requestBody.SetTenantId(&tfPlanTenantId)
 	}
 
-	if !tfPlan.Visibility.Equal(state.Visibility) {
+	if !tfPlan.Visibility.Equal(tfState.Visibility) {
 		tfPlanVisibility := tfPlan.Visibility.ValueString()
 		parsedVisibility, _ := models.ParseTeamVisibilityType(tfPlanVisibility)
 		assertedVisibility := parsedVisibility.(models.TeamVisibilityType)
 		requestBody.SetVisibility(&assertedVisibility)
 	}
 
-	if !tfPlan.WebUrl.Equal(state.WebUrl) {
+	if !tfPlan.WebUrl.Equal(tfState.WebUrl) {
 		tfPlanWebUrl := tfPlan.WebUrl.ValueString()
 		requestBody.SetWebUrl(&tfPlanWebUrl)
 	}
 
 	// Update team
-	_, err := r.client.Teams().ByTeamId(state.Id.ValueString()).Patch(context.Background(), requestBody, nil)
+	_, err := r.client.Teams().ByTeamId(tfState.Id.ValueString()).Patch(context.Background(), requestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error updating team",
@@ -1178,16 +1178,16 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *teamResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	// Retrieve values from state
-	var state teamModel
-	diags := req.State.Get(ctx, &state)
+	// Retrieve values from Terraform state
+	var tfState teamModel
+	diags := req.State.Get(ctx, &tfState)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// TODO: Delete team
-	err := r.client.Teams().ByTeamId(state.Id.ValueString()).Delete(context.Background(), nil)
+	err := r.client.Teams().ByTeamId(tfState.Id.ValueString()).Delete(context.Background(), nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error deleting team",

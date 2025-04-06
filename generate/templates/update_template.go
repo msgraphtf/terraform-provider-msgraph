@@ -1,6 +1,6 @@
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	// Retrieve values from plan
+	// Retrieve values from Terraform plan
 	var tfPlan {{.BlockName.LowerCamel}}Model
 	diags := req.Plan.Get(ctx, &tfPlan)
 	resp.Diagnostics.Append(diags...)
@@ -8,9 +8,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 		return
 	}
 
-	// Get current state
-	var state {{.BlockName.LowerCamel}}Model
-	diags = req.State.Get(ctx, &state)
+	// Get current Terraform state
+	var tfState {{.BlockName.LowerCamel}}Model
+	diags = req.State.Get(ctx, &tfState)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

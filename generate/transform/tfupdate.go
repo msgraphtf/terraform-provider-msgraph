@@ -27,7 +27,7 @@ func (ur UpdateRequest) PostMethod() []queryMethod {
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "state." + pRight + ".ValueString()"
+			newMethod.Parameter = "tfState." + pRight + ".ValueString()"
 		} else {
 			newMethod.MethodName = strcase.ToCamel(p)
 		}
@@ -149,7 +149,7 @@ func (ura updateRequestAttribute) StateVar() string {
 	if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar() + "State."
 	} else {
-		return "state."
+		return "tfState."
 	}
 }
 
@@ -183,7 +183,7 @@ func (ura updateRequestAttribute) NestedState() string {
 	if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar() + "State." + ura.Name()
 	} else {
-		return "state." + ura.Name()
+		return "tfState." + ura.Name()
 	}
 
 }
