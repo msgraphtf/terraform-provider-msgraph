@@ -68,9 +68,7 @@ func (cr CreateRequest) AllAttributes() []createRequestAttribute {
 	recurseAttributes = func(attributes []createRequestAttribute) []createRequestAttribute{
 
 		for _, cra := range attributes {
-			if cra.Type() == "CreateObjectAttribute" || cra.Type() == "CreateArrayObjectAttribute" {
-				attributes = append(attributes, recurseAttributes(cra.NestedCreate())...)
-			}
+			attributes = append(attributes, recurseAttributes(cra.NestedCreate())...)
 		}
 
 		return attributes
@@ -132,7 +130,7 @@ func (cra createRequestAttribute) Type() string {
 			return "CreateArrayObjectAttribute"
 		}
 	case "object":
-		if cra.Property.ObjectOf.Type == "string" { // This is a string enum
+		if cra.Property.ObjectOf.Type == "string" {
 			return "CreateStringEnumAttribute"
 		} else {
 			return "CreateObjectAttribute"
@@ -167,8 +165,9 @@ func (cra createRequestAttribute) SetModelMethod() string {
 	}
 }
 
-// If this atribute is an object, returns the name of the object that is is.
-// This can be slightly (grammatically) different from the name
+// If this attribute is an object, returns the name of the object that is is.
+// This can be slightly (grammatically) different from the name of the attribute.
+// The attribute name may be plural if it's an array of some kind, but the ObjectOf will be singular
 func (cra createRequestAttribute) ObjectOf() string {
 	return upperFirst(cra.Property.ObjectOf.Title)
 }
