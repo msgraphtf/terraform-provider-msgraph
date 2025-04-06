@@ -951,8 +951,8 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 
 	// Get current Terraform state
-	var tfState deviceModel
-	diags = req.State.Get(ctx, &tfState)
+	var tfStateDevice deviceModel
+	diags = req.State.Get(ctx, &tfStateDevice)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -961,37 +961,37 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	// Generate API request body from plan
 	requestBody := models.NewDevice()
 
-	if !tfPlanDevice.Id.Equal(tfState.Id) {
+	if !tfPlanDevice.Id.Equal(tfStateDevice.Id) {
 		tfPlanId := tfPlanDevice.Id.ValueString()
 		requestBody.SetId(&tfPlanId)
 	}
 
-	if !tfPlanDevice.DeletedDateTime.Equal(tfState.DeletedDateTime) {
+	if !tfPlanDevice.DeletedDateTime.Equal(tfStateDevice.DeletedDateTime) {
 		tfPlanDeletedDateTime := tfPlanDevice.DeletedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
 	}
 
-	if !tfPlanDevice.AccountEnabled.Equal(tfState.AccountEnabled) {
+	if !tfPlanDevice.AccountEnabled.Equal(tfStateDevice.AccountEnabled) {
 		tfPlanAccountEnabled := tfPlanDevice.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&tfPlanAccountEnabled)
 	}
 
-	if !tfPlanDevice.AlternativeSecurityIds.Equal(tfState.AlternativeSecurityIds) {
+	if !tfPlanDevice.AlternativeSecurityIds.Equal(tfStateDevice.AlternativeSecurityIds) {
 		var tfPlanAlternativeSecurityIds []models.AlternativeSecurityIdable
 		for k, i := range tfPlanDevice.AlternativeSecurityIds.Elements() {
 			requestBodyAlternativeSecurityIds := models.NewAlternativeSecurityId()
 			tfPlanAlternativeSecurityId := deviceAlternativeSecurityIdModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAlternativeSecurityId)
-			tfStaterequestBodyAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
-			types.ListValueFrom(ctx, tfState.AlternativeSecurityIds.Elements()[k].Type(ctx), &tfPlanAlternativeSecurityId)
+			tfStateAlternativeSecurityId := deviceAlternativeSecurityIdModel{}
+			types.ListValueFrom(ctx, tfStateDevice.AlternativeSecurityIds.Elements()[k].Type(ctx), &tfPlanAlternativeSecurityId)
 
-			if !tfPlanAlternativeSecurityId.IdentityProvider.Equal(tfStaterequestBodyAlternativeSecurityIds.IdentityProvider) {
+			if !tfPlanAlternativeSecurityId.IdentityProvider.Equal(tfStateAlternativeSecurityId.IdentityProvider) {
 				tfPlanIdentityProvider := tfPlanAlternativeSecurityId.IdentityProvider.ValueString()
 				requestBodyAlternativeSecurityIds.SetIdentityProvider(&tfPlanIdentityProvider)
 			}
 
-			if !tfPlanAlternativeSecurityId.Key.Equal(tfStaterequestBodyAlternativeSecurityIds.Key) {
+			if !tfPlanAlternativeSecurityId.Key.Equal(tfStateAlternativeSecurityId.Key) {
 				tfPlanKey := tfPlanAlternativeSecurityId.Key.ValueString()
 				requestBodyAlternativeSecurityIds.SetKey([]byte(tfPlanKey))
 			}
@@ -999,120 +999,120 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		requestBody.SetAlternativeSecurityIds(tfPlanAlternativeSecurityIds)
 	}
 
-	if !tfPlanDevice.ApproximateLastSignInDateTime.Equal(tfState.ApproximateLastSignInDateTime) {
+	if !tfPlanDevice.ApproximateLastSignInDateTime.Equal(tfStateDevice.ApproximateLastSignInDateTime) {
 		tfPlanApproximateLastSignInDateTime := tfPlanDevice.ApproximateLastSignInDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanApproximateLastSignInDateTime)
 		requestBody.SetApproximateLastSignInDateTime(&t)
 	}
 
-	if !tfPlanDevice.ComplianceExpirationDateTime.Equal(tfState.ComplianceExpirationDateTime) {
+	if !tfPlanDevice.ComplianceExpirationDateTime.Equal(tfStateDevice.ComplianceExpirationDateTime) {
 		tfPlanComplianceExpirationDateTime := tfPlanDevice.ComplianceExpirationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanComplianceExpirationDateTime)
 		requestBody.SetComplianceExpirationDateTime(&t)
 	}
 
-	if !tfPlanDevice.DeviceCategory.Equal(tfState.DeviceCategory) {
+	if !tfPlanDevice.DeviceCategory.Equal(tfStateDevice.DeviceCategory) {
 		tfPlanDeviceCategory := tfPlanDevice.DeviceCategory.ValueString()
 		requestBody.SetDeviceCategory(&tfPlanDeviceCategory)
 	}
 
-	if !tfPlanDevice.DeviceId.Equal(tfState.DeviceId) {
+	if !tfPlanDevice.DeviceId.Equal(tfStateDevice.DeviceId) {
 		tfPlanDeviceId := tfPlanDevice.DeviceId.ValueString()
 		requestBody.SetDeviceId(&tfPlanDeviceId)
 	}
 
-	if !tfPlanDevice.DeviceMetadata.Equal(tfState.DeviceMetadata) {
+	if !tfPlanDevice.DeviceMetadata.Equal(tfStateDevice.DeviceMetadata) {
 		tfPlanDeviceMetadata := tfPlanDevice.DeviceMetadata.ValueString()
 		requestBody.SetDeviceMetadata(&tfPlanDeviceMetadata)
 	}
 
-	if !tfPlanDevice.DeviceOwnership.Equal(tfState.DeviceOwnership) {
+	if !tfPlanDevice.DeviceOwnership.Equal(tfStateDevice.DeviceOwnership) {
 		tfPlanDeviceOwnership := tfPlanDevice.DeviceOwnership.ValueString()
 		requestBody.SetDeviceOwnership(&tfPlanDeviceOwnership)
 	}
 
-	if !tfPlanDevice.DisplayName.Equal(tfState.DisplayName) {
+	if !tfPlanDevice.DisplayName.Equal(tfStateDevice.DisplayName) {
 		tfPlanDisplayName := tfPlanDevice.DisplayName.ValueString()
 		requestBody.SetDisplayName(&tfPlanDisplayName)
 	}
 
-	if !tfPlanDevice.EnrollmentProfileName.Equal(tfState.EnrollmentProfileName) {
+	if !tfPlanDevice.EnrollmentProfileName.Equal(tfStateDevice.EnrollmentProfileName) {
 		tfPlanEnrollmentProfileName := tfPlanDevice.EnrollmentProfileName.ValueString()
 		requestBody.SetEnrollmentProfileName(&tfPlanEnrollmentProfileName)
 	}
 
-	if !tfPlanDevice.EnrollmentType.Equal(tfState.EnrollmentType) {
+	if !tfPlanDevice.EnrollmentType.Equal(tfStateDevice.EnrollmentType) {
 		tfPlanEnrollmentType := tfPlanDevice.EnrollmentType.ValueString()
 		requestBody.SetEnrollmentType(&tfPlanEnrollmentType)
 	}
 
-	if !tfPlanDevice.IsCompliant.Equal(tfState.IsCompliant) {
+	if !tfPlanDevice.IsCompliant.Equal(tfStateDevice.IsCompliant) {
 		tfPlanIsCompliant := tfPlanDevice.IsCompliant.ValueBool()
 		requestBody.SetIsCompliant(&tfPlanIsCompliant)
 	}
 
-	if !tfPlanDevice.IsManaged.Equal(tfState.IsManaged) {
+	if !tfPlanDevice.IsManaged.Equal(tfStateDevice.IsManaged) {
 		tfPlanIsManaged := tfPlanDevice.IsManaged.ValueBool()
 		requestBody.SetIsManaged(&tfPlanIsManaged)
 	}
 
-	if !tfPlanDevice.IsManagementRestricted.Equal(tfState.IsManagementRestricted) {
+	if !tfPlanDevice.IsManagementRestricted.Equal(tfStateDevice.IsManagementRestricted) {
 		tfPlanIsManagementRestricted := tfPlanDevice.IsManagementRestricted.ValueBool()
 		requestBody.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
 	}
 
-	if !tfPlanDevice.IsRooted.Equal(tfState.IsRooted) {
+	if !tfPlanDevice.IsRooted.Equal(tfStateDevice.IsRooted) {
 		tfPlanIsRooted := tfPlanDevice.IsRooted.ValueBool()
 		requestBody.SetIsRooted(&tfPlanIsRooted)
 	}
 
-	if !tfPlanDevice.ManagementType.Equal(tfState.ManagementType) {
+	if !tfPlanDevice.ManagementType.Equal(tfStateDevice.ManagementType) {
 		tfPlanManagementType := tfPlanDevice.ManagementType.ValueString()
 		requestBody.SetManagementType(&tfPlanManagementType)
 	}
 
-	if !tfPlanDevice.Manufacturer.Equal(tfState.Manufacturer) {
+	if !tfPlanDevice.Manufacturer.Equal(tfStateDevice.Manufacturer) {
 		tfPlanManufacturer := tfPlanDevice.Manufacturer.ValueString()
 		requestBody.SetManufacturer(&tfPlanManufacturer)
 	}
 
-	if !tfPlanDevice.MdmAppId.Equal(tfState.MdmAppId) {
+	if !tfPlanDevice.MdmAppId.Equal(tfStateDevice.MdmAppId) {
 		tfPlanMdmAppId := tfPlanDevice.MdmAppId.ValueString()
 		requestBody.SetMdmAppId(&tfPlanMdmAppId)
 	}
 
-	if !tfPlanDevice.Model.Equal(tfState.Model) {
+	if !tfPlanDevice.Model.Equal(tfStateDevice.Model) {
 		tfPlanModel := tfPlanDevice.Model.ValueString()
 		requestBody.SetModel(&tfPlanModel)
 	}
 
-	if !tfPlanDevice.OnPremisesLastSyncDateTime.Equal(tfState.OnPremisesLastSyncDateTime) {
+	if !tfPlanDevice.OnPremisesLastSyncDateTime.Equal(tfStateDevice.OnPremisesLastSyncDateTime) {
 		tfPlanOnPremisesLastSyncDateTime := tfPlanDevice.OnPremisesLastSyncDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
 	}
 
-	if !tfPlanDevice.OnPremisesSecurityIdentifier.Equal(tfState.OnPremisesSecurityIdentifier) {
+	if !tfPlanDevice.OnPremisesSecurityIdentifier.Equal(tfStateDevice.OnPremisesSecurityIdentifier) {
 		tfPlanOnPremisesSecurityIdentifier := tfPlanDevice.OnPremisesSecurityIdentifier.ValueString()
 		requestBody.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
 	}
 
-	if !tfPlanDevice.OnPremisesSyncEnabled.Equal(tfState.OnPremisesSyncEnabled) {
+	if !tfPlanDevice.OnPremisesSyncEnabled.Equal(tfStateDevice.OnPremisesSyncEnabled) {
 		tfPlanOnPremisesSyncEnabled := tfPlanDevice.OnPremisesSyncEnabled.ValueBool()
 		requestBody.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
 	}
 
-	if !tfPlanDevice.OperatingSystem.Equal(tfState.OperatingSystem) {
+	if !tfPlanDevice.OperatingSystem.Equal(tfStateDevice.OperatingSystem) {
 		tfPlanOperatingSystem := tfPlanDevice.OperatingSystem.ValueString()
 		requestBody.SetOperatingSystem(&tfPlanOperatingSystem)
 	}
 
-	if !tfPlanDevice.OperatingSystemVersion.Equal(tfState.OperatingSystemVersion) {
+	if !tfPlanDevice.OperatingSystemVersion.Equal(tfStateDevice.OperatingSystemVersion) {
 		tfPlanOperatingSystemVersion := tfPlanDevice.OperatingSystemVersion.ValueString()
 		requestBody.SetOperatingSystemVersion(&tfPlanOperatingSystemVersion)
 	}
 
-	if !tfPlanDevice.PhysicalIds.Equal(tfState.PhysicalIds) {
+	if !tfPlanDevice.PhysicalIds.Equal(tfStateDevice.PhysicalIds) {
 		var stringArrayPhysicalIds []string
 		for _, i := range tfPlanDevice.PhysicalIds.Elements() {
 			stringArrayPhysicalIds = append(stringArrayPhysicalIds, i.String())
@@ -1120,18 +1120,18 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		requestBody.SetPhysicalIds(stringArrayPhysicalIds)
 	}
 
-	if !tfPlanDevice.ProfileType.Equal(tfState.ProfileType) {
+	if !tfPlanDevice.ProfileType.Equal(tfStateDevice.ProfileType) {
 		tfPlanProfileType := tfPlanDevice.ProfileType.ValueString()
 		requestBody.SetProfileType(&tfPlanProfileType)
 	}
 
-	if !tfPlanDevice.RegistrationDateTime.Equal(tfState.RegistrationDateTime) {
+	if !tfPlanDevice.RegistrationDateTime.Equal(tfStateDevice.RegistrationDateTime) {
 		tfPlanRegistrationDateTime := tfPlanDevice.RegistrationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanRegistrationDateTime)
 		requestBody.SetRegistrationDateTime(&t)
 	}
 
-	if !tfPlanDevice.SystemLabels.Equal(tfState.SystemLabels) {
+	if !tfPlanDevice.SystemLabels.Equal(tfStateDevice.SystemLabels) {
 		var stringArraySystemLabels []string
 		for _, i := range tfPlanDevice.SystemLabels.Elements() {
 			stringArraySystemLabels = append(stringArraySystemLabels, i.String())
@@ -1139,13 +1139,13 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		requestBody.SetSystemLabels(stringArraySystemLabels)
 	}
 
-	if !tfPlanDevice.TrustType.Equal(tfState.TrustType) {
+	if !tfPlanDevice.TrustType.Equal(tfStateDevice.TrustType) {
 		tfPlanTrustType := tfPlanDevice.TrustType.ValueString()
 		requestBody.SetTrustType(&tfPlanTrustType)
 	}
 
 	// Update device
-	_, err := r.client.Devices().ByDeviceId(tfState.Id.ValueString()).Patch(context.Background(), requestBody, nil)
+	_, err := r.client.Devices().ByDeviceId(tfStateDevice.Id.ValueString()).Patch(context.Background(), requestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error updating device",
@@ -1166,15 +1166,15 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *deviceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// Retrieve values from Terraform state
-	var tfState deviceModel
-	diags := req.State.Get(ctx, &tfState)
+	var tfStateDevice deviceModel
+	diags := req.State.Get(ctx, &tfStateDevice)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// TODO: Delete device
-	err := r.client.Devices().ByDeviceId(tfState.Id.ValueString()).Delete(context.Background(), nil)
+	err := r.client.Devices().ByDeviceId(tfStateDevice.Id.ValueString()).Delete(context.Background(), nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error deleting device",

@@ -9,8 +9,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 
 	// Get current Terraform state
-	var tfState {{.BlockName.LowerCamel}}Model
-	diags = req.State.Get(ctx, &tfState)
+	var tfState{{.BlockName.UpperCamel}} {{.BlockName.LowerCamel}}Model
+	diags = req.State.Get(ctx, &tfState{{.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -20,14 +20,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "UpdateStringAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateStringEnumAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	parsed{{.Name}}, _ := models.Parse{{.ObjectOf}}(tfPlan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.ObjectOf}})
@@ -36,7 +36,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateStringTimeAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&t)
@@ -44,7 +44,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateStringUuidAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	u, _ := uuid.Parse(tfPlan{{.Name}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&u)
@@ -52,35 +52,35 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateStringBase64UrlAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueString()
 	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	}
 	{{- end}}
 
 	{{- define "UpdateInt64Attribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueInt64()
 	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateInt32Attribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := int32(tfPlan{{.ParentName}}.{{.Name}}.ValueInt64())
 	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateBoolAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 	tfPlan{{.Name}} := tfPlan{{.ParentName}}.{{.Name}}.ValueBool()
 	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateArrayStringAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}) {
 		var stringArray{{.Name}} []string
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			stringArray{{.Name}} = append(stringArray{{.Name}}, i.String())
@@ -90,7 +90,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateArrayUuidAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}) {
 		var {{.Name}} []uuid.UUID
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			u, _ := uuid.Parse(i.String())
@@ -101,14 +101,14 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateArrayObjectAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}) {
 		var tfPlan{{.Name}} []models.{{.ObjectOf}}able
 		for k, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			{{.RequestBodyVar}} := models.New{{.ObjectOf}}()
 			tfPlan{{.ObjectOf}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.ObjectOf}})
-			tfState{{.RequestBodyVar}} := {{.TfModelName}}Model{}
-			types.ListValueFrom(ctx, {{.StateVar}}{{.Name}}.Elements()[k].Type(ctx), &tfPlan{{.ObjectOf}})
+			tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
+			types.ListValueFrom(ctx, tfState{{.ParentName}}.{{.Name}}.Elements()[k].Type(ctx), &tfPlan{{.ObjectOf}})
 			{{template "generate_update" .NestedUpdate}}
 		}
 		{{.ParentRequestBodyVar}}.Set{{.Name}}(tfPlan{{.Name}})
@@ -116,12 +116,12 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateObjectAttribute" }}
-	if !tfPlan{{.ParentName}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
 		requestBody{{.Name}} := models.New{{.ObjectOf}}()
 		tfPlan{{.ObjectOf}} := {{.TfModelName}}Model{}
 		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.ObjectOf}}, basetypes.ObjectAsOptions{})
-		tfState{{.RequestBodyVar}} := {{.TfModelName}}Model{}
-		{{.NestedState}}.As(ctx, &tfState{{.RequestBodyVar}}, basetypes.ObjectAsOptions{})
+		tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
+		tfState{{.ParentName}}.{{.Name}}.As(ctx, &tfState{{.ObjectOf}}, basetypes.ObjectAsOptions{})
 		{{template "generate_update" .NestedUpdate}}
 		{{.ParentRequestBodyVar}}.Set{{.Name}}(requestBody{{.Name}})
 		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.ObjectOf}}.AttributeTypes(), tfPlan{{.ObjectOf}})

@@ -101,8 +101,8 @@ func (d *{{.BlockName.LowerCamel}}Resource) Read(ctx context.Context, req resour
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *{{.BlockName.LowerCamel}}Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// Retrieve values from Terraform state
-	var tfState {{.BlockName.LowerCamel}}Model
-	diags := req.State.Get(ctx, &tfState)
+	var tfState{{.BlockName.UpperCamel}} {{.BlockName.LowerCamel}}Model
+	diags := req.State.Get(ctx, &tfState{{.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

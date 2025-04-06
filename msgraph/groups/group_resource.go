@@ -1325,8 +1325,8 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 
 	// Get current Terraform state
-	var tfState groupModel
-	diags = req.State.Get(ctx, &tfState)
+	var tfStateGroup groupModel
+	diags = req.State.Get(ctx, &tfStateGroup)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1335,32 +1335,32 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	// Generate API request body from plan
 	requestBody := models.NewGroup()
 
-	if !tfPlanGroup.Id.Equal(tfState.Id) {
+	if !tfPlanGroup.Id.Equal(tfStateGroup.Id) {
 		tfPlanId := tfPlanGroup.Id.ValueString()
 		requestBody.SetId(&tfPlanId)
 	}
 
-	if !tfPlanGroup.DeletedDateTime.Equal(tfState.DeletedDateTime) {
+	if !tfPlanGroup.DeletedDateTime.Equal(tfStateGroup.DeletedDateTime) {
 		tfPlanDeletedDateTime := tfPlanGroup.DeletedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
 	}
 
-	if !tfPlanGroup.AssignedLabels.Equal(tfState.AssignedLabels) {
+	if !tfPlanGroup.AssignedLabels.Equal(tfStateGroup.AssignedLabels) {
 		var tfPlanAssignedLabels []models.AssignedLabelable
 		for k, i := range tfPlanGroup.AssignedLabels.Elements() {
 			requestBodyAssignedLabels := models.NewAssignedLabel()
 			tfPlanAssignedLabel := groupAssignedLabelModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLabel)
-			tfStaterequestBodyAssignedLabels := groupAssignedLabelModel{}
-			types.ListValueFrom(ctx, tfState.AssignedLabels.Elements()[k].Type(ctx), &tfPlanAssignedLabel)
+			tfStateAssignedLabel := groupAssignedLabelModel{}
+			types.ListValueFrom(ctx, tfStateGroup.AssignedLabels.Elements()[k].Type(ctx), &tfPlanAssignedLabel)
 
-			if !tfPlanAssignedLabel.DisplayName.Equal(tfStaterequestBodyAssignedLabels.DisplayName) {
+			if !tfPlanAssignedLabel.DisplayName.Equal(tfStateAssignedLabel.DisplayName) {
 				tfPlanDisplayName := tfPlanAssignedLabel.DisplayName.ValueString()
 				requestBodyAssignedLabels.SetDisplayName(&tfPlanDisplayName)
 			}
 
-			if !tfPlanAssignedLabel.LabelId.Equal(tfStaterequestBodyAssignedLabels.LabelId) {
+			if !tfPlanAssignedLabel.LabelId.Equal(tfStateAssignedLabel.LabelId) {
 				tfPlanLabelId := tfPlanAssignedLabel.LabelId.ValueString()
 				requestBodyAssignedLabels.SetLabelId(&tfPlanLabelId)
 			}
@@ -1368,16 +1368,16 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBody.SetAssignedLabels(tfPlanAssignedLabels)
 	}
 
-	if !tfPlanGroup.AssignedLicenses.Equal(tfState.AssignedLicenses) {
+	if !tfPlanGroup.AssignedLicenses.Equal(tfStateGroup.AssignedLicenses) {
 		var tfPlanAssignedLicenses []models.AssignedLicenseable
 		for k, i := range tfPlanGroup.AssignedLicenses.Elements() {
 			requestBodyAssignedLicenses := models.NewAssignedLicense()
 			tfPlanAssignedLicense := groupAssignedLicenseModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLicense)
-			tfStaterequestBodyAssignedLicenses := groupAssignedLicenseModel{}
-			types.ListValueFrom(ctx, tfState.AssignedLicenses.Elements()[k].Type(ctx), &tfPlanAssignedLicense)
+			tfStateAssignedLicense := groupAssignedLicenseModel{}
+			types.ListValueFrom(ctx, tfStateGroup.AssignedLicenses.Elements()[k].Type(ctx), &tfPlanAssignedLicense)
 
-			if !tfPlanAssignedLicense.DisabledPlans.Equal(tfStaterequestBodyAssignedLicenses.DisabledPlans) {
+			if !tfPlanAssignedLicense.DisabledPlans.Equal(tfStateAssignedLicense.DisabledPlans) {
 				var DisabledPlans []uuid.UUID
 				for _, i := range tfPlanAssignedLicense.DisabledPlans.Elements() {
 					u, _ := uuid.Parse(i.String())
@@ -1386,7 +1386,7 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 				requestBodyAssignedLicenses.SetDisabledPlans(DisabledPlans)
 			}
 
-			if !tfPlanAssignedLicense.SkuId.Equal(tfStaterequestBodyAssignedLicenses.SkuId) {
+			if !tfPlanAssignedLicense.SkuId.Equal(tfStateAssignedLicense.SkuId) {
 				tfPlanSkuId := tfPlanAssignedLicense.SkuId.ValueString()
 				u, _ := uuid.Parse(tfPlanSkuId)
 				requestBodyAssignedLicenses.SetSkuId(&u)
@@ -1395,34 +1395,34 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBody.SetAssignedLicenses(tfPlanAssignedLicenses)
 	}
 
-	if !tfPlanGroup.Classification.Equal(tfState.Classification) {
+	if !tfPlanGroup.Classification.Equal(tfStateGroup.Classification) {
 		tfPlanClassification := tfPlanGroup.Classification.ValueString()
 		requestBody.SetClassification(&tfPlanClassification)
 	}
 
-	if !tfPlanGroup.CreatedDateTime.Equal(tfState.CreatedDateTime) {
+	if !tfPlanGroup.CreatedDateTime.Equal(tfStateGroup.CreatedDateTime) {
 		tfPlanCreatedDateTime := tfPlanGroup.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	}
 
-	if !tfPlanGroup.Description.Equal(tfState.Description) {
+	if !tfPlanGroup.Description.Equal(tfStateGroup.Description) {
 		tfPlanDescription := tfPlanGroup.Description.ValueString()
 		requestBody.SetDescription(&tfPlanDescription)
 	}
 
-	if !tfPlanGroup.DisplayName.Equal(tfState.DisplayName) {
+	if !tfPlanGroup.DisplayName.Equal(tfStateGroup.DisplayName) {
 		tfPlanDisplayName := tfPlanGroup.DisplayName.ValueString()
 		requestBody.SetDisplayName(&tfPlanDisplayName)
 	}
 
-	if !tfPlanGroup.ExpirationDateTime.Equal(tfState.ExpirationDateTime) {
+	if !tfPlanGroup.ExpirationDateTime.Equal(tfStateGroup.ExpirationDateTime) {
 		tfPlanExpirationDateTime := tfPlanGroup.ExpirationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanExpirationDateTime)
 		requestBody.SetExpirationDateTime(&t)
 	}
 
-	if !tfPlanGroup.GroupTypes.Equal(tfState.GroupTypes) {
+	if !tfPlanGroup.GroupTypes.Equal(tfStateGroup.GroupTypes) {
 		var stringArrayGroupTypes []string
 		for _, i := range tfPlanGroup.GroupTypes.Elements() {
 			stringArrayGroupTypes = append(stringArrayGroupTypes, i.String())
@@ -1430,24 +1430,24 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBody.SetGroupTypes(stringArrayGroupTypes)
 	}
 
-	if !tfPlanGroup.IsAssignableToRole.Equal(tfState.IsAssignableToRole) {
+	if !tfPlanGroup.IsAssignableToRole.Equal(tfStateGroup.IsAssignableToRole) {
 		tfPlanIsAssignableToRole := tfPlanGroup.IsAssignableToRole.ValueBool()
 		requestBody.SetIsAssignableToRole(&tfPlanIsAssignableToRole)
 	}
 
-	if !tfPlanGroup.IsManagementRestricted.Equal(tfState.IsManagementRestricted) {
+	if !tfPlanGroup.IsManagementRestricted.Equal(tfStateGroup.IsManagementRestricted) {
 		tfPlanIsManagementRestricted := tfPlanGroup.IsManagementRestricted.ValueBool()
 		requestBody.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
 	}
 
-	if !tfPlanGroup.LicenseProcessingState.Equal(tfState.LicenseProcessingState) {
+	if !tfPlanGroup.LicenseProcessingState.Equal(tfStateGroup.LicenseProcessingState) {
 		requestBodyLicenseProcessingState := models.NewLicenseProcessingState()
 		tfPlanLicenseProcessingState := groupLicenseProcessingStateModel{}
 		tfPlanGroup.LicenseProcessingState.As(ctx, &tfPlanLicenseProcessingState, basetypes.ObjectAsOptions{})
-		tfStaterequestBodyLicenseProcessingState := groupLicenseProcessingStateModel{}
-		tfState.LicenseProcessingState.As(ctx, &tfStaterequestBodyLicenseProcessingState, basetypes.ObjectAsOptions{})
+		tfStateLicenseProcessingState := groupLicenseProcessingStateModel{}
+		tfStateGroup.LicenseProcessingState.As(ctx, &tfStateLicenseProcessingState, basetypes.ObjectAsOptions{})
 
-		if !tfPlanLicenseProcessingState.State.Equal(tfStaterequestBodyLicenseProcessingState.State) {
+		if !tfPlanLicenseProcessingState.State.Equal(tfStateLicenseProcessingState.State) {
 			tfPlanState := tfPlanLicenseProcessingState.State.ValueString()
 			requestBodyLicenseProcessingState.SetState(&tfPlanState)
 		}
@@ -1455,73 +1455,73 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		tfPlanGroup.LicenseProcessingState, _ = types.ObjectValueFrom(ctx, tfPlanLicenseProcessingState.AttributeTypes(), tfPlanLicenseProcessingState)
 	}
 
-	if !tfPlanGroup.Mail.Equal(tfState.Mail) {
+	if !tfPlanGroup.Mail.Equal(tfStateGroup.Mail) {
 		tfPlanMail := tfPlanGroup.Mail.ValueString()
 		requestBody.SetMail(&tfPlanMail)
 	}
 
-	if !tfPlanGroup.MailEnabled.Equal(tfState.MailEnabled) {
+	if !tfPlanGroup.MailEnabled.Equal(tfStateGroup.MailEnabled) {
 		tfPlanMailEnabled := tfPlanGroup.MailEnabled.ValueBool()
 		requestBody.SetMailEnabled(&tfPlanMailEnabled)
 	}
 
-	if !tfPlanGroup.MailNickname.Equal(tfState.MailNickname) {
+	if !tfPlanGroup.MailNickname.Equal(tfStateGroup.MailNickname) {
 		tfPlanMailNickname := tfPlanGroup.MailNickname.ValueString()
 		requestBody.SetMailNickname(&tfPlanMailNickname)
 	}
 
-	if !tfPlanGroup.MembershipRule.Equal(tfState.MembershipRule) {
+	if !tfPlanGroup.MembershipRule.Equal(tfStateGroup.MembershipRule) {
 		tfPlanMembershipRule := tfPlanGroup.MembershipRule.ValueString()
 		requestBody.SetMembershipRule(&tfPlanMembershipRule)
 	}
 
-	if !tfPlanGroup.MembershipRuleProcessingState.Equal(tfState.MembershipRuleProcessingState) {
+	if !tfPlanGroup.MembershipRuleProcessingState.Equal(tfStateGroup.MembershipRuleProcessingState) {
 		tfPlanMembershipRuleProcessingState := tfPlanGroup.MembershipRuleProcessingState.ValueString()
 		requestBody.SetMembershipRuleProcessingState(&tfPlanMembershipRuleProcessingState)
 	}
 
-	if !tfPlanGroup.OnPremisesDomainName.Equal(tfState.OnPremisesDomainName) {
+	if !tfPlanGroup.OnPremisesDomainName.Equal(tfStateGroup.OnPremisesDomainName) {
 		tfPlanOnPremisesDomainName := tfPlanGroup.OnPremisesDomainName.ValueString()
 		requestBody.SetOnPremisesDomainName(&tfPlanOnPremisesDomainName)
 	}
 
-	if !tfPlanGroup.OnPremisesLastSyncDateTime.Equal(tfState.OnPremisesLastSyncDateTime) {
+	if !tfPlanGroup.OnPremisesLastSyncDateTime.Equal(tfStateGroup.OnPremisesLastSyncDateTime) {
 		tfPlanOnPremisesLastSyncDateTime := tfPlanGroup.OnPremisesLastSyncDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanOnPremisesLastSyncDateTime)
 		requestBody.SetOnPremisesLastSyncDateTime(&t)
 	}
 
-	if !tfPlanGroup.OnPremisesNetBiosName.Equal(tfState.OnPremisesNetBiosName) {
+	if !tfPlanGroup.OnPremisesNetBiosName.Equal(tfStateGroup.OnPremisesNetBiosName) {
 		tfPlanOnPremisesNetBiosName := tfPlanGroup.OnPremisesNetBiosName.ValueString()
 		requestBody.SetOnPremisesNetBiosName(&tfPlanOnPremisesNetBiosName)
 	}
 
-	if !tfPlanGroup.OnPremisesProvisioningErrors.Equal(tfState.OnPremisesProvisioningErrors) {
+	if !tfPlanGroup.OnPremisesProvisioningErrors.Equal(tfStateGroup.OnPremisesProvisioningErrors) {
 		var tfPlanOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for k, i := range tfPlanGroup.OnPremisesProvisioningErrors.Elements() {
 			requestBodyOnPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
 			tfPlanOnPremisesProvisioningError := groupOnPremisesProvisioningErrorModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanOnPremisesProvisioningError)
-			tfStaterequestBodyOnPremisesProvisioningErrors := groupOnPremisesProvisioningErrorModel{}
-			types.ListValueFrom(ctx, tfState.OnPremisesProvisioningErrors.Elements()[k].Type(ctx), &tfPlanOnPremisesProvisioningError)
+			tfStateOnPremisesProvisioningError := groupOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, tfStateGroup.OnPremisesProvisioningErrors.Elements()[k].Type(ctx), &tfPlanOnPremisesProvisioningError)
 
-			if !tfPlanOnPremisesProvisioningError.Category.Equal(tfStaterequestBodyOnPremisesProvisioningErrors.Category) {
+			if !tfPlanOnPremisesProvisioningError.Category.Equal(tfStateOnPremisesProvisioningError.Category) {
 				tfPlanCategory := tfPlanOnPremisesProvisioningError.Category.ValueString()
 				requestBodyOnPremisesProvisioningErrors.SetCategory(&tfPlanCategory)
 			}
 
-			if !tfPlanOnPremisesProvisioningError.OccurredDateTime.Equal(tfStaterequestBodyOnPremisesProvisioningErrors.OccurredDateTime) {
+			if !tfPlanOnPremisesProvisioningError.OccurredDateTime.Equal(tfStateOnPremisesProvisioningError.OccurredDateTime) {
 				tfPlanOccurredDateTime := tfPlanOnPremisesProvisioningError.OccurredDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanOccurredDateTime)
 				requestBodyOnPremisesProvisioningErrors.SetOccurredDateTime(&t)
 			}
 
-			if !tfPlanOnPremisesProvisioningError.PropertyCausingError.Equal(tfStaterequestBodyOnPremisesProvisioningErrors.PropertyCausingError) {
+			if !tfPlanOnPremisesProvisioningError.PropertyCausingError.Equal(tfStateOnPremisesProvisioningError.PropertyCausingError) {
 				tfPlanPropertyCausingError := tfPlanOnPremisesProvisioningError.PropertyCausingError.ValueString()
 				requestBodyOnPremisesProvisioningErrors.SetPropertyCausingError(&tfPlanPropertyCausingError)
 			}
 
-			if !tfPlanOnPremisesProvisioningError.Value.Equal(tfStaterequestBodyOnPremisesProvisioningErrors.Value) {
+			if !tfPlanOnPremisesProvisioningError.Value.Equal(tfStateOnPremisesProvisioningError.Value) {
 				tfPlanValue := tfPlanOnPremisesProvisioningError.Value.ValueString()
 				requestBodyOnPremisesProvisioningErrors.SetValue(&tfPlanValue)
 			}
@@ -1529,32 +1529,32 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBody.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
 	}
 
-	if !tfPlanGroup.OnPremisesSamAccountName.Equal(tfState.OnPremisesSamAccountName) {
+	if !tfPlanGroup.OnPremisesSamAccountName.Equal(tfStateGroup.OnPremisesSamAccountName) {
 		tfPlanOnPremisesSamAccountName := tfPlanGroup.OnPremisesSamAccountName.ValueString()
 		requestBody.SetOnPremisesSamAccountName(&tfPlanOnPremisesSamAccountName)
 	}
 
-	if !tfPlanGroup.OnPremisesSecurityIdentifier.Equal(tfState.OnPremisesSecurityIdentifier) {
+	if !tfPlanGroup.OnPremisesSecurityIdentifier.Equal(tfStateGroup.OnPremisesSecurityIdentifier) {
 		tfPlanOnPremisesSecurityIdentifier := tfPlanGroup.OnPremisesSecurityIdentifier.ValueString()
 		requestBody.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
 	}
 
-	if !tfPlanGroup.OnPremisesSyncEnabled.Equal(tfState.OnPremisesSyncEnabled) {
+	if !tfPlanGroup.OnPremisesSyncEnabled.Equal(tfStateGroup.OnPremisesSyncEnabled) {
 		tfPlanOnPremisesSyncEnabled := tfPlanGroup.OnPremisesSyncEnabled.ValueBool()
 		requestBody.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
 	}
 
-	if !tfPlanGroup.PreferredDataLocation.Equal(tfState.PreferredDataLocation) {
+	if !tfPlanGroup.PreferredDataLocation.Equal(tfStateGroup.PreferredDataLocation) {
 		tfPlanPreferredDataLocation := tfPlanGroup.PreferredDataLocation.ValueString()
 		requestBody.SetPreferredDataLocation(&tfPlanPreferredDataLocation)
 	}
 
-	if !tfPlanGroup.PreferredLanguage.Equal(tfState.PreferredLanguage) {
+	if !tfPlanGroup.PreferredLanguage.Equal(tfStateGroup.PreferredLanguage) {
 		tfPlanPreferredLanguage := tfPlanGroup.PreferredLanguage.ValueString()
 		requestBody.SetPreferredLanguage(&tfPlanPreferredLanguage)
 	}
 
-	if !tfPlanGroup.ProxyAddresses.Equal(tfState.ProxyAddresses) {
+	if !tfPlanGroup.ProxyAddresses.Equal(tfStateGroup.ProxyAddresses) {
 		var stringArrayProxyAddresses []string
 		for _, i := range tfPlanGroup.ProxyAddresses.Elements() {
 			stringArrayProxyAddresses = append(stringArrayProxyAddresses, i.String())
@@ -1562,43 +1562,43 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBody.SetProxyAddresses(stringArrayProxyAddresses)
 	}
 
-	if !tfPlanGroup.RenewedDateTime.Equal(tfState.RenewedDateTime) {
+	if !tfPlanGroup.RenewedDateTime.Equal(tfStateGroup.RenewedDateTime) {
 		tfPlanRenewedDateTime := tfPlanGroup.RenewedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanRenewedDateTime)
 		requestBody.SetRenewedDateTime(&t)
 	}
 
-	if !tfPlanGroup.SecurityEnabled.Equal(tfState.SecurityEnabled) {
+	if !tfPlanGroup.SecurityEnabled.Equal(tfStateGroup.SecurityEnabled) {
 		tfPlanSecurityEnabled := tfPlanGroup.SecurityEnabled.ValueBool()
 		requestBody.SetSecurityEnabled(&tfPlanSecurityEnabled)
 	}
 
-	if !tfPlanGroup.SecurityIdentifier.Equal(tfState.SecurityIdentifier) {
+	if !tfPlanGroup.SecurityIdentifier.Equal(tfStateGroup.SecurityIdentifier) {
 		tfPlanSecurityIdentifier := tfPlanGroup.SecurityIdentifier.ValueString()
 		requestBody.SetSecurityIdentifier(&tfPlanSecurityIdentifier)
 	}
 
-	if !tfPlanGroup.ServiceProvisioningErrors.Equal(tfState.ServiceProvisioningErrors) {
+	if !tfPlanGroup.ServiceProvisioningErrors.Equal(tfStateGroup.ServiceProvisioningErrors) {
 		var tfPlanServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for k, i := range tfPlanGroup.ServiceProvisioningErrors.Elements() {
 			requestBodyServiceProvisioningErrors := models.NewServiceProvisioningError()
 			tfPlanServiceProvisioningError := groupServiceProvisioningErrorModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanServiceProvisioningError)
-			tfStaterequestBodyServiceProvisioningErrors := groupServiceProvisioningErrorModel{}
-			types.ListValueFrom(ctx, tfState.ServiceProvisioningErrors.Elements()[k].Type(ctx), &tfPlanServiceProvisioningError)
+			tfStateServiceProvisioningError := groupServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, tfStateGroup.ServiceProvisioningErrors.Elements()[k].Type(ctx), &tfPlanServiceProvisioningError)
 
-			if !tfPlanServiceProvisioningError.CreatedDateTime.Equal(tfStaterequestBodyServiceProvisioningErrors.CreatedDateTime) {
+			if !tfPlanServiceProvisioningError.CreatedDateTime.Equal(tfStateServiceProvisioningError.CreatedDateTime) {
 				tfPlanCreatedDateTime := tfPlanServiceProvisioningError.CreatedDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 				requestBodyServiceProvisioningErrors.SetCreatedDateTime(&t)
 			}
 
-			if !tfPlanServiceProvisioningError.IsResolved.Equal(tfStaterequestBodyServiceProvisioningErrors.IsResolved) {
+			if !tfPlanServiceProvisioningError.IsResolved.Equal(tfStateServiceProvisioningError.IsResolved) {
 				tfPlanIsResolved := tfPlanServiceProvisioningError.IsResolved.ValueBool()
 				requestBodyServiceProvisioningErrors.SetIsResolved(&tfPlanIsResolved)
 			}
 
-			if !tfPlanServiceProvisioningError.ServiceInstance.Equal(tfStaterequestBodyServiceProvisioningErrors.ServiceInstance) {
+			if !tfPlanServiceProvisioningError.ServiceInstance.Equal(tfStateServiceProvisioningError.ServiceInstance) {
 				tfPlanServiceInstance := tfPlanServiceProvisioningError.ServiceInstance.ValueString()
 				requestBodyServiceProvisioningErrors.SetServiceInstance(&tfPlanServiceInstance)
 			}
@@ -1606,23 +1606,23 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBody.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
 	}
 
-	if !tfPlanGroup.Theme.Equal(tfState.Theme) {
+	if !tfPlanGroup.Theme.Equal(tfStateGroup.Theme) {
 		tfPlanTheme := tfPlanGroup.Theme.ValueString()
 		requestBody.SetTheme(&tfPlanTheme)
 	}
 
-	if !tfPlanGroup.UniqueName.Equal(tfState.UniqueName) {
+	if !tfPlanGroup.UniqueName.Equal(tfStateGroup.UniqueName) {
 		tfPlanUniqueName := tfPlanGroup.UniqueName.ValueString()
 		requestBody.SetUniqueName(&tfPlanUniqueName)
 	}
 
-	if !tfPlanGroup.Visibility.Equal(tfState.Visibility) {
+	if !tfPlanGroup.Visibility.Equal(tfStateGroup.Visibility) {
 		tfPlanVisibility := tfPlanGroup.Visibility.ValueString()
 		requestBody.SetVisibility(&tfPlanVisibility)
 	}
 
 	// Update group
-	_, err := r.client.Groups().ByGroupId(tfState.Id.ValueString()).Patch(context.Background(), requestBody, nil)
+	_, err := r.client.Groups().ByGroupId(tfStateGroup.Id.ValueString()).Patch(context.Background(), requestBody, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error updating group",
@@ -1643,15 +1643,15 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *groupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// Retrieve values from Terraform state
-	var tfState groupModel
-	diags := req.State.Get(ctx, &tfState)
+	var tfStateGroup groupModel
+	diags := req.State.Get(ctx, &tfStateGroup)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// TODO: Delete group
-	err := r.client.Groups().ByGroupId(tfState.Id.ValueString()).Delete(context.Background(), nil)
+	err := r.client.Groups().ByGroupId(tfStateGroup.Id.ValueString()).Delete(context.Background(), nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error deleting group",

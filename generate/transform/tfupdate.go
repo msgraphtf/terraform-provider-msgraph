@@ -27,7 +27,7 @@ func (ur UpdateRequest) PostMethod() []queryMethod {
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "tfState." + pRight + ".ValueString()"
+			newMethod.Parameter = "tfState" + ur.BlockName.UpperCamel() + "." + pRight + ".ValueString()"
 		} else {
 			newMethod.MethodName = strcase.ToCamel(p)
 		}
