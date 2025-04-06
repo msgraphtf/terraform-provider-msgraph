@@ -1423,11 +1423,11 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 
 	if !plan.GroupTypes.Equal(state.GroupTypes) {
-		var groupTypes []string
+		var stringArrayGroupTypes []string
 		for _, i := range plan.GroupTypes.Elements() {
-			groupTypes = append(groupTypes, i.String())
+			stringArrayGroupTypes = append(stringArrayGroupTypes, i.String())
 		}
-		requestBody.SetGroupTypes(groupTypes)
+		requestBody.SetGroupTypes(stringArrayGroupTypes)
 	}
 
 	if !plan.IsAssignableToRole.Equal(state.IsAssignableToRole) {
@@ -1556,11 +1556,11 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 
 	if !plan.ProxyAddresses.Equal(state.ProxyAddresses) {
-		var proxyAddresses []string
+		var stringArrayProxyAddresses []string
 		for _, i := range plan.ProxyAddresses.Elements() {
-			proxyAddresses = append(proxyAddresses, i.String())
+			stringArrayProxyAddresses = append(stringArrayProxyAddresses, i.String())
 		}
-		requestBody.SetProxyAddresses(proxyAddresses)
+		requestBody.SetProxyAddresses(stringArrayProxyAddresses)
 	}
 
 	if !plan.RenewedDateTime.Equal(state.RenewedDateTime) {

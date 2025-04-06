@@ -3425,11 +3425,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		state.AuthorizationInfo.As(ctx, &authorizationInfoState, basetypes.ObjectAsOptions{})
 
 		if !authorizationInfoModel.CertificateUserIds.Equal(authorizationInfoState.CertificateUserIds) {
-			var certificateUserIds []string
+			var stringArrayCertificateUserIds []string
 			for _, i := range authorizationInfoModel.CertificateUserIds.Elements() {
-				certificateUserIds = append(certificateUserIds, i.String())
+				stringArrayCertificateUserIds = append(stringArrayCertificateUserIds, i.String())
 			}
-			authorizationInfo.SetCertificateUserIds(certificateUserIds)
+			authorizationInfo.SetCertificateUserIds(stringArrayCertificateUserIds)
 		}
 		requestBody.SetAuthorizationInfo(authorizationInfo)
 		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfoModel.AttributeTypes(), authorizationInfoModel)
@@ -3443,11 +3443,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	if !plan.BusinessPhones.Equal(state.BusinessPhones) {
-		var businessPhones []string
+		var stringArrayBusinessPhones []string
 		for _, i := range plan.BusinessPhones.Elements() {
-			businessPhones = append(businessPhones, i.String())
+			stringArrayBusinessPhones = append(stringArrayBusinessPhones, i.String())
 		}
-		requestBody.SetBusinessPhones(businessPhones)
+		requestBody.SetBusinessPhones(stringArrayBusinessPhones)
 	}
 
 	if !plan.City.Equal(state.City) {
@@ -3589,19 +3589,19 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	if !plan.ImAddresses.Equal(state.ImAddresses) {
-		var imAddresses []string
+		var stringArrayImAddresses []string
 		for _, i := range plan.ImAddresses.Elements() {
-			imAddresses = append(imAddresses, i.String())
+			stringArrayImAddresses = append(stringArrayImAddresses, i.String())
 		}
-		requestBody.SetImAddresses(imAddresses)
+		requestBody.SetImAddresses(stringArrayImAddresses)
 	}
 
 	if !plan.Interests.Equal(state.Interests) {
-		var interests []string
+		var stringArrayInterests []string
 		for _, i := range plan.Interests.Elements() {
-			interests = append(interests, i.String())
+			stringArrayInterests = append(stringArrayInterests, i.String())
 		}
-		requestBody.SetInterests(interests)
+		requestBody.SetInterests(stringArrayInterests)
 	}
 
 	if !plan.IsManagementRestricted.Equal(state.IsManagementRestricted) {
@@ -3864,11 +3864,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	if !plan.OtherMails.Equal(state.OtherMails) {
-		var otherMails []string
+		var stringArrayOtherMails []string
 		for _, i := range plan.OtherMails.Elements() {
-			otherMails = append(otherMails, i.String())
+			stringArrayOtherMails = append(stringArrayOtherMails, i.String())
 		}
-		requestBody.SetOtherMails(otherMails)
+		requestBody.SetOtherMails(stringArrayOtherMails)
 	}
 
 	if !plan.PasswordPolicies.Equal(state.PasswordPolicies) {
@@ -3903,11 +3903,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	if !plan.PastProjects.Equal(state.PastProjects) {
-		var pastProjects []string
+		var stringArrayPastProjects []string
 		for _, i := range plan.PastProjects.Elements() {
-			pastProjects = append(pastProjects, i.String())
+			stringArrayPastProjects = append(stringArrayPastProjects, i.String())
 		}
-		requestBody.SetPastProjects(pastProjects)
+		requestBody.SetPastProjects(stringArrayPastProjects)
 	}
 
 	if !plan.PostalCode.Equal(state.PostalCode) {
@@ -3958,27 +3958,27 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	if !plan.ProxyAddresses.Equal(state.ProxyAddresses) {
-		var proxyAddresses []string
+		var stringArrayProxyAddresses []string
 		for _, i := range plan.ProxyAddresses.Elements() {
-			proxyAddresses = append(proxyAddresses, i.String())
+			stringArrayProxyAddresses = append(stringArrayProxyAddresses, i.String())
 		}
-		requestBody.SetProxyAddresses(proxyAddresses)
+		requestBody.SetProxyAddresses(stringArrayProxyAddresses)
 	}
 
 	if !plan.Responsibilities.Equal(state.Responsibilities) {
-		var responsibilities []string
+		var stringArrayResponsibilities []string
 		for _, i := range plan.Responsibilities.Elements() {
-			responsibilities = append(responsibilities, i.String())
+			stringArrayResponsibilities = append(stringArrayResponsibilities, i.String())
 		}
-		requestBody.SetResponsibilities(responsibilities)
+		requestBody.SetResponsibilities(stringArrayResponsibilities)
 	}
 
 	if !plan.Schools.Equal(state.Schools) {
-		var schools []string
+		var stringArraySchools []string
 		for _, i := range plan.Schools.Elements() {
-			schools = append(schools, i.String())
+			stringArraySchools = append(stringArraySchools, i.String())
 		}
-		requestBody.SetSchools(schools)
+		requestBody.SetSchools(stringArraySchools)
 	}
 
 	if !plan.SecurityIdentifier.Equal(state.SecurityIdentifier) {
@@ -4070,11 +4070,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	if !plan.Skills.Equal(state.Skills) {
-		var skills []string
+		var stringArraySkills []string
 		for _, i := range plan.Skills.Elements() {
-			skills = append(skills, i.String())
+			stringArraySkills = append(stringArraySkills, i.String())
 		}
-		requestBody.SetSkills(skills)
+		requestBody.SetSkills(stringArraySkills)
 	}
 
 	if !plan.State.Equal(state.State) {

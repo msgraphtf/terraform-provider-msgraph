@@ -1113,11 +1113,11 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 
 	if !plan.PhysicalIds.Equal(state.PhysicalIds) {
-		var physicalIds []string
+		var stringArrayPhysicalIds []string
 		for _, i := range plan.PhysicalIds.Elements() {
-			physicalIds = append(physicalIds, i.String())
+			stringArrayPhysicalIds = append(stringArrayPhysicalIds, i.String())
 		}
-		requestBody.SetPhysicalIds(physicalIds)
+		requestBody.SetPhysicalIds(stringArrayPhysicalIds)
 	}
 
 	if !plan.ProfileType.Equal(state.ProfileType) {
@@ -1132,11 +1132,11 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 
 	if !plan.SystemLabels.Equal(state.SystemLabels) {
-		var systemLabels []string
+		var stringArraySystemLabels []string
 		for _, i := range plan.SystemLabels.Elements() {
-			systemLabels = append(systemLabels, i.String())
+			stringArraySystemLabels = append(stringArraySystemLabels, i.String())
 		}
-		requestBody.SetSystemLabels(systemLabels)
+		requestBody.SetSystemLabels(stringArraySystemLabels)
 	}
 
 	if !plan.TrustType.Equal(state.TrustType) {

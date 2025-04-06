@@ -81,11 +81,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateArrayStringAttribute" }}
 	if !{{.PlanVar}}{{.AttributeName.UpperCamel}}.Equal({{.StateVar}}{{.AttributeName.UpperCamel}}) {
-		var {{.AttributeName.LowerCamel}} []string
+		var stringArray{{.AttributeName.UpperCamel}} []string
 		for _, i := range {{.PlanVar}}{{.AttributeName.UpperCamel}}.Elements() {
-			{{.AttributeName.LowerCamel}} = append({{.AttributeName.LowerCamel}}, i.String())
+			stringArray{{.AttributeName.UpperCamel}} = append(stringArray{{.AttributeName.UpperCamel}}, i.String())
 		}
-		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}({{.AttributeName.LowerCamel}})
+		{{.RequestBodyVar}}.Set{{.AttributeName.UpperCamel}}(stringArray{{.AttributeName.UpperCamel}})
 	}
 	{{- end}}
 

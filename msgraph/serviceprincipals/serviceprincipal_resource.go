@@ -2354,11 +2354,11 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	if !plan.AlternativeNames.Equal(state.AlternativeNames) {
-		var alternativeNames []string
+		var stringArrayAlternativeNames []string
 		for _, i := range plan.AlternativeNames.Elements() {
-			alternativeNames = append(alternativeNames, i.String())
+			stringArrayAlternativeNames = append(stringArrayAlternativeNames, i.String())
 		}
-		requestBody.SetAlternativeNames(alternativeNames)
+		requestBody.SetAlternativeNames(stringArrayAlternativeNames)
 	}
 
 	if !plan.AppDescription.Equal(state.AppDescription) {
@@ -2397,11 +2397,11 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 			types.ListValueFrom(ctx, state.AppRoles.Elements()[k].Type(ctx), &appRolesModel)
 
 			if !appRolesModel.AllowedMemberTypes.Equal(appRolesState.AllowedMemberTypes) {
-				var allowedMemberTypes []string
+				var stringArrayAllowedMemberTypes []string
 				for _, i := range appRolesModel.AllowedMemberTypes.Elements() {
-					allowedMemberTypes = append(allowedMemberTypes, i.String())
+					stringArrayAllowedMemberTypes = append(stringArrayAllowedMemberTypes, i.String())
 				}
-				appRoles.SetAllowedMemberTypes(allowedMemberTypes)
+				appRoles.SetAllowedMemberTypes(stringArrayAllowedMemberTypes)
 			}
 
 			if !appRolesModel.Description.Equal(appRolesState.Description) {
@@ -2582,11 +2582,11 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	if !plan.NotificationEmailAddresses.Equal(state.NotificationEmailAddresses) {
-		var notificationEmailAddresses []string
+		var stringArrayNotificationEmailAddresses []string
 		for _, i := range plan.NotificationEmailAddresses.Elements() {
-			notificationEmailAddresses = append(notificationEmailAddresses, i.String())
+			stringArrayNotificationEmailAddresses = append(stringArrayNotificationEmailAddresses, i.String())
 		}
-		requestBody.SetNotificationEmailAddresses(notificationEmailAddresses)
+		requestBody.SetNotificationEmailAddresses(stringArrayNotificationEmailAddresses)
 	}
 
 	if !plan.Oauth2PermissionScopes.Equal(state.Oauth2PermissionScopes) {
@@ -2708,11 +2708,11 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	if !plan.ReplyUrls.Equal(state.ReplyUrls) {
-		var replyUrls []string
+		var stringArrayReplyUrls []string
 		for _, i := range plan.ReplyUrls.Elements() {
-			replyUrls = append(replyUrls, i.String())
+			stringArrayReplyUrls = append(stringArrayReplyUrls, i.String())
 		}
-		requestBody.SetReplyUrls(replyUrls)
+		requestBody.SetReplyUrls(stringArrayReplyUrls)
 	}
 
 	if !plan.ResourceSpecificApplicationPermissions.Equal(state.ResourceSpecificApplicationPermissions) {
@@ -2770,11 +2770,11 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	if !plan.ServicePrincipalNames.Equal(state.ServicePrincipalNames) {
-		var servicePrincipalNames []string
+		var stringArrayServicePrincipalNames []string
 		for _, i := range plan.ServicePrincipalNames.Elements() {
-			servicePrincipalNames = append(servicePrincipalNames, i.String())
+			stringArrayServicePrincipalNames = append(stringArrayServicePrincipalNames, i.String())
 		}
-		requestBody.SetServicePrincipalNames(servicePrincipalNames)
+		requestBody.SetServicePrincipalNames(stringArrayServicePrincipalNames)
 	}
 
 	if !plan.ServicePrincipalType.Equal(state.ServicePrincipalType) {
@@ -2788,11 +2788,11 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	if !plan.Tags.Equal(state.Tags) {
-		var tags []string
+		var stringArrayTags []string
 		for _, i := range plan.Tags.Elements() {
-			tags = append(tags, i.String())
+			stringArrayTags = append(stringArrayTags, i.String())
 		}
-		requestBody.SetTags(tags)
+		requestBody.SetTags(stringArrayTags)
 	}
 
 	if !plan.TokenEncryptionKeyId.Equal(state.TokenEncryptionKeyId) {

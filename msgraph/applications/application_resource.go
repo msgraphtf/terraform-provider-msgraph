@@ -3704,11 +3704,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 				}
 
 				if !preAuthorizedApplicationsModel.DelegatedPermissionIds.Equal(preAuthorizedApplicationsState.DelegatedPermissionIds) {
-					var delegatedPermissionIds []string
+					var stringArrayDelegatedPermissionIds []string
 					for _, i := range preAuthorizedApplicationsModel.DelegatedPermissionIds.Elements() {
-						delegatedPermissionIds = append(delegatedPermissionIds, i.String())
+						stringArrayDelegatedPermissionIds = append(stringArrayDelegatedPermissionIds, i.String())
 					}
-					preAuthorizedApplications.SetDelegatedPermissionIds(delegatedPermissionIds)
+					preAuthorizedApplications.SetDelegatedPermissionIds(stringArrayDelegatedPermissionIds)
 				}
 			}
 			api.SetPreAuthorizedApplications(planPreAuthorizedApplications)
@@ -3733,11 +3733,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 			types.ListValueFrom(ctx, state.AppRoles.Elements()[k].Type(ctx), &appRolesModel)
 
 			if !appRolesModel.AllowedMemberTypes.Equal(appRolesState.AllowedMemberTypes) {
-				var allowedMemberTypes []string
+				var stringArrayAllowedMemberTypes []string
 				for _, i := range appRolesModel.AllowedMemberTypes.Elements() {
-					allowedMemberTypes = append(allowedMemberTypes, i.String())
+					stringArrayAllowedMemberTypes = append(stringArrayAllowedMemberTypes, i.String())
 				}
-				appRoles.SetAllowedMemberTypes(allowedMemberTypes)
+				appRoles.SetAllowedMemberTypes(stringArrayAllowedMemberTypes)
 			}
 
 			if !appRolesModel.Description.Equal(appRolesState.Description) {
@@ -3849,11 +3849,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 
 	if !plan.IdentifierUris.Equal(state.IdentifierUris) {
-		var identifierUris []string
+		var stringArrayIdentifierUris []string
 		for _, i := range plan.IdentifierUris.Elements() {
-			identifierUris = append(identifierUris, i.String())
+			stringArrayIdentifierUris = append(stringArrayIdentifierUris, i.String())
 		}
-		requestBody.SetIdentifierUris(identifierUris)
+		requestBody.SetIdentifierUris(stringArrayIdentifierUris)
 	}
 
 	if !plan.Info.Equal(state.Info) {
@@ -3996,11 +3996,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 				types.ListValueFrom(ctx, optionalClaimsState.AccessToken.Elements()[k].Type(ctx), &accessTokenModel)
 
 				if !accessTokenModel.AdditionalProperties.Equal(accessTokenState.AdditionalProperties) {
-					var additionalProperties []string
+					var stringArrayAdditionalProperties []string
 					for _, i := range accessTokenModel.AdditionalProperties.Elements() {
-						additionalProperties = append(additionalProperties, i.String())
+						stringArrayAdditionalProperties = append(stringArrayAdditionalProperties, i.String())
 					}
-					accessToken.SetAdditionalProperties(additionalProperties)
+					accessToken.SetAdditionalProperties(stringArrayAdditionalProperties)
 				}
 
 				if !accessTokenModel.Essential.Equal(accessTokenState.Essential) {
@@ -4031,11 +4031,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 				types.ListValueFrom(ctx, optionalClaimsState.IdToken.Elements()[k].Type(ctx), &idTokenModel)
 
 				if !idTokenModel.AdditionalProperties.Equal(idTokenState.AdditionalProperties) {
-					var additionalProperties []string
+					var stringArrayAdditionalProperties []string
 					for _, i := range idTokenModel.AdditionalProperties.Elements() {
-						additionalProperties = append(additionalProperties, i.String())
+						stringArrayAdditionalProperties = append(stringArrayAdditionalProperties, i.String())
 					}
-					idToken.SetAdditionalProperties(additionalProperties)
+					idToken.SetAdditionalProperties(stringArrayAdditionalProperties)
 				}
 
 				if !idTokenModel.Essential.Equal(idTokenState.Essential) {
@@ -4066,11 +4066,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 				types.ListValueFrom(ctx, optionalClaimsState.Saml2Token.Elements()[k].Type(ctx), &saml2TokenModel)
 
 				if !saml2TokenModel.AdditionalProperties.Equal(saml2TokenState.AdditionalProperties) {
-					var additionalProperties []string
+					var stringArrayAdditionalProperties []string
 					for _, i := range saml2TokenModel.AdditionalProperties.Elements() {
-						additionalProperties = append(additionalProperties, i.String())
+						stringArrayAdditionalProperties = append(stringArrayAdditionalProperties, i.String())
 					}
-					saml2Token.SetAdditionalProperties(additionalProperties)
+					saml2Token.SetAdditionalProperties(stringArrayAdditionalProperties)
 				}
 
 				if !saml2TokenModel.Essential.Equal(saml2TokenState.Essential) {
@@ -4103,11 +4103,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 		state.ParentalControlSettings.As(ctx, &parentalControlSettingsState, basetypes.ObjectAsOptions{})
 
 		if !parentalControlSettingsModel.CountriesBlockedForMinors.Equal(parentalControlSettingsState.CountriesBlockedForMinors) {
-			var countriesBlockedForMinors []string
+			var stringArrayCountriesBlockedForMinors []string
 			for _, i := range parentalControlSettingsModel.CountriesBlockedForMinors.Elements() {
-				countriesBlockedForMinors = append(countriesBlockedForMinors, i.String())
+				stringArrayCountriesBlockedForMinors = append(stringArrayCountriesBlockedForMinors, i.String())
 			}
-			parentalControlSettings.SetCountriesBlockedForMinors(countriesBlockedForMinors)
+			parentalControlSettings.SetCountriesBlockedForMinors(stringArrayCountriesBlockedForMinors)
 		}
 
 		if !parentalControlSettingsModel.LegalAgeGroupRule.Equal(parentalControlSettingsState.LegalAgeGroupRule) {
@@ -4177,11 +4177,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 		state.PublicClient.As(ctx, &publicClientState, basetypes.ObjectAsOptions{})
 
 		if !publicClientModel.RedirectUris.Equal(publicClientState.RedirectUris) {
-			var redirectUris []string
+			var stringArrayRedirectUris []string
 			for _, i := range publicClientModel.RedirectUris.Elements() {
-				redirectUris = append(redirectUris, i.String())
+				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			publicClient.SetRedirectUris(redirectUris)
+			publicClient.SetRedirectUris(stringArrayRedirectUris)
 		}
 		requestBody.SetPublicClient(publicClient)
 		objectValue, _ := types.ObjectValueFrom(ctx, publicClientModel.AttributeTypes(), publicClientModel)
@@ -4315,11 +4315,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 		state.Spa.As(ctx, &spaState, basetypes.ObjectAsOptions{})
 
 		if !spaModel.RedirectUris.Equal(spaState.RedirectUris) {
-			var redirectUris []string
+			var stringArrayRedirectUris []string
 			for _, i := range spaModel.RedirectUris.Elements() {
-				redirectUris = append(redirectUris, i.String())
+				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			spa.SetRedirectUris(redirectUris)
+			spa.SetRedirectUris(stringArrayRedirectUris)
 		}
 		requestBody.SetSpa(spa)
 		objectValue, _ := types.ObjectValueFrom(ctx, spaModel.AttributeTypes(), spaModel)
@@ -4327,11 +4327,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 
 	if !plan.Tags.Equal(state.Tags) {
-		var tags []string
+		var stringArrayTags []string
 		for _, i := range plan.Tags.Elements() {
-			tags = append(tags, i.String())
+			stringArrayTags = append(stringArrayTags, i.String())
 		}
-		requestBody.SetTags(tags)
+		requestBody.SetTags(stringArrayTags)
 	}
 
 	if !plan.TokenEncryptionKeyId.Equal(state.TokenEncryptionKeyId) {
@@ -4428,11 +4428,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 		}
 
 		if !webModel.RedirectUris.Equal(webState.RedirectUris) {
-			var redirectUris []string
+			var stringArrayRedirectUris []string
 			for _, i := range webModel.RedirectUris.Elements() {
-				redirectUris = append(redirectUris, i.String())
+				stringArrayRedirectUris = append(stringArrayRedirectUris, i.String())
 			}
-			web.SetRedirectUris(redirectUris)
+			web.SetRedirectUris(stringArrayRedirectUris)
 		}
 		requestBody.SetWeb(web)
 		objectValue, _ := types.ObjectValueFrom(ctx, webModel.AttributeTypes(), webModel)
