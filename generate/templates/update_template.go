@@ -20,15 +20,15 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "UpdateStringAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.Name}}.ValueString()
 	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateStringEnumAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.Name}}.ValueString()
 	parsed{{.Name}}, _ := models.Parse{{.ObjectOf}}(tfPlan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.ObjectOf}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&asserted{{.Name}})
@@ -36,53 +36,53 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateStringTimeAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.Name}}.ValueString()
 	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&t)
 	}
 	{{- end}}
 
 	{{- define "UpdateStringUuidAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.Name}}.ValueString()
 	u, _ := uuid.Parse(tfPlan{{.Name}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&u)
 	}
 	{{- end}}
 
 	{{- define "UpdateStringBase64UrlAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.Name}}.ValueString()
 	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	}
 	{{- end}}
 
 	{{- define "UpdateInt64Attribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueInt64()
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.Name}}.ValueInt64()
 	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateInt32Attribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	tfPlan{{.Name}} := int32({{.PlanVar}}{{.Name}}.ValueInt64())
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	tfPlan{{.Name}} := int32({{.PlanVar}}.{{.Name}}.ValueInt64())
 	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateBoolAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueBool()
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	tfPlan{{.Name}} := {{.PlanVar}}.{{.Name}}.ValueBool()
 	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateArrayStringAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
 		var stringArray{{.Name}} []string
-		for _, i := range {{.PlanVar}}{{.Name}}.Elements() {
+		for _, i := range {{.PlanVar}}.{{.Name}}.Elements() {
 			stringArray{{.Name}} = append(stringArray{{.Name}}, i.String())
 		}
 		{{.RequestBodyVar}}.Set{{.Name}}(stringArray{{.Name}})
@@ -90,9 +90,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateArrayUuidAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
 		var {{.Name}} []uuid.UUID
-		for _, i := range {{.PlanVar}}{{.Name}}.Elements() {
+		for _, i := range {{.PlanVar}}.{{.Name}}.Elements() {
 			u, _ := uuid.Parse(i.String())
 			{{.Name}} = append({{.Name}}, u)
 		}
@@ -101,9 +101,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateArrayObjectAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
 		var tfPlan{{.Name}} []models.{{.ObjectOf}}able
-		for k, i := range {{.PlanVar}}{{.Name}}.Elements() {
+		for k, i := range {{.PlanVar}}.{{.Name}}.Elements() {
 			{{.RequestBodyVar}} := models.New{{.ObjectOf}}()
 			{{.RequestBodyVar}}Model := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
@@ -116,7 +116,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 	{{- define "UpdateObjectAttribute" }}
-	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	if !{{.PlanVar}}.{{.Name}}.Equal({{.StateVar}}{{.Name}}){
 		requestBody{{.Name}} := models.New{{.ObjectOf}}()
 		{{.RequestBodyVar}}Model := {{.TfModelName}}Model{}
 		{{.NestedPlan}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})

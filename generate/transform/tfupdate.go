@@ -138,9 +138,9 @@ func (ura updateRequestAttribute) ObjectOf() string {
 func (ura updateRequestAttribute) PlanVar() string {
 
 	if ura.Parent != nil {
-		return ura.Parent.RequestBodyVar() + "Model."
+		return ura.Parent.RequestBodyVar() + "Model"
 	} else {
-		return "tfPlan."
+		return "tfPlan"
 	}
 }
 
