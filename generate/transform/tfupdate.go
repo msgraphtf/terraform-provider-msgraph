@@ -139,15 +139,6 @@ func (ura updateRequestAttribute) TfModelName() string {
 	return ura.UpdateRequest.BlockName.LowerCamel() + ura.ObjectOf()
 }
 
-func (ura updateRequestAttribute) StateVar() string {
-
-	if ura.Parent != nil {
-		return "tfState" + ura.Parent.RequestBodyVar() + "."
-	} else {
-		return "tfState."
-	}
-}
-
 func (ura updateRequestAttribute) RequestBodyVar() string {
 
 	if ura.AttributeType() == "UpdateObjectAttribute" {
@@ -161,16 +152,6 @@ func (ura updateRequestAttribute) RequestBodyVar() string {
 	} else {
 		return "requestBody"
 	}
-}
-
-func (ura updateRequestAttribute) NestedState() string {
-
-	if ura.Parent != nil {
-		return "tfState" + ura.Parent.RequestBodyVar() + "." + ura.Name()
-	} else {
-		return "tfState." + ura.Name()
-	}
-
 }
 
 func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
