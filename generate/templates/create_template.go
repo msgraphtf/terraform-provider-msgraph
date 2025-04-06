@@ -146,8 +146,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- template "CreateStringBase64UrlAttribute" .}}
 	{{- else if eq .Type "CreateInt64Attribute"}}
 	{{- template "CreateInt64Attribute" .}}
-	{{- else if eq .Type "CreateInt32Attribute"}}
-	{{- template "CreateInt32Attribute" .}}
 	{{- else if eq .Type "CreateBoolAttribute"}}
 	{{- template "CreateBoolAttribute" .}}
 	{{- else if eq .Type "CreateArrayStringAttribute"}}

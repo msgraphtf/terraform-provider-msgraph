@@ -86,11 +86,7 @@ func (ura updateRequestAttribute) Type() string {
 		}
 		return "UpdateStringAttribute"
 	case "integer":
-		if ura.Property.Format == "int32" {
-			return "UpdateInt32Attribute"
-		} else {
-			return "UpdateInt64Attribute"
-		}
+		return "UpdateInt64Attribute"
 	case "boolean":
 		return "UpdateBoolAttribute"
 	case "array":
