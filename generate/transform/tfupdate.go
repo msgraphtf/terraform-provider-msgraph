@@ -66,9 +66,9 @@ type updateRequestAttribute struct {
 	Parent        *updateRequestAttribute
 }
 
-func (ura updateRequestAttribute) AttributeName() StrWithCases {
+func (ura updateRequestAttribute) AttributeName() string {
 
-	return StrWithCases{ura.Property.Name}
+	return upperFirst(ura.Property.Name)
 
 }
 
@@ -186,9 +186,9 @@ func (ura updateRequestAttribute) PlanValueMethod() string {
 func (ura updateRequestAttribute) NestedPlan() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "Model." + ura.AttributeName().UpperCamel()
+		return ura.Parent.RequestBodyVar() + "Model." + ura.AttributeName()
 	} else {
-		return "plan." + ura.AttributeName().UpperCamel()
+		return "plan." + ura.AttributeName()
 	}
 
 }
@@ -196,9 +196,9 @@ func (ura updateRequestAttribute) NestedPlan() string {
 func (ura updateRequestAttribute) NestedState() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "State." + ura.AttributeName().UpperCamel()
+		return ura.Parent.RequestBodyVar() + "State." + ura.AttributeName()
 	} else {
-		return "state." + ura.AttributeName().UpperCamel()
+		return "state." + ura.AttributeName()
 	}
 
 }
@@ -249,17 +249,17 @@ func (ura updateRequestAttribute) ParentRequestBodyVar() string {
 func (ura updateRequestAttribute) ParentPlanVar() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "Model." + ura.AttributeName().UpperCamel()
+		return ura.Parent.RequestBodyVar() + "Model." + ura.AttributeName()
 	} else {
-		return "plan." + ura.AttributeName().UpperCamel()
+		return "plan." + ura.AttributeName()
 	}
 
 }
 
 func (ura updateRequestAttribute) SetModelMethod() string {
-	if ura.AttributeName().UpperCamel() == "Type" {
+	if ura.AttributeName() == "Type" {
 		return "TypeEscaped"
 	} else {
-		return ura.AttributeName().UpperCamel()
+		return ura.AttributeName()
 	}
 }
