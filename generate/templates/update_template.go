@@ -29,8 +29,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- define "UpdateStringEnumAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
 	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
-	parsed{{.Name}}, _ := models.Parse{{.NewModelMethod}}(tfPlan{{.Name}})
-	asserted{{.Name}} := parsed{{.Name}}.(models.{{.NewModelMethod}})
+	parsed{{.Name}}, _ := models.Parse{{.ObjectOf}}(tfPlan{{.Name}})
+	asserted{{.Name}} := parsed{{.Name}}.(models.{{.ObjectOf}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&asserted{{.Name}})
 	}
 	{{- end}}
@@ -102,9 +102,9 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateArrayObjectAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
-		var tfPlan{{.Name}} []models.{{.NewModelMethod}}able
+		var tfPlan{{.Name}} []models.{{.ObjectOf}}able
 		for k, i := range {{.PlanVar}}{{.Name}}.Elements() {
-			{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
+			{{.RequestBodyVar}} := models.New{{.ObjectOf}}()
 			{{.RequestBodyVar}}Model := {{.ModelName}}{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
 			{{.RequestBodyVar}}State := {{.ModelName}}{}
@@ -117,7 +117,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateObjectAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
+		{{.RequestBodyVar}} := models.New{{.ObjectOf}}()
 		{{.RequestBodyVar}}Model := {{.ModelName}}{}
 		{{.NestedPlan}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
 		{{.RequestBodyVar}}State := {{.ModelName}}{}

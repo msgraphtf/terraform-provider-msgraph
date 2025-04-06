@@ -188,10 +188,6 @@ func (ura updateRequestAttribute) NestedState() string {
 
 }
 
-func (ura updateRequestAttribute) NewModelMethod() string {
-	return upperFirst(ura.Property.ObjectOf.Title)
-}
-
 func (ura updateRequestAttribute) ModelName() string {
 	return ura.UpdateRequest.BlockName.LowerCamel() + upperFirst(ura.Property.ObjectOf.Title) + "Model"
 }
