@@ -72,7 +72,7 @@ func (ura updateRequestAttribute) Name() string {
 
 }
 
-func (ura updateRequestAttribute) AttributeType() string {
+func (ura updateRequestAttribute) Type() string {
 
 	switch ura.Property.Type {
 	case "string":
@@ -127,6 +127,15 @@ func (ura updateRequestAttribute) ParentName() string {
 	}
 }
 
+// Infuriatingly, Kiota (the tool that generates msgraph-sdk-go) suffixes any attributes named "Type" with "Escaped"
+// If it didn't, we could get rid of this and just use {{.Name}} in the template
+func (ura updateRequestAttribute) SetModelMethod() string {
+	if ura.Name() == "Type" {
+		return "TypeEscaped"
+	} else {
+		return ura.Name()
+	}
+}
 
 // If this attribute is an object, returns the name of the object that is is.
 // This can be slightly (grammatically) different from the name of the attribute.
@@ -135,6 +144,7 @@ func (ura updateRequestAttribute) ObjectOf() string {
 	return upperFirst(ura.Property.ObjectOf.Title)
 }
 
+// Generates the Terraform Model name of the given attribute
 func (ura updateRequestAttribute) TfModelName() string {
 	return ura.UpdateRequest.BlockName.LowerCamel() + ura.ObjectOf()
 }
@@ -162,10 +172,3 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 	return newAttributes
 }
 
-func (ura updateRequestAttribute) SetModelMethod() string {
-	if ura.Name() == "Type" {
-		return "TypeEscaped"
-	} else {
-		return ura.Name()
-	}
-}

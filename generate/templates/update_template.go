@@ -130,29 +130,29 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- block "generate_update" .Attributes}}
 	{{- range .}}
-	{{- if eq .AttributeType "UpdateStringAttribute"}}
+	{{- if eq .Type "UpdateStringAttribute"}}
 	{{ template "UpdateStringAttribute" .}}
-	{{- else if eq .AttributeType "UpdateStringEnumAttribute"}}
+	{{- else if eq .Type "UpdateStringEnumAttribute"}}
 	{{ template "UpdateStringEnumAttribute" .}}
-	{{- else if eq .AttributeType "UpdateStringTimeAttribute"}}
+	{{- else if eq .Type "UpdateStringTimeAttribute"}}
 	{{ template "UpdateStringTimeAttribute" .}}
-	{{- else if eq .AttributeType "UpdateStringUuidAttribute"}}
+	{{- else if eq .Type "UpdateStringUuidAttribute"}}
 	{{ template "UpdateStringUuidAttribute" .}}
-	{{- else if eq .AttributeType "UpdateStringBase64UrlAttribute"}}
+	{{- else if eq .Type "UpdateStringBase64UrlAttribute"}}
 	{{ template "UpdateStringBase64UrlAttribute" .}}
-	{{- else if eq .AttributeType "UpdateInt64Attribute"}}
+	{{- else if eq .Type "UpdateInt64Attribute"}}
 	{{ template "UpdateInt64Attribute" .}}
-	{{- else if eq .AttributeType "UpdateInt32Attribute"}}
+	{{- else if eq .Type "UpdateInt32Attribute"}}
 	{{ template "UpdateInt32Attribute" .}}
-	{{- else if eq .AttributeType "UpdateBoolAttribute"}}
+	{{- else if eq .Type "UpdateBoolAttribute"}}
 	{{ template "UpdateBoolAttribute" .}}
-	{{- else if eq .AttributeType "UpdateArrayStringAttribute"}}
+	{{- else if eq .Type "UpdateArrayStringAttribute"}}
 	{{ template "UpdateArrayStringAttribute" .}}
-	{{- else if eq .AttributeType "UpdateArrayUuidAttribute"}}
+	{{- else if eq .Type "UpdateArrayUuidAttribute"}}
 	{{ template "UpdateArrayUuidAttribute" .}}
-	{{ else if eq .AttributeType "UpdateArrayObjectAttribute" }}
+	{{ else if eq .Type "UpdateArrayObjectAttribute" }}
 	{{ template "UpdateArrayObjectAttribute" . }}
-	{{- else if eq .AttributeType "UpdateObjectAttribute"}}
+	{{- else if eq .Type "UpdateObjectAttribute"}}
 	{{ template "UpdateObjectAttribute" .}}
 	{{- end}}
 	{{- end}}
