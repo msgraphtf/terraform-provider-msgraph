@@ -31,9 +31,9 @@ func (m Model) Definitions() []ModelDefinition {
 	for _, property := range m.OpenAPISchema.Properties {
 
 		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
+		if slices.Contains(m.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		var nestedDefinition []ModelDefinition
 
@@ -91,9 +91,9 @@ func (md ModelDefinition) ModelFields() []ModelField {
 	for _, property := range md.OpenAPISchema.Properties {
 
 		// Skip excluded properties
-		//if slices.Contains(augment.ExcludedProperties, property.Name) {
-		//	continue
-		//}
+		if slices.Contains(md.Model.Augment.ExcludedProperties, property.Name) {
+			continue
+		}
 
 		newModelField := ModelField{
 			Definition: &md,

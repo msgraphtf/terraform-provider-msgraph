@@ -18,23 +18,16 @@ func (m groupsModel) AttributeTypes() map[string]attr.Type {
 type groupsGroupModel struct {
 	Id                            types.String `tfsdk:"id"`
 	DeletedDateTime               types.String `tfsdk:"deleted_date_time"`
-	AllowExternalSenders          types.Bool   `tfsdk:"allow_external_senders"`
 	AssignedLabels                types.List   `tfsdk:"assigned_labels"`
 	AssignedLicenses              types.List   `tfsdk:"assigned_licenses"`
-	AutoSubscribeNewMembers       types.Bool   `tfsdk:"auto_subscribe_new_members"`
 	Classification                types.String `tfsdk:"classification"`
 	CreatedDateTime               types.String `tfsdk:"created_date_time"`
 	Description                   types.String `tfsdk:"description"`
 	DisplayName                   types.String `tfsdk:"display_name"`
 	ExpirationDateTime            types.String `tfsdk:"expiration_date_time"`
 	GroupTypes                    types.List   `tfsdk:"group_types"`
-	HasMembersWithLicenseErrors   types.Bool   `tfsdk:"has_members_with_license_errors"`
-	HideFromAddressLists          types.Bool   `tfsdk:"hide_from_address_lists"`
-	HideFromOutlookClients        types.Bool   `tfsdk:"hide_from_outlook_clients"`
-	IsArchived                    types.Bool   `tfsdk:"is_archived"`
 	IsAssignableToRole            types.Bool   `tfsdk:"is_assignable_to_role"`
 	IsManagementRestricted        types.Bool   `tfsdk:"is_management_restricted"`
-	IsSubscribedByMail            types.Bool   `tfsdk:"is_subscribed_by_mail"`
 	LicenseProcessingState        types.Object `tfsdk:"license_processing_state"`
 	Mail                          types.String `tfsdk:"mail"`
 	MailEnabled                   types.Bool   `tfsdk:"mail_enabled"`
@@ -57,7 +50,6 @@ type groupsGroupModel struct {
 	ServiceProvisioningErrors     types.List   `tfsdk:"service_provisioning_errors"`
 	Theme                         types.String `tfsdk:"theme"`
 	UniqueName                    types.String `tfsdk:"unique_name"`
-	UnseenCount                   types.Int64  `tfsdk:"unseen_count"`
 	Visibility                    types.String `tfsdk:"visibility"`
 }
 
@@ -65,23 +57,16 @@ func (m groupsGroupModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"id":                               types.StringType,
 		"deleted_date_time":                types.StringType,
-		"allow_external_senders":           types.BoolType,
 		"assigned_labels":                  types.ListType{ElemType: types.ObjectType{AttrTypes: groupsAssignedLabelModel{}.AttributeTypes()}},
 		"assigned_licenses":                types.ListType{ElemType: types.ObjectType{AttrTypes: groupsAssignedLicenseModel{}.AttributeTypes()}},
-		"auto_subscribe_new_members":       types.BoolType,
 		"classification":                   types.StringType,
 		"created_date_time":                types.StringType,
 		"description":                      types.StringType,
 		"display_name":                     types.StringType,
 		"expiration_date_time":             types.StringType,
 		"group_types":                      types.ListType{ElemType: types.StringType},
-		"has_members_with_license_errors":  types.BoolType,
-		"hide_from_address_lists":          types.BoolType,
-		"hide_from_outlook_clients":        types.BoolType,
-		"is_archived":                      types.BoolType,
 		"is_assignable_to_role":            types.BoolType,
 		"is_management_restricted":         types.BoolType,
-		"is_subscribed_by_mail":            types.BoolType,
 		"license_processing_state":         types.ObjectType{AttrTypes: groupsLicenseProcessingStateModel{}.AttributeTypes()},
 		"mail":                             types.StringType,
 		"mail_enabled":                     types.BoolType,
@@ -104,7 +89,6 @@ func (m groupsGroupModel) AttributeTypes() map[string]attr.Type {
 		"service_provisioning_errors":      types.ListType{ElemType: types.ObjectType{AttrTypes: groupsServiceProvisioningErrorModel{}.AttributeTypes()}},
 		"theme":                            types.StringType,
 		"unique_name":                      types.StringType,
-		"unseen_count":                     types.Int64Type,
 		"visibility":                       types.StringType,
 	}
 }

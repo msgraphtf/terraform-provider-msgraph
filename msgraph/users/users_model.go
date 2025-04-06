@@ -18,13 +18,11 @@ func (m usersModel) AttributeTypes() map[string]attr.Type {
 type usersUserModel struct {
 	Id                              types.String `tfsdk:"id"`
 	DeletedDateTime                 types.String `tfsdk:"deleted_date_time"`
-	AboutMe                         types.String `tfsdk:"about_me"`
 	AccountEnabled                  types.Bool   `tfsdk:"account_enabled"`
 	AgeGroup                        types.String `tfsdk:"age_group"`
 	AssignedLicenses                types.List   `tfsdk:"assigned_licenses"`
 	AssignedPlans                   types.List   `tfsdk:"assigned_plans"`
 	AuthorizationInfo               types.Object `tfsdk:"authorization_info"`
-	Birthday                        types.String `tfsdk:"birthday"`
 	BusinessPhones                  types.List   `tfsdk:"business_phones"`
 	City                            types.String `tfsdk:"city"`
 	CompanyName                     types.String `tfsdk:"company_name"`
@@ -34,7 +32,6 @@ type usersUserModel struct {
 	CreationType                    types.String `tfsdk:"creation_type"`
 	CustomSecurityAttributes        types.Object `tfsdk:"custom_security_attributes"`
 	Department                      types.String `tfsdk:"department"`
-	DeviceEnrollmentLimit           types.Int64  `tfsdk:"device_enrollment_limit"`
 	DisplayName                     types.String `tfsdk:"display_name"`
 	EmployeeHireDate                types.String `tfsdk:"employee_hire_date"`
 	EmployeeId                      types.String `tfsdk:"employee_id"`
@@ -45,10 +42,8 @@ type usersUserModel struct {
 	ExternalUserStateChangeDateTime types.String `tfsdk:"external_user_state_change_date_time"`
 	FaxNumber                       types.String `tfsdk:"fax_number"`
 	GivenName                       types.String `tfsdk:"given_name"`
-	HireDate                        types.String `tfsdk:"hire_date"`
 	Identities                      types.List   `tfsdk:"identities"`
 	ImAddresses                     types.List   `tfsdk:"im_addresses"`
-	Interests                       types.List   `tfsdk:"interests"`
 	IsManagementRestricted          types.Bool   `tfsdk:"is_management_restricted"`
 	IsResourceAccount               types.Bool   `tfsdk:"is_resource_account"`
 	JobTitle                        types.String `tfsdk:"job_title"`
@@ -57,9 +52,7 @@ type usersUserModel struct {
 	LicenseAssignmentStates         types.List   `tfsdk:"license_assignment_states"`
 	Mail                            types.String `tfsdk:"mail"`
 	MailNickname                    types.String `tfsdk:"mail_nickname"`
-	MailboxSettings                 types.Object `tfsdk:"mailbox_settings"`
 	MobilePhone                     types.String `tfsdk:"mobile_phone"`
-	MySite                          types.String `tfsdk:"my_site"`
 	OfficeLocation                  types.String `tfsdk:"office_location"`
 	OnPremisesDistinguishedName     types.String `tfsdk:"on_premises_distinguished_name"`
 	OnPremisesDomainName            types.String `tfsdk:"on_premises_domain_name"`
@@ -74,22 +67,16 @@ type usersUserModel struct {
 	OtherMails                      types.List   `tfsdk:"other_mails"`
 	PasswordPolicies                types.String `tfsdk:"password_policies"`
 	PasswordProfile                 types.Object `tfsdk:"password_profile"`
-	PastProjects                    types.List   `tfsdk:"past_projects"`
 	PostalCode                      types.String `tfsdk:"postal_code"`
 	PreferredDataLocation           types.String `tfsdk:"preferred_data_location"`
 	PreferredLanguage               types.String `tfsdk:"preferred_language"`
-	PreferredName                   types.String `tfsdk:"preferred_name"`
-	Print                           types.Object `tfsdk:"print"`
 	ProvisionedPlans                types.List   `tfsdk:"provisioned_plans"`
 	ProxyAddresses                  types.List   `tfsdk:"proxy_addresses"`
-	Responsibilities                types.List   `tfsdk:"responsibilities"`
-	Schools                         types.List   `tfsdk:"schools"`
 	SecurityIdentifier              types.String `tfsdk:"security_identifier"`
 	ServiceProvisioningErrors       types.List   `tfsdk:"service_provisioning_errors"`
 	ShowInAddressList               types.Bool   `tfsdk:"show_in_address_list"`
 	SignInActivity                  types.Object `tfsdk:"sign_in_activity"`
 	SignInSessionsValidFromDateTime types.String `tfsdk:"sign_in_sessions_valid_from_date_time"`
-	Skills                          types.List   `tfsdk:"skills"`
 	State                           types.String `tfsdk:"state"`
 	StreetAddress                   types.String `tfsdk:"street_address"`
 	Surname                         types.String `tfsdk:"surname"`
@@ -102,13 +89,11 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"id":                                    types.StringType,
 		"deleted_date_time":                     types.StringType,
-		"about_me":                              types.StringType,
 		"account_enabled":                       types.BoolType,
 		"age_group":                             types.StringType,
 		"assigned_licenses":                     types.ListType{ElemType: types.ObjectType{AttrTypes: usersAssignedLicenseModel{}.AttributeTypes()}},
 		"assigned_plans":                        types.ListType{ElemType: types.ObjectType{AttrTypes: usersAssignedPlanModel{}.AttributeTypes()}},
 		"authorization_info":                    types.ObjectType{AttrTypes: usersAuthorizationInfoModel{}.AttributeTypes()},
-		"birthday":                              types.StringType,
 		"business_phones":                       types.ListType{ElemType: types.StringType},
 		"city":                                  types.StringType,
 		"company_name":                          types.StringType,
@@ -118,7 +103,6 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"creation_type":                         types.StringType,
 		"custom_security_attributes":            types.ObjectType{AttrTypes: usersCustomSecurityAttributeValueModel{}.AttributeTypes()},
 		"department":                            types.StringType,
-		"device_enrollment_limit":               types.Int64Type,
 		"display_name":                          types.StringType,
 		"employee_hire_date":                    types.StringType,
 		"employee_id":                           types.StringType,
@@ -129,10 +113,8 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"external_user_state_change_date_time":  types.StringType,
 		"fax_number":                            types.StringType,
 		"given_name":                            types.StringType,
-		"hire_date":                             types.StringType,
 		"identities":                            types.ListType{ElemType: types.ObjectType{AttrTypes: usersObjectIdentityModel{}.AttributeTypes()}},
 		"im_addresses":                          types.ListType{ElemType: types.StringType},
-		"interests":                             types.ListType{ElemType: types.StringType},
 		"is_management_restricted":              types.BoolType,
 		"is_resource_account":                   types.BoolType,
 		"job_title":                             types.StringType,
@@ -141,9 +123,7 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"license_assignment_states":             types.ListType{ElemType: types.ObjectType{AttrTypes: usersLicenseAssignmentStateModel{}.AttributeTypes()}},
 		"mail":                                  types.StringType,
 		"mail_nickname":                         types.StringType,
-		"mailbox_settings":                      types.ObjectType{AttrTypes: usersMailboxSettingsModel{}.AttributeTypes()},
 		"mobile_phone":                          types.StringType,
-		"my_site":                               types.StringType,
 		"office_location":                       types.StringType,
 		"on_premises_distinguished_name":        types.StringType,
 		"on_premises_domain_name":               types.StringType,
@@ -158,22 +138,16 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"other_mails":                           types.ListType{ElemType: types.StringType},
 		"password_policies":                     types.StringType,
 		"password_profile":                      types.ObjectType{AttrTypes: usersPasswordProfileModel{}.AttributeTypes()},
-		"past_projects":                         types.ListType{ElemType: types.StringType},
 		"postal_code":                           types.StringType,
 		"preferred_data_location":               types.StringType,
 		"preferred_language":                    types.StringType,
-		"preferred_name":                        types.StringType,
-		"print":                                 types.ObjectType{AttrTypes: usersUserPrintModel{}.AttributeTypes()},
 		"provisioned_plans":                     types.ListType{ElemType: types.ObjectType{AttrTypes: usersProvisionedPlanModel{}.AttributeTypes()}},
 		"proxy_addresses":                       types.ListType{ElemType: types.StringType},
-		"responsibilities":                      types.ListType{ElemType: types.StringType},
-		"schools":                               types.ListType{ElemType: types.StringType},
 		"security_identifier":                   types.StringType,
 		"service_provisioning_errors":           types.ListType{ElemType: types.ObjectType{AttrTypes: usersServiceProvisioningErrorModel{}.AttributeTypes()}},
 		"show_in_address_list":                  types.BoolType,
 		"sign_in_activity":                      types.ObjectType{AttrTypes: usersSignInActivityModel{}.AttributeTypes()},
 		"sign_in_sessions_valid_from_date_time": types.StringType,
-		"skills":                                types.ListType{ElemType: types.StringType},
 		"state":                                 types.StringType,
 		"street_address":                        types.StringType,
 		"surname":                               types.StringType,

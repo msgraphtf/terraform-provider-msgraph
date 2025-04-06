@@ -22,9 +22,7 @@ type userModel struct {
 	Country                         types.String `tfsdk:"country"`
 	CreatedDateTime                 types.String `tfsdk:"created_date_time"`
 	CreationType                    types.String `tfsdk:"creation_type"`
-	CustomSecurityAttributes        types.Object `tfsdk:"custom_security_attributes"`
 	Department                      types.String `tfsdk:"department"`
-	DeviceEnrollmentLimit           types.Int64  `tfsdk:"device_enrollment_limit"`
 	DisplayName                     types.String `tfsdk:"display_name"`
 	EmployeeHireDate                types.String `tfsdk:"employee_hire_date"`
 	EmployeeId                      types.String `tfsdk:"employee_id"`
@@ -47,7 +45,6 @@ type userModel struct {
 	LicenseAssignmentStates         types.List   `tfsdk:"license_assignment_states"`
 	Mail                            types.String `tfsdk:"mail"`
 	MailNickname                    types.String `tfsdk:"mail_nickname"`
-	MailboxSettings                 types.Object `tfsdk:"mailbox_settings"`
 	MobilePhone                     types.String `tfsdk:"mobile_phone"`
 	MySite                          types.String `tfsdk:"my_site"`
 	OfficeLocation                  types.String `tfsdk:"office_location"`
@@ -69,7 +66,6 @@ type userModel struct {
 	PreferredDataLocation           types.String `tfsdk:"preferred_data_location"`
 	PreferredLanguage               types.String `tfsdk:"preferred_language"`
 	PreferredName                   types.String `tfsdk:"preferred_name"`
-	Print                           types.Object `tfsdk:"print"`
 	ProvisionedPlans                types.List   `tfsdk:"provisioned_plans"`
 	ProxyAddresses                  types.List   `tfsdk:"proxy_addresses"`
 	Responsibilities                types.List   `tfsdk:"responsibilities"`
@@ -106,9 +102,7 @@ func (m userModel) AttributeTypes() map[string]attr.Type {
 		"country":                               types.StringType,
 		"created_date_time":                     types.StringType,
 		"creation_type":                         types.StringType,
-		"custom_security_attributes":            types.ObjectType{AttrTypes: userCustomSecurityAttributeValueModel{}.AttributeTypes()},
 		"department":                            types.StringType,
-		"device_enrollment_limit":               types.Int64Type,
 		"display_name":                          types.StringType,
 		"employee_hire_date":                    types.StringType,
 		"employee_id":                           types.StringType,
@@ -131,7 +125,6 @@ func (m userModel) AttributeTypes() map[string]attr.Type {
 		"license_assignment_states":             types.ListType{ElemType: types.ObjectType{AttrTypes: userLicenseAssignmentStateModel{}.AttributeTypes()}},
 		"mail":                                  types.StringType,
 		"mail_nickname":                         types.StringType,
-		"mailbox_settings":                      types.ObjectType{AttrTypes: userMailboxSettingsModel{}.AttributeTypes()},
 		"mobile_phone":                          types.StringType,
 		"my_site":                               types.StringType,
 		"office_location":                       types.StringType,
@@ -153,7 +146,6 @@ func (m userModel) AttributeTypes() map[string]attr.Type {
 		"preferred_data_location":               types.StringType,
 		"preferred_language":                    types.StringType,
 		"preferred_name":                        types.StringType,
-		"print":                                 types.ObjectType{AttrTypes: userUserPrintModel{}.AttributeTypes()},
 		"provisioned_plans":                     types.ListType{ElemType: types.ObjectType{AttrTypes: userProvisionedPlanModel{}.AttributeTypes()}},
 		"proxy_addresses":                       types.ListType{ElemType: types.StringType},
 		"responsibilities":                      types.ListType{ElemType: types.StringType},
@@ -211,13 +203,6 @@ func (m userAuthorizationInfoModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type userCustomSecurityAttributeValueModel struct {
-}
-
-func (m userCustomSecurityAttributeValueModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
-}
-
 type userEmployeeOrgDataModel struct {
 	CostCenter types.String `tfsdk:"cost_center"`
 	Division   types.String `tfsdk:"division"`
@@ -261,102 +246,6 @@ func (m userLicenseAssignmentStateModel) AttributeTypes() map[string]attr.Type {
 		"last_updated_date_time": types.StringType,
 		"sku_id":                 types.StringType,
 		"state":                  types.StringType,
-	}
-}
-
-type userMailboxSettingsModel struct {
-	ArchiveFolder                         types.String `tfsdk:"archive_folder"`
-	AutomaticRepliesSetting               types.Object `tfsdk:"automatic_replies_setting"`
-	DateFormat                            types.String `tfsdk:"date_format"`
-	DelegateMeetingMessageDeliveryOptions types.String `tfsdk:"delegate_meeting_message_delivery_options"`
-	Language                              types.Object `tfsdk:"language"`
-	TimeFormat                            types.String `tfsdk:"time_format"`
-	TimeZone                              types.String `tfsdk:"time_zone"`
-	UserPurpose                           types.String `tfsdk:"user_purpose"`
-	WorkingHours                          types.Object `tfsdk:"working_hours"`
-}
-
-func (m userMailboxSettingsModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"archive_folder":                            types.StringType,
-		"automatic_replies_setting":                 types.ObjectType{AttrTypes: userAutomaticRepliesSettingModel{}.AttributeTypes()},
-		"date_format":                               types.StringType,
-		"delegate_meeting_message_delivery_options": types.StringType,
-		"language":                                  types.ObjectType{AttrTypes: userLocaleInfoModel{}.AttributeTypes()},
-		"time_format":                               types.StringType,
-		"time_zone":                                 types.StringType,
-		"user_purpose":                              types.StringType,
-		"working_hours":                             types.ObjectType{AttrTypes: userWorkingHoursModel{}.AttributeTypes()},
-	}
-}
-
-type userAutomaticRepliesSettingModel struct {
-	ExternalAudience       types.String `tfsdk:"external_audience"`
-	ExternalReplyMessage   types.String `tfsdk:"external_reply_message"`
-	InternalReplyMessage   types.String `tfsdk:"internal_reply_message"`
-	ScheduledEndDateTime   types.Object `tfsdk:"scheduled_end_date_time"`
-	ScheduledStartDateTime types.Object `tfsdk:"scheduled_start_date_time"`
-	Status                 types.String `tfsdk:"status"`
-}
-
-func (m userAutomaticRepliesSettingModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"external_audience":         types.StringType,
-		"external_reply_message":    types.StringType,
-		"internal_reply_message":    types.StringType,
-		"scheduled_end_date_time":   types.ObjectType{AttrTypes: userDateTimeTimeZoneModel{}.AttributeTypes()},
-		"scheduled_start_date_time": types.ObjectType{AttrTypes: userDateTimeTimeZoneModel{}.AttributeTypes()},
-		"status":                    types.StringType,
-	}
-}
-
-type userDateTimeTimeZoneModel struct {
-	DateTime types.String `tfsdk:"date_time"`
-	TimeZone types.String `tfsdk:"time_zone"`
-}
-
-func (m userDateTimeTimeZoneModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"date_time": types.StringType,
-		"time_zone": types.StringType,
-	}
-}
-
-type userLocaleInfoModel struct {
-	DisplayName types.String `tfsdk:"display_name"`
-	Locale      types.String `tfsdk:"locale"`
-}
-
-func (m userLocaleInfoModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"display_name": types.StringType,
-		"locale":       types.StringType,
-	}
-}
-
-type userWorkingHoursModel struct {
-	DaysOfWeek types.List   `tfsdk:"days_of_week"`
-	EndTime    types.String `tfsdk:"end_time"`
-	StartTime  types.String `tfsdk:"start_time"`
-	TimeZone   types.Object `tfsdk:"time_zone"`
-}
-
-func (m userWorkingHoursModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"days_of_week": types.ListType{ElemType: types.StringType},
-		"end_time":     types.StringType,
-		"start_time":   types.StringType,
-		"time_zone":    types.ObjectType{AttrTypes: userTimeZoneBaseModel{}.AttributeTypes()},
-	}
-}
-
-type userTimeZoneBaseModel struct {
-	Name types.String `tfsdk:"name"`
-}
-
-func (m userTimeZoneBaseModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"name": types.StringType,
 	}
 }
 
@@ -426,13 +315,6 @@ func (m userPasswordProfileModel) AttributeTypes() map[string]attr.Type {
 		"force_change_password_next_sign_in_with_mfa": types.BoolType,
 		"password": types.StringType,
 	}
-}
-
-type userUserPrintModel struct {
-}
-
-func (m userUserPrintModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
 }
 
 type userProvisionedPlanModel struct {
