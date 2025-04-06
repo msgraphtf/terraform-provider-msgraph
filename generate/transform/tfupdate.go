@@ -144,6 +144,10 @@ func (ura updateRequestAttribute) PlanVar() string {
 	}
 }
 
+func (ura updateRequestAttribute) TfModelName() string {
+	return ura.UpdateRequest.BlockName.LowerCamel() + ura.ObjectOf()
+}
+
 func (ura updateRequestAttribute) StateVar() string {
 
 	if ura.Parent != nil {
@@ -186,10 +190,6 @@ func (ura updateRequestAttribute) NestedState() string {
 		return "tfState." + ura.Name()
 	}
 
-}
-
-func (ura updateRequestAttribute) ModelName() string {
-	return ura.UpdateRequest.BlockName.LowerCamel() + upperFirst(ura.Property.ObjectOf.Title) + "Model"
 }
 
 func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
