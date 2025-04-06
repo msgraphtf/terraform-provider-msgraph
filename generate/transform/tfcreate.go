@@ -141,16 +141,14 @@ func (cra createRequestAttribute) Type() string {
 }
 
 // Generates the name of the parent attribute
-// Returns empty string nothing if the attribute has no parent
-// Used to generate the variable name for the terraform plan
+// When the attribute is a child (of either an Object or Array), it will return the ObjectOf
+// When it is not a child, it will return the block name
 func (cra createRequestAttribute) ParentName() string {
-
 	if cra.Parent != nil {
 		return cra.Parent.ObjectOf()
 	} else {
 		return cra.CreateRequest.BlockName.UpperCamel()
 	}
-
 }
 
 // Infuriatingly, Kiota (the tool that generates msgraph-sdk-go) suffixes any attributes named "Type" with "Escaped"
