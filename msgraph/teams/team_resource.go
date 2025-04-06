@@ -982,55 +982,55 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !tfPlan.FunSettings.Equal(tfState.FunSettings) {
 		requestBodyFunSettings := models.NewTeamFunSettings()
-		requestBodyFunSettingsModel := teamTeamFunSettingsModel{}
-		tfPlan.FunSettings.As(ctx, &requestBodyFunSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlanrequestBodyFunSettings := teamTeamFunSettingsModel{}
+		tfPlan.FunSettings.As(ctx, &tfPlanrequestBodyFunSettings, basetypes.ObjectAsOptions{})
 		requestBodyFunSettingsState := teamTeamFunSettingsModel{}
 		tfState.FunSettings.As(ctx, &requestBodyFunSettingsState, basetypes.ObjectAsOptions{})
 
-		if !requestBodyFunSettingsModel.AllowCustomMemes.Equal(requestBodyFunSettingsState.AllowCustomMemes) {
-			tfPlanAllowCustomMemes := requestBodyFunSettingsModel.AllowCustomMemes.ValueBool()
+		if !tfPlanrequestBodyFunSettings.AllowCustomMemes.Equal(requestBodyFunSettingsState.AllowCustomMemes) {
+			tfPlanAllowCustomMemes := tfPlanrequestBodyFunSettings.AllowCustomMemes.ValueBool()
 			requestBodyFunSettings.SetAllowCustomMemes(&tfPlanAllowCustomMemes)
 		}
 
-		if !requestBodyFunSettingsModel.AllowGiphy.Equal(requestBodyFunSettingsState.AllowGiphy) {
-			tfPlanAllowGiphy := requestBodyFunSettingsModel.AllowGiphy.ValueBool()
+		if !tfPlanrequestBodyFunSettings.AllowGiphy.Equal(requestBodyFunSettingsState.AllowGiphy) {
+			tfPlanAllowGiphy := tfPlanrequestBodyFunSettings.AllowGiphy.ValueBool()
 			requestBodyFunSettings.SetAllowGiphy(&tfPlanAllowGiphy)
 		}
 
-		if !requestBodyFunSettingsModel.AllowStickersAndMemes.Equal(requestBodyFunSettingsState.AllowStickersAndMemes) {
-			tfPlanAllowStickersAndMemes := requestBodyFunSettingsModel.AllowStickersAndMemes.ValueBool()
+		if !tfPlanrequestBodyFunSettings.AllowStickersAndMemes.Equal(requestBodyFunSettingsState.AllowStickersAndMemes) {
+			tfPlanAllowStickersAndMemes := tfPlanrequestBodyFunSettings.AllowStickersAndMemes.ValueBool()
 			requestBodyFunSettings.SetAllowStickersAndMemes(&tfPlanAllowStickersAndMemes)
 		}
 
-		if !requestBodyFunSettingsModel.GiphyContentRating.Equal(requestBodyFunSettingsState.GiphyContentRating) {
-			tfPlanGiphyContentRating := requestBodyFunSettingsModel.GiphyContentRating.ValueString()
+		if !tfPlanrequestBodyFunSettings.GiphyContentRating.Equal(requestBodyFunSettingsState.GiphyContentRating) {
+			tfPlanGiphyContentRating := tfPlanrequestBodyFunSettings.GiphyContentRating.ValueString()
 			parsedGiphyContentRating, _ := models.ParseGiphyRatingType(tfPlanGiphyContentRating)
 			assertedGiphyContentRating := parsedGiphyContentRating.(models.GiphyRatingType)
 			requestBodyFunSettings.SetGiphyContentRating(&assertedGiphyContentRating)
 		}
 		requestBody.SetFunSettings(requestBodyFunSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, requestBodyFunSettingsModel.AttributeTypes(), requestBodyFunSettingsModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyFunSettings.AttributeTypes(), tfPlanrequestBodyFunSettings)
 		tfPlan.FunSettings = objectValue
 	}
 
 	if !tfPlan.GuestSettings.Equal(tfState.GuestSettings) {
 		requestBodyGuestSettings := models.NewTeamGuestSettings()
-		requestBodyGuestSettingsModel := teamTeamGuestSettingsModel{}
-		tfPlan.GuestSettings.As(ctx, &requestBodyGuestSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlanrequestBodyGuestSettings := teamTeamGuestSettingsModel{}
+		tfPlan.GuestSettings.As(ctx, &tfPlanrequestBodyGuestSettings, basetypes.ObjectAsOptions{})
 		requestBodyGuestSettingsState := teamTeamGuestSettingsModel{}
 		tfState.GuestSettings.As(ctx, &requestBodyGuestSettingsState, basetypes.ObjectAsOptions{})
 
-		if !requestBodyGuestSettingsModel.AllowCreateUpdateChannels.Equal(requestBodyGuestSettingsState.AllowCreateUpdateChannels) {
-			tfPlanAllowCreateUpdateChannels := requestBodyGuestSettingsModel.AllowCreateUpdateChannels.ValueBool()
+		if !tfPlanrequestBodyGuestSettings.AllowCreateUpdateChannels.Equal(requestBodyGuestSettingsState.AllowCreateUpdateChannels) {
+			tfPlanAllowCreateUpdateChannels := tfPlanrequestBodyGuestSettings.AllowCreateUpdateChannels.ValueBool()
 			requestBodyGuestSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		}
 
-		if !requestBodyGuestSettingsModel.AllowDeleteChannels.Equal(requestBodyGuestSettingsState.AllowDeleteChannels) {
-			tfPlanAllowDeleteChannels := requestBodyGuestSettingsModel.AllowDeleteChannels.ValueBool()
+		if !tfPlanrequestBodyGuestSettings.AllowDeleteChannels.Equal(requestBodyGuestSettingsState.AllowDeleteChannels) {
+			tfPlanAllowDeleteChannels := tfPlanrequestBodyGuestSettings.AllowDeleteChannels.ValueBool()
 			requestBodyGuestSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		}
 		requestBody.SetGuestSettings(requestBodyGuestSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, requestBodyGuestSettingsModel.AttributeTypes(), requestBodyGuestSettingsModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyGuestSettings.AttributeTypes(), tfPlanrequestBodyGuestSettings)
 		tfPlan.GuestSettings = objectValue
 	}
 
@@ -1046,78 +1046,78 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !tfPlan.MemberSettings.Equal(tfState.MemberSettings) {
 		requestBodyMemberSettings := models.NewTeamMemberSettings()
-		requestBodyMemberSettingsModel := teamTeamMemberSettingsModel{}
-		tfPlan.MemberSettings.As(ctx, &requestBodyMemberSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlanrequestBodyMemberSettings := teamTeamMemberSettingsModel{}
+		tfPlan.MemberSettings.As(ctx, &tfPlanrequestBodyMemberSettings, basetypes.ObjectAsOptions{})
 		requestBodyMemberSettingsState := teamTeamMemberSettingsModel{}
 		tfState.MemberSettings.As(ctx, &requestBodyMemberSettingsState, basetypes.ObjectAsOptions{})
 
-		if !requestBodyMemberSettingsModel.AllowAddRemoveApps.Equal(requestBodyMemberSettingsState.AllowAddRemoveApps) {
-			tfPlanAllowAddRemoveApps := requestBodyMemberSettingsModel.AllowAddRemoveApps.ValueBool()
+		if !tfPlanrequestBodyMemberSettings.AllowAddRemoveApps.Equal(requestBodyMemberSettingsState.AllowAddRemoveApps) {
+			tfPlanAllowAddRemoveApps := tfPlanrequestBodyMemberSettings.AllowAddRemoveApps.ValueBool()
 			requestBodyMemberSettings.SetAllowAddRemoveApps(&tfPlanAllowAddRemoveApps)
 		}
 
-		if !requestBodyMemberSettingsModel.AllowCreatePrivateChannels.Equal(requestBodyMemberSettingsState.AllowCreatePrivateChannels) {
-			tfPlanAllowCreatePrivateChannels := requestBodyMemberSettingsModel.AllowCreatePrivateChannels.ValueBool()
+		if !tfPlanrequestBodyMemberSettings.AllowCreatePrivateChannels.Equal(requestBodyMemberSettingsState.AllowCreatePrivateChannels) {
+			tfPlanAllowCreatePrivateChannels := tfPlanrequestBodyMemberSettings.AllowCreatePrivateChannels.ValueBool()
 			requestBodyMemberSettings.SetAllowCreatePrivateChannels(&tfPlanAllowCreatePrivateChannels)
 		}
 
-		if !requestBodyMemberSettingsModel.AllowCreateUpdateChannels.Equal(requestBodyMemberSettingsState.AllowCreateUpdateChannels) {
-			tfPlanAllowCreateUpdateChannels := requestBodyMemberSettingsModel.AllowCreateUpdateChannels.ValueBool()
+		if !tfPlanrequestBodyMemberSettings.AllowCreateUpdateChannels.Equal(requestBodyMemberSettingsState.AllowCreateUpdateChannels) {
+			tfPlanAllowCreateUpdateChannels := tfPlanrequestBodyMemberSettings.AllowCreateUpdateChannels.ValueBool()
 			requestBodyMemberSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		}
 
-		if !requestBodyMemberSettingsModel.AllowCreateUpdateRemoveConnectors.Equal(requestBodyMemberSettingsState.AllowCreateUpdateRemoveConnectors) {
-			tfPlanAllowCreateUpdateRemoveConnectors := requestBodyMemberSettingsModel.AllowCreateUpdateRemoveConnectors.ValueBool()
+		if !tfPlanrequestBodyMemberSettings.AllowCreateUpdateRemoveConnectors.Equal(requestBodyMemberSettingsState.AllowCreateUpdateRemoveConnectors) {
+			tfPlanAllowCreateUpdateRemoveConnectors := tfPlanrequestBodyMemberSettings.AllowCreateUpdateRemoveConnectors.ValueBool()
 			requestBodyMemberSettings.SetAllowCreateUpdateRemoveConnectors(&tfPlanAllowCreateUpdateRemoveConnectors)
 		}
 
-		if !requestBodyMemberSettingsModel.AllowCreateUpdateRemoveTabs.Equal(requestBodyMemberSettingsState.AllowCreateUpdateRemoveTabs) {
-			tfPlanAllowCreateUpdateRemoveTabs := requestBodyMemberSettingsModel.AllowCreateUpdateRemoveTabs.ValueBool()
+		if !tfPlanrequestBodyMemberSettings.AllowCreateUpdateRemoveTabs.Equal(requestBodyMemberSettingsState.AllowCreateUpdateRemoveTabs) {
+			tfPlanAllowCreateUpdateRemoveTabs := tfPlanrequestBodyMemberSettings.AllowCreateUpdateRemoveTabs.ValueBool()
 			requestBodyMemberSettings.SetAllowCreateUpdateRemoveTabs(&tfPlanAllowCreateUpdateRemoveTabs)
 		}
 
-		if !requestBodyMemberSettingsModel.AllowDeleteChannels.Equal(requestBodyMemberSettingsState.AllowDeleteChannels) {
-			tfPlanAllowDeleteChannels := requestBodyMemberSettingsModel.AllowDeleteChannels.ValueBool()
+		if !tfPlanrequestBodyMemberSettings.AllowDeleteChannels.Equal(requestBodyMemberSettingsState.AllowDeleteChannels) {
+			tfPlanAllowDeleteChannels := tfPlanrequestBodyMemberSettings.AllowDeleteChannels.ValueBool()
 			requestBodyMemberSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		}
 		requestBody.SetMemberSettings(requestBodyMemberSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, requestBodyMemberSettingsModel.AttributeTypes(), requestBodyMemberSettingsModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyMemberSettings.AttributeTypes(), tfPlanrequestBodyMemberSettings)
 		tfPlan.MemberSettings = objectValue
 	}
 
 	if !tfPlan.MessagingSettings.Equal(tfState.MessagingSettings) {
 		requestBodyMessagingSettings := models.NewTeamMessagingSettings()
-		requestBodyMessagingSettingsModel := teamTeamMessagingSettingsModel{}
-		tfPlan.MessagingSettings.As(ctx, &requestBodyMessagingSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlanrequestBodyMessagingSettings := teamTeamMessagingSettingsModel{}
+		tfPlan.MessagingSettings.As(ctx, &tfPlanrequestBodyMessagingSettings, basetypes.ObjectAsOptions{})
 		requestBodyMessagingSettingsState := teamTeamMessagingSettingsModel{}
 		tfState.MessagingSettings.As(ctx, &requestBodyMessagingSettingsState, basetypes.ObjectAsOptions{})
 
-		if !requestBodyMessagingSettingsModel.AllowChannelMentions.Equal(requestBodyMessagingSettingsState.AllowChannelMentions) {
-			tfPlanAllowChannelMentions := requestBodyMessagingSettingsModel.AllowChannelMentions.ValueBool()
+		if !tfPlanrequestBodyMessagingSettings.AllowChannelMentions.Equal(requestBodyMessagingSettingsState.AllowChannelMentions) {
+			tfPlanAllowChannelMentions := tfPlanrequestBodyMessagingSettings.AllowChannelMentions.ValueBool()
 			requestBodyMessagingSettings.SetAllowChannelMentions(&tfPlanAllowChannelMentions)
 		}
 
-		if !requestBodyMessagingSettingsModel.AllowOwnerDeleteMessages.Equal(requestBodyMessagingSettingsState.AllowOwnerDeleteMessages) {
-			tfPlanAllowOwnerDeleteMessages := requestBodyMessagingSettingsModel.AllowOwnerDeleteMessages.ValueBool()
+		if !tfPlanrequestBodyMessagingSettings.AllowOwnerDeleteMessages.Equal(requestBodyMessagingSettingsState.AllowOwnerDeleteMessages) {
+			tfPlanAllowOwnerDeleteMessages := tfPlanrequestBodyMessagingSettings.AllowOwnerDeleteMessages.ValueBool()
 			requestBodyMessagingSettings.SetAllowOwnerDeleteMessages(&tfPlanAllowOwnerDeleteMessages)
 		}
 
-		if !requestBodyMessagingSettingsModel.AllowTeamMentions.Equal(requestBodyMessagingSettingsState.AllowTeamMentions) {
-			tfPlanAllowTeamMentions := requestBodyMessagingSettingsModel.AllowTeamMentions.ValueBool()
+		if !tfPlanrequestBodyMessagingSettings.AllowTeamMentions.Equal(requestBodyMessagingSettingsState.AllowTeamMentions) {
+			tfPlanAllowTeamMentions := tfPlanrequestBodyMessagingSettings.AllowTeamMentions.ValueBool()
 			requestBodyMessagingSettings.SetAllowTeamMentions(&tfPlanAllowTeamMentions)
 		}
 
-		if !requestBodyMessagingSettingsModel.AllowUserDeleteMessages.Equal(requestBodyMessagingSettingsState.AllowUserDeleteMessages) {
-			tfPlanAllowUserDeleteMessages := requestBodyMessagingSettingsModel.AllowUserDeleteMessages.ValueBool()
+		if !tfPlanrequestBodyMessagingSettings.AllowUserDeleteMessages.Equal(requestBodyMessagingSettingsState.AllowUserDeleteMessages) {
+			tfPlanAllowUserDeleteMessages := tfPlanrequestBodyMessagingSettings.AllowUserDeleteMessages.ValueBool()
 			requestBodyMessagingSettings.SetAllowUserDeleteMessages(&tfPlanAllowUserDeleteMessages)
 		}
 
-		if !requestBodyMessagingSettingsModel.AllowUserEditMessages.Equal(requestBodyMessagingSettingsState.AllowUserEditMessages) {
-			tfPlanAllowUserEditMessages := requestBodyMessagingSettingsModel.AllowUserEditMessages.ValueBool()
+		if !tfPlanrequestBodyMessagingSettings.AllowUserEditMessages.Equal(requestBodyMessagingSettingsState.AllowUserEditMessages) {
+			tfPlanAllowUserEditMessages := tfPlanrequestBodyMessagingSettings.AllowUserEditMessages.ValueBool()
 			requestBodyMessagingSettings.SetAllowUserEditMessages(&tfPlanAllowUserEditMessages)
 		}
 		requestBody.SetMessagingSettings(requestBodyMessagingSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, requestBodyMessagingSettingsModel.AttributeTypes(), requestBodyMessagingSettingsModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyMessagingSettings.AttributeTypes(), tfPlanrequestBodyMessagingSettings)
 		tfPlan.MessagingSettings = objectValue
 	}
 
@@ -1130,13 +1130,13 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	if !tfPlan.Summary.Equal(tfState.Summary) {
 		requestBodySummary := models.NewTeamSummary()
-		requestBodySummaryModel := teamTeamSummaryModel{}
-		tfPlan.Summary.As(ctx, &requestBodySummaryModel, basetypes.ObjectAsOptions{})
+		tfPlanrequestBodySummary := teamTeamSummaryModel{}
+		tfPlan.Summary.As(ctx, &tfPlanrequestBodySummary, basetypes.ObjectAsOptions{})
 		requestBodySummaryState := teamTeamSummaryModel{}
 		tfState.Summary.As(ctx, &requestBodySummaryState, basetypes.ObjectAsOptions{})
 
 		requestBody.SetSummary(requestBodySummary)
-		objectValue, _ := types.ObjectValueFrom(ctx, requestBodySummaryModel.AttributeTypes(), requestBodySummaryModel)
+		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodySummary.AttributeTypes(), tfPlanrequestBodySummary)
 		tfPlan.Summary = objectValue
 	}
 

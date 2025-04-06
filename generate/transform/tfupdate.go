@@ -138,7 +138,7 @@ func (ura updateRequestAttribute) ObjectOf() string {
 func (ura updateRequestAttribute) PlanVar() string {
 
 	if ura.Parent != nil {
-		return ura.Parent.RequestBodyVar() + "Model"
+		return "tfPlan" + ura.Parent.RequestBodyVar()
 	} else {
 		return "tfPlan"
 	}
@@ -175,7 +175,7 @@ func (ura updateRequestAttribute) RequestBodyVar() string {
 func (ura updateRequestAttribute) NestedPlan() string {
 
 	if ura.Parent != nil {
-		return ura.Parent.RequestBodyVar() + "Model." + ura.Name()
+		return "tfPlan" + ura.Parent.RequestBodyVar() + "." + ura.Name()
 	} else {
 		return "tfPlan." + ura.Name()
 	}
@@ -228,7 +228,7 @@ func (ura updateRequestAttribute) ParentRequestBodyVar() string {
 func (ura updateRequestAttribute) ParentPlanVar() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "Model." + ura.Name()
+		return "tfPlan" + ura.Parent.RequestBodyVar() + "." + ura.Name()
 	} else {
 		return "tfPlan." + ura.Name()
 	}

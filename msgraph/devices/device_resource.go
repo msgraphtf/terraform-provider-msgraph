@@ -981,18 +981,18 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		var tfPlanAlternativeSecurityIds []models.AlternativeSecurityIdable
 		for k, i := range tfPlan.AlternativeSecurityIds.Elements() {
 			requestBodyAlternativeSecurityIds := models.NewAlternativeSecurityId()
-			requestBodyAlternativeSecurityIdsModel := deviceAlternativeSecurityIdModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &requestBodyAlternativeSecurityIdsModel)
+			tfPlanrequestBodyAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanrequestBodyAlternativeSecurityIds)
 			requestBodyAlternativeSecurityIdsState := deviceAlternativeSecurityIdModel{}
-			types.ListValueFrom(ctx, tfState.AlternativeSecurityIds.Elements()[k].Type(ctx), &requestBodyAlternativeSecurityIdsModel)
+			types.ListValueFrom(ctx, tfState.AlternativeSecurityIds.Elements()[k].Type(ctx), &tfPlanrequestBodyAlternativeSecurityIds)
 
-			if !requestBodyAlternativeSecurityIdsModel.IdentityProvider.Equal(requestBodyAlternativeSecurityIdsState.IdentityProvider) {
-				tfPlanIdentityProvider := requestBodyAlternativeSecurityIdsModel.IdentityProvider.ValueString()
+			if !tfPlanrequestBodyAlternativeSecurityIds.IdentityProvider.Equal(requestBodyAlternativeSecurityIdsState.IdentityProvider) {
+				tfPlanIdentityProvider := tfPlanrequestBodyAlternativeSecurityIds.IdentityProvider.ValueString()
 				requestBodyAlternativeSecurityIds.SetIdentityProvider(&tfPlanIdentityProvider)
 			}
 
-			if !requestBodyAlternativeSecurityIdsModel.Key.Equal(requestBodyAlternativeSecurityIdsState.Key) {
-				tfPlanKey := requestBodyAlternativeSecurityIdsModel.Key.ValueString()
+			if !tfPlanrequestBodyAlternativeSecurityIds.Key.Equal(requestBodyAlternativeSecurityIdsState.Key) {
+				tfPlanKey := tfPlanrequestBodyAlternativeSecurityIds.Key.ValueString()
 				requestBodyAlternativeSecurityIds.SetKey([]byte(tfPlanKey))
 			}
 		}
