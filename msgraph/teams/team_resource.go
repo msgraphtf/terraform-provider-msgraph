@@ -1009,8 +1009,7 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodyFunSettings.SetGiphyContentRating(&assertedGiphyContentRating)
 		}
 		requestBody.SetFunSettings(requestBodyFunSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyFunSettings.AttributeTypes(), tfPlanrequestBodyFunSettings)
-		tfPlan.FunSettings = objectValue
+		tfPlan.FunSettings, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyFunSettings.AttributeTypes(), tfPlanrequestBodyFunSettings)
 	}
 
 	if !tfPlan.GuestSettings.Equal(tfState.GuestSettings) {
@@ -1030,8 +1029,7 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodyGuestSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		}
 		requestBody.SetGuestSettings(requestBodyGuestSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyGuestSettings.AttributeTypes(), tfPlanrequestBodyGuestSettings)
-		tfPlan.GuestSettings = objectValue
+		tfPlan.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyGuestSettings.AttributeTypes(), tfPlanrequestBodyGuestSettings)
 	}
 
 	if !tfPlan.InternalId.Equal(tfState.InternalId) {
@@ -1081,8 +1079,7 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodyMemberSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		}
 		requestBody.SetMemberSettings(requestBodyMemberSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyMemberSettings.AttributeTypes(), tfPlanrequestBodyMemberSettings)
-		tfPlan.MemberSettings = objectValue
+		tfPlan.MemberSettings, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyMemberSettings.AttributeTypes(), tfPlanrequestBodyMemberSettings)
 	}
 
 	if !tfPlan.MessagingSettings.Equal(tfState.MessagingSettings) {
@@ -1117,8 +1114,7 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodyMessagingSettings.SetAllowUserEditMessages(&tfPlanAllowUserEditMessages)
 		}
 		requestBody.SetMessagingSettings(requestBodyMessagingSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyMessagingSettings.AttributeTypes(), tfPlanrequestBodyMessagingSettings)
-		tfPlan.MessagingSettings = objectValue
+		tfPlan.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyMessagingSettings.AttributeTypes(), tfPlanrequestBodyMessagingSettings)
 	}
 
 	if !tfPlan.Specialization.Equal(tfState.Specialization) {
@@ -1136,8 +1132,7 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		tfState.Summary.As(ctx, &tfStaterequestBodySummary, basetypes.ObjectAsOptions{})
 
 		requestBody.SetSummary(requestBodySummary)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodySummary.AttributeTypes(), tfPlanrequestBodySummary)
-		tfPlan.Summary = objectValue
+		tfPlan.Summary, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodySummary.AttributeTypes(), tfPlanrequestBodySummary)
 	}
 
 	if !tfPlan.TenantId.Equal(tfState.TenantId) {

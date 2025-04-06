@@ -2451,8 +2451,7 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 		tfState.CustomSecurityAttributes.As(ctx, &tfStaterequestBodyCustomSecurityAttributes, basetypes.ObjectAsOptions{})
 
 		requestBody.SetCustomSecurityAttributes(requestBodyCustomSecurityAttributes)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyCustomSecurityAttributes.AttributeTypes(), tfPlanrequestBodyCustomSecurityAttributes)
-		tfPlan.CustomSecurityAttributes = objectValue
+		tfPlan.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyCustomSecurityAttributes.AttributeTypes(), tfPlanrequestBodyCustomSecurityAttributes)
 	}
 
 	if !tfPlan.Description.Equal(tfState.Description) {
@@ -2507,8 +2506,7 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 			requestBodyInfo.SetTermsOfServiceUrl(&tfPlanTermsOfServiceUrl)
 		}
 		requestBody.SetInfo(requestBodyInfo)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyInfo.AttributeTypes(), tfPlanrequestBodyInfo)
-		tfPlan.Info = objectValue
+		tfPlan.Info, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyInfo.AttributeTypes(), tfPlanrequestBodyInfo)
 	}
 
 	if !tfPlan.KeyCredentials.Equal(tfState.KeyCredentials) {
@@ -2765,8 +2763,7 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 			requestBodySamlSingleSignOnSettings.SetRelayState(&tfPlanRelayState)
 		}
 		requestBody.SetSamlSingleSignOnSettings(requestBodySamlSingleSignOnSettings)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodySamlSingleSignOnSettings.AttributeTypes(), tfPlanrequestBodySamlSingleSignOnSettings)
-		tfPlan.SamlSingleSignOnSettings = objectValue
+		tfPlan.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodySamlSingleSignOnSettings.AttributeTypes(), tfPlanrequestBodySamlSingleSignOnSettings)
 	}
 
 	if !tfPlan.ServicePrincipalNames.Equal(tfState.ServicePrincipalNames) {
@@ -2824,8 +2821,7 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 			requestBodyVerifiedPublisher.SetVerifiedPublisherId(&tfPlanVerifiedPublisherId)
 		}
 		requestBody.SetVerifiedPublisher(requestBodyVerifiedPublisher)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyVerifiedPublisher.AttributeTypes(), tfPlanrequestBodyVerifiedPublisher)
-		tfPlan.VerifiedPublisher = objectValue
+		tfPlan.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyVerifiedPublisher.AttributeTypes(), tfPlanrequestBodyVerifiedPublisher)
 	}
 
 	// Update servicePrincipal

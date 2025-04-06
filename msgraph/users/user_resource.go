@@ -3432,8 +3432,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodyAuthorizationInfo.SetCertificateUserIds(stringArrayCertificateUserIds)
 		}
 		requestBody.SetAuthorizationInfo(requestBodyAuthorizationInfo)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyAuthorizationInfo.AttributeTypes(), tfPlanrequestBodyAuthorizationInfo)
-		tfPlan.AuthorizationInfo = objectValue
+		tfPlan.AuthorizationInfo, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyAuthorizationInfo.AttributeTypes(), tfPlanrequestBodyAuthorizationInfo)
 	}
 
 	if !tfPlan.Birthday.Equal(tfState.Birthday) {
@@ -3525,8 +3524,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodyEmployeeOrgData.SetDivision(&tfPlanDivision)
 		}
 		requestBody.SetEmployeeOrgData(requestBodyEmployeeOrgData)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyEmployeeOrgData.AttributeTypes(), tfPlanrequestBodyEmployeeOrgData)
-		tfPlan.EmployeeOrgData = objectValue
+		tfPlan.EmployeeOrgData, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyEmployeeOrgData.AttributeTypes(), tfPlanrequestBodyEmployeeOrgData)
 	}
 
 	if !tfPlan.EmployeeType.Equal(tfState.EmployeeType) {
@@ -3795,8 +3793,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodyOnPremisesExtensionAttributes.SetExtensionAttribute9(&tfPlanExtensionAttribute9)
 		}
 		requestBody.SetOnPremisesExtensionAttributes(requestBodyOnPremisesExtensionAttributes)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyOnPremisesExtensionAttributes.AttributeTypes(), tfPlanrequestBodyOnPremisesExtensionAttributes)
-		tfPlan.OnPremisesExtensionAttributes = objectValue
+		tfPlan.OnPremisesExtensionAttributes, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyOnPremisesExtensionAttributes.AttributeTypes(), tfPlanrequestBodyOnPremisesExtensionAttributes)
 	}
 
 	if !tfPlan.OnPremisesImmutableId.Equal(tfState.OnPremisesImmutableId) {
@@ -3898,8 +3895,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodyPasswordProfile.SetPassword(&tfPlanPassword)
 		}
 		requestBody.SetPasswordProfile(requestBodyPasswordProfile)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyPasswordProfile.AttributeTypes(), tfPlanrequestBodyPasswordProfile)
-		tfPlan.PasswordProfile = objectValue
+		tfPlan.PasswordProfile, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyPasswordProfile.AttributeTypes(), tfPlanrequestBodyPasswordProfile)
 	}
 
 	if !tfPlan.PastProjects.Equal(tfState.PastProjects) {
@@ -4059,8 +4055,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			requestBodySignInActivity.SetLastSuccessfulSignInRequestId(&tfPlanLastSuccessfulSignInRequestId)
 		}
 		requestBody.SetSignInActivity(requestBodySignInActivity)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodySignInActivity.AttributeTypes(), tfPlanrequestBodySignInActivity)
-		tfPlan.SignInActivity = objectValue
+		tfPlan.SignInActivity, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodySignInActivity.AttributeTypes(), tfPlanrequestBodySignInActivity)
 	}
 
 	if !tfPlan.SignInSessionsValidFromDateTime.Equal(tfState.SignInSessionsValidFromDateTime) {

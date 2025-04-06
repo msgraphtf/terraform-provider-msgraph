@@ -124,8 +124,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 		{{.NestedState}}.As(ctx, &tfState{{.RequestBodyVar}}, basetypes.ObjectAsOptions{})
 		{{template "generate_update" .NestedUpdate}}
 		{{.ParentRequestBodyVar}}.Set{{.Name}}(requestBody{{.Name}})
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlan{{.RequestBodyVar}}.AttributeTypes(), tfPlan{{.RequestBodyVar}})
-		{{.ParentPlanVar}} = objectValue
+		{{.ParentPlanVar}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.RequestBodyVar}}.AttributeTypes(), tfPlan{{.RequestBodyVar}})
 	}
 	{{- end}}
 

@@ -1452,8 +1452,7 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 			requestBodyLicenseProcessingState.SetState(&tfPlanState)
 		}
 		requestBody.SetLicenseProcessingState(requestBodyLicenseProcessingState)
-		objectValue, _ := types.ObjectValueFrom(ctx, tfPlanrequestBodyLicenseProcessingState.AttributeTypes(), tfPlanrequestBodyLicenseProcessingState)
-		tfPlan.LicenseProcessingState = objectValue
+		tfPlan.LicenseProcessingState, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyLicenseProcessingState.AttributeTypes(), tfPlanrequestBodyLicenseProcessingState)
 	}
 
 	if !tfPlan.Mail.Equal(tfState.Mail) {
