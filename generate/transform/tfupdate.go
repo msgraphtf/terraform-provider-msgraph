@@ -160,9 +160,9 @@ func (ura updateRequestAttribute) StateVar() string {
 func (ura updateRequestAttribute) RequestBodyVar() string {
 
 	if ura.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Property.Name
+		return "requestBody" + ura.Name()
 	} else if ura.AttributeType() == "UpdateArrayObjectAttribute" {
-		return ura.Property.Name
+		return "requestBody" + ura.Name()
 	} else if ura.Parent != nil {
 		return ura.Parent.RequestBodyVar()
 	} else if ura.Property.ArrayOf == "object" {

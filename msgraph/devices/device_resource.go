@@ -980,20 +980,20 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !tfPlan.AlternativeSecurityIds.Equal(tfState.AlternativeSecurityIds) {
 		var tfPlanAlternativeSecurityIds []models.AlternativeSecurityIdable
 		for k, i := range tfPlan.AlternativeSecurityIds.Elements() {
-			alternativeSecurityIds := models.NewAlternativeSecurityId()
-			alternativeSecurityIdsModel := deviceAlternativeSecurityIdModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &alternativeSecurityIdsModel)
-			alternativeSecurityIdsState := deviceAlternativeSecurityIdModel{}
-			types.ListValueFrom(ctx, tfState.AlternativeSecurityIds.Elements()[k].Type(ctx), &alternativeSecurityIdsModel)
+			requestBodyAlternativeSecurityIds := models.NewAlternativeSecurityId()
+			requestBodyAlternativeSecurityIdsModel := deviceAlternativeSecurityIdModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &requestBodyAlternativeSecurityIdsModel)
+			requestBodyAlternativeSecurityIdsState := deviceAlternativeSecurityIdModel{}
+			types.ListValueFrom(ctx, tfState.AlternativeSecurityIds.Elements()[k].Type(ctx), &requestBodyAlternativeSecurityIdsModel)
 
-			if !alternativeSecurityIdsModel.IdentityProvider.Equal(alternativeSecurityIdsState.IdentityProvider) {
-				tfPlanIdentityProvider := alternativeSecurityIdsModel.IdentityProvider.ValueString()
-				alternativeSecurityIds.SetIdentityProvider(&tfPlanIdentityProvider)
+			if !requestBodyAlternativeSecurityIdsModel.IdentityProvider.Equal(requestBodyAlternativeSecurityIdsState.IdentityProvider) {
+				tfPlanIdentityProvider := requestBodyAlternativeSecurityIdsModel.IdentityProvider.ValueString()
+				requestBodyAlternativeSecurityIds.SetIdentityProvider(&tfPlanIdentityProvider)
 			}
 
-			if !alternativeSecurityIdsModel.Key.Equal(alternativeSecurityIdsState.Key) {
-				tfPlanKey := alternativeSecurityIdsModel.Key.ValueString()
-				alternativeSecurityIds.SetKey([]byte(tfPlanKey))
+			if !requestBodyAlternativeSecurityIdsModel.Key.Equal(requestBodyAlternativeSecurityIdsState.Key) {
+				tfPlanKey := requestBodyAlternativeSecurityIdsModel.Key.ValueString()
+				requestBodyAlternativeSecurityIds.SetKey([]byte(tfPlanKey))
 			}
 		}
 		requestBody.SetAlternativeSecurityIds(tfPlanAlternativeSecurityIds)

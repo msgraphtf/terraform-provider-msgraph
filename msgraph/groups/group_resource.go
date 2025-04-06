@@ -1349,20 +1349,20 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !tfPlan.AssignedLabels.Equal(tfState.AssignedLabels) {
 		var tfPlanAssignedLabels []models.AssignedLabelable
 		for k, i := range tfPlan.AssignedLabels.Elements() {
-			assignedLabels := models.NewAssignedLabel()
-			assignedLabelsModel := groupAssignedLabelModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedLabelsModel)
-			assignedLabelsState := groupAssignedLabelModel{}
-			types.ListValueFrom(ctx, tfState.AssignedLabels.Elements()[k].Type(ctx), &assignedLabelsModel)
+			requestBodyAssignedLabels := models.NewAssignedLabel()
+			requestBodyAssignedLabelsModel := groupAssignedLabelModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &requestBodyAssignedLabelsModel)
+			requestBodyAssignedLabelsState := groupAssignedLabelModel{}
+			types.ListValueFrom(ctx, tfState.AssignedLabels.Elements()[k].Type(ctx), &requestBodyAssignedLabelsModel)
 
-			if !assignedLabelsModel.DisplayName.Equal(assignedLabelsState.DisplayName) {
-				tfPlanDisplayName := assignedLabelsModel.DisplayName.ValueString()
-				assignedLabels.SetDisplayName(&tfPlanDisplayName)
+			if !requestBodyAssignedLabelsModel.DisplayName.Equal(requestBodyAssignedLabelsState.DisplayName) {
+				tfPlanDisplayName := requestBodyAssignedLabelsModel.DisplayName.ValueString()
+				requestBodyAssignedLabels.SetDisplayName(&tfPlanDisplayName)
 			}
 
-			if !assignedLabelsModel.LabelId.Equal(assignedLabelsState.LabelId) {
-				tfPlanLabelId := assignedLabelsModel.LabelId.ValueString()
-				assignedLabels.SetLabelId(&tfPlanLabelId)
+			if !requestBodyAssignedLabelsModel.LabelId.Equal(requestBodyAssignedLabelsState.LabelId) {
+				tfPlanLabelId := requestBodyAssignedLabelsModel.LabelId.ValueString()
+				requestBodyAssignedLabels.SetLabelId(&tfPlanLabelId)
 			}
 		}
 		requestBody.SetAssignedLabels(tfPlanAssignedLabels)
@@ -1371,25 +1371,25 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !tfPlan.AssignedLicenses.Equal(tfState.AssignedLicenses) {
 		var tfPlanAssignedLicenses []models.AssignedLicenseable
 		for k, i := range tfPlan.AssignedLicenses.Elements() {
-			assignedLicenses := models.NewAssignedLicense()
-			assignedLicensesModel := groupAssignedLicenseModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &assignedLicensesModel)
-			assignedLicensesState := groupAssignedLicenseModel{}
-			types.ListValueFrom(ctx, tfState.AssignedLicenses.Elements()[k].Type(ctx), &assignedLicensesModel)
+			requestBodyAssignedLicenses := models.NewAssignedLicense()
+			requestBodyAssignedLicensesModel := groupAssignedLicenseModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &requestBodyAssignedLicensesModel)
+			requestBodyAssignedLicensesState := groupAssignedLicenseModel{}
+			types.ListValueFrom(ctx, tfState.AssignedLicenses.Elements()[k].Type(ctx), &requestBodyAssignedLicensesModel)
 
-			if !assignedLicensesModel.DisabledPlans.Equal(assignedLicensesState.DisabledPlans) {
+			if !requestBodyAssignedLicensesModel.DisabledPlans.Equal(requestBodyAssignedLicensesState.DisabledPlans) {
 				var DisabledPlans []uuid.UUID
-				for _, i := range assignedLicensesModel.DisabledPlans.Elements() {
+				for _, i := range requestBodyAssignedLicensesModel.DisabledPlans.Elements() {
 					u, _ := uuid.Parse(i.String())
 					DisabledPlans = append(DisabledPlans, u)
 				}
-				assignedLicenses.SetDisabledPlans(DisabledPlans)
+				requestBodyAssignedLicenses.SetDisabledPlans(DisabledPlans)
 			}
 
-			if !assignedLicensesModel.SkuId.Equal(assignedLicensesState.SkuId) {
-				tfPlanSkuId := assignedLicensesModel.SkuId.ValueString()
+			if !requestBodyAssignedLicensesModel.SkuId.Equal(requestBodyAssignedLicensesState.SkuId) {
+				tfPlanSkuId := requestBodyAssignedLicensesModel.SkuId.ValueString()
 				u, _ := uuid.Parse(tfPlanSkuId)
-				assignedLicenses.SetSkuId(&u)
+				requestBodyAssignedLicenses.SetSkuId(&u)
 			}
 		}
 		requestBody.SetAssignedLicenses(tfPlanAssignedLicenses)
@@ -1441,18 +1441,18 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 
 	if !tfPlan.LicenseProcessingState.Equal(tfState.LicenseProcessingState) {
-		licenseProcessingState := models.NewLicenseProcessingState()
-		licenseProcessingStateModel := groupLicenseProcessingStateModel{}
-		tfPlan.LicenseProcessingState.As(ctx, &licenseProcessingStateModel, basetypes.ObjectAsOptions{})
-		licenseProcessingStateState := groupLicenseProcessingStateModel{}
-		tfState.LicenseProcessingState.As(ctx, &licenseProcessingStateState, basetypes.ObjectAsOptions{})
+		requestBodyLicenseProcessingState := models.NewLicenseProcessingState()
+		requestBodyLicenseProcessingStateModel := groupLicenseProcessingStateModel{}
+		tfPlan.LicenseProcessingState.As(ctx, &requestBodyLicenseProcessingStateModel, basetypes.ObjectAsOptions{})
+		requestBodyLicenseProcessingStateState := groupLicenseProcessingStateModel{}
+		tfState.LicenseProcessingState.As(ctx, &requestBodyLicenseProcessingStateState, basetypes.ObjectAsOptions{})
 
-		if !licenseProcessingStateModel.State.Equal(licenseProcessingStateState.State) {
-			tfPlanState := licenseProcessingStateModel.State.ValueString()
-			licenseProcessingState.SetState(&tfPlanState)
+		if !requestBodyLicenseProcessingStateModel.State.Equal(requestBodyLicenseProcessingStateState.State) {
+			tfPlanState := requestBodyLicenseProcessingStateModel.State.ValueString()
+			requestBodyLicenseProcessingState.SetState(&tfPlanState)
 		}
-		requestBody.SetLicenseProcessingState(licenseProcessingState)
-		objectValue, _ := types.ObjectValueFrom(ctx, licenseProcessingStateModel.AttributeTypes(), licenseProcessingStateModel)
+		requestBody.SetLicenseProcessingState(requestBodyLicenseProcessingState)
+		objectValue, _ := types.ObjectValueFrom(ctx, requestBodyLicenseProcessingStateModel.AttributeTypes(), requestBodyLicenseProcessingStateModel)
 		tfPlan.LicenseProcessingState = objectValue
 	}
 
@@ -1500,31 +1500,31 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !tfPlan.OnPremisesProvisioningErrors.Equal(tfState.OnPremisesProvisioningErrors) {
 		var tfPlanOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for k, i := range tfPlan.OnPremisesProvisioningErrors.Elements() {
-			onPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
-			onPremisesProvisioningErrorsModel := groupOnPremisesProvisioningErrorModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &onPremisesProvisioningErrorsModel)
-			onPremisesProvisioningErrorsState := groupOnPremisesProvisioningErrorModel{}
-			types.ListValueFrom(ctx, tfState.OnPremisesProvisioningErrors.Elements()[k].Type(ctx), &onPremisesProvisioningErrorsModel)
+			requestBodyOnPremisesProvisioningErrors := models.NewOnPremisesProvisioningError()
+			requestBodyOnPremisesProvisioningErrorsModel := groupOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &requestBodyOnPremisesProvisioningErrorsModel)
+			requestBodyOnPremisesProvisioningErrorsState := groupOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, tfState.OnPremisesProvisioningErrors.Elements()[k].Type(ctx), &requestBodyOnPremisesProvisioningErrorsModel)
 
-			if !onPremisesProvisioningErrorsModel.Category.Equal(onPremisesProvisioningErrorsState.Category) {
-				tfPlanCategory := onPremisesProvisioningErrorsModel.Category.ValueString()
-				onPremisesProvisioningErrors.SetCategory(&tfPlanCategory)
+			if !requestBodyOnPremisesProvisioningErrorsModel.Category.Equal(requestBodyOnPremisesProvisioningErrorsState.Category) {
+				tfPlanCategory := requestBodyOnPremisesProvisioningErrorsModel.Category.ValueString()
+				requestBodyOnPremisesProvisioningErrors.SetCategory(&tfPlanCategory)
 			}
 
-			if !onPremisesProvisioningErrorsModel.OccurredDateTime.Equal(onPremisesProvisioningErrorsState.OccurredDateTime) {
-				tfPlanOccurredDateTime := onPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
+			if !requestBodyOnPremisesProvisioningErrorsModel.OccurredDateTime.Equal(requestBodyOnPremisesProvisioningErrorsState.OccurredDateTime) {
+				tfPlanOccurredDateTime := requestBodyOnPremisesProvisioningErrorsModel.OccurredDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanOccurredDateTime)
-				onPremisesProvisioningErrors.SetOccurredDateTime(&t)
+				requestBodyOnPremisesProvisioningErrors.SetOccurredDateTime(&t)
 			}
 
-			if !onPremisesProvisioningErrorsModel.PropertyCausingError.Equal(onPremisesProvisioningErrorsState.PropertyCausingError) {
-				tfPlanPropertyCausingError := onPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
-				onPremisesProvisioningErrors.SetPropertyCausingError(&tfPlanPropertyCausingError)
+			if !requestBodyOnPremisesProvisioningErrorsModel.PropertyCausingError.Equal(requestBodyOnPremisesProvisioningErrorsState.PropertyCausingError) {
+				tfPlanPropertyCausingError := requestBodyOnPremisesProvisioningErrorsModel.PropertyCausingError.ValueString()
+				requestBodyOnPremisesProvisioningErrors.SetPropertyCausingError(&tfPlanPropertyCausingError)
 			}
 
-			if !onPremisesProvisioningErrorsModel.Value.Equal(onPremisesProvisioningErrorsState.Value) {
-				tfPlanValue := onPremisesProvisioningErrorsModel.Value.ValueString()
-				onPremisesProvisioningErrors.SetValue(&tfPlanValue)
+			if !requestBodyOnPremisesProvisioningErrorsModel.Value.Equal(requestBodyOnPremisesProvisioningErrorsState.Value) {
+				tfPlanValue := requestBodyOnPremisesProvisioningErrorsModel.Value.ValueString()
+				requestBodyOnPremisesProvisioningErrors.SetValue(&tfPlanValue)
 			}
 		}
 		requestBody.SetOnPremisesProvisioningErrors(tfPlanOnPremisesProvisioningErrors)
@@ -1582,26 +1582,26 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !tfPlan.ServiceProvisioningErrors.Equal(tfState.ServiceProvisioningErrors) {
 		var tfPlanServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for k, i := range tfPlan.ServiceProvisioningErrors.Elements() {
-			serviceProvisioningErrors := models.NewServiceProvisioningError()
-			serviceProvisioningErrorsModel := groupServiceProvisioningErrorModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &serviceProvisioningErrorsModel)
-			serviceProvisioningErrorsState := groupServiceProvisioningErrorModel{}
-			types.ListValueFrom(ctx, tfState.ServiceProvisioningErrors.Elements()[k].Type(ctx), &serviceProvisioningErrorsModel)
+			requestBodyServiceProvisioningErrors := models.NewServiceProvisioningError()
+			requestBodyServiceProvisioningErrorsModel := groupServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &requestBodyServiceProvisioningErrorsModel)
+			requestBodyServiceProvisioningErrorsState := groupServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, tfState.ServiceProvisioningErrors.Elements()[k].Type(ctx), &requestBodyServiceProvisioningErrorsModel)
 
-			if !serviceProvisioningErrorsModel.CreatedDateTime.Equal(serviceProvisioningErrorsState.CreatedDateTime) {
-				tfPlanCreatedDateTime := serviceProvisioningErrorsModel.CreatedDateTime.ValueString()
+			if !requestBodyServiceProvisioningErrorsModel.CreatedDateTime.Equal(requestBodyServiceProvisioningErrorsState.CreatedDateTime) {
+				tfPlanCreatedDateTime := requestBodyServiceProvisioningErrorsModel.CreatedDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
-				serviceProvisioningErrors.SetCreatedDateTime(&t)
+				requestBodyServiceProvisioningErrors.SetCreatedDateTime(&t)
 			}
 
-			if !serviceProvisioningErrorsModel.IsResolved.Equal(serviceProvisioningErrorsState.IsResolved) {
-				tfPlanIsResolved := serviceProvisioningErrorsModel.IsResolved.ValueBool()
-				serviceProvisioningErrors.SetIsResolved(&tfPlanIsResolved)
+			if !requestBodyServiceProvisioningErrorsModel.IsResolved.Equal(requestBodyServiceProvisioningErrorsState.IsResolved) {
+				tfPlanIsResolved := requestBodyServiceProvisioningErrorsModel.IsResolved.ValueBool()
+				requestBodyServiceProvisioningErrors.SetIsResolved(&tfPlanIsResolved)
 			}
 
-			if !serviceProvisioningErrorsModel.ServiceInstance.Equal(serviceProvisioningErrorsState.ServiceInstance) {
-				tfPlanServiceInstance := serviceProvisioningErrorsModel.ServiceInstance.ValueString()
-				serviceProvisioningErrors.SetServiceInstance(&tfPlanServiceInstance)
+			if !requestBodyServiceProvisioningErrorsModel.ServiceInstance.Equal(requestBodyServiceProvisioningErrorsState.ServiceInstance) {
+				tfPlanServiceInstance := requestBodyServiceProvisioningErrorsModel.ServiceInstance.ValueString()
+				requestBodyServiceProvisioningErrors.SetServiceInstance(&tfPlanServiceInstance)
 			}
 		}
 		requestBody.SetServiceProvisioningErrors(tfPlanServiceProvisioningErrors)
