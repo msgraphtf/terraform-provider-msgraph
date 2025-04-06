@@ -1,8 +1,8 @@
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	// Retrieve values from plan
-	var plan {{.BlockName.LowerCamel}}Model
-	diags := req.Plan.Get(ctx, &plan)
+	var tfPlan {{.BlockName.LowerCamel}}Model
+	diags := req.Plan.Get(ctx, &tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -21,15 +21,15 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateStringAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
-	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&plan{{.Name}})
+	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateStringEnumAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
-	parsed{{.Name}}, _ := models.Parse{{.NewModelMethod}}(plan{{.Name}})
+	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	parsed{{.Name}}, _ := models.Parse{{.NewModelMethod}}(tfPlan{{.Name}})
 	asserted{{.Name}} := parsed{{.Name}}.(models.{{.NewModelMethod}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&asserted{{.Name}})
 	}
@@ -37,45 +37,45 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateStringTimeAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
-	t, _ := time.Parse(time.RFC3339, plan{{.Name}})
+	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	t, _ := time.Parse(time.RFC3339, tfPlan{{.Name}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&t)
 	}
 	{{- end}}
 
 	{{- define "UpdateStringUuidAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
-	u, _ := uuid.Parse(plan{{.Name}})
+	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	u, _ := uuid.Parse(tfPlan{{.Name}})
 	{{.RequestBodyVar}}.Set{{.Name}}(&u)
 	}
 	{{- end}}
 
 	{{- define "UpdateStringBase64UrlAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
-	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(plan{{.Name}}))
+	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueString()
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(tfPlan{{.Name}}))
 	}
 	{{- end}}
 
 	{{- define "UpdateInt64Attribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueInt64()
-	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
+	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueInt64()
+	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateInt32Attribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := int32({{.PlanVar}}{{.Name}}.ValueInt64())
-	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
+	tfPlan{{.Name}} := int32({{.PlanVar}}{{.Name}}.ValueInt64())
+	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateBoolAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
-	plan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueBool()
-	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
+	tfPlan{{.Name}} := {{.PlanVar}}{{.Name}}.ValueBool()
+	{{.RequestBodyVar}}.Set{{.Name}}(&tfPlan{{.Name}})
 	}
 	{{- end}}
 
@@ -102,7 +102,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 
 	{{- define "UpdateArrayObjectAttribute" }}
 	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
-		var plan{{.Name}} []models.{{.NewModelMethod}}able
+		var tfPlan{{.Name}} []models.{{.NewModelMethod}}able
 		for k, i := range {{.PlanVar}}{{.Name}}.Elements() {
 			{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 			{{.RequestBodyVar}}Model := {{.ModelName}}{}
@@ -111,7 +111,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 			types.ListValueFrom(ctx, {{.StateVar}}{{.Name}}.Elements()[k].Type(ctx), &{{.RequestBodyVar}}Model)
 			{{template "generate_update" .NestedUpdate}}
 		}
-		{{.ParentRequestBodyVar}}.Set{{.Name}}(plan{{.Name}})
+		{{.ParentRequestBodyVar}}.Set{{.Name}}(tfPlan{{.Name}})
 	}
 	{{- end}}
 
@@ -171,7 +171,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	}
 
 	// Update resource state with Computed values
-	diags = resp.State.Set(ctx, plan)
+	diags = resp.State.Set(ctx, tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

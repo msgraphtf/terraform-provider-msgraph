@@ -936,8 +936,8 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	// Retrieve values from plan
-	var plan teamModel
-	diags := req.Plan.Get(ctx, &plan)
+	var tfPlan teamModel
+	diags := req.Plan.Get(ctx, &tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -954,207 +954,207 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	// Generate API request body from plan
 	requestBody := models.NewTeam()
 
-	if !plan.Id.Equal(state.Id) {
-		planId := plan.Id.ValueString()
-		requestBody.SetId(&planId)
+	if !tfPlan.Id.Equal(state.Id) {
+		tfPlanId := tfPlan.Id.ValueString()
+		requestBody.SetId(&tfPlanId)
 	}
 
-	if !plan.Classification.Equal(state.Classification) {
-		planClassification := plan.Classification.ValueString()
-		requestBody.SetClassification(&planClassification)
+	if !tfPlan.Classification.Equal(state.Classification) {
+		tfPlanClassification := tfPlan.Classification.ValueString()
+		requestBody.SetClassification(&tfPlanClassification)
 	}
 
-	if !plan.CreatedDateTime.Equal(state.CreatedDateTime) {
-		planCreatedDateTime := plan.CreatedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, planCreatedDateTime)
+	if !tfPlan.CreatedDateTime.Equal(state.CreatedDateTime) {
+		tfPlanCreatedDateTime := tfPlan.CreatedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
 		requestBody.SetCreatedDateTime(&t)
 	}
 
-	if !plan.Description.Equal(state.Description) {
-		planDescription := plan.Description.ValueString()
-		requestBody.SetDescription(&planDescription)
+	if !tfPlan.Description.Equal(state.Description) {
+		tfPlanDescription := tfPlan.Description.ValueString()
+		requestBody.SetDescription(&tfPlanDescription)
 	}
 
-	if !plan.DisplayName.Equal(state.DisplayName) {
-		planDisplayName := plan.DisplayName.ValueString()
-		requestBody.SetDisplayName(&planDisplayName)
+	if !tfPlan.DisplayName.Equal(state.DisplayName) {
+		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
+		requestBody.SetDisplayName(&tfPlanDisplayName)
 	}
 
-	if !plan.FunSettings.Equal(state.FunSettings) {
+	if !tfPlan.FunSettings.Equal(state.FunSettings) {
 		funSettings := models.NewTeamFunSettings()
 		funSettingsModel := teamTeamFunSettingsModel{}
-		plan.FunSettings.As(ctx, &funSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlan.FunSettings.As(ctx, &funSettingsModel, basetypes.ObjectAsOptions{})
 		funSettingsState := teamTeamFunSettingsModel{}
 		state.FunSettings.As(ctx, &funSettingsState, basetypes.ObjectAsOptions{})
 
 		if !funSettingsModel.AllowCustomMemes.Equal(funSettingsState.AllowCustomMemes) {
-			planAllowCustomMemes := funSettingsModel.AllowCustomMemes.ValueBool()
-			funSettings.SetAllowCustomMemes(&planAllowCustomMemes)
+			tfPlanAllowCustomMemes := funSettingsModel.AllowCustomMemes.ValueBool()
+			funSettings.SetAllowCustomMemes(&tfPlanAllowCustomMemes)
 		}
 
 		if !funSettingsModel.AllowGiphy.Equal(funSettingsState.AllowGiphy) {
-			planAllowGiphy := funSettingsModel.AllowGiphy.ValueBool()
-			funSettings.SetAllowGiphy(&planAllowGiphy)
+			tfPlanAllowGiphy := funSettingsModel.AllowGiphy.ValueBool()
+			funSettings.SetAllowGiphy(&tfPlanAllowGiphy)
 		}
 
 		if !funSettingsModel.AllowStickersAndMemes.Equal(funSettingsState.AllowStickersAndMemes) {
-			planAllowStickersAndMemes := funSettingsModel.AllowStickersAndMemes.ValueBool()
-			funSettings.SetAllowStickersAndMemes(&planAllowStickersAndMemes)
+			tfPlanAllowStickersAndMemes := funSettingsModel.AllowStickersAndMemes.ValueBool()
+			funSettings.SetAllowStickersAndMemes(&tfPlanAllowStickersAndMemes)
 		}
 
 		if !funSettingsModel.GiphyContentRating.Equal(funSettingsState.GiphyContentRating) {
-			planGiphyContentRating := funSettingsModel.GiphyContentRating.ValueString()
-			parsedGiphyContentRating, _ := models.ParseGiphyRatingType(planGiphyContentRating)
+			tfPlanGiphyContentRating := funSettingsModel.GiphyContentRating.ValueString()
+			parsedGiphyContentRating, _ := models.ParseGiphyRatingType(tfPlanGiphyContentRating)
 			assertedGiphyContentRating := parsedGiphyContentRating.(models.GiphyRatingType)
 			funSettings.SetGiphyContentRating(&assertedGiphyContentRating)
 		}
 		requestBody.SetFunSettings(funSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, funSettingsModel.AttributeTypes(), funSettingsModel)
-		plan.FunSettings = objectValue
+		tfPlan.FunSettings = objectValue
 	}
 
-	if !plan.GuestSettings.Equal(state.GuestSettings) {
+	if !tfPlan.GuestSettings.Equal(state.GuestSettings) {
 		guestSettings := models.NewTeamGuestSettings()
 		guestSettingsModel := teamTeamGuestSettingsModel{}
-		plan.GuestSettings.As(ctx, &guestSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlan.GuestSettings.As(ctx, &guestSettingsModel, basetypes.ObjectAsOptions{})
 		guestSettingsState := teamTeamGuestSettingsModel{}
 		state.GuestSettings.As(ctx, &guestSettingsState, basetypes.ObjectAsOptions{})
 
 		if !guestSettingsModel.AllowCreateUpdateChannels.Equal(guestSettingsState.AllowCreateUpdateChannels) {
-			planAllowCreateUpdateChannels := guestSettingsModel.AllowCreateUpdateChannels.ValueBool()
-			guestSettings.SetAllowCreateUpdateChannels(&planAllowCreateUpdateChannels)
+			tfPlanAllowCreateUpdateChannels := guestSettingsModel.AllowCreateUpdateChannels.ValueBool()
+			guestSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		}
 
 		if !guestSettingsModel.AllowDeleteChannels.Equal(guestSettingsState.AllowDeleteChannels) {
-			planAllowDeleteChannels := guestSettingsModel.AllowDeleteChannels.ValueBool()
-			guestSettings.SetAllowDeleteChannels(&planAllowDeleteChannels)
+			tfPlanAllowDeleteChannels := guestSettingsModel.AllowDeleteChannels.ValueBool()
+			guestSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		}
 		requestBody.SetGuestSettings(guestSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, guestSettingsModel.AttributeTypes(), guestSettingsModel)
-		plan.GuestSettings = objectValue
+		tfPlan.GuestSettings = objectValue
 	}
 
-	if !plan.InternalId.Equal(state.InternalId) {
-		planInternalId := plan.InternalId.ValueString()
-		requestBody.SetInternalId(&planInternalId)
+	if !tfPlan.InternalId.Equal(state.InternalId) {
+		tfPlanInternalId := tfPlan.InternalId.ValueString()
+		requestBody.SetInternalId(&tfPlanInternalId)
 	}
 
-	if !plan.IsArchived.Equal(state.IsArchived) {
-		planIsArchived := plan.IsArchived.ValueBool()
-		requestBody.SetIsArchived(&planIsArchived)
+	if !tfPlan.IsArchived.Equal(state.IsArchived) {
+		tfPlanIsArchived := tfPlan.IsArchived.ValueBool()
+		requestBody.SetIsArchived(&tfPlanIsArchived)
 	}
 
-	if !plan.MemberSettings.Equal(state.MemberSettings) {
+	if !tfPlan.MemberSettings.Equal(state.MemberSettings) {
 		memberSettings := models.NewTeamMemberSettings()
 		memberSettingsModel := teamTeamMemberSettingsModel{}
-		plan.MemberSettings.As(ctx, &memberSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlan.MemberSettings.As(ctx, &memberSettingsModel, basetypes.ObjectAsOptions{})
 		memberSettingsState := teamTeamMemberSettingsModel{}
 		state.MemberSettings.As(ctx, &memberSettingsState, basetypes.ObjectAsOptions{})
 
 		if !memberSettingsModel.AllowAddRemoveApps.Equal(memberSettingsState.AllowAddRemoveApps) {
-			planAllowAddRemoveApps := memberSettingsModel.AllowAddRemoveApps.ValueBool()
-			memberSettings.SetAllowAddRemoveApps(&planAllowAddRemoveApps)
+			tfPlanAllowAddRemoveApps := memberSettingsModel.AllowAddRemoveApps.ValueBool()
+			memberSettings.SetAllowAddRemoveApps(&tfPlanAllowAddRemoveApps)
 		}
 
 		if !memberSettingsModel.AllowCreatePrivateChannels.Equal(memberSettingsState.AllowCreatePrivateChannels) {
-			planAllowCreatePrivateChannels := memberSettingsModel.AllowCreatePrivateChannels.ValueBool()
-			memberSettings.SetAllowCreatePrivateChannels(&planAllowCreatePrivateChannels)
+			tfPlanAllowCreatePrivateChannels := memberSettingsModel.AllowCreatePrivateChannels.ValueBool()
+			memberSettings.SetAllowCreatePrivateChannels(&tfPlanAllowCreatePrivateChannels)
 		}
 
 		if !memberSettingsModel.AllowCreateUpdateChannels.Equal(memberSettingsState.AllowCreateUpdateChannels) {
-			planAllowCreateUpdateChannels := memberSettingsModel.AllowCreateUpdateChannels.ValueBool()
-			memberSettings.SetAllowCreateUpdateChannels(&planAllowCreateUpdateChannels)
+			tfPlanAllowCreateUpdateChannels := memberSettingsModel.AllowCreateUpdateChannels.ValueBool()
+			memberSettings.SetAllowCreateUpdateChannels(&tfPlanAllowCreateUpdateChannels)
 		}
 
 		if !memberSettingsModel.AllowCreateUpdateRemoveConnectors.Equal(memberSettingsState.AllowCreateUpdateRemoveConnectors) {
-			planAllowCreateUpdateRemoveConnectors := memberSettingsModel.AllowCreateUpdateRemoveConnectors.ValueBool()
-			memberSettings.SetAllowCreateUpdateRemoveConnectors(&planAllowCreateUpdateRemoveConnectors)
+			tfPlanAllowCreateUpdateRemoveConnectors := memberSettingsModel.AllowCreateUpdateRemoveConnectors.ValueBool()
+			memberSettings.SetAllowCreateUpdateRemoveConnectors(&tfPlanAllowCreateUpdateRemoveConnectors)
 		}
 
 		if !memberSettingsModel.AllowCreateUpdateRemoveTabs.Equal(memberSettingsState.AllowCreateUpdateRemoveTabs) {
-			planAllowCreateUpdateRemoveTabs := memberSettingsModel.AllowCreateUpdateRemoveTabs.ValueBool()
-			memberSettings.SetAllowCreateUpdateRemoveTabs(&planAllowCreateUpdateRemoveTabs)
+			tfPlanAllowCreateUpdateRemoveTabs := memberSettingsModel.AllowCreateUpdateRemoveTabs.ValueBool()
+			memberSettings.SetAllowCreateUpdateRemoveTabs(&tfPlanAllowCreateUpdateRemoveTabs)
 		}
 
 		if !memberSettingsModel.AllowDeleteChannels.Equal(memberSettingsState.AllowDeleteChannels) {
-			planAllowDeleteChannels := memberSettingsModel.AllowDeleteChannels.ValueBool()
-			memberSettings.SetAllowDeleteChannels(&planAllowDeleteChannels)
+			tfPlanAllowDeleteChannels := memberSettingsModel.AllowDeleteChannels.ValueBool()
+			memberSettings.SetAllowDeleteChannels(&tfPlanAllowDeleteChannels)
 		}
 		requestBody.SetMemberSettings(memberSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, memberSettingsModel.AttributeTypes(), memberSettingsModel)
-		plan.MemberSettings = objectValue
+		tfPlan.MemberSettings = objectValue
 	}
 
-	if !plan.MessagingSettings.Equal(state.MessagingSettings) {
+	if !tfPlan.MessagingSettings.Equal(state.MessagingSettings) {
 		messagingSettings := models.NewTeamMessagingSettings()
 		messagingSettingsModel := teamTeamMessagingSettingsModel{}
-		plan.MessagingSettings.As(ctx, &messagingSettingsModel, basetypes.ObjectAsOptions{})
+		tfPlan.MessagingSettings.As(ctx, &messagingSettingsModel, basetypes.ObjectAsOptions{})
 		messagingSettingsState := teamTeamMessagingSettingsModel{}
 		state.MessagingSettings.As(ctx, &messagingSettingsState, basetypes.ObjectAsOptions{})
 
 		if !messagingSettingsModel.AllowChannelMentions.Equal(messagingSettingsState.AllowChannelMentions) {
-			planAllowChannelMentions := messagingSettingsModel.AllowChannelMentions.ValueBool()
-			messagingSettings.SetAllowChannelMentions(&planAllowChannelMentions)
+			tfPlanAllowChannelMentions := messagingSettingsModel.AllowChannelMentions.ValueBool()
+			messagingSettings.SetAllowChannelMentions(&tfPlanAllowChannelMentions)
 		}
 
 		if !messagingSettingsModel.AllowOwnerDeleteMessages.Equal(messagingSettingsState.AllowOwnerDeleteMessages) {
-			planAllowOwnerDeleteMessages := messagingSettingsModel.AllowOwnerDeleteMessages.ValueBool()
-			messagingSettings.SetAllowOwnerDeleteMessages(&planAllowOwnerDeleteMessages)
+			tfPlanAllowOwnerDeleteMessages := messagingSettingsModel.AllowOwnerDeleteMessages.ValueBool()
+			messagingSettings.SetAllowOwnerDeleteMessages(&tfPlanAllowOwnerDeleteMessages)
 		}
 
 		if !messagingSettingsModel.AllowTeamMentions.Equal(messagingSettingsState.AllowTeamMentions) {
-			planAllowTeamMentions := messagingSettingsModel.AllowTeamMentions.ValueBool()
-			messagingSettings.SetAllowTeamMentions(&planAllowTeamMentions)
+			tfPlanAllowTeamMentions := messagingSettingsModel.AllowTeamMentions.ValueBool()
+			messagingSettings.SetAllowTeamMentions(&tfPlanAllowTeamMentions)
 		}
 
 		if !messagingSettingsModel.AllowUserDeleteMessages.Equal(messagingSettingsState.AllowUserDeleteMessages) {
-			planAllowUserDeleteMessages := messagingSettingsModel.AllowUserDeleteMessages.ValueBool()
-			messagingSettings.SetAllowUserDeleteMessages(&planAllowUserDeleteMessages)
+			tfPlanAllowUserDeleteMessages := messagingSettingsModel.AllowUserDeleteMessages.ValueBool()
+			messagingSettings.SetAllowUserDeleteMessages(&tfPlanAllowUserDeleteMessages)
 		}
 
 		if !messagingSettingsModel.AllowUserEditMessages.Equal(messagingSettingsState.AllowUserEditMessages) {
-			planAllowUserEditMessages := messagingSettingsModel.AllowUserEditMessages.ValueBool()
-			messagingSettings.SetAllowUserEditMessages(&planAllowUserEditMessages)
+			tfPlanAllowUserEditMessages := messagingSettingsModel.AllowUserEditMessages.ValueBool()
+			messagingSettings.SetAllowUserEditMessages(&tfPlanAllowUserEditMessages)
 		}
 		requestBody.SetMessagingSettings(messagingSettings)
 		objectValue, _ := types.ObjectValueFrom(ctx, messagingSettingsModel.AttributeTypes(), messagingSettingsModel)
-		plan.MessagingSettings = objectValue
+		tfPlan.MessagingSettings = objectValue
 	}
 
-	if !plan.Specialization.Equal(state.Specialization) {
-		planSpecialization := plan.Specialization.ValueString()
-		parsedSpecialization, _ := models.ParseTeamSpecialization(planSpecialization)
+	if !tfPlan.Specialization.Equal(state.Specialization) {
+		tfPlanSpecialization := tfPlan.Specialization.ValueString()
+		parsedSpecialization, _ := models.ParseTeamSpecialization(tfPlanSpecialization)
 		assertedSpecialization := parsedSpecialization.(models.TeamSpecialization)
 		requestBody.SetSpecialization(&assertedSpecialization)
 	}
 
-	if !plan.Summary.Equal(state.Summary) {
+	if !tfPlan.Summary.Equal(state.Summary) {
 		summary := models.NewTeamSummary()
 		summaryModel := teamTeamSummaryModel{}
-		plan.Summary.As(ctx, &summaryModel, basetypes.ObjectAsOptions{})
+		tfPlan.Summary.As(ctx, &summaryModel, basetypes.ObjectAsOptions{})
 		summaryState := teamTeamSummaryModel{}
 		state.Summary.As(ctx, &summaryState, basetypes.ObjectAsOptions{})
 
 		requestBody.SetSummary(summary)
 		objectValue, _ := types.ObjectValueFrom(ctx, summaryModel.AttributeTypes(), summaryModel)
-		plan.Summary = objectValue
+		tfPlan.Summary = objectValue
 	}
 
-	if !plan.TenantId.Equal(state.TenantId) {
-		planTenantId := plan.TenantId.ValueString()
-		requestBody.SetTenantId(&planTenantId)
+	if !tfPlan.TenantId.Equal(state.TenantId) {
+		tfPlanTenantId := tfPlan.TenantId.ValueString()
+		requestBody.SetTenantId(&tfPlanTenantId)
 	}
 
-	if !plan.Visibility.Equal(state.Visibility) {
-		planVisibility := plan.Visibility.ValueString()
-		parsedVisibility, _ := models.ParseTeamVisibilityType(planVisibility)
+	if !tfPlan.Visibility.Equal(state.Visibility) {
+		tfPlanVisibility := tfPlan.Visibility.ValueString()
+		parsedVisibility, _ := models.ParseTeamVisibilityType(tfPlanVisibility)
 		assertedVisibility := parsedVisibility.(models.TeamVisibilityType)
 		requestBody.SetVisibility(&assertedVisibility)
 	}
 
-	if !plan.WebUrl.Equal(state.WebUrl) {
-		planWebUrl := plan.WebUrl.ValueString()
-		requestBody.SetWebUrl(&planWebUrl)
+	if !tfPlan.WebUrl.Equal(state.WebUrl) {
+		tfPlanWebUrl := tfPlan.WebUrl.ValueString()
+		requestBody.SetWebUrl(&tfPlanWebUrl)
 	}
 
 	// Update team
@@ -1168,7 +1168,7 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	// Update resource state with Computed values
-	diags = resp.State.Set(ctx, plan)
+	diags = resp.State.Set(ctx, tfPlan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
