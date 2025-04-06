@@ -147,7 +147,9 @@ func (cra createRequestAttribute) Type() string {
 // Used to generate the variable name for the terraform plan
 func (cra createRequestAttribute) ParentName() string {
 
-	if cra.Parent != nil {
+	if cra.Parent != nil && cra.Parent.Type() == "CreateArrayObjectAttribute" {
+		return cra.Parent.ObjectOf()
+	} else if cra.Parent != nil {
 		return cra.Parent.Name()
 	} else {
 		return cra.CreateRequest.BlockName.UpperCamel()

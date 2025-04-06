@@ -108,8 +108,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 		var requestBody{{.Name}} []models.{{.ObjectOf}}able
 		for _, i := range tfPlan{{.ParentName}}.{{.Name}}.Elements() {
 			requestBody{{.ObjectOf}} := models.New{{.ObjectOf}}()
-			tfPlan{{.Name}} := {{.TfModelName}}Model{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.Name}})
+			tfPlan{{.ObjectOf}} := {{.TfModelName}}Model{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.ObjectOf}})
 			{{template "generate_create" .NestedCreate}}
 		}
 		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.Name}})

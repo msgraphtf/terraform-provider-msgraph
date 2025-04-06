@@ -492,24 +492,24 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		var requestBodyAssignedLabels []models.AssignedLabelable
 		for _, i := range tfPlanGroup.AssignedLabels.Elements() {
 			requestBodyAssignedLabel := models.NewAssignedLabel()
-			tfPlanAssignedLabels := groupAssignedLabelModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLabels)
+			tfPlanAssignedLabel := groupAssignedLabelModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLabel)
 
 			// START DisplayName | CreateStringAttribute
-			if !tfPlanAssignedLabels.DisplayName.IsUnknown() {
-				tfPlanDisplayName := tfPlanAssignedLabels.DisplayName.ValueString()
-				requestBodyAssignedLabels.SetDisplayName(&tfPlanDisplayName)
+			if !tfPlanAssignedLabel.DisplayName.IsUnknown() {
+				tfPlanDisplayName := tfPlanAssignedLabel.DisplayName.ValueString()
+				requestBodyAssignedLabel.SetDisplayName(&tfPlanDisplayName)
 			} else {
-				tfPlanAssignedLabels.DisplayName = types.StringNull()
+				tfPlanAssignedLabel.DisplayName = types.StringNull()
 			}
 			// END DisplayName | CreateStringAttribute
 
 			// START LabelId | CreateStringAttribute
-			if !tfPlanAssignedLabels.LabelId.IsUnknown() {
-				tfPlanLabelId := tfPlanAssignedLabels.LabelId.ValueString()
-				requestBodyAssignedLabels.SetLabelId(&tfPlanLabelId)
+			if !tfPlanAssignedLabel.LabelId.IsUnknown() {
+				tfPlanLabelId := tfPlanAssignedLabel.LabelId.ValueString()
+				requestBodyAssignedLabel.SetLabelId(&tfPlanLabelId)
 			} else {
-				tfPlanAssignedLabels.LabelId = types.StringNull()
+				tfPlanAssignedLabel.LabelId = types.StringNull()
 			}
 			// END LabelId | CreateStringAttribute
 
@@ -525,30 +525,30 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		var requestBodyAssignedLicenses []models.AssignedLicenseable
 		for _, i := range tfPlanGroup.AssignedLicenses.Elements() {
 			requestBodyAssignedLicense := models.NewAssignedLicense()
-			tfPlanAssignedLicenses := groupAssignedLicenseModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLicenses)
+			tfPlanAssignedLicense := groupAssignedLicenseModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLicense)
 
 			// START DisabledPlans | CreateArrayUuidAttribute
-			if len(tfPlanAssignedLicenses.DisabledPlans.Elements()) > 0 {
+			if len(tfPlanAssignedLicense.DisabledPlans.Elements()) > 0 {
 				var uuidArrayDisabledPlans []uuid.UUID
-				for _, i := range tfPlanAssignedLicenses.DisabledPlans.Elements() {
+				for _, i := range tfPlanAssignedLicense.DisabledPlans.Elements() {
 					u, _ := uuid.Parse(i.String())
 					uuidArrayDisabledPlans = append(uuidArrayDisabledPlans, u)
 				}
-				requestBodyAssignedLicenses.SetDisabledPlans(uuidArrayDisabledPlans)
+				requestBodyAssignedLicense.SetDisabledPlans(uuidArrayDisabledPlans)
 			} else {
-				tfPlanAssignedLicenses.DisabledPlans = types.ListNull(types.StringType)
+				tfPlanAssignedLicense.DisabledPlans = types.ListNull(types.StringType)
 			}
 
 			// END DisabledPlans | CreateArrayUuidAttribute
 
 			// START SkuId | CreateStringUuidAttribute
-			if !tfPlanAssignedLicenses.SkuId.IsUnknown() {
-				tfPlanSkuId := tfPlanAssignedLicenses.SkuId.ValueString()
+			if !tfPlanAssignedLicense.SkuId.IsUnknown() {
+				tfPlanSkuId := tfPlanAssignedLicense.SkuId.ValueString()
 				u, _ := uuid.Parse(tfPlanSkuId)
-				requestBodyAssignedLicenses.SetSkuId(&u)
+				requestBodyAssignedLicense.SetSkuId(&u)
 			} else {
-				tfPlanAssignedLicenses.SkuId = types.StringNull()
+				tfPlanAssignedLicense.SkuId = types.StringNull()
 			}
 			// END SkuId | CreateStringUuidAttribute
 
@@ -736,43 +736,43 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		var requestBodyOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for _, i := range tfPlanGroup.OnPremisesProvisioningErrors.Elements() {
 			requestBodyOnPremisesProvisioningError := models.NewOnPremisesProvisioningError()
-			tfPlanOnPremisesProvisioningErrors := groupOnPremisesProvisioningErrorModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanOnPremisesProvisioningErrors)
+			tfPlanOnPremisesProvisioningError := groupOnPremisesProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanOnPremisesProvisioningError)
 
 			// START Category | CreateStringAttribute
-			if !tfPlanOnPremisesProvisioningErrors.Category.IsUnknown() {
-				tfPlanCategory := tfPlanOnPremisesProvisioningErrors.Category.ValueString()
-				requestBodyOnPremisesProvisioningErrors.SetCategory(&tfPlanCategory)
+			if !tfPlanOnPremisesProvisioningError.Category.IsUnknown() {
+				tfPlanCategory := tfPlanOnPremisesProvisioningError.Category.ValueString()
+				requestBodyOnPremisesProvisioningError.SetCategory(&tfPlanCategory)
 			} else {
-				tfPlanOnPremisesProvisioningErrors.Category = types.StringNull()
+				tfPlanOnPremisesProvisioningError.Category = types.StringNull()
 			}
 			// END Category | CreateStringAttribute
 
 			// START OccurredDateTime | CreateStringTimeAttribute
-			if !tfPlanOnPremisesProvisioningErrors.OccurredDateTime.IsUnknown() {
-				tfPlanOccurredDateTime := tfPlanOnPremisesProvisioningErrors.OccurredDateTime.ValueString()
+			if !tfPlanOnPremisesProvisioningError.OccurredDateTime.IsUnknown() {
+				tfPlanOccurredDateTime := tfPlanOnPremisesProvisioningError.OccurredDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanOccurredDateTime)
-				requestBodyOnPremisesProvisioningErrors.SetOccurredDateTime(&t)
+				requestBodyOnPremisesProvisioningError.SetOccurredDateTime(&t)
 			} else {
-				tfPlanOnPremisesProvisioningErrors.OccurredDateTime = types.StringNull()
+				tfPlanOnPremisesProvisioningError.OccurredDateTime = types.StringNull()
 			}
 			// END OccurredDateTime | CreateStringTimeAttribute
 
 			// START PropertyCausingError | CreateStringAttribute
-			if !tfPlanOnPremisesProvisioningErrors.PropertyCausingError.IsUnknown() {
-				tfPlanPropertyCausingError := tfPlanOnPremisesProvisioningErrors.PropertyCausingError.ValueString()
-				requestBodyOnPremisesProvisioningErrors.SetPropertyCausingError(&tfPlanPropertyCausingError)
+			if !tfPlanOnPremisesProvisioningError.PropertyCausingError.IsUnknown() {
+				tfPlanPropertyCausingError := tfPlanOnPremisesProvisioningError.PropertyCausingError.ValueString()
+				requestBodyOnPremisesProvisioningError.SetPropertyCausingError(&tfPlanPropertyCausingError)
 			} else {
-				tfPlanOnPremisesProvisioningErrors.PropertyCausingError = types.StringNull()
+				tfPlanOnPremisesProvisioningError.PropertyCausingError = types.StringNull()
 			}
 			// END PropertyCausingError | CreateStringAttribute
 
 			// START Value | CreateStringAttribute
-			if !tfPlanOnPremisesProvisioningErrors.Value.IsUnknown() {
-				tfPlanValue := tfPlanOnPremisesProvisioningErrors.Value.ValueString()
-				requestBodyOnPremisesProvisioningErrors.SetValue(&tfPlanValue)
+			if !tfPlanOnPremisesProvisioningError.Value.IsUnknown() {
+				tfPlanValue := tfPlanOnPremisesProvisioningError.Value.ValueString()
+				requestBodyOnPremisesProvisioningError.SetValue(&tfPlanValue)
 			} else {
-				tfPlanOnPremisesProvisioningErrors.Value = types.StringNull()
+				tfPlanOnPremisesProvisioningError.Value = types.StringNull()
 			}
 			// END Value | CreateStringAttribute
 
@@ -873,34 +873,34 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		var requestBodyServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for _, i := range tfPlanGroup.ServiceProvisioningErrors.Elements() {
 			requestBodyServiceProvisioningError := models.NewServiceProvisioningError()
-			tfPlanServiceProvisioningErrors := groupServiceProvisioningErrorModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanServiceProvisioningErrors)
+			tfPlanServiceProvisioningError := groupServiceProvisioningErrorModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanServiceProvisioningError)
 
 			// START CreatedDateTime | CreateStringTimeAttribute
-			if !tfPlanServiceProvisioningErrors.CreatedDateTime.IsUnknown() {
-				tfPlanCreatedDateTime := tfPlanServiceProvisioningErrors.CreatedDateTime.ValueString()
+			if !tfPlanServiceProvisioningError.CreatedDateTime.IsUnknown() {
+				tfPlanCreatedDateTime := tfPlanServiceProvisioningError.CreatedDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
-				requestBodyServiceProvisioningErrors.SetCreatedDateTime(&t)
+				requestBodyServiceProvisioningError.SetCreatedDateTime(&t)
 			} else {
-				tfPlanServiceProvisioningErrors.CreatedDateTime = types.StringNull()
+				tfPlanServiceProvisioningError.CreatedDateTime = types.StringNull()
 			}
 			// END CreatedDateTime | CreateStringTimeAttribute
 
 			// START IsResolved | CreateBoolAttribute
-			if !tfPlanServiceProvisioningErrors.IsResolved.IsUnknown() {
-				tfPlanIsResolved := tfPlanServiceProvisioningErrors.IsResolved.ValueBool()
-				requestBodyServiceProvisioningErrors.SetIsResolved(&tfPlanIsResolved)
+			if !tfPlanServiceProvisioningError.IsResolved.IsUnknown() {
+				tfPlanIsResolved := tfPlanServiceProvisioningError.IsResolved.ValueBool()
+				requestBodyServiceProvisioningError.SetIsResolved(&tfPlanIsResolved)
 			} else {
-				tfPlanServiceProvisioningErrors.IsResolved = types.BoolNull()
+				tfPlanServiceProvisioningError.IsResolved = types.BoolNull()
 			}
 			// END IsResolved | CreateBoolAttribute
 
 			// START ServiceInstance | CreateStringAttribute
-			if !tfPlanServiceProvisioningErrors.ServiceInstance.IsUnknown() {
-				tfPlanServiceInstance := tfPlanServiceProvisioningErrors.ServiceInstance.ValueString()
-				requestBodyServiceProvisioningErrors.SetServiceInstance(&tfPlanServiceInstance)
+			if !tfPlanServiceProvisioningError.ServiceInstance.IsUnknown() {
+				tfPlanServiceInstance := tfPlanServiceProvisioningError.ServiceInstance.ValueString()
+				requestBodyServiceProvisioningError.SetServiceInstance(&tfPlanServiceInstance)
 			} else {
-				tfPlanServiceProvisioningErrors.ServiceInstance = types.StringNull()
+				tfPlanServiceProvisioningError.ServiceInstance = types.StringNull()
 			}
 			// END ServiceInstance | CreateStringAttribute
 
