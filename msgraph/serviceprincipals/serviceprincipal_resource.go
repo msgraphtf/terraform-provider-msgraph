@@ -2274,8 +2274,8 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *servicePrincipalResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	// Retrieve values from Terraform plan
-	var tfPlan servicePrincipalModel
-	diags := req.Plan.Get(ctx, &tfPlan)
+	var tfPlanServicePrincipal servicePrincipalModel
+	diags := req.Plan.Get(ctx, &tfPlanServicePrincipal)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -2292,402 +2292,402 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	// Generate API request body from plan
 	requestBody := models.NewServicePrincipal()
 
-	if !tfPlan.Id.Equal(tfState.Id) {
-		tfPlanId := tfPlan.Id.ValueString()
+	if !tfPlanServicePrincipal.Id.Equal(tfState.Id) {
+		tfPlanId := tfPlanServicePrincipal.Id.ValueString()
 		requestBody.SetId(&tfPlanId)
 	}
 
-	if !tfPlan.DeletedDateTime.Equal(tfState.DeletedDateTime) {
-		tfPlanDeletedDateTime := tfPlan.DeletedDateTime.ValueString()
+	if !tfPlanServicePrincipal.DeletedDateTime.Equal(tfState.DeletedDateTime) {
+		tfPlanDeletedDateTime := tfPlanServicePrincipal.DeletedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
 		requestBody.SetDeletedDateTime(&t)
 	}
 
-	if !tfPlan.AccountEnabled.Equal(tfState.AccountEnabled) {
-		tfPlanAccountEnabled := tfPlan.AccountEnabled.ValueBool()
+	if !tfPlanServicePrincipal.AccountEnabled.Equal(tfState.AccountEnabled) {
+		tfPlanAccountEnabled := tfPlanServicePrincipal.AccountEnabled.ValueBool()
 		requestBody.SetAccountEnabled(&tfPlanAccountEnabled)
 	}
 
-	if !tfPlan.AddIns.Equal(tfState.AddIns) {
+	if !tfPlanServicePrincipal.AddIns.Equal(tfState.AddIns) {
 		var tfPlanAddIns []models.AddInable
-		for k, i := range tfPlan.AddIns.Elements() {
+		for k, i := range tfPlanServicePrincipal.AddIns.Elements() {
 			requestBodyAddIns := models.NewAddIn()
-			tfPlanrequestBodyAddIns := servicePrincipalAddInModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanrequestBodyAddIns)
+			tfPlanAddIn := servicePrincipalAddInModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAddIn)
 			tfStaterequestBodyAddIns := servicePrincipalAddInModel{}
-			types.ListValueFrom(ctx, tfState.AddIns.Elements()[k].Type(ctx), &tfPlanrequestBodyAddIns)
+			types.ListValueFrom(ctx, tfState.AddIns.Elements()[k].Type(ctx), &tfPlanAddIn)
 
-			if !tfPlanrequestBodyAddIns.Id.Equal(tfStaterequestBodyAddIns.Id) {
-				tfPlanId := tfPlanrequestBodyAddIns.Id.ValueString()
+			if !tfPlanAddIn.Id.Equal(tfStaterequestBodyAddIns.Id) {
+				tfPlanId := tfPlanAddIn.Id.ValueString()
 				u, _ := uuid.Parse(tfPlanId)
 				requestBodyAddIns.SetId(&u)
 			}
 
-			if !tfPlanrequestBodyAddIns.Properties.Equal(tfStaterequestBodyAddIns.Properties) {
+			if !tfPlanAddIn.Properties.Equal(tfStaterequestBodyAddIns.Properties) {
 				var tfPlanProperties []models.KeyValueable
-				for k, i := range tfPlanrequestBodyAddIns.Properties.Elements() {
+				for k, i := range tfPlanAddIn.Properties.Elements() {
 					requestBodyProperties := models.NewKeyValue()
-					tfPlanrequestBodyProperties := servicePrincipalKeyValueModel{}
-					types.ListValueFrom(ctx, i.Type(ctx), &tfPlanrequestBodyProperties)
+					tfPlanKeyValue := servicePrincipalKeyValueModel{}
+					types.ListValueFrom(ctx, i.Type(ctx), &tfPlanKeyValue)
 					tfStaterequestBodyProperties := servicePrincipalKeyValueModel{}
-					types.ListValueFrom(ctx, tfStaterequestBodyAddIns.Properties.Elements()[k].Type(ctx), &tfPlanrequestBodyProperties)
+					types.ListValueFrom(ctx, tfStaterequestBodyAddIns.Properties.Elements()[k].Type(ctx), &tfPlanKeyValue)
 
-					if !tfPlanrequestBodyProperties.Key.Equal(tfStaterequestBodyProperties.Key) {
-						tfPlanKey := tfPlanrequestBodyProperties.Key.ValueString()
+					if !tfPlanKeyValue.Key.Equal(tfStaterequestBodyProperties.Key) {
+						tfPlanKey := tfPlanKeyValue.Key.ValueString()
 						requestBodyProperties.SetKey(&tfPlanKey)
 					}
 
-					if !tfPlanrequestBodyProperties.Value.Equal(tfStaterequestBodyProperties.Value) {
-						tfPlanValue := tfPlanrequestBodyProperties.Value.ValueString()
+					if !tfPlanKeyValue.Value.Equal(tfStaterequestBodyProperties.Value) {
+						tfPlanValue := tfPlanKeyValue.Value.ValueString()
 						requestBodyProperties.SetValue(&tfPlanValue)
 					}
 				}
 				requestBodyAddIns.SetProperties(tfPlanProperties)
 			}
 
-			if !tfPlanrequestBodyAddIns.Type.Equal(tfStaterequestBodyAddIns.Type) {
-				tfPlanType := tfPlanrequestBodyAddIns.Type.ValueString()
+			if !tfPlanAddIn.Type.Equal(tfStaterequestBodyAddIns.Type) {
+				tfPlanType := tfPlanAddIn.Type.ValueString()
 				requestBodyAddIns.SetTypeEscaped(&tfPlanType)
 			}
 		}
 		requestBody.SetAddIns(tfPlanAddIns)
 	}
 
-	if !tfPlan.AlternativeNames.Equal(tfState.AlternativeNames) {
+	if !tfPlanServicePrincipal.AlternativeNames.Equal(tfState.AlternativeNames) {
 		var stringArrayAlternativeNames []string
-		for _, i := range tfPlan.AlternativeNames.Elements() {
+		for _, i := range tfPlanServicePrincipal.AlternativeNames.Elements() {
 			stringArrayAlternativeNames = append(stringArrayAlternativeNames, i.String())
 		}
 		requestBody.SetAlternativeNames(stringArrayAlternativeNames)
 	}
 
-	if !tfPlan.AppDescription.Equal(tfState.AppDescription) {
-		tfPlanAppDescription := tfPlan.AppDescription.ValueString()
+	if !tfPlanServicePrincipal.AppDescription.Equal(tfState.AppDescription) {
+		tfPlanAppDescription := tfPlanServicePrincipal.AppDescription.ValueString()
 		requestBody.SetAppDescription(&tfPlanAppDescription)
 	}
 
-	if !tfPlan.AppDisplayName.Equal(tfState.AppDisplayName) {
-		tfPlanAppDisplayName := tfPlan.AppDisplayName.ValueString()
+	if !tfPlanServicePrincipal.AppDisplayName.Equal(tfState.AppDisplayName) {
+		tfPlanAppDisplayName := tfPlanServicePrincipal.AppDisplayName.ValueString()
 		requestBody.SetAppDisplayName(&tfPlanAppDisplayName)
 	}
 
-	if !tfPlan.AppId.Equal(tfState.AppId) {
-		tfPlanAppId := tfPlan.AppId.ValueString()
+	if !tfPlanServicePrincipal.AppId.Equal(tfState.AppId) {
+		tfPlanAppId := tfPlanServicePrincipal.AppId.ValueString()
 		requestBody.SetAppId(&tfPlanAppId)
 	}
 
-	if !tfPlan.AppOwnerOrganizationId.Equal(tfState.AppOwnerOrganizationId) {
-		tfPlanAppOwnerOrganizationId := tfPlan.AppOwnerOrganizationId.ValueString()
+	if !tfPlanServicePrincipal.AppOwnerOrganizationId.Equal(tfState.AppOwnerOrganizationId) {
+		tfPlanAppOwnerOrganizationId := tfPlanServicePrincipal.AppOwnerOrganizationId.ValueString()
 		u, _ := uuid.Parse(tfPlanAppOwnerOrganizationId)
 		requestBody.SetAppOwnerOrganizationId(&u)
 	}
 
-	if !tfPlan.AppRoleAssignmentRequired.Equal(tfState.AppRoleAssignmentRequired) {
-		tfPlanAppRoleAssignmentRequired := tfPlan.AppRoleAssignmentRequired.ValueBool()
+	if !tfPlanServicePrincipal.AppRoleAssignmentRequired.Equal(tfState.AppRoleAssignmentRequired) {
+		tfPlanAppRoleAssignmentRequired := tfPlanServicePrincipal.AppRoleAssignmentRequired.ValueBool()
 		requestBody.SetAppRoleAssignmentRequired(&tfPlanAppRoleAssignmentRequired)
 	}
 
-	if !tfPlan.AppRoles.Equal(tfState.AppRoles) {
+	if !tfPlanServicePrincipal.AppRoles.Equal(tfState.AppRoles) {
 		var tfPlanAppRoles []models.AppRoleable
-		for k, i := range tfPlan.AppRoles.Elements() {
+		for k, i := range tfPlanServicePrincipal.AppRoles.Elements() {
 			requestBodyAppRoles := models.NewAppRole()
-			tfPlanrequestBodyAppRoles := servicePrincipalAppRoleModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanrequestBodyAppRoles)
+			tfPlanAppRole := servicePrincipalAppRoleModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAppRole)
 			tfStaterequestBodyAppRoles := servicePrincipalAppRoleModel{}
-			types.ListValueFrom(ctx, tfState.AppRoles.Elements()[k].Type(ctx), &tfPlanrequestBodyAppRoles)
+			types.ListValueFrom(ctx, tfState.AppRoles.Elements()[k].Type(ctx), &tfPlanAppRole)
 
-			if !tfPlanrequestBodyAppRoles.AllowedMemberTypes.Equal(tfStaterequestBodyAppRoles.AllowedMemberTypes) {
+			if !tfPlanAppRole.AllowedMemberTypes.Equal(tfStaterequestBodyAppRoles.AllowedMemberTypes) {
 				var stringArrayAllowedMemberTypes []string
-				for _, i := range tfPlanrequestBodyAppRoles.AllowedMemberTypes.Elements() {
+				for _, i := range tfPlanAppRole.AllowedMemberTypes.Elements() {
 					stringArrayAllowedMemberTypes = append(stringArrayAllowedMemberTypes, i.String())
 				}
 				requestBodyAppRoles.SetAllowedMemberTypes(stringArrayAllowedMemberTypes)
 			}
 
-			if !tfPlanrequestBodyAppRoles.Description.Equal(tfStaterequestBodyAppRoles.Description) {
-				tfPlanDescription := tfPlanrequestBodyAppRoles.Description.ValueString()
+			if !tfPlanAppRole.Description.Equal(tfStaterequestBodyAppRoles.Description) {
+				tfPlanDescription := tfPlanAppRole.Description.ValueString()
 				requestBodyAppRoles.SetDescription(&tfPlanDescription)
 			}
 
-			if !tfPlanrequestBodyAppRoles.DisplayName.Equal(tfStaterequestBodyAppRoles.DisplayName) {
-				tfPlanDisplayName := tfPlanrequestBodyAppRoles.DisplayName.ValueString()
+			if !tfPlanAppRole.DisplayName.Equal(tfStaterequestBodyAppRoles.DisplayName) {
+				tfPlanDisplayName := tfPlanAppRole.DisplayName.ValueString()
 				requestBodyAppRoles.SetDisplayName(&tfPlanDisplayName)
 			}
 
-			if !tfPlanrequestBodyAppRoles.Id.Equal(tfStaterequestBodyAppRoles.Id) {
-				tfPlanId := tfPlanrequestBodyAppRoles.Id.ValueString()
+			if !tfPlanAppRole.Id.Equal(tfStaterequestBodyAppRoles.Id) {
+				tfPlanId := tfPlanAppRole.Id.ValueString()
 				u, _ := uuid.Parse(tfPlanId)
 				requestBodyAppRoles.SetId(&u)
 			}
 
-			if !tfPlanrequestBodyAppRoles.IsEnabled.Equal(tfStaterequestBodyAppRoles.IsEnabled) {
-				tfPlanIsEnabled := tfPlanrequestBodyAppRoles.IsEnabled.ValueBool()
+			if !tfPlanAppRole.IsEnabled.Equal(tfStaterequestBodyAppRoles.IsEnabled) {
+				tfPlanIsEnabled := tfPlanAppRole.IsEnabled.ValueBool()
 				requestBodyAppRoles.SetIsEnabled(&tfPlanIsEnabled)
 			}
 
-			if !tfPlanrequestBodyAppRoles.Origin.Equal(tfStaterequestBodyAppRoles.Origin) {
-				tfPlanOrigin := tfPlanrequestBodyAppRoles.Origin.ValueString()
+			if !tfPlanAppRole.Origin.Equal(tfStaterequestBodyAppRoles.Origin) {
+				tfPlanOrigin := tfPlanAppRole.Origin.ValueString()
 				requestBodyAppRoles.SetOrigin(&tfPlanOrigin)
 			}
 
-			if !tfPlanrequestBodyAppRoles.Value.Equal(tfStaterequestBodyAppRoles.Value) {
-				tfPlanValue := tfPlanrequestBodyAppRoles.Value.ValueString()
+			if !tfPlanAppRole.Value.Equal(tfStaterequestBodyAppRoles.Value) {
+				tfPlanValue := tfPlanAppRole.Value.ValueString()
 				requestBodyAppRoles.SetValue(&tfPlanValue)
 			}
 		}
 		requestBody.SetAppRoles(tfPlanAppRoles)
 	}
 
-	if !tfPlan.ApplicationTemplateId.Equal(tfState.ApplicationTemplateId) {
-		tfPlanApplicationTemplateId := tfPlan.ApplicationTemplateId.ValueString()
+	if !tfPlanServicePrincipal.ApplicationTemplateId.Equal(tfState.ApplicationTemplateId) {
+		tfPlanApplicationTemplateId := tfPlanServicePrincipal.ApplicationTemplateId.ValueString()
 		requestBody.SetApplicationTemplateId(&tfPlanApplicationTemplateId)
 	}
 
-	if !tfPlan.CustomSecurityAttributes.Equal(tfState.CustomSecurityAttributes) {
+	if !tfPlanServicePrincipal.CustomSecurityAttributes.Equal(tfState.CustomSecurityAttributes) {
 		requestBodyCustomSecurityAttributes := models.NewCustomSecurityAttributeValue()
-		tfPlanrequestBodyCustomSecurityAttributes := servicePrincipalCustomSecurityAttributeValueModel{}
-		tfPlan.CustomSecurityAttributes.As(ctx, &tfPlanrequestBodyCustomSecurityAttributes, basetypes.ObjectAsOptions{})
+		tfPlanCustomSecurityAttributeValue := servicePrincipalCustomSecurityAttributeValueModel{}
+		tfPlanServicePrincipal.CustomSecurityAttributes.As(ctx, &tfPlanCustomSecurityAttributeValue, basetypes.ObjectAsOptions{})
 		tfStaterequestBodyCustomSecurityAttributes := servicePrincipalCustomSecurityAttributeValueModel{}
 		tfState.CustomSecurityAttributes.As(ctx, &tfStaterequestBodyCustomSecurityAttributes, basetypes.ObjectAsOptions{})
 
 		requestBody.SetCustomSecurityAttributes(requestBodyCustomSecurityAttributes)
-		tfPlan.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyCustomSecurityAttributes.AttributeTypes(), tfPlanrequestBodyCustomSecurityAttributes)
+		tfPlanServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfPlanCustomSecurityAttributeValue.AttributeTypes(), tfPlanCustomSecurityAttributeValue)
 	}
 
-	if !tfPlan.Description.Equal(tfState.Description) {
-		tfPlanDescription := tfPlan.Description.ValueString()
+	if !tfPlanServicePrincipal.Description.Equal(tfState.Description) {
+		tfPlanDescription := tfPlanServicePrincipal.Description.ValueString()
 		requestBody.SetDescription(&tfPlanDescription)
 	}
 
-	if !tfPlan.DisabledByMicrosoftStatus.Equal(tfState.DisabledByMicrosoftStatus) {
-		tfPlanDisabledByMicrosoftStatus := tfPlan.DisabledByMicrosoftStatus.ValueString()
+	if !tfPlanServicePrincipal.DisabledByMicrosoftStatus.Equal(tfState.DisabledByMicrosoftStatus) {
+		tfPlanDisabledByMicrosoftStatus := tfPlanServicePrincipal.DisabledByMicrosoftStatus.ValueString()
 		requestBody.SetDisabledByMicrosoftStatus(&tfPlanDisabledByMicrosoftStatus)
 	}
 
-	if !tfPlan.DisplayName.Equal(tfState.DisplayName) {
-		tfPlanDisplayName := tfPlan.DisplayName.ValueString()
+	if !tfPlanServicePrincipal.DisplayName.Equal(tfState.DisplayName) {
+		tfPlanDisplayName := tfPlanServicePrincipal.DisplayName.ValueString()
 		requestBody.SetDisplayName(&tfPlanDisplayName)
 	}
 
-	if !tfPlan.Homepage.Equal(tfState.Homepage) {
-		tfPlanHomepage := tfPlan.Homepage.ValueString()
+	if !tfPlanServicePrincipal.Homepage.Equal(tfState.Homepage) {
+		tfPlanHomepage := tfPlanServicePrincipal.Homepage.ValueString()
 		requestBody.SetHomepage(&tfPlanHomepage)
 	}
 
-	if !tfPlan.Info.Equal(tfState.Info) {
+	if !tfPlanServicePrincipal.Info.Equal(tfState.Info) {
 		requestBodyInfo := models.NewInformationalUrl()
-		tfPlanrequestBodyInfo := servicePrincipalInformationalUrlModel{}
-		tfPlan.Info.As(ctx, &tfPlanrequestBodyInfo, basetypes.ObjectAsOptions{})
+		tfPlanInformationalUrl := servicePrincipalInformationalUrlModel{}
+		tfPlanServicePrincipal.Info.As(ctx, &tfPlanInformationalUrl, basetypes.ObjectAsOptions{})
 		tfStaterequestBodyInfo := servicePrincipalInformationalUrlModel{}
 		tfState.Info.As(ctx, &tfStaterequestBodyInfo, basetypes.ObjectAsOptions{})
 
-		if !tfPlanrequestBodyInfo.LogoUrl.Equal(tfStaterequestBodyInfo.LogoUrl) {
-			tfPlanLogoUrl := tfPlanrequestBodyInfo.LogoUrl.ValueString()
+		if !tfPlanInformationalUrl.LogoUrl.Equal(tfStaterequestBodyInfo.LogoUrl) {
+			tfPlanLogoUrl := tfPlanInformationalUrl.LogoUrl.ValueString()
 			requestBodyInfo.SetLogoUrl(&tfPlanLogoUrl)
 		}
 
-		if !tfPlanrequestBodyInfo.MarketingUrl.Equal(tfStaterequestBodyInfo.MarketingUrl) {
-			tfPlanMarketingUrl := tfPlanrequestBodyInfo.MarketingUrl.ValueString()
+		if !tfPlanInformationalUrl.MarketingUrl.Equal(tfStaterequestBodyInfo.MarketingUrl) {
+			tfPlanMarketingUrl := tfPlanInformationalUrl.MarketingUrl.ValueString()
 			requestBodyInfo.SetMarketingUrl(&tfPlanMarketingUrl)
 		}
 
-		if !tfPlanrequestBodyInfo.PrivacyStatementUrl.Equal(tfStaterequestBodyInfo.PrivacyStatementUrl) {
-			tfPlanPrivacyStatementUrl := tfPlanrequestBodyInfo.PrivacyStatementUrl.ValueString()
+		if !tfPlanInformationalUrl.PrivacyStatementUrl.Equal(tfStaterequestBodyInfo.PrivacyStatementUrl) {
+			tfPlanPrivacyStatementUrl := tfPlanInformationalUrl.PrivacyStatementUrl.ValueString()
 			requestBodyInfo.SetPrivacyStatementUrl(&tfPlanPrivacyStatementUrl)
 		}
 
-		if !tfPlanrequestBodyInfo.SupportUrl.Equal(tfStaterequestBodyInfo.SupportUrl) {
-			tfPlanSupportUrl := tfPlanrequestBodyInfo.SupportUrl.ValueString()
+		if !tfPlanInformationalUrl.SupportUrl.Equal(tfStaterequestBodyInfo.SupportUrl) {
+			tfPlanSupportUrl := tfPlanInformationalUrl.SupportUrl.ValueString()
 			requestBodyInfo.SetSupportUrl(&tfPlanSupportUrl)
 		}
 
-		if !tfPlanrequestBodyInfo.TermsOfServiceUrl.Equal(tfStaterequestBodyInfo.TermsOfServiceUrl) {
-			tfPlanTermsOfServiceUrl := tfPlanrequestBodyInfo.TermsOfServiceUrl.ValueString()
+		if !tfPlanInformationalUrl.TermsOfServiceUrl.Equal(tfStaterequestBodyInfo.TermsOfServiceUrl) {
+			tfPlanTermsOfServiceUrl := tfPlanInformationalUrl.TermsOfServiceUrl.ValueString()
 			requestBodyInfo.SetTermsOfServiceUrl(&tfPlanTermsOfServiceUrl)
 		}
 		requestBody.SetInfo(requestBodyInfo)
-		tfPlan.Info, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyInfo.AttributeTypes(), tfPlanrequestBodyInfo)
+		tfPlanServicePrincipal.Info, _ = types.ObjectValueFrom(ctx, tfPlanInformationalUrl.AttributeTypes(), tfPlanInformationalUrl)
 	}
 
-	if !tfPlan.KeyCredentials.Equal(tfState.KeyCredentials) {
+	if !tfPlanServicePrincipal.KeyCredentials.Equal(tfState.KeyCredentials) {
 		var tfPlanKeyCredentials []models.KeyCredentialable
-		for k, i := range tfPlan.KeyCredentials.Elements() {
+		for k, i := range tfPlanServicePrincipal.KeyCredentials.Elements() {
 			requestBodyKeyCredentials := models.NewKeyCredential()
-			tfPlanrequestBodyKeyCredentials := servicePrincipalKeyCredentialModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanrequestBodyKeyCredentials)
+			tfPlanKeyCredential := servicePrincipalKeyCredentialModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanKeyCredential)
 			tfStaterequestBodyKeyCredentials := servicePrincipalKeyCredentialModel{}
-			types.ListValueFrom(ctx, tfState.KeyCredentials.Elements()[k].Type(ctx), &tfPlanrequestBodyKeyCredentials)
+			types.ListValueFrom(ctx, tfState.KeyCredentials.Elements()[k].Type(ctx), &tfPlanKeyCredential)
 
-			if !tfPlanrequestBodyKeyCredentials.CustomKeyIdentifier.Equal(tfStaterequestBodyKeyCredentials.CustomKeyIdentifier) {
-				tfPlanCustomKeyIdentifier := tfPlanrequestBodyKeyCredentials.CustomKeyIdentifier.ValueString()
+			if !tfPlanKeyCredential.CustomKeyIdentifier.Equal(tfStaterequestBodyKeyCredentials.CustomKeyIdentifier) {
+				tfPlanCustomKeyIdentifier := tfPlanKeyCredential.CustomKeyIdentifier.ValueString()
 				requestBodyKeyCredentials.SetCustomKeyIdentifier([]byte(tfPlanCustomKeyIdentifier))
 			}
 
-			if !tfPlanrequestBodyKeyCredentials.DisplayName.Equal(tfStaterequestBodyKeyCredentials.DisplayName) {
-				tfPlanDisplayName := tfPlanrequestBodyKeyCredentials.DisplayName.ValueString()
+			if !tfPlanKeyCredential.DisplayName.Equal(tfStaterequestBodyKeyCredentials.DisplayName) {
+				tfPlanDisplayName := tfPlanKeyCredential.DisplayName.ValueString()
 				requestBodyKeyCredentials.SetDisplayName(&tfPlanDisplayName)
 			}
 
-			if !tfPlanrequestBodyKeyCredentials.EndDateTime.Equal(tfStaterequestBodyKeyCredentials.EndDateTime) {
-				tfPlanEndDateTime := tfPlanrequestBodyKeyCredentials.EndDateTime.ValueString()
+			if !tfPlanKeyCredential.EndDateTime.Equal(tfStaterequestBodyKeyCredentials.EndDateTime) {
+				tfPlanEndDateTime := tfPlanKeyCredential.EndDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanEndDateTime)
 				requestBodyKeyCredentials.SetEndDateTime(&t)
 			}
 
-			if !tfPlanrequestBodyKeyCredentials.Key.Equal(tfStaterequestBodyKeyCredentials.Key) {
-				tfPlanKey := tfPlanrequestBodyKeyCredentials.Key.ValueString()
+			if !tfPlanKeyCredential.Key.Equal(tfStaterequestBodyKeyCredentials.Key) {
+				tfPlanKey := tfPlanKeyCredential.Key.ValueString()
 				requestBodyKeyCredentials.SetKey([]byte(tfPlanKey))
 			}
 
-			if !tfPlanrequestBodyKeyCredentials.KeyId.Equal(tfStaterequestBodyKeyCredentials.KeyId) {
-				tfPlanKeyId := tfPlanrequestBodyKeyCredentials.KeyId.ValueString()
+			if !tfPlanKeyCredential.KeyId.Equal(tfStaterequestBodyKeyCredentials.KeyId) {
+				tfPlanKeyId := tfPlanKeyCredential.KeyId.ValueString()
 				u, _ := uuid.Parse(tfPlanKeyId)
 				requestBodyKeyCredentials.SetKeyId(&u)
 			}
 
-			if !tfPlanrequestBodyKeyCredentials.StartDateTime.Equal(tfStaterequestBodyKeyCredentials.StartDateTime) {
-				tfPlanStartDateTime := tfPlanrequestBodyKeyCredentials.StartDateTime.ValueString()
+			if !tfPlanKeyCredential.StartDateTime.Equal(tfStaterequestBodyKeyCredentials.StartDateTime) {
+				tfPlanStartDateTime := tfPlanKeyCredential.StartDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanStartDateTime)
 				requestBodyKeyCredentials.SetStartDateTime(&t)
 			}
 
-			if !tfPlanrequestBodyKeyCredentials.Type.Equal(tfStaterequestBodyKeyCredentials.Type) {
-				tfPlanType := tfPlanrequestBodyKeyCredentials.Type.ValueString()
+			if !tfPlanKeyCredential.Type.Equal(tfStaterequestBodyKeyCredentials.Type) {
+				tfPlanType := tfPlanKeyCredential.Type.ValueString()
 				requestBodyKeyCredentials.SetTypeEscaped(&tfPlanType)
 			}
 
-			if !tfPlanrequestBodyKeyCredentials.Usage.Equal(tfStaterequestBodyKeyCredentials.Usage) {
-				tfPlanUsage := tfPlanrequestBodyKeyCredentials.Usage.ValueString()
+			if !tfPlanKeyCredential.Usage.Equal(tfStaterequestBodyKeyCredentials.Usage) {
+				tfPlanUsage := tfPlanKeyCredential.Usage.ValueString()
 				requestBodyKeyCredentials.SetUsage(&tfPlanUsage)
 			}
 		}
 		requestBody.SetKeyCredentials(tfPlanKeyCredentials)
 	}
 
-	if !tfPlan.LoginUrl.Equal(tfState.LoginUrl) {
-		tfPlanLoginUrl := tfPlan.LoginUrl.ValueString()
+	if !tfPlanServicePrincipal.LoginUrl.Equal(tfState.LoginUrl) {
+		tfPlanLoginUrl := tfPlanServicePrincipal.LoginUrl.ValueString()
 		requestBody.SetLoginUrl(&tfPlanLoginUrl)
 	}
 
-	if !tfPlan.LogoutUrl.Equal(tfState.LogoutUrl) {
-		tfPlanLogoutUrl := tfPlan.LogoutUrl.ValueString()
+	if !tfPlanServicePrincipal.LogoutUrl.Equal(tfState.LogoutUrl) {
+		tfPlanLogoutUrl := tfPlanServicePrincipal.LogoutUrl.ValueString()
 		requestBody.SetLogoutUrl(&tfPlanLogoutUrl)
 	}
 
-	if !tfPlan.Notes.Equal(tfState.Notes) {
-		tfPlanNotes := tfPlan.Notes.ValueString()
+	if !tfPlanServicePrincipal.Notes.Equal(tfState.Notes) {
+		tfPlanNotes := tfPlanServicePrincipal.Notes.ValueString()
 		requestBody.SetNotes(&tfPlanNotes)
 	}
 
-	if !tfPlan.NotificationEmailAddresses.Equal(tfState.NotificationEmailAddresses) {
+	if !tfPlanServicePrincipal.NotificationEmailAddresses.Equal(tfState.NotificationEmailAddresses) {
 		var stringArrayNotificationEmailAddresses []string
-		for _, i := range tfPlan.NotificationEmailAddresses.Elements() {
+		for _, i := range tfPlanServicePrincipal.NotificationEmailAddresses.Elements() {
 			stringArrayNotificationEmailAddresses = append(stringArrayNotificationEmailAddresses, i.String())
 		}
 		requestBody.SetNotificationEmailAddresses(stringArrayNotificationEmailAddresses)
 	}
 
-	if !tfPlan.Oauth2PermissionScopes.Equal(tfState.Oauth2PermissionScopes) {
+	if !tfPlanServicePrincipal.Oauth2PermissionScopes.Equal(tfState.Oauth2PermissionScopes) {
 		var tfPlanOauth2PermissionScopes []models.PermissionScopeable
-		for k, i := range tfPlan.Oauth2PermissionScopes.Elements() {
+		for k, i := range tfPlanServicePrincipal.Oauth2PermissionScopes.Elements() {
 			requestBodyOauth2PermissionScopes := models.NewPermissionScope()
-			tfPlanrequestBodyOauth2PermissionScopes := servicePrincipalPermissionScopeModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanrequestBodyOauth2PermissionScopes)
+			tfPlanPermissionScope := servicePrincipalPermissionScopeModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanPermissionScope)
 			tfStaterequestBodyOauth2PermissionScopes := servicePrincipalPermissionScopeModel{}
-			types.ListValueFrom(ctx, tfState.Oauth2PermissionScopes.Elements()[k].Type(ctx), &tfPlanrequestBodyOauth2PermissionScopes)
+			types.ListValueFrom(ctx, tfState.Oauth2PermissionScopes.Elements()[k].Type(ctx), &tfPlanPermissionScope)
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.AdminConsentDescription.Equal(tfStaterequestBodyOauth2PermissionScopes.AdminConsentDescription) {
-				tfPlanAdminConsentDescription := tfPlanrequestBodyOauth2PermissionScopes.AdminConsentDescription.ValueString()
+			if !tfPlanPermissionScope.AdminConsentDescription.Equal(tfStaterequestBodyOauth2PermissionScopes.AdminConsentDescription) {
+				tfPlanAdminConsentDescription := tfPlanPermissionScope.AdminConsentDescription.ValueString()
 				requestBodyOauth2PermissionScopes.SetAdminConsentDescription(&tfPlanAdminConsentDescription)
 			}
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.AdminConsentDisplayName.Equal(tfStaterequestBodyOauth2PermissionScopes.AdminConsentDisplayName) {
-				tfPlanAdminConsentDisplayName := tfPlanrequestBodyOauth2PermissionScopes.AdminConsentDisplayName.ValueString()
+			if !tfPlanPermissionScope.AdminConsentDisplayName.Equal(tfStaterequestBodyOauth2PermissionScopes.AdminConsentDisplayName) {
+				tfPlanAdminConsentDisplayName := tfPlanPermissionScope.AdminConsentDisplayName.ValueString()
 				requestBodyOauth2PermissionScopes.SetAdminConsentDisplayName(&tfPlanAdminConsentDisplayName)
 			}
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.Id.Equal(tfStaterequestBodyOauth2PermissionScopes.Id) {
-				tfPlanId := tfPlanrequestBodyOauth2PermissionScopes.Id.ValueString()
+			if !tfPlanPermissionScope.Id.Equal(tfStaterequestBodyOauth2PermissionScopes.Id) {
+				tfPlanId := tfPlanPermissionScope.Id.ValueString()
 				u, _ := uuid.Parse(tfPlanId)
 				requestBodyOauth2PermissionScopes.SetId(&u)
 			}
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.IsEnabled.Equal(tfStaterequestBodyOauth2PermissionScopes.IsEnabled) {
-				tfPlanIsEnabled := tfPlanrequestBodyOauth2PermissionScopes.IsEnabled.ValueBool()
+			if !tfPlanPermissionScope.IsEnabled.Equal(tfStaterequestBodyOauth2PermissionScopes.IsEnabled) {
+				tfPlanIsEnabled := tfPlanPermissionScope.IsEnabled.ValueBool()
 				requestBodyOauth2PermissionScopes.SetIsEnabled(&tfPlanIsEnabled)
 			}
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.Origin.Equal(tfStaterequestBodyOauth2PermissionScopes.Origin) {
-				tfPlanOrigin := tfPlanrequestBodyOauth2PermissionScopes.Origin.ValueString()
+			if !tfPlanPermissionScope.Origin.Equal(tfStaterequestBodyOauth2PermissionScopes.Origin) {
+				tfPlanOrigin := tfPlanPermissionScope.Origin.ValueString()
 				requestBodyOauth2PermissionScopes.SetOrigin(&tfPlanOrigin)
 			}
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.Type.Equal(tfStaterequestBodyOauth2PermissionScopes.Type) {
-				tfPlanType := tfPlanrequestBodyOauth2PermissionScopes.Type.ValueString()
+			if !tfPlanPermissionScope.Type.Equal(tfStaterequestBodyOauth2PermissionScopes.Type) {
+				tfPlanType := tfPlanPermissionScope.Type.ValueString()
 				requestBodyOauth2PermissionScopes.SetTypeEscaped(&tfPlanType)
 			}
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.UserConsentDescription.Equal(tfStaterequestBodyOauth2PermissionScopes.UserConsentDescription) {
-				tfPlanUserConsentDescription := tfPlanrequestBodyOauth2PermissionScopes.UserConsentDescription.ValueString()
+			if !tfPlanPermissionScope.UserConsentDescription.Equal(tfStaterequestBodyOauth2PermissionScopes.UserConsentDescription) {
+				tfPlanUserConsentDescription := tfPlanPermissionScope.UserConsentDescription.ValueString()
 				requestBodyOauth2PermissionScopes.SetUserConsentDescription(&tfPlanUserConsentDescription)
 			}
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.UserConsentDisplayName.Equal(tfStaterequestBodyOauth2PermissionScopes.UserConsentDisplayName) {
-				tfPlanUserConsentDisplayName := tfPlanrequestBodyOauth2PermissionScopes.UserConsentDisplayName.ValueString()
+			if !tfPlanPermissionScope.UserConsentDisplayName.Equal(tfStaterequestBodyOauth2PermissionScopes.UserConsentDisplayName) {
+				tfPlanUserConsentDisplayName := tfPlanPermissionScope.UserConsentDisplayName.ValueString()
 				requestBodyOauth2PermissionScopes.SetUserConsentDisplayName(&tfPlanUserConsentDisplayName)
 			}
 
-			if !tfPlanrequestBodyOauth2PermissionScopes.Value.Equal(tfStaterequestBodyOauth2PermissionScopes.Value) {
-				tfPlanValue := tfPlanrequestBodyOauth2PermissionScopes.Value.ValueString()
+			if !tfPlanPermissionScope.Value.Equal(tfStaterequestBodyOauth2PermissionScopes.Value) {
+				tfPlanValue := tfPlanPermissionScope.Value.ValueString()
 				requestBodyOauth2PermissionScopes.SetValue(&tfPlanValue)
 			}
 		}
 		requestBody.SetOauth2PermissionScopes(tfPlanOauth2PermissionScopes)
 	}
 
-	if !tfPlan.PasswordCredentials.Equal(tfState.PasswordCredentials) {
+	if !tfPlanServicePrincipal.PasswordCredentials.Equal(tfState.PasswordCredentials) {
 		var tfPlanPasswordCredentials []models.PasswordCredentialable
-		for k, i := range tfPlan.PasswordCredentials.Elements() {
+		for k, i := range tfPlanServicePrincipal.PasswordCredentials.Elements() {
 			requestBodyPasswordCredentials := models.NewPasswordCredential()
-			tfPlanrequestBodyPasswordCredentials := servicePrincipalPasswordCredentialModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanrequestBodyPasswordCredentials)
+			tfPlanPasswordCredential := servicePrincipalPasswordCredentialModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanPasswordCredential)
 			tfStaterequestBodyPasswordCredentials := servicePrincipalPasswordCredentialModel{}
-			types.ListValueFrom(ctx, tfState.PasswordCredentials.Elements()[k].Type(ctx), &tfPlanrequestBodyPasswordCredentials)
+			types.ListValueFrom(ctx, tfState.PasswordCredentials.Elements()[k].Type(ctx), &tfPlanPasswordCredential)
 
-			if !tfPlanrequestBodyPasswordCredentials.CustomKeyIdentifier.Equal(tfStaterequestBodyPasswordCredentials.CustomKeyIdentifier) {
-				tfPlanCustomKeyIdentifier := tfPlanrequestBodyPasswordCredentials.CustomKeyIdentifier.ValueString()
+			if !tfPlanPasswordCredential.CustomKeyIdentifier.Equal(tfStaterequestBodyPasswordCredentials.CustomKeyIdentifier) {
+				tfPlanCustomKeyIdentifier := tfPlanPasswordCredential.CustomKeyIdentifier.ValueString()
 				requestBodyPasswordCredentials.SetCustomKeyIdentifier([]byte(tfPlanCustomKeyIdentifier))
 			}
 
-			if !tfPlanrequestBodyPasswordCredentials.DisplayName.Equal(tfStaterequestBodyPasswordCredentials.DisplayName) {
-				tfPlanDisplayName := tfPlanrequestBodyPasswordCredentials.DisplayName.ValueString()
+			if !tfPlanPasswordCredential.DisplayName.Equal(tfStaterequestBodyPasswordCredentials.DisplayName) {
+				tfPlanDisplayName := tfPlanPasswordCredential.DisplayName.ValueString()
 				requestBodyPasswordCredentials.SetDisplayName(&tfPlanDisplayName)
 			}
 
-			if !tfPlanrequestBodyPasswordCredentials.EndDateTime.Equal(tfStaterequestBodyPasswordCredentials.EndDateTime) {
-				tfPlanEndDateTime := tfPlanrequestBodyPasswordCredentials.EndDateTime.ValueString()
+			if !tfPlanPasswordCredential.EndDateTime.Equal(tfStaterequestBodyPasswordCredentials.EndDateTime) {
+				tfPlanEndDateTime := tfPlanPasswordCredential.EndDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanEndDateTime)
 				requestBodyPasswordCredentials.SetEndDateTime(&t)
 			}
 
-			if !tfPlanrequestBodyPasswordCredentials.Hint.Equal(tfStaterequestBodyPasswordCredentials.Hint) {
-				tfPlanHint := tfPlanrequestBodyPasswordCredentials.Hint.ValueString()
+			if !tfPlanPasswordCredential.Hint.Equal(tfStaterequestBodyPasswordCredentials.Hint) {
+				tfPlanHint := tfPlanPasswordCredential.Hint.ValueString()
 				requestBodyPasswordCredentials.SetHint(&tfPlanHint)
 			}
 
-			if !tfPlanrequestBodyPasswordCredentials.KeyId.Equal(tfStaterequestBodyPasswordCredentials.KeyId) {
-				tfPlanKeyId := tfPlanrequestBodyPasswordCredentials.KeyId.ValueString()
+			if !tfPlanPasswordCredential.KeyId.Equal(tfStaterequestBodyPasswordCredentials.KeyId) {
+				tfPlanKeyId := tfPlanPasswordCredential.KeyId.ValueString()
 				u, _ := uuid.Parse(tfPlanKeyId)
 				requestBodyPasswordCredentials.SetKeyId(&u)
 			}
 
-			if !tfPlanrequestBodyPasswordCredentials.SecretText.Equal(tfStaterequestBodyPasswordCredentials.SecretText) {
-				tfPlanSecretText := tfPlanrequestBodyPasswordCredentials.SecretText.ValueString()
+			if !tfPlanPasswordCredential.SecretText.Equal(tfStaterequestBodyPasswordCredentials.SecretText) {
+				tfPlanSecretText := tfPlanPasswordCredential.SecretText.ValueString()
 				requestBodyPasswordCredentials.SetSecretText(&tfPlanSecretText)
 			}
 
-			if !tfPlanrequestBodyPasswordCredentials.StartDateTime.Equal(tfStaterequestBodyPasswordCredentials.StartDateTime) {
-				tfPlanStartDateTime := tfPlanrequestBodyPasswordCredentials.StartDateTime.ValueString()
+			if !tfPlanPasswordCredential.StartDateTime.Equal(tfStaterequestBodyPasswordCredentials.StartDateTime) {
+				tfPlanStartDateTime := tfPlanPasswordCredential.StartDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanStartDateTime)
 				requestBodyPasswordCredentials.SetStartDateTime(&t)
 			}
@@ -2695,133 +2695,133 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 		requestBody.SetPasswordCredentials(tfPlanPasswordCredentials)
 	}
 
-	if !tfPlan.PreferredSingleSignOnMode.Equal(tfState.PreferredSingleSignOnMode) {
-		tfPlanPreferredSingleSignOnMode := tfPlan.PreferredSingleSignOnMode.ValueString()
+	if !tfPlanServicePrincipal.PreferredSingleSignOnMode.Equal(tfState.PreferredSingleSignOnMode) {
+		tfPlanPreferredSingleSignOnMode := tfPlanServicePrincipal.PreferredSingleSignOnMode.ValueString()
 		requestBody.SetPreferredSingleSignOnMode(&tfPlanPreferredSingleSignOnMode)
 	}
 
-	if !tfPlan.PreferredTokenSigningKeyThumbprint.Equal(tfState.PreferredTokenSigningKeyThumbprint) {
-		tfPlanPreferredTokenSigningKeyThumbprint := tfPlan.PreferredTokenSigningKeyThumbprint.ValueString()
+	if !tfPlanServicePrincipal.PreferredTokenSigningKeyThumbprint.Equal(tfState.PreferredTokenSigningKeyThumbprint) {
+		tfPlanPreferredTokenSigningKeyThumbprint := tfPlanServicePrincipal.PreferredTokenSigningKeyThumbprint.ValueString()
 		requestBody.SetPreferredTokenSigningKeyThumbprint(&tfPlanPreferredTokenSigningKeyThumbprint)
 	}
 
-	if !tfPlan.ReplyUrls.Equal(tfState.ReplyUrls) {
+	if !tfPlanServicePrincipal.ReplyUrls.Equal(tfState.ReplyUrls) {
 		var stringArrayReplyUrls []string
-		for _, i := range tfPlan.ReplyUrls.Elements() {
+		for _, i := range tfPlanServicePrincipal.ReplyUrls.Elements() {
 			stringArrayReplyUrls = append(stringArrayReplyUrls, i.String())
 		}
 		requestBody.SetReplyUrls(stringArrayReplyUrls)
 	}
 
-	if !tfPlan.ResourceSpecificApplicationPermissions.Equal(tfState.ResourceSpecificApplicationPermissions) {
+	if !tfPlanServicePrincipal.ResourceSpecificApplicationPermissions.Equal(tfState.ResourceSpecificApplicationPermissions) {
 		var tfPlanResourceSpecificApplicationPermissions []models.ResourceSpecificPermissionable
-		for k, i := range tfPlan.ResourceSpecificApplicationPermissions.Elements() {
+		for k, i := range tfPlanServicePrincipal.ResourceSpecificApplicationPermissions.Elements() {
 			requestBodyResourceSpecificApplicationPermissions := models.NewResourceSpecificPermission()
-			tfPlanrequestBodyResourceSpecificApplicationPermissions := servicePrincipalResourceSpecificPermissionModel{}
-			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanrequestBodyResourceSpecificApplicationPermissions)
+			tfPlanResourceSpecificPermission := servicePrincipalResourceSpecificPermissionModel{}
+			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanResourceSpecificPermission)
 			tfStaterequestBodyResourceSpecificApplicationPermissions := servicePrincipalResourceSpecificPermissionModel{}
-			types.ListValueFrom(ctx, tfState.ResourceSpecificApplicationPermissions.Elements()[k].Type(ctx), &tfPlanrequestBodyResourceSpecificApplicationPermissions)
+			types.ListValueFrom(ctx, tfState.ResourceSpecificApplicationPermissions.Elements()[k].Type(ctx), &tfPlanResourceSpecificPermission)
 
-			if !tfPlanrequestBodyResourceSpecificApplicationPermissions.Description.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.Description) {
-				tfPlanDescription := tfPlanrequestBodyResourceSpecificApplicationPermissions.Description.ValueString()
+			if !tfPlanResourceSpecificPermission.Description.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.Description) {
+				tfPlanDescription := tfPlanResourceSpecificPermission.Description.ValueString()
 				requestBodyResourceSpecificApplicationPermissions.SetDescription(&tfPlanDescription)
 			}
 
-			if !tfPlanrequestBodyResourceSpecificApplicationPermissions.DisplayName.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.DisplayName) {
-				tfPlanDisplayName := tfPlanrequestBodyResourceSpecificApplicationPermissions.DisplayName.ValueString()
+			if !tfPlanResourceSpecificPermission.DisplayName.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.DisplayName) {
+				tfPlanDisplayName := tfPlanResourceSpecificPermission.DisplayName.ValueString()
 				requestBodyResourceSpecificApplicationPermissions.SetDisplayName(&tfPlanDisplayName)
 			}
 
-			if !tfPlanrequestBodyResourceSpecificApplicationPermissions.Id.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.Id) {
-				tfPlanId := tfPlanrequestBodyResourceSpecificApplicationPermissions.Id.ValueString()
+			if !tfPlanResourceSpecificPermission.Id.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.Id) {
+				tfPlanId := tfPlanResourceSpecificPermission.Id.ValueString()
 				u, _ := uuid.Parse(tfPlanId)
 				requestBodyResourceSpecificApplicationPermissions.SetId(&u)
 			}
 
-			if !tfPlanrequestBodyResourceSpecificApplicationPermissions.IsEnabled.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.IsEnabled) {
-				tfPlanIsEnabled := tfPlanrequestBodyResourceSpecificApplicationPermissions.IsEnabled.ValueBool()
+			if !tfPlanResourceSpecificPermission.IsEnabled.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.IsEnabled) {
+				tfPlanIsEnabled := tfPlanResourceSpecificPermission.IsEnabled.ValueBool()
 				requestBodyResourceSpecificApplicationPermissions.SetIsEnabled(&tfPlanIsEnabled)
 			}
 
-			if !tfPlanrequestBodyResourceSpecificApplicationPermissions.Value.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.Value) {
-				tfPlanValue := tfPlanrequestBodyResourceSpecificApplicationPermissions.Value.ValueString()
+			if !tfPlanResourceSpecificPermission.Value.Equal(tfStaterequestBodyResourceSpecificApplicationPermissions.Value) {
+				tfPlanValue := tfPlanResourceSpecificPermission.Value.ValueString()
 				requestBodyResourceSpecificApplicationPermissions.SetValue(&tfPlanValue)
 			}
 		}
 		requestBody.SetResourceSpecificApplicationPermissions(tfPlanResourceSpecificApplicationPermissions)
 	}
 
-	if !tfPlan.SamlSingleSignOnSettings.Equal(tfState.SamlSingleSignOnSettings) {
+	if !tfPlanServicePrincipal.SamlSingleSignOnSettings.Equal(tfState.SamlSingleSignOnSettings) {
 		requestBodySamlSingleSignOnSettings := models.NewSamlSingleSignOnSettings()
-		tfPlanrequestBodySamlSingleSignOnSettings := servicePrincipalSamlSingleSignOnSettingsModel{}
-		tfPlan.SamlSingleSignOnSettings.As(ctx, &tfPlanrequestBodySamlSingleSignOnSettings, basetypes.ObjectAsOptions{})
+		tfPlanSamlSingleSignOnSettings := servicePrincipalSamlSingleSignOnSettingsModel{}
+		tfPlanServicePrincipal.SamlSingleSignOnSettings.As(ctx, &tfPlanSamlSingleSignOnSettings, basetypes.ObjectAsOptions{})
 		tfStaterequestBodySamlSingleSignOnSettings := servicePrincipalSamlSingleSignOnSettingsModel{}
 		tfState.SamlSingleSignOnSettings.As(ctx, &tfStaterequestBodySamlSingleSignOnSettings, basetypes.ObjectAsOptions{})
 
-		if !tfPlanrequestBodySamlSingleSignOnSettings.RelayState.Equal(tfStaterequestBodySamlSingleSignOnSettings.RelayState) {
-			tfPlanRelayState := tfPlanrequestBodySamlSingleSignOnSettings.RelayState.ValueString()
+		if !tfPlanSamlSingleSignOnSettings.RelayState.Equal(tfStaterequestBodySamlSingleSignOnSettings.RelayState) {
+			tfPlanRelayState := tfPlanSamlSingleSignOnSettings.RelayState.ValueString()
 			requestBodySamlSingleSignOnSettings.SetRelayState(&tfPlanRelayState)
 		}
 		requestBody.SetSamlSingleSignOnSettings(requestBodySamlSingleSignOnSettings)
-		tfPlan.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodySamlSingleSignOnSettings.AttributeTypes(), tfPlanrequestBodySamlSingleSignOnSettings)
+		tfPlanServicePrincipal.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, tfPlanSamlSingleSignOnSettings.AttributeTypes(), tfPlanSamlSingleSignOnSettings)
 	}
 
-	if !tfPlan.ServicePrincipalNames.Equal(tfState.ServicePrincipalNames) {
+	if !tfPlanServicePrincipal.ServicePrincipalNames.Equal(tfState.ServicePrincipalNames) {
 		var stringArrayServicePrincipalNames []string
-		for _, i := range tfPlan.ServicePrincipalNames.Elements() {
+		for _, i := range tfPlanServicePrincipal.ServicePrincipalNames.Elements() {
 			stringArrayServicePrincipalNames = append(stringArrayServicePrincipalNames, i.String())
 		}
 		requestBody.SetServicePrincipalNames(stringArrayServicePrincipalNames)
 	}
 
-	if !tfPlan.ServicePrincipalType.Equal(tfState.ServicePrincipalType) {
-		tfPlanServicePrincipalType := tfPlan.ServicePrincipalType.ValueString()
+	if !tfPlanServicePrincipal.ServicePrincipalType.Equal(tfState.ServicePrincipalType) {
+		tfPlanServicePrincipalType := tfPlanServicePrincipal.ServicePrincipalType.ValueString()
 		requestBody.SetServicePrincipalType(&tfPlanServicePrincipalType)
 	}
 
-	if !tfPlan.SignInAudience.Equal(tfState.SignInAudience) {
-		tfPlanSignInAudience := tfPlan.SignInAudience.ValueString()
+	if !tfPlanServicePrincipal.SignInAudience.Equal(tfState.SignInAudience) {
+		tfPlanSignInAudience := tfPlanServicePrincipal.SignInAudience.ValueString()
 		requestBody.SetSignInAudience(&tfPlanSignInAudience)
 	}
 
-	if !tfPlan.Tags.Equal(tfState.Tags) {
+	if !tfPlanServicePrincipal.Tags.Equal(tfState.Tags) {
 		var stringArrayTags []string
-		for _, i := range tfPlan.Tags.Elements() {
+		for _, i := range tfPlanServicePrincipal.Tags.Elements() {
 			stringArrayTags = append(stringArrayTags, i.String())
 		}
 		requestBody.SetTags(stringArrayTags)
 	}
 
-	if !tfPlan.TokenEncryptionKeyId.Equal(tfState.TokenEncryptionKeyId) {
-		tfPlanTokenEncryptionKeyId := tfPlan.TokenEncryptionKeyId.ValueString()
+	if !tfPlanServicePrincipal.TokenEncryptionKeyId.Equal(tfState.TokenEncryptionKeyId) {
+		tfPlanTokenEncryptionKeyId := tfPlanServicePrincipal.TokenEncryptionKeyId.ValueString()
 		u, _ := uuid.Parse(tfPlanTokenEncryptionKeyId)
 		requestBody.SetTokenEncryptionKeyId(&u)
 	}
 
-	if !tfPlan.VerifiedPublisher.Equal(tfState.VerifiedPublisher) {
+	if !tfPlanServicePrincipal.VerifiedPublisher.Equal(tfState.VerifiedPublisher) {
 		requestBodyVerifiedPublisher := models.NewVerifiedPublisher()
-		tfPlanrequestBodyVerifiedPublisher := servicePrincipalVerifiedPublisherModel{}
-		tfPlan.VerifiedPublisher.As(ctx, &tfPlanrequestBodyVerifiedPublisher, basetypes.ObjectAsOptions{})
+		tfPlanVerifiedPublisher := servicePrincipalVerifiedPublisherModel{}
+		tfPlanServicePrincipal.VerifiedPublisher.As(ctx, &tfPlanVerifiedPublisher, basetypes.ObjectAsOptions{})
 		tfStaterequestBodyVerifiedPublisher := servicePrincipalVerifiedPublisherModel{}
 		tfState.VerifiedPublisher.As(ctx, &tfStaterequestBodyVerifiedPublisher, basetypes.ObjectAsOptions{})
 
-		if !tfPlanrequestBodyVerifiedPublisher.AddedDateTime.Equal(tfStaterequestBodyVerifiedPublisher.AddedDateTime) {
-			tfPlanAddedDateTime := tfPlanrequestBodyVerifiedPublisher.AddedDateTime.ValueString()
+		if !tfPlanVerifiedPublisher.AddedDateTime.Equal(tfStaterequestBodyVerifiedPublisher.AddedDateTime) {
+			tfPlanAddedDateTime := tfPlanVerifiedPublisher.AddedDateTime.ValueString()
 			t, _ := time.Parse(time.RFC3339, tfPlanAddedDateTime)
 			requestBodyVerifiedPublisher.SetAddedDateTime(&t)
 		}
 
-		if !tfPlanrequestBodyVerifiedPublisher.DisplayName.Equal(tfStaterequestBodyVerifiedPublisher.DisplayName) {
-			tfPlanDisplayName := tfPlanrequestBodyVerifiedPublisher.DisplayName.ValueString()
+		if !tfPlanVerifiedPublisher.DisplayName.Equal(tfStaterequestBodyVerifiedPublisher.DisplayName) {
+			tfPlanDisplayName := tfPlanVerifiedPublisher.DisplayName.ValueString()
 			requestBodyVerifiedPublisher.SetDisplayName(&tfPlanDisplayName)
 		}
 
-		if !tfPlanrequestBodyVerifiedPublisher.VerifiedPublisherId.Equal(tfStaterequestBodyVerifiedPublisher.VerifiedPublisherId) {
-			tfPlanVerifiedPublisherId := tfPlanrequestBodyVerifiedPublisher.VerifiedPublisherId.ValueString()
+		if !tfPlanVerifiedPublisher.VerifiedPublisherId.Equal(tfStaterequestBodyVerifiedPublisher.VerifiedPublisherId) {
+			tfPlanVerifiedPublisherId := tfPlanVerifiedPublisher.VerifiedPublisherId.ValueString()
 			requestBodyVerifiedPublisher.SetVerifiedPublisherId(&tfPlanVerifiedPublisherId)
 		}
 		requestBody.SetVerifiedPublisher(requestBodyVerifiedPublisher)
-		tfPlan.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfPlanrequestBodyVerifiedPublisher.AttributeTypes(), tfPlanrequestBodyVerifiedPublisher)
+		tfPlanServicePrincipal.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfPlanVerifiedPublisher.AttributeTypes(), tfPlanVerifiedPublisher)
 	}
 
 	// Update servicePrincipal
@@ -2835,7 +2835,7 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	// Update resource state with Computed values
-	diags = resp.State.Set(ctx, tfPlan)
+	diags = resp.State.Set(ctx, tfPlanServicePrincipal)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
