@@ -107,7 +107,7 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 			{{.RequestBodyVar}} := models.New{{.ObjectOf}}()
 			tfPlan{{.RequestBodyVar}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlan{{.RequestBodyVar}})
-			{{.RequestBodyVar}}State := {{.TfModelName}}Model{}
+			tfState{{.RequestBodyVar}} := {{.TfModelName}}Model{}
 			types.ListValueFrom(ctx, {{.StateVar}}{{.Name}}.Elements()[k].Type(ctx), &tfPlan{{.RequestBodyVar}})
 			{{template "generate_update" .NestedUpdate}}
 		}
@@ -120,8 +120,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 		requestBody{{.Name}} := models.New{{.ObjectOf}}()
 		tfPlan{{.RequestBodyVar}} := {{.TfModelName}}Model{}
 		{{.NestedPlan}}.As(ctx, &tfPlan{{.RequestBodyVar}}, basetypes.ObjectAsOptions{})
-		{{.RequestBodyVar}}State := {{.TfModelName}}Model{}
-		{{.NestedState}}.As(ctx, &requestBody{{.Name}}State, basetypes.ObjectAsOptions{})
+		tfState{{.RequestBodyVar}} := {{.TfModelName}}Model{}
+		{{.NestedState}}.As(ctx, &tfState{{.RequestBodyVar}}, basetypes.ObjectAsOptions{})
 		{{template "generate_update" .NestedUpdate}}
 		{{.ParentRequestBodyVar}}.Set{{.Name}}(requestBody{{.Name}})
 		objectValue, _ := types.ObjectValueFrom(ctx, tfPlan{{.RequestBodyVar}}.AttributeTypes(), tfPlan{{.RequestBodyVar}})

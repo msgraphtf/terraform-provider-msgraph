@@ -151,7 +151,7 @@ func (ura updateRequestAttribute) TfModelName() string {
 func (ura updateRequestAttribute) StateVar() string {
 
 	if ura.Parent != nil {
-		return ura.Parent.RequestBodyVar() + "State."
+		return "tfState" + ura.Parent.RequestBodyVar() + "."
 	} else {
 		return "tfState."
 	}
@@ -185,7 +185,7 @@ func (ura updateRequestAttribute) NestedPlan() string {
 func (ura updateRequestAttribute) NestedState() string {
 
 	if ura.Parent != nil {
-		return ura.Parent.RequestBodyVar() + "State." + ura.Name()
+		return "tfState" + ura.Parent.RequestBodyVar() + "." + ura.Name()
 	} else {
 		return "tfState." + ura.Name()
 	}
