@@ -66,7 +66,7 @@ type updateRequestAttribute struct {
 	Parent        *updateRequestAttribute
 }
 
-func (ura updateRequestAttribute) AttributeName() string {
+func (ura updateRequestAttribute) Name() string {
 
 	return upperFirst(ura.Property.Name)
 
@@ -186,9 +186,9 @@ func (ura updateRequestAttribute) PlanValueMethod() string {
 func (ura updateRequestAttribute) NestedPlan() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "Model." + ura.AttributeName()
+		return ura.Parent.RequestBodyVar() + "Model." + ura.Name()
 	} else {
-		return "plan." + ura.AttributeName()
+		return "plan." + ura.Name()
 	}
 
 }
@@ -196,9 +196,9 @@ func (ura updateRequestAttribute) NestedPlan() string {
 func (ura updateRequestAttribute) NestedState() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "State." + ura.AttributeName()
+		return ura.Parent.RequestBodyVar() + "State." + ura.Name()
 	} else {
-		return "state." + ura.AttributeName()
+		return "state." + ura.Name()
 	}
 
 }
@@ -249,17 +249,17 @@ func (ura updateRequestAttribute) ParentRequestBodyVar() string {
 func (ura updateRequestAttribute) ParentPlanVar() string {
 
 	if ura.Parent != nil && ura.Parent.AttributeType() == "UpdateObjectAttribute" {
-		return ura.Parent.RequestBodyVar() + "Model." + ura.AttributeName()
+		return ura.Parent.RequestBodyVar() + "Model." + ura.Name()
 	} else {
-		return "plan." + ura.AttributeName()
+		return "plan." + ura.Name()
 	}
 
 }
 
 func (ura updateRequestAttribute) SetModelMethod() string {
-	if ura.AttributeName() == "Type" {
+	if ura.Name() == "Type" {
 		return "TypeEscaped"
 	} else {
-		return ura.AttributeName()
+		return ura.Name()
 	}
 }

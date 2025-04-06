@@ -20,110 +20,110 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	requestBody := models.New{{.BlockName.UpperCamel}}()
 
 	{{- define "UpdateStringAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
-	plan{{.AttributeName}} := {{.PlanVar}}{{.AttributeName}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&plan{{.AttributeName}})
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}(&plan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateStringEnumAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
-	plan{{.AttributeName}} := {{.PlanVar}}{{.AttributeName}}.{{.PlanValueMethod}}()
-	parsed{{.AttributeName}}, _ := models.Parse{{.NewModelMethod}}(plan{{.AttributeName}})
-	asserted{{.AttributeName}} := parsed{{.AttributeName}}.(models.{{.NewModelMethod}})
-	{{.RequestBodyVar}}.Set{{.AttributeName}}(&asserted{{.AttributeName}})
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	parsed{{.Name}}, _ := models.Parse{{.NewModelMethod}}(plan{{.Name}})
+	asserted{{.Name}} := parsed{{.Name}}.(models.{{.NewModelMethod}})
+	{{.RequestBodyVar}}.Set{{.Name}}(&asserted{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateStringTimeAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
-	plan{{.AttributeName}} := {{.PlanVar}}{{.AttributeName}}.{{.PlanValueMethod}}()
-	t, _ := time.Parse(time.RFC3339, plan{{.AttributeName}})
-	{{.RequestBodyVar}}.Set{{.AttributeName}}(&t)
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	t, _ := time.Parse(time.RFC3339, plan{{.Name}})
+	{{.RequestBodyVar}}.Set{{.Name}}(&t)
 	}
 	{{- end}}
 
 	{{- define "UpdateStringUuidAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
-	plan{{.AttributeName}} := {{.PlanVar}}{{.AttributeName}}.{{.PlanValueMethod}}()
-	u, _ := uuid.Parse(plan{{.AttributeName}})
-	{{.RequestBodyVar}}.Set{{.AttributeName}}(&u)
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	u, _ := uuid.Parse(plan{{.Name}})
+	{{.RequestBodyVar}}.Set{{.Name}}(&u)
 	}
 	{{- end}}
 
 	{{- define "UpdateStringBase64UrlAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
-	plan{{.AttributeName}} := {{.PlanVar}}{{.AttributeName}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(plan{{.AttributeName}}))
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.SetModelMethod}}([]byte(plan{{.Name}}))
 	}
 	{{- end}}
 
 	{{- define "UpdateInt64Attribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
-	plan{{.AttributeName}} := {{.PlanVar}}{{.AttributeName}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.AttributeName}}(&plan{{.AttributeName}})
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateInt32Attribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
-	plan{{.AttributeName}} := int32({{.PlanVar}}{{.AttributeName}}.{{.PlanValueMethod}}())
-	{{.RequestBodyVar}}.Set{{.AttributeName}}(&plan{{.AttributeName}})
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	plan{{.Name}} := int32({{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}())
+	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateBoolAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
-	plan{{.AttributeName}} := {{.PlanVar}}{{.AttributeName}}.{{.PlanValueMethod}}()
-	{{.RequestBodyVar}}.Set{{.AttributeName}}(&plan{{.AttributeName}})
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
+	plan{{.Name}} := {{.PlanVar}}{{.Name}}.{{.PlanValueMethod}}()
+	{{.RequestBodyVar}}.Set{{.Name}}(&plan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateArrayStringAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}) {
-		var stringArray{{.AttributeName}} []string
-		for _, i := range {{.PlanVar}}{{.AttributeName}}.Elements() {
-			stringArray{{.AttributeName}} = append(stringArray{{.AttributeName}}, i.String())
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+		var stringArray{{.Name}} []string
+		for _, i := range {{.PlanVar}}{{.Name}}.Elements() {
+			stringArray{{.Name}} = append(stringArray{{.Name}}, i.String())
 		}
-		{{.RequestBodyVar}}.Set{{.AttributeName}}(stringArray{{.AttributeName}})
+		{{.RequestBodyVar}}.Set{{.Name}}(stringArray{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateArrayUuidAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}) {
-		var {{.AttributeName}} []uuid.UUID
-		for _, i := range {{.PlanVar}}{{.AttributeName}}.Elements() {
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+		var {{.Name}} []uuid.UUID
+		for _, i := range {{.PlanVar}}{{.Name}}.Elements() {
 			u, _ := uuid.Parse(i.String())
-			{{.AttributeName}} = append({{.AttributeName}}, u)
+			{{.Name}} = append({{.Name}}, u)
 		}
-		{{.RequestBodyVar}}.Set{{.AttributeName}}({{.AttributeName}})
+		{{.RequestBodyVar}}.Set{{.Name}}({{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateArrayObjectAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}) {
-		var plan{{.AttributeName}} []models.{{.NewModelMethod}}able
-		for k, i := range {{.PlanVar}}{{.AttributeName}}.Elements() {
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}) {
+		var plan{{.Name}} []models.{{.NewModelMethod}}able
+		for k, i := range {{.PlanVar}}{{.Name}}.Elements() {
 			{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 			{{.RequestBodyVar}}Model := {{.ModelName}}{}
 			types.ListValueFrom(ctx, i.Type(ctx), &{{.RequestBodyVar}}Model)
 			{{.RequestBodyVar}}State := {{.ModelName}}{}
-			types.ListValueFrom(ctx, {{.StateVar}}{{.AttributeName}}.Elements()[k].Type(ctx), &{{.RequestBodyVar}}Model)
+			types.ListValueFrom(ctx, {{.StateVar}}{{.Name}}.Elements()[k].Type(ctx), &{{.RequestBodyVar}}Model)
 			{{template "generate_update" .NestedUpdate}}
 		}
-		{{.ParentRequestBodyVar}}.Set{{.AttributeName}}(plan{{.AttributeName}})
+		{{.ParentRequestBodyVar}}.Set{{.Name}}(plan{{.Name}})
 	}
 	{{- end}}
 
 	{{- define "UpdateObjectAttribute" }}
-	if !{{.PlanVar}}{{.AttributeName}}.Equal({{.StateVar}}{{.AttributeName}}){
+	if !{{.PlanVar}}{{.Name}}.Equal({{.StateVar}}{{.Name}}){
 		{{.RequestBodyVar}} := models.New{{.NewModelMethod}}()
 		{{.RequestBodyVar}}Model := {{.ModelName}}{}
 		{{.NestedPlan}}.As(ctx, &{{.RequestBodyVar}}Model, basetypes.ObjectAsOptions{})
 		{{.RequestBodyVar}}State := {{.ModelName}}{}
 		{{.NestedState}}.As(ctx, &{{.RequestBodyVar}}State, basetypes.ObjectAsOptions{})
 		{{template "generate_update" .NestedUpdate}}
-		{{.ParentRequestBodyVar}}.Set{{.AttributeName}}({{.RequestBodyVar}})
+		{{.ParentRequestBodyVar}}.Set{{.Name}}({{.RequestBodyVar}})
 		objectValue, _ := types.ObjectValueFrom(ctx, {{.RequestBodyVar}}Model.AttributeTypes(), {{.RequestBodyVar}}Model)
 		{{.ParentPlanVar}} = objectValue
 	}
