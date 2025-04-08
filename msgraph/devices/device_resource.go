@@ -767,16 +767,16 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	}
 	if len(response.GetAlternativeSecurityIds()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, responseAlternativeSecurityIds := range response.GetAlternativeSecurityIds() {
+		for _, responseAlternativeSecurityId := range response.GetAlternativeSecurityIds() {
 			tfStateAlternativeSecurityId := deviceAlternativeSecurityIdModel{}
 
-			if responseAlternativeSecurityIds.GetIdentityProvider() != nil {
-				tfStateAlternativeSecurityId.IdentityProvider = types.StringValue(*responseAlternativeSecurityIds.GetIdentityProvider())
+			if responseAlternativeSecurityId.GetIdentityProvider() != nil {
+				tfStateAlternativeSecurityId.IdentityProvider = types.StringValue(*responseAlternativeSecurityId.GetIdentityProvider())
 			} else {
 				tfStateAlternativeSecurityId.IdentityProvider = types.StringNull()
 			}
-			if responseAlternativeSecurityIds.GetKey() != nil {
-				tfStateAlternativeSecurityId.Key = types.StringValue(string(responseAlternativeSecurityIds.GetKey()[:]))
+			if responseAlternativeSecurityId.GetKey() != nil {
+				tfStateAlternativeSecurityId.Key = types.StringValue(string(responseAlternativeSecurityId.GetKey()[:]))
 			} else {
 				tfStateAlternativeSecurityId.Key = types.StringNull()
 			}

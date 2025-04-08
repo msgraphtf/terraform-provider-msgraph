@@ -76,7 +76,7 @@ if len({{.GetMethod}}) > 0 {
 {{- define "ReadListNestedAttribute" }}
 if len({{.GetMethod}}) > 0 {
 	objectValues := []basetypes.ObjectValue{}
-	for _, response{{.Name}} := range {{.GetMethod}} {
+	for _, response{{.ObjectOf}} := range {{.GetMethod}} {
 		tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
 			{{template "generate_read" .NestedRead}}
 		objectValue, _ := types.ObjectValueFrom(ctx, tfState{{.ObjectOf}}.AttributeTypes(), tfState{{.ObjectOf}})

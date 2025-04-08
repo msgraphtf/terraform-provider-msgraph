@@ -1044,16 +1044,16 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	}
 	if len(response.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, responseAssignedLabels := range response.GetAssignedLabels() {
+		for _, responseAssignedLabel := range response.GetAssignedLabels() {
 			tfStateAssignedLabel := groupAssignedLabelModel{}
 
-			if responseAssignedLabels.GetDisplayName() != nil {
-				tfStateAssignedLabel.DisplayName = types.StringValue(*responseAssignedLabels.GetDisplayName())
+			if responseAssignedLabel.GetDisplayName() != nil {
+				tfStateAssignedLabel.DisplayName = types.StringValue(*responseAssignedLabel.GetDisplayName())
 			} else {
 				tfStateAssignedLabel.DisplayName = types.StringNull()
 			}
-			if responseAssignedLabels.GetLabelId() != nil {
-				tfStateAssignedLabel.LabelId = types.StringValue(*responseAssignedLabels.GetLabelId())
+			if responseAssignedLabel.GetLabelId() != nil {
+				tfStateAssignedLabel.LabelId = types.StringValue(*responseAssignedLabel.GetLabelId())
 			} else {
 				tfStateAssignedLabel.LabelId = types.StringNull()
 			}
@@ -1064,20 +1064,20 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	}
 	if len(response.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, responseAssignedLicenses := range response.GetAssignedLicenses() {
+		for _, responseAssignedLicense := range response.GetAssignedLicenses() {
 			tfStateAssignedLicense := groupAssignedLicenseModel{}
 
-			if len(responseAssignedLicenses.GetDisabledPlans()) > 0 {
+			if len(responseAssignedLicense.GetDisabledPlans()) > 0 {
 				var valueArrayDisabledPlans []attr.Value
-				for _, responseDisabledPlans := range responseAssignedLicenses.GetDisabledPlans() {
+				for _, responseDisabledPlans := range responseAssignedLicense.GetDisabledPlans() {
 					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(responseDisabledPlans.String()))
 				}
 				tfStateAssignedLicense.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {
 				tfStateAssignedLicense.DisabledPlans = types.ListNull(types.StringType)
 			}
-			if responseAssignedLicenses.GetSkuId() != nil {
-				tfStateAssignedLicense.SkuId = types.StringValue(responseAssignedLicenses.GetSkuId().String())
+			if responseAssignedLicense.GetSkuId() != nil {
+				tfStateAssignedLicense.SkuId = types.StringValue(responseAssignedLicense.GetSkuId().String())
 			} else {
 				tfStateAssignedLicense.SkuId = types.StringNull()
 			}
@@ -1184,26 +1184,26 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	}
 	if len(response.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, responseOnPremisesProvisioningErrors := range response.GetOnPremisesProvisioningErrors() {
+		for _, responseOnPremisesProvisioningError := range response.GetOnPremisesProvisioningErrors() {
 			tfStateOnPremisesProvisioningError := groupOnPremisesProvisioningErrorModel{}
 
-			if responseOnPremisesProvisioningErrors.GetCategory() != nil {
-				tfStateOnPremisesProvisioningError.Category = types.StringValue(*responseOnPremisesProvisioningErrors.GetCategory())
+			if responseOnPremisesProvisioningError.GetCategory() != nil {
+				tfStateOnPremisesProvisioningError.Category = types.StringValue(*responseOnPremisesProvisioningError.GetCategory())
 			} else {
 				tfStateOnPremisesProvisioningError.Category = types.StringNull()
 			}
-			if responseOnPremisesProvisioningErrors.GetOccurredDateTime() != nil {
-				tfStateOnPremisesProvisioningError.OccurredDateTime = types.StringValue(responseOnPremisesProvisioningErrors.GetOccurredDateTime().String())
+			if responseOnPremisesProvisioningError.GetOccurredDateTime() != nil {
+				tfStateOnPremisesProvisioningError.OccurredDateTime = types.StringValue(responseOnPremisesProvisioningError.GetOccurredDateTime().String())
 			} else {
 				tfStateOnPremisesProvisioningError.OccurredDateTime = types.StringNull()
 			}
-			if responseOnPremisesProvisioningErrors.GetPropertyCausingError() != nil {
-				tfStateOnPremisesProvisioningError.PropertyCausingError = types.StringValue(*responseOnPremisesProvisioningErrors.GetPropertyCausingError())
+			if responseOnPremisesProvisioningError.GetPropertyCausingError() != nil {
+				tfStateOnPremisesProvisioningError.PropertyCausingError = types.StringValue(*responseOnPremisesProvisioningError.GetPropertyCausingError())
 			} else {
 				tfStateOnPremisesProvisioningError.PropertyCausingError = types.StringNull()
 			}
-			if responseOnPremisesProvisioningErrors.GetValue() != nil {
-				tfStateOnPremisesProvisioningError.Value = types.StringValue(*responseOnPremisesProvisioningErrors.GetValue())
+			if responseOnPremisesProvisioningError.GetValue() != nil {
+				tfStateOnPremisesProvisioningError.Value = types.StringValue(*responseOnPremisesProvisioningError.GetValue())
 			} else {
 				tfStateOnPremisesProvisioningError.Value = types.StringNull()
 			}
@@ -1264,21 +1264,21 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	}
 	if len(response.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, responseServiceProvisioningErrors := range response.GetServiceProvisioningErrors() {
+		for _, responseServiceProvisioningError := range response.GetServiceProvisioningErrors() {
 			tfStateServiceProvisioningError := groupServiceProvisioningErrorModel{}
 
-			if responseServiceProvisioningErrors.GetCreatedDateTime() != nil {
-				tfStateServiceProvisioningError.CreatedDateTime = types.StringValue(responseServiceProvisioningErrors.GetCreatedDateTime().String())
+			if responseServiceProvisioningError.GetCreatedDateTime() != nil {
+				tfStateServiceProvisioningError.CreatedDateTime = types.StringValue(responseServiceProvisioningError.GetCreatedDateTime().String())
 			} else {
 				tfStateServiceProvisioningError.CreatedDateTime = types.StringNull()
 			}
-			if responseServiceProvisioningErrors.GetIsResolved() != nil {
-				tfStateServiceProvisioningError.IsResolved = types.BoolValue(*responseServiceProvisioningErrors.GetIsResolved())
+			if responseServiceProvisioningError.GetIsResolved() != nil {
+				tfStateServiceProvisioningError.IsResolved = types.BoolValue(*responseServiceProvisioningError.GetIsResolved())
 			} else {
 				tfStateServiceProvisioningError.IsResolved = types.BoolNull()
 			}
-			if responseServiceProvisioningErrors.GetServiceInstance() != nil {
-				tfStateServiceProvisioningError.ServiceInstance = types.StringValue(*responseServiceProvisioningErrors.GetServiceInstance())
+			if responseServiceProvisioningError.GetServiceInstance() != nil {
+				tfStateServiceProvisioningError.ServiceInstance = types.StringValue(*responseServiceProvisioningError.GetServiceInstance())
 			} else {
 				tfStateServiceProvisioningError.ServiceInstance = types.StringNull()
 			}
