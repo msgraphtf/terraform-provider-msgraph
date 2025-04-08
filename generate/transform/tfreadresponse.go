@@ -147,22 +147,15 @@ func (rra readResponseAttribute) AttributeType() string {
 	return "UNKNOWN"
 }
 
+// Infuriatingly, Kiota (the tool that generates msgraph-sdk-go) suffixes any attributes named "Type" with "Escaped"
+// If it didn't, we could get rid of this and just use {{.Name}} in the template
 func (rra readResponseAttribute) GetMethod() string {
 
-	getMethod := "Get" + upperFirst(rra.Property.Name) + "()"
-	if rra.Property.Name == "type" { // For some reason properties called 'type' use the method "GetTypeEscaped()" in msgraph-sdk-go
-		getMethod = "GetTypeEscaped()"
-	}
-
-	if rra.Parent != nil && rra.Parent.AttributeType() == "ReadSingleNestedAttribute" {
-		//getMethod = rra.Parent.GetMethod() + "." + getMethod
-	} else if rra.Parent != nil && rra.Parent.AttributeType() == "ReadListNestedAttribute" {
-		//getMethod = rra.ParentName() + "." + getMethod
+	if rra.Property.Name == "type" {
+		return "TypeEscaped"
 	} else {
-		//getMethod = "." + getMethod
+		return rra.Name()
 	}
-
-	return getMethod
 
 }
 
