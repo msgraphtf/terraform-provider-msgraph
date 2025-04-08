@@ -531,7 +531,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	if len(result.GetAddIns()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAddIns() {
-			addIns := new(servicePrincipalAddInModel)
+			addIns := servicePrincipalAddInModel{}
 
 			if v.GetId() != nil {
 				addIns.Id = types.StringValue(v.GetId().String())
@@ -541,7 +541,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 			if len(v.GetProperties()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetProperties() {
-					properties := new(servicePrincipalKeyValueModel)
+					properties := servicePrincipalKeyValueModel{}
 
 					if v.GetKey() != nil {
 						properties.Key = types.StringValue(*v.GetKey())
@@ -606,7 +606,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	if len(result.GetAppRoles()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAppRoles() {
-			appRoles := new(servicePrincipalAppRoleModel)
+			appRoles := servicePrincipalAppRoleModel{}
 
 			if len(v.GetAllowedMemberTypes()) > 0 {
 				var allowedMemberTypes []attr.Value
@@ -659,7 +659,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		tfStateServicePrincipal.ApplicationTemplateId = types.StringNull()
 	}
 	if result.GetCustomSecurityAttributes() != nil {
-		customSecurityAttributes := new(servicePrincipalCustomSecurityAttributeValueModel)
+		customSecurityAttributes := servicePrincipalCustomSecurityAttributeValueModel{}
 
 		tfStateServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
 	}
@@ -684,7 +684,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		tfStateServicePrincipal.Homepage = types.StringNull()
 	}
 	if result.GetInfo() != nil {
-		info := new(servicePrincipalInformationalUrlModel)
+		info := servicePrincipalInformationalUrlModel{}
 
 		if result.GetInfo().GetLogoUrl() != nil {
 			info.LogoUrl = types.StringValue(*result.GetInfo().GetLogoUrl())
@@ -717,7 +717,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	if len(result.GetKeyCredentials()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetKeyCredentials() {
-			keyCredentials := new(servicePrincipalKeyCredentialModel)
+			keyCredentials := servicePrincipalKeyCredentialModel{}
 
 			if v.GetCustomKeyIdentifier() != nil {
 				keyCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
@@ -792,7 +792,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	if len(result.GetOauth2PermissionScopes()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOauth2PermissionScopes() {
-			oauth2PermissionScopes := new(servicePrincipalPermissionScopeModel)
+			oauth2PermissionScopes := servicePrincipalPermissionScopeModel{}
 
 			if v.GetAdminConsentDescription() != nil {
 				oauth2PermissionScopes.AdminConsentDescription = types.StringValue(*v.GetAdminConsentDescription())
@@ -847,7 +847,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	if len(result.GetPasswordCredentials()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetPasswordCredentials() {
-			passwordCredentials := new(servicePrincipalPasswordCredentialModel)
+			passwordCredentials := servicePrincipalPasswordCredentialModel{}
 
 			if v.GetCustomKeyIdentifier() != nil {
 				passwordCredentials.CustomKeyIdentifier = types.StringValue(string(v.GetCustomKeyIdentifier()[:]))
@@ -912,7 +912,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	if len(result.GetResourceSpecificApplicationPermissions()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetResourceSpecificApplicationPermissions() {
-			resourceSpecificApplicationPermissions := new(servicePrincipalResourceSpecificPermissionModel)
+			resourceSpecificApplicationPermissions := servicePrincipalResourceSpecificPermissionModel{}
 
 			if v.GetDescription() != nil {
 				resourceSpecificApplicationPermissions.Description = types.StringValue(*v.GetDescription())
@@ -945,7 +945,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		tfStateServicePrincipal.ResourceSpecificApplicationPermissions, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetSamlSingleSignOnSettings() != nil {
-		samlSingleSignOnSettings := new(servicePrincipalSamlSingleSignOnSettingsModel)
+		samlSingleSignOnSettings := servicePrincipalSamlSingleSignOnSettingsModel{}
 
 		if result.GetSamlSingleSignOnSettings().GetRelayState() != nil {
 			samlSingleSignOnSettings.RelayState = types.StringValue(*result.GetSamlSingleSignOnSettings().GetRelayState())
@@ -991,7 +991,7 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		tfStateServicePrincipal.TokenEncryptionKeyId = types.StringNull()
 	}
 	if result.GetVerifiedPublisher() != nil {
-		verifiedPublisher := new(servicePrincipalVerifiedPublisherModel)
+		verifiedPublisher := servicePrincipalVerifiedPublisherModel{}
 
 		if result.GetVerifiedPublisher().GetAddedDateTime() != nil {
 			verifiedPublisher.AddedDateTime = types.StringValue(result.GetVerifiedPublisher().GetAddedDateTime().String())

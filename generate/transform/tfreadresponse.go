@@ -111,8 +111,8 @@ func (rra readResponseAttribute) StateVarName() string {
 	}
 }
 
-func (rra readResponseAttribute) ModelName() string {
-	return rra.ReadResponse.BlockName + upperFirst(rra.Property.ObjectOf.Title) + "Model"
+func (rra readResponseAttribute) TfModelName() string {
+	return rra.ReadResponse.BlockName + rra.ObjectOf()
 }
 
 func (rra readResponseAttribute) AttributeType() string {

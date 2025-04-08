@@ -2582,7 +2582,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLicenses() {
-			assignedLicenses := new(userAssignedLicenseModel)
+			assignedLicenses := userAssignedLicenseModel{}
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var disabledPlans []attr.Value
@@ -2606,7 +2606,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetAssignedPlans()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedPlans() {
-			assignedPlans := new(userAssignedPlanModel)
+			assignedPlans := userAssignedPlanModel{}
 
 			if v.GetAssignedDateTime() != nil {
 				assignedPlans.AssignedDateTime = types.StringValue(v.GetAssignedDateTime().String())
@@ -2634,7 +2634,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.AssignedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetAuthorizationInfo() != nil {
-		authorizationInfo := new(userAuthorizationInfoModel)
+		authorizationInfo := userAuthorizationInfoModel{}
 
 		if len(result.GetAuthorizationInfo().GetCertificateUserIds()) > 0 {
 			var certificateUserIds []attr.Value
@@ -2720,7 +2720,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.EmployeeLeaveDateTime = types.StringNull()
 	}
 	if result.GetEmployeeOrgData() != nil {
-		employeeOrgData := new(userEmployeeOrgDataModel)
+		employeeOrgData := userEmployeeOrgDataModel{}
 
 		if result.GetEmployeeOrgData().GetCostCenter() != nil {
 			employeeOrgData.CostCenter = types.StringValue(*result.GetEmployeeOrgData().GetCostCenter())
@@ -2768,7 +2768,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetIdentities()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetIdentities() {
-			identities := new(userObjectIdentityModel)
+			identities := userObjectIdentityModel{}
 
 			if v.GetIssuer() != nil {
 				identities.Issuer = types.StringValue(*v.GetIssuer())
@@ -2838,7 +2838,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetLicenseAssignmentStates()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetLicenseAssignmentStates() {
-			licenseAssignmentStates := new(userLicenseAssignmentStateModel)
+			licenseAssignmentStates := userLicenseAssignmentStateModel{}
 
 			if v.GetAssignedByGroup() != nil {
 				licenseAssignmentStates.AssignedByGroup = types.StringValue(*v.GetAssignedByGroup())
@@ -2915,7 +2915,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.OnPremisesDomainName = types.StringNull()
 	}
 	if result.GetOnPremisesExtensionAttributes() != nil {
-		onPremisesExtensionAttributes := new(userOnPremisesExtensionAttributesModel)
+		onPremisesExtensionAttributes := userOnPremisesExtensionAttributesModel{}
 
 		if result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1() != nil {
 			onPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*result.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
@@ -3008,7 +3008,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(userOnPremisesProvisioningErrorModel)
+			onPremisesProvisioningErrors := userOnPremisesProvisioningErrorModel{}
 
 			if v.GetCategory() != nil {
 				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -3071,7 +3071,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.PasswordPolicies = types.StringNull()
 	}
 	if result.GetPasswordProfile() != nil {
-		passwordProfile := new(userPasswordProfileModel)
+		passwordProfile := userPasswordProfileModel{}
 
 		if result.GetPasswordProfile().GetForceChangePasswordNextSignIn() != nil {
 			passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*result.GetPasswordProfile().GetForceChangePasswordNextSignIn())
@@ -3124,7 +3124,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetProvisionedPlans()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetProvisionedPlans() {
-			provisionedPlans := new(userProvisionedPlanModel)
+			provisionedPlans := userProvisionedPlanModel{}
 
 			if v.GetCapabilityStatus() != nil {
 				provisionedPlans.CapabilityStatus = types.StringValue(*v.GetCapabilityStatus())
@@ -3184,7 +3184,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(userServiceProvisioningErrorModel)
+			serviceProvisioningErrors := userServiceProvisioningErrorModel{}
 
 			if v.GetCreatedDateTime() != nil {
 				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
@@ -3212,7 +3212,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.ShowInAddressList = types.BoolNull()
 	}
 	if result.GetSignInActivity() != nil {
-		signInActivity := new(userSignInActivityModel)
+		signInActivity := userSignInActivityModel{}
 
 		if result.GetSignInActivity().GetLastNonInteractiveSignInDateTime() != nil {
 			signInActivity.LastNonInteractiveSignInDateTime = types.StringValue(result.GetSignInActivity().GetLastNonInteractiveSignInDateTime().String())

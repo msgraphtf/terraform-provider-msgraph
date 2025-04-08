@@ -225,7 +225,7 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	if len(result.GetValue()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetValue() {
-			value := new(devicesDeviceModel)
+			value := devicesDeviceModel{}
 
 			if v.GetId() != nil {
 				value.Id = types.StringValue(*v.GetId())
@@ -245,7 +245,7 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 			if len(v.GetAlternativeSecurityIds()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetAlternativeSecurityIds() {
-					alternativeSecurityIds := new(devicesAlternativeSecurityIdModel)
+					alternativeSecurityIds := devicesAlternativeSecurityIdModel{}
 
 					if v.GetIdentityProvider() != nil {
 						alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())

@@ -41,7 +41,7 @@ if {{.GetMethod}} != nil {
 
 {{- define "ReadSingleNestedAttribute" }}
 if {{.GetMethod}} != nil {
-	{{.Property.Name}} := new({{.ModelName}})
+	{{.Property.Name}} := {{.TfModelName}}Model{}
 	{{template "generate_read" .NestedRead}}
 
 	{{.StateVarName}}, _ = types.ObjectValueFrom(ctx, {{.Property.Name}}.AttributeTypes(), {{.Property.Name}})
@@ -77,7 +77,7 @@ if len({{.GetMethod}}) > 0 {
 if len({{.GetMethod}}) > 0 {
 	objectValues := []basetypes.ObjectValue{}
 	for _, v := range {{.GetMethod}} {
-		{{.Property.Name}} := new({{.ModelName}})
+		{{.Property.Name}} := {{.TfModelName}}Model{}
 			{{template "generate_read" .NestedRead}}
 		objectValue, _ := types.ObjectValueFrom(ctx, {{.Property.Name}}.AttributeTypes(), {{.Property.Name}})
 		objectValues = append(objectValues, objectValue)

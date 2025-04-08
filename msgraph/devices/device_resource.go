@@ -768,7 +768,7 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	if len(result.GetAlternativeSecurityIds()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAlternativeSecurityIds() {
-			alternativeSecurityIds := new(deviceAlternativeSecurityIdModel)
+			alternativeSecurityIds := deviceAlternativeSecurityIdModel{}
 
 			if v.GetIdentityProvider() != nil {
 				alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())

@@ -609,7 +609,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if len(result.GetValue()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetValue() {
-			value := new(usersUserModel)
+			value := usersUserModel{}
 
 			if v.GetId() != nil {
 				value.Id = types.StringValue(*v.GetId())
@@ -634,7 +634,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			if len(v.GetAssignedLicenses()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetAssignedLicenses() {
-					assignedLicenses := new(usersAssignedLicenseModel)
+					assignedLicenses := usersAssignedLicenseModel{}
 
 					if len(v.GetDisabledPlans()) > 0 {
 						var disabledPlans []attr.Value
@@ -658,7 +658,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			if len(v.GetAssignedPlans()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetAssignedPlans() {
-					assignedPlans := new(usersAssignedPlanModel)
+					assignedPlans := usersAssignedPlanModel{}
 
 					if v.GetAssignedDateTime() != nil {
 						assignedPlans.AssignedDateTime = types.StringValue(v.GetAssignedDateTime().String())
@@ -686,7 +686,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				value.AssignedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
 			if v.GetAuthorizationInfo() != nil {
-				authorizationInfo := new(usersAuthorizationInfoModel)
+				authorizationInfo := usersAuthorizationInfoModel{}
 
 				if len(v.GetAuthorizationInfo().GetCertificateUserIds()) > 0 {
 					var certificateUserIds []attr.Value
@@ -742,7 +742,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				value.CreationType = types.StringNull()
 			}
 			if v.GetCustomSecurityAttributes() != nil {
-				customSecurityAttributes := new(usersCustomSecurityAttributeValueModel)
+				customSecurityAttributes := usersCustomSecurityAttributeValueModel{}
 
 				value.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
 			}
@@ -772,7 +772,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				value.EmployeeLeaveDateTime = types.StringNull()
 			}
 			if v.GetEmployeeOrgData() != nil {
-				employeeOrgData := new(usersEmployeeOrgDataModel)
+				employeeOrgData := usersEmployeeOrgDataModel{}
 
 				if v.GetEmployeeOrgData().GetCostCenter() != nil {
 					employeeOrgData.CostCenter = types.StringValue(*v.GetEmployeeOrgData().GetCostCenter())
@@ -815,7 +815,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			if len(v.GetIdentities()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetIdentities() {
-					identities := new(usersObjectIdentityModel)
+					identities := usersObjectIdentityModel{}
 
 					if v.GetIssuer() != nil {
 						identities.Issuer = types.StringValue(*v.GetIssuer())
@@ -875,7 +875,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			if len(v.GetLicenseAssignmentStates()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetLicenseAssignmentStates() {
-					licenseAssignmentStates := new(usersLicenseAssignmentStateModel)
+					licenseAssignmentStates := usersLicenseAssignmentStateModel{}
 
 					if v.GetAssignedByGroup() != nil {
 						licenseAssignmentStates.AssignedByGroup = types.StringValue(*v.GetAssignedByGroup())
@@ -947,7 +947,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				value.OnPremisesDomainName = types.StringNull()
 			}
 			if v.GetOnPremisesExtensionAttributes() != nil {
-				onPremisesExtensionAttributes := new(usersOnPremisesExtensionAttributesModel)
+				onPremisesExtensionAttributes := usersOnPremisesExtensionAttributesModel{}
 
 				if v.GetOnPremisesExtensionAttributes().GetExtensionAttribute1() != nil {
 					onPremisesExtensionAttributes.ExtensionAttribute1 = types.StringValue(*v.GetOnPremisesExtensionAttributes().GetExtensionAttribute1())
@@ -1040,7 +1040,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			if len(v.GetOnPremisesProvisioningErrors()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetOnPremisesProvisioningErrors() {
-					onPremisesProvisioningErrors := new(usersOnPremisesProvisioningErrorModel)
+					onPremisesProvisioningErrors := usersOnPremisesProvisioningErrorModel{}
 
 					if v.GetCategory() != nil {
 						onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -1103,7 +1103,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				value.PasswordPolicies = types.StringNull()
 			}
 			if v.GetPasswordProfile() != nil {
-				passwordProfile := new(usersPasswordProfileModel)
+				passwordProfile := usersPasswordProfileModel{}
 
 				if v.GetPasswordProfile().GetForceChangePasswordNextSignIn() != nil {
 					passwordProfile.ForceChangePasswordNextSignIn = types.BoolValue(*v.GetPasswordProfile().GetForceChangePasswordNextSignIn())
@@ -1141,7 +1141,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			if len(v.GetProvisionedPlans()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetProvisionedPlans() {
-					provisionedPlans := new(usersProvisionedPlanModel)
+					provisionedPlans := usersProvisionedPlanModel{}
 
 					if v.GetCapabilityStatus() != nil {
 						provisionedPlans.CapabilityStatus = types.StringValue(*v.GetCapabilityStatus())
@@ -1181,7 +1181,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			if len(v.GetServiceProvisioningErrors()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetServiceProvisioningErrors() {
-					serviceProvisioningErrors := new(usersServiceProvisioningErrorModel)
+					serviceProvisioningErrors := usersServiceProvisioningErrorModel{}
 
 					if v.GetCreatedDateTime() != nil {
 						serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
@@ -1209,7 +1209,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				value.ShowInAddressList = types.BoolNull()
 			}
 			if v.GetSignInActivity() != nil {
-				signInActivity := new(usersSignInActivityModel)
+				signInActivity := usersSignInActivityModel{}
 
 				if v.GetSignInActivity().GetLastNonInteractiveSignInDateTime() != nil {
 					signInActivity.LastNonInteractiveSignInDateTime = types.StringValue(v.GetSignInActivity().GetLastNonInteractiveSignInDateTime().String())

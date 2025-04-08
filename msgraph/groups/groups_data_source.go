@@ -296,7 +296,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	if len(result.GetValue()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetValue() {
-			value := new(groupsGroupModel)
+			value := groupsGroupModel{}
 
 			if v.GetId() != nil {
 				value.Id = types.StringValue(*v.GetId())
@@ -311,7 +311,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			if len(v.GetAssignedLabels()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetAssignedLabels() {
-					assignedLabels := new(groupsAssignedLabelModel)
+					assignedLabels := groupsAssignedLabelModel{}
 
 					if v.GetDisplayName() != nil {
 						assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
@@ -331,7 +331,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			if len(v.GetAssignedLicenses()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetAssignedLicenses() {
-					assignedLicenses := new(groupsAssignedLicenseModel)
+					assignedLicenses := groupsAssignedLicenseModel{}
 
 					if len(v.GetDisabledPlans()) > 0 {
 						var disabledPlans []attr.Value
@@ -398,7 +398,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 				value.IsManagementRestricted = types.BoolNull()
 			}
 			if v.GetLicenseProcessingState() != nil {
-				licenseProcessingState := new(groupsLicenseProcessingStateModel)
+				licenseProcessingState := groupsLicenseProcessingStateModel{}
 
 				if v.GetLicenseProcessingState().GetState() != nil {
 					licenseProcessingState.State = types.StringValue(*v.GetLicenseProcessingState().GetState())
@@ -451,7 +451,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			if len(v.GetOnPremisesProvisioningErrors()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetOnPremisesProvisioningErrors() {
-					onPremisesProvisioningErrors := new(groupsOnPremisesProvisioningErrorModel)
+					onPremisesProvisioningErrors := groupsOnPremisesProvisioningErrorModel{}
 
 					if v.GetCategory() != nil {
 						onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -531,7 +531,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			if len(v.GetServiceProvisioningErrors()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range v.GetServiceProvisioningErrors() {
-					serviceProvisioningErrors := new(groupsServiceProvisioningErrorModel)
+					serviceProvisioningErrors := groupsServiceProvisioningErrorModel{}
 
 					if v.GetCreatedDateTime() != nil {
 						serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())

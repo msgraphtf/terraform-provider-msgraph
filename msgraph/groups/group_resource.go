@@ -1045,7 +1045,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLabels() {
-			assignedLabels := new(groupAssignedLabelModel)
+			assignedLabels := groupAssignedLabelModel{}
 
 			if v.GetDisplayName() != nil {
 				assignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
@@ -1065,7 +1065,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLicenses() {
-			assignedLicenses := new(groupAssignedLicenseModel)
+			assignedLicenses := groupAssignedLicenseModel{}
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var disabledPlans []attr.Value
@@ -1132,7 +1132,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		tfStateGroup.IsManagementRestricted = types.BoolNull()
 	}
 	if result.GetLicenseProcessingState() != nil {
-		licenseProcessingState := new(groupLicenseProcessingStateModel)
+		licenseProcessingState := groupLicenseProcessingStateModel{}
 
 		if result.GetLicenseProcessingState().GetState() != nil {
 			licenseProcessingState.State = types.StringValue(*result.GetLicenseProcessingState().GetState())
@@ -1185,7 +1185,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOnPremisesProvisioningErrors() {
-			onPremisesProvisioningErrors := new(groupOnPremisesProvisioningErrorModel)
+			onPremisesProvisioningErrors := groupOnPremisesProvisioningErrorModel{}
 
 			if v.GetCategory() != nil {
 				onPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
@@ -1265,7 +1265,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetServiceProvisioningErrors() {
-			serviceProvisioningErrors := new(groupServiceProvisioningErrorModel)
+			serviceProvisioningErrors := groupServiceProvisioningErrorModel{}
 
 			if v.GetCreatedDateTime() != nil {
 				serviceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())

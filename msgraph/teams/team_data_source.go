@@ -269,7 +269,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.DisplayName = types.StringNull()
 	}
 	if result.GetFunSettings() != nil {
-		funSettings := new(teamTeamFunSettingsModel)
+		funSettings := teamTeamFunSettingsModel{}
 
 		if result.GetFunSettings().GetAllowCustomMemes() != nil {
 			funSettings.AllowCustomMemes = types.BoolValue(*result.GetFunSettings().GetAllowCustomMemes())
@@ -295,7 +295,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.FunSettings, _ = types.ObjectValueFrom(ctx, funSettings.AttributeTypes(), funSettings)
 	}
 	if result.GetGuestSettings() != nil {
-		guestSettings := new(teamTeamGuestSettingsModel)
+		guestSettings := teamTeamGuestSettingsModel{}
 
 		if result.GetGuestSettings().GetAllowCreateUpdateChannels() != nil {
 			guestSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetGuestSettings().GetAllowCreateUpdateChannels())
@@ -321,7 +321,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.IsArchived = types.BoolNull()
 	}
 	if result.GetMemberSettings() != nil {
-		memberSettings := new(teamTeamMemberSettingsModel)
+		memberSettings := teamTeamMemberSettingsModel{}
 
 		if result.GetMemberSettings().GetAllowAddRemoveApps() != nil {
 			memberSettings.AllowAddRemoveApps = types.BoolValue(*result.GetMemberSettings().GetAllowAddRemoveApps())
@@ -357,7 +357,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, memberSettings.AttributeTypes(), memberSettings)
 	}
 	if result.GetMessagingSettings() != nil {
-		messagingSettings := new(teamTeamMessagingSettingsModel)
+		messagingSettings := teamTeamMessagingSettingsModel{}
 
 		if result.GetMessagingSettings().GetAllowChannelMentions() != nil {
 			messagingSettings.AllowChannelMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowChannelMentions())
@@ -393,7 +393,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.Specialization = types.StringNull()
 	}
 	if result.GetSummary() != nil {
-		summary := new(teamTeamSummaryModel)
+		summary := teamTeamSummaryModel{}
 
 		tfStateTeam.Summary, _ = types.ObjectValueFrom(ctx, summary.AttributeTypes(), summary)
 	}
