@@ -51,8 +51,8 @@ if {{.GetMethod}} != nil {
 {{- define "ReadListStringAttribute" }}
 if len({{.GetMethod}}) > 0 {
 	var valueArray{{.Name}} []attr.Value
-	for _, result{{.Name}} := range {{.GetMethod}} {
-		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(result{{.Name}}))
+	for _, response{{.Name}} := range {{.GetMethod}} {
+		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(response{{.Name}}))
 	}
 	listValue, _ := types.ListValue(types.StringType, valueArray{{.Name}})
 	tfState{{.ParentName}}.{{.Name}} = listValue
@@ -64,8 +64,8 @@ if len({{.GetMethod}}) > 0 {
 {{- define "ReadListStringFormattedAttribute" }}
 if len({{.GetMethod}}) > 0 {
 	var valueArray{{.Name}} []attr.Value
-	for _, result{{.Name}} := range {{.GetMethod}} {
-		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(result{{.Name}}.String()))
+	for _, response{{.Name}} := range {{.GetMethod}} {
+		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(response{{.Name}}.String()))
 	}
 	tfState{{.ParentName}}.{{.Name}}, _ = types.ListValue(types.StringType, valueArray{{.Name}})
 } else {
@@ -76,7 +76,7 @@ if len({{.GetMethod}}) > 0 {
 {{- define "ReadListNestedAttribute" }}
 if len({{.GetMethod}}) > 0 {
 	objectValues := []basetypes.ObjectValue{}
-	for _, result{{.Name}} := range {{.GetMethod}} {
+	for _, response{{.Name}} := range {{.GetMethod}} {
 		tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
 			{{template "generate_read" .NestedRead}}
 		objectValue, _ := types.ObjectValueFrom(ctx, tfState{{.ObjectOf}}.AttributeTypes(), tfState{{.ObjectOf}})

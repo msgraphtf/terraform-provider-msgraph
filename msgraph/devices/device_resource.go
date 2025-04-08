@@ -729,11 +729,11 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		},
 	}
 
-	var result models.Deviceable
+	var response models.Deviceable
 	var err error
 
 	if !tfStateDevice.Id.IsNull() {
-		result, err = d.client.Devices().ByDeviceId(tfStateDevice.Id.ValueString()).Get(context.Background(), &qparams)
+		response, err = d.client.Devices().ByDeviceId(tfStateDevice.Id.ValueString()).Get(context.Background(), &qparams)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
@@ -750,33 +750,33 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	if result.GetId() != nil {
-		tfStateDevice.Id = types.StringValue(*result.GetId())
+	if response.GetId() != nil {
+		tfStateDevice.Id = types.StringValue(*response.GetId())
 	} else {
 		tfStateDevice.Id = types.StringNull()
 	}
-	if result.GetDeletedDateTime() != nil {
-		tfStateDevice.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
+	if response.GetDeletedDateTime() != nil {
+		tfStateDevice.DeletedDateTime = types.StringValue(response.GetDeletedDateTime().String())
 	} else {
 		tfStateDevice.DeletedDateTime = types.StringNull()
 	}
-	if result.GetAccountEnabled() != nil {
-		tfStateDevice.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
+	if response.GetAccountEnabled() != nil {
+		tfStateDevice.AccountEnabled = types.BoolValue(*response.GetAccountEnabled())
 	} else {
 		tfStateDevice.AccountEnabled = types.BoolNull()
 	}
-	if len(result.GetAlternativeSecurityIds()) > 0 {
+	if len(response.GetAlternativeSecurityIds()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, resultAlternativeSecurityIds := range result.GetAlternativeSecurityIds() {
+		for _, responseAlternativeSecurityIds := range response.GetAlternativeSecurityIds() {
 			tfStateAlternativeSecurityId := deviceAlternativeSecurityIdModel{}
 
-			if resultAlternativeSecurityIds.GetIdentityProvider() != nil {
-				tfStateAlternativeSecurityId.IdentityProvider = types.StringValue(*resultAlternativeSecurityIds.GetIdentityProvider())
+			if responseAlternativeSecurityIds.GetIdentityProvider() != nil {
+				tfStateAlternativeSecurityId.IdentityProvider = types.StringValue(*responseAlternativeSecurityIds.GetIdentityProvider())
 			} else {
 				tfStateAlternativeSecurityId.IdentityProvider = types.StringNull()
 			}
-			if resultAlternativeSecurityIds.GetKey() != nil {
-				tfStateAlternativeSecurityId.Key = types.StringValue(string(resultAlternativeSecurityIds.GetKey()[:]))
+			if responseAlternativeSecurityIds.GetKey() != nil {
+				tfStateAlternativeSecurityId.Key = types.StringValue(string(responseAlternativeSecurityIds.GetKey()[:]))
 			} else {
 				tfStateAlternativeSecurityId.Key = types.StringNull()
 			}
@@ -785,148 +785,148 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		}
 		tfStateDevice.AlternativeSecurityIds, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if result.GetApproximateLastSignInDateTime() != nil {
-		tfStateDevice.ApproximateLastSignInDateTime = types.StringValue(result.GetApproximateLastSignInDateTime().String())
+	if response.GetApproximateLastSignInDateTime() != nil {
+		tfStateDevice.ApproximateLastSignInDateTime = types.StringValue(response.GetApproximateLastSignInDateTime().String())
 	} else {
 		tfStateDevice.ApproximateLastSignInDateTime = types.StringNull()
 	}
-	if result.GetComplianceExpirationDateTime() != nil {
-		tfStateDevice.ComplianceExpirationDateTime = types.StringValue(result.GetComplianceExpirationDateTime().String())
+	if response.GetComplianceExpirationDateTime() != nil {
+		tfStateDevice.ComplianceExpirationDateTime = types.StringValue(response.GetComplianceExpirationDateTime().String())
 	} else {
 		tfStateDevice.ComplianceExpirationDateTime = types.StringNull()
 	}
-	if result.GetDeviceCategory() != nil {
-		tfStateDevice.DeviceCategory = types.StringValue(*result.GetDeviceCategory())
+	if response.GetDeviceCategory() != nil {
+		tfStateDevice.DeviceCategory = types.StringValue(*response.GetDeviceCategory())
 	} else {
 		tfStateDevice.DeviceCategory = types.StringNull()
 	}
-	if result.GetDeviceId() != nil {
-		tfStateDevice.DeviceId = types.StringValue(*result.GetDeviceId())
+	if response.GetDeviceId() != nil {
+		tfStateDevice.DeviceId = types.StringValue(*response.GetDeviceId())
 	} else {
 		tfStateDevice.DeviceId = types.StringNull()
 	}
-	if result.GetDeviceMetadata() != nil {
-		tfStateDevice.DeviceMetadata = types.StringValue(*result.GetDeviceMetadata())
+	if response.GetDeviceMetadata() != nil {
+		tfStateDevice.DeviceMetadata = types.StringValue(*response.GetDeviceMetadata())
 	} else {
 		tfStateDevice.DeviceMetadata = types.StringNull()
 	}
-	if result.GetDeviceOwnership() != nil {
-		tfStateDevice.DeviceOwnership = types.StringValue(*result.GetDeviceOwnership())
+	if response.GetDeviceOwnership() != nil {
+		tfStateDevice.DeviceOwnership = types.StringValue(*response.GetDeviceOwnership())
 	} else {
 		tfStateDevice.DeviceOwnership = types.StringNull()
 	}
-	if result.GetDisplayName() != nil {
-		tfStateDevice.DisplayName = types.StringValue(*result.GetDisplayName())
+	if response.GetDisplayName() != nil {
+		tfStateDevice.DisplayName = types.StringValue(*response.GetDisplayName())
 	} else {
 		tfStateDevice.DisplayName = types.StringNull()
 	}
-	if result.GetEnrollmentProfileName() != nil {
-		tfStateDevice.EnrollmentProfileName = types.StringValue(*result.GetEnrollmentProfileName())
+	if response.GetEnrollmentProfileName() != nil {
+		tfStateDevice.EnrollmentProfileName = types.StringValue(*response.GetEnrollmentProfileName())
 	} else {
 		tfStateDevice.EnrollmentProfileName = types.StringNull()
 	}
-	if result.GetEnrollmentType() != nil {
-		tfStateDevice.EnrollmentType = types.StringValue(*result.GetEnrollmentType())
+	if response.GetEnrollmentType() != nil {
+		tfStateDevice.EnrollmentType = types.StringValue(*response.GetEnrollmentType())
 	} else {
 		tfStateDevice.EnrollmentType = types.StringNull()
 	}
-	if result.GetIsCompliant() != nil {
-		tfStateDevice.IsCompliant = types.BoolValue(*result.GetIsCompliant())
+	if response.GetIsCompliant() != nil {
+		tfStateDevice.IsCompliant = types.BoolValue(*response.GetIsCompliant())
 	} else {
 		tfStateDevice.IsCompliant = types.BoolNull()
 	}
-	if result.GetIsManaged() != nil {
-		tfStateDevice.IsManaged = types.BoolValue(*result.GetIsManaged())
+	if response.GetIsManaged() != nil {
+		tfStateDevice.IsManaged = types.BoolValue(*response.GetIsManaged())
 	} else {
 		tfStateDevice.IsManaged = types.BoolNull()
 	}
-	if result.GetIsManagementRestricted() != nil {
-		tfStateDevice.IsManagementRestricted = types.BoolValue(*result.GetIsManagementRestricted())
+	if response.GetIsManagementRestricted() != nil {
+		tfStateDevice.IsManagementRestricted = types.BoolValue(*response.GetIsManagementRestricted())
 	} else {
 		tfStateDevice.IsManagementRestricted = types.BoolNull()
 	}
-	if result.GetIsRooted() != nil {
-		tfStateDevice.IsRooted = types.BoolValue(*result.GetIsRooted())
+	if response.GetIsRooted() != nil {
+		tfStateDevice.IsRooted = types.BoolValue(*response.GetIsRooted())
 	} else {
 		tfStateDevice.IsRooted = types.BoolNull()
 	}
-	if result.GetManagementType() != nil {
-		tfStateDevice.ManagementType = types.StringValue(*result.GetManagementType())
+	if response.GetManagementType() != nil {
+		tfStateDevice.ManagementType = types.StringValue(*response.GetManagementType())
 	} else {
 		tfStateDevice.ManagementType = types.StringNull()
 	}
-	if result.GetManufacturer() != nil {
-		tfStateDevice.Manufacturer = types.StringValue(*result.GetManufacturer())
+	if response.GetManufacturer() != nil {
+		tfStateDevice.Manufacturer = types.StringValue(*response.GetManufacturer())
 	} else {
 		tfStateDevice.Manufacturer = types.StringNull()
 	}
-	if result.GetMdmAppId() != nil {
-		tfStateDevice.MdmAppId = types.StringValue(*result.GetMdmAppId())
+	if response.GetMdmAppId() != nil {
+		tfStateDevice.MdmAppId = types.StringValue(*response.GetMdmAppId())
 	} else {
 		tfStateDevice.MdmAppId = types.StringNull()
 	}
-	if result.GetModel() != nil {
-		tfStateDevice.Model = types.StringValue(*result.GetModel())
+	if response.GetModel() != nil {
+		tfStateDevice.Model = types.StringValue(*response.GetModel())
 	} else {
 		tfStateDevice.Model = types.StringNull()
 	}
-	if result.GetOnPremisesLastSyncDateTime() != nil {
-		tfStateDevice.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
+	if response.GetOnPremisesLastSyncDateTime() != nil {
+		tfStateDevice.OnPremisesLastSyncDateTime = types.StringValue(response.GetOnPremisesLastSyncDateTime().String())
 	} else {
 		tfStateDevice.OnPremisesLastSyncDateTime = types.StringNull()
 	}
-	if result.GetOnPremisesSecurityIdentifier() != nil {
-		tfStateDevice.OnPremisesSecurityIdentifier = types.StringValue(*result.GetOnPremisesSecurityIdentifier())
+	if response.GetOnPremisesSecurityIdentifier() != nil {
+		tfStateDevice.OnPremisesSecurityIdentifier = types.StringValue(*response.GetOnPremisesSecurityIdentifier())
 	} else {
 		tfStateDevice.OnPremisesSecurityIdentifier = types.StringNull()
 	}
-	if result.GetOnPremisesSyncEnabled() != nil {
-		tfStateDevice.OnPremisesSyncEnabled = types.BoolValue(*result.GetOnPremisesSyncEnabled())
+	if response.GetOnPremisesSyncEnabled() != nil {
+		tfStateDevice.OnPremisesSyncEnabled = types.BoolValue(*response.GetOnPremisesSyncEnabled())
 	} else {
 		tfStateDevice.OnPremisesSyncEnabled = types.BoolNull()
 	}
-	if result.GetOperatingSystem() != nil {
-		tfStateDevice.OperatingSystem = types.StringValue(*result.GetOperatingSystem())
+	if response.GetOperatingSystem() != nil {
+		tfStateDevice.OperatingSystem = types.StringValue(*response.GetOperatingSystem())
 	} else {
 		tfStateDevice.OperatingSystem = types.StringNull()
 	}
-	if result.GetOperatingSystemVersion() != nil {
-		tfStateDevice.OperatingSystemVersion = types.StringValue(*result.GetOperatingSystemVersion())
+	if response.GetOperatingSystemVersion() != nil {
+		tfStateDevice.OperatingSystemVersion = types.StringValue(*response.GetOperatingSystemVersion())
 	} else {
 		tfStateDevice.OperatingSystemVersion = types.StringNull()
 	}
-	if len(result.GetPhysicalIds()) > 0 {
+	if len(response.GetPhysicalIds()) > 0 {
 		var valueArrayPhysicalIds []attr.Value
-		for _, resultPhysicalIds := range result.GetPhysicalIds() {
-			valueArrayPhysicalIds = append(valueArrayPhysicalIds, types.StringValue(resultPhysicalIds))
+		for _, responsePhysicalIds := range response.GetPhysicalIds() {
+			valueArrayPhysicalIds = append(valueArrayPhysicalIds, types.StringValue(responsePhysicalIds))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayPhysicalIds)
 		tfStateDevice.PhysicalIds = listValue
 	} else {
 		tfStateDevice.PhysicalIds = types.ListNull(types.StringType)
 	}
-	if result.GetProfileType() != nil {
-		tfStateDevice.ProfileType = types.StringValue(*result.GetProfileType())
+	if response.GetProfileType() != nil {
+		tfStateDevice.ProfileType = types.StringValue(*response.GetProfileType())
 	} else {
 		tfStateDevice.ProfileType = types.StringNull()
 	}
-	if result.GetRegistrationDateTime() != nil {
-		tfStateDevice.RegistrationDateTime = types.StringValue(result.GetRegistrationDateTime().String())
+	if response.GetRegistrationDateTime() != nil {
+		tfStateDevice.RegistrationDateTime = types.StringValue(response.GetRegistrationDateTime().String())
 	} else {
 		tfStateDevice.RegistrationDateTime = types.StringNull()
 	}
-	if len(result.GetSystemLabels()) > 0 {
+	if len(response.GetSystemLabels()) > 0 {
 		var valueArraySystemLabels []attr.Value
-		for _, resultSystemLabels := range result.GetSystemLabels() {
-			valueArraySystemLabels = append(valueArraySystemLabels, types.StringValue(resultSystemLabels))
+		for _, responseSystemLabels := range response.GetSystemLabels() {
+			valueArraySystemLabels = append(valueArraySystemLabels, types.StringValue(responseSystemLabels))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArraySystemLabels)
 		tfStateDevice.SystemLabels = listValue
 	} else {
 		tfStateDevice.SystemLabels = types.ListNull(types.StringType)
 	}
-	if result.GetTrustType() != nil {
-		tfStateDevice.TrustType = types.StringValue(*result.GetTrustType())
+	if response.GetTrustType() != nil {
+		tfStateDevice.TrustType = types.StringValue(*response.GetTrustType())
 	} else {
 		tfStateDevice.TrustType = types.StringNull()
 	}

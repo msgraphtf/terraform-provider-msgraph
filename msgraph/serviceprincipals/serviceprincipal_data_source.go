@@ -492,11 +492,11 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		},
 	}
 
-	var result models.ServicePrincipalable
+	var response models.ServicePrincipalable
 	var err error
 
 	if !tfStateServicePrincipal.Id.IsNull() {
-		result, err = d.client.ServicePrincipals().ByServicePrincipalId(tfStateServicePrincipal.Id.ValueString()).Get(context.Background(), &qparams)
+		response, err = d.client.ServicePrincipals().ByServicePrincipalId(tfStateServicePrincipal.Id.ValueString()).Get(context.Background(), &qparams)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
@@ -513,43 +513,43 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		return
 	}
 
-	if result.GetId() != nil {
-		tfStateServicePrincipal.Id = types.StringValue(*result.GetId())
+	if response.GetId() != nil {
+		tfStateServicePrincipal.Id = types.StringValue(*response.GetId())
 	} else {
 		tfStateServicePrincipal.Id = types.StringNull()
 	}
-	if result.GetDeletedDateTime() != nil {
-		tfStateServicePrincipal.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
+	if response.GetDeletedDateTime() != nil {
+		tfStateServicePrincipal.DeletedDateTime = types.StringValue(response.GetDeletedDateTime().String())
 	} else {
 		tfStateServicePrincipal.DeletedDateTime = types.StringNull()
 	}
-	if result.GetAccountEnabled() != nil {
-		tfStateServicePrincipal.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
+	if response.GetAccountEnabled() != nil {
+		tfStateServicePrincipal.AccountEnabled = types.BoolValue(*response.GetAccountEnabled())
 	} else {
 		tfStateServicePrincipal.AccountEnabled = types.BoolNull()
 	}
-	if len(result.GetAddIns()) > 0 {
+	if len(response.GetAddIns()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, resultAddIns := range result.GetAddIns() {
+		for _, responseAddIns := range response.GetAddIns() {
 			tfStateAddIn := servicePrincipalAddInModel{}
 
-			if resultAddIns.GetId() != nil {
-				tfStateAddIn.Id = types.StringValue(resultAddIns.GetId().String())
+			if responseAddIns.GetId() != nil {
+				tfStateAddIn.Id = types.StringValue(responseAddIns.GetId().String())
 			} else {
 				tfStateAddIn.Id = types.StringNull()
 			}
-			if len(resultAddIns.GetProperties()) > 0 {
+			if len(responseAddIns.GetProperties()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
-				for _, resultProperties := range resultAddIns.GetProperties() {
+				for _, responseProperties := range responseAddIns.GetProperties() {
 					tfStateKeyValue := servicePrincipalKeyValueModel{}
 
-					if resultProperties.GetKey() != nil {
-						tfStateKeyValue.Key = types.StringValue(*resultProperties.GetKey())
+					if responseProperties.GetKey() != nil {
+						tfStateKeyValue.Key = types.StringValue(*responseProperties.GetKey())
 					} else {
 						tfStateKeyValue.Key = types.StringNull()
 					}
-					if resultProperties.GetValue() != nil {
-						tfStateKeyValue.Value = types.StringValue(*resultProperties.GetValue())
+					if responseProperties.GetValue() != nil {
+						tfStateKeyValue.Value = types.StringValue(*responseProperties.GetValue())
 					} else {
 						tfStateKeyValue.Value = types.StringNull()
 					}
@@ -558,8 +558,8 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 				}
 				tfStateAddIn.Properties, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
-			if resultAddIns.GetTypeEscaped() != nil {
-				tfStateAddIn.Type = types.StringValue(*resultAddIns.GetTypeEscaped())
+			if responseAddIns.GetTypeEscaped() != nil {
+				tfStateAddIn.Type = types.StringValue(*responseAddIns.GetTypeEscaped())
 			} else {
 				tfStateAddIn.Type = types.StringNull()
 			}
@@ -568,83 +568,83 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		}
 		tfStateServicePrincipal.AddIns, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if len(result.GetAlternativeNames()) > 0 {
+	if len(response.GetAlternativeNames()) > 0 {
 		var valueArrayAlternativeNames []attr.Value
-		for _, resultAlternativeNames := range result.GetAlternativeNames() {
-			valueArrayAlternativeNames = append(valueArrayAlternativeNames, types.StringValue(resultAlternativeNames))
+		for _, responseAlternativeNames := range response.GetAlternativeNames() {
+			valueArrayAlternativeNames = append(valueArrayAlternativeNames, types.StringValue(responseAlternativeNames))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayAlternativeNames)
 		tfStateServicePrincipal.AlternativeNames = listValue
 	} else {
 		tfStateServicePrincipal.AlternativeNames = types.ListNull(types.StringType)
 	}
-	if result.GetAppDescription() != nil {
-		tfStateServicePrincipal.AppDescription = types.StringValue(*result.GetAppDescription())
+	if response.GetAppDescription() != nil {
+		tfStateServicePrincipal.AppDescription = types.StringValue(*response.GetAppDescription())
 	} else {
 		tfStateServicePrincipal.AppDescription = types.StringNull()
 	}
-	if result.GetAppDisplayName() != nil {
-		tfStateServicePrincipal.AppDisplayName = types.StringValue(*result.GetAppDisplayName())
+	if response.GetAppDisplayName() != nil {
+		tfStateServicePrincipal.AppDisplayName = types.StringValue(*response.GetAppDisplayName())
 	} else {
 		tfStateServicePrincipal.AppDisplayName = types.StringNull()
 	}
-	if result.GetAppId() != nil {
-		tfStateServicePrincipal.AppId = types.StringValue(*result.GetAppId())
+	if response.GetAppId() != nil {
+		tfStateServicePrincipal.AppId = types.StringValue(*response.GetAppId())
 	} else {
 		tfStateServicePrincipal.AppId = types.StringNull()
 	}
-	if result.GetAppOwnerOrganizationId() != nil {
-		tfStateServicePrincipal.AppOwnerOrganizationId = types.StringValue(result.GetAppOwnerOrganizationId().String())
+	if response.GetAppOwnerOrganizationId() != nil {
+		tfStateServicePrincipal.AppOwnerOrganizationId = types.StringValue(response.GetAppOwnerOrganizationId().String())
 	} else {
 		tfStateServicePrincipal.AppOwnerOrganizationId = types.StringNull()
 	}
-	if result.GetAppRoleAssignmentRequired() != nil {
-		tfStateServicePrincipal.AppRoleAssignmentRequired = types.BoolValue(*result.GetAppRoleAssignmentRequired())
+	if response.GetAppRoleAssignmentRequired() != nil {
+		tfStateServicePrincipal.AppRoleAssignmentRequired = types.BoolValue(*response.GetAppRoleAssignmentRequired())
 	} else {
 		tfStateServicePrincipal.AppRoleAssignmentRequired = types.BoolNull()
 	}
-	if len(result.GetAppRoles()) > 0 {
+	if len(response.GetAppRoles()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, resultAppRoles := range result.GetAppRoles() {
+		for _, responseAppRoles := range response.GetAppRoles() {
 			tfStateAppRole := servicePrincipalAppRoleModel{}
 
-			if len(resultAppRoles.GetAllowedMemberTypes()) > 0 {
+			if len(responseAppRoles.GetAllowedMemberTypes()) > 0 {
 				var valueArrayAllowedMemberTypes []attr.Value
-				for _, resultAllowedMemberTypes := range resultAppRoles.GetAllowedMemberTypes() {
-					valueArrayAllowedMemberTypes = append(valueArrayAllowedMemberTypes, types.StringValue(resultAllowedMemberTypes))
+				for _, responseAllowedMemberTypes := range responseAppRoles.GetAllowedMemberTypes() {
+					valueArrayAllowedMemberTypes = append(valueArrayAllowedMemberTypes, types.StringValue(responseAllowedMemberTypes))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayAllowedMemberTypes)
 				tfStateAppRole.AllowedMemberTypes = listValue
 			} else {
 				tfStateAppRole.AllowedMemberTypes = types.ListNull(types.StringType)
 			}
-			if resultAppRoles.GetDescription() != nil {
-				tfStateAppRole.Description = types.StringValue(*resultAppRoles.GetDescription())
+			if responseAppRoles.GetDescription() != nil {
+				tfStateAppRole.Description = types.StringValue(*responseAppRoles.GetDescription())
 			} else {
 				tfStateAppRole.Description = types.StringNull()
 			}
-			if resultAppRoles.GetDisplayName() != nil {
-				tfStateAppRole.DisplayName = types.StringValue(*resultAppRoles.GetDisplayName())
+			if responseAppRoles.GetDisplayName() != nil {
+				tfStateAppRole.DisplayName = types.StringValue(*responseAppRoles.GetDisplayName())
 			} else {
 				tfStateAppRole.DisplayName = types.StringNull()
 			}
-			if resultAppRoles.GetId() != nil {
-				tfStateAppRole.Id = types.StringValue(resultAppRoles.GetId().String())
+			if responseAppRoles.GetId() != nil {
+				tfStateAppRole.Id = types.StringValue(responseAppRoles.GetId().String())
 			} else {
 				tfStateAppRole.Id = types.StringNull()
 			}
-			if resultAppRoles.GetIsEnabled() != nil {
-				tfStateAppRole.IsEnabled = types.BoolValue(*resultAppRoles.GetIsEnabled())
+			if responseAppRoles.GetIsEnabled() != nil {
+				tfStateAppRole.IsEnabled = types.BoolValue(*responseAppRoles.GetIsEnabled())
 			} else {
 				tfStateAppRole.IsEnabled = types.BoolNull()
 			}
-			if resultAppRoles.GetOrigin() != nil {
-				tfStateAppRole.Origin = types.StringValue(*resultAppRoles.GetOrigin())
+			if responseAppRoles.GetOrigin() != nil {
+				tfStateAppRole.Origin = types.StringValue(*responseAppRoles.GetOrigin())
 			} else {
 				tfStateAppRole.Origin = types.StringNull()
 			}
-			if resultAppRoles.GetValue() != nil {
-				tfStateAppRole.Value = types.StringValue(*resultAppRoles.GetValue())
+			if responseAppRoles.GetValue() != nil {
+				tfStateAppRole.Value = types.StringValue(*responseAppRoles.GetValue())
 			} else {
 				tfStateAppRole.Value = types.StringNull()
 			}
@@ -653,109 +653,109 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		}
 		tfStateServicePrincipal.AppRoles, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if result.GetApplicationTemplateId() != nil {
-		tfStateServicePrincipal.ApplicationTemplateId = types.StringValue(*result.GetApplicationTemplateId())
+	if response.GetApplicationTemplateId() != nil {
+		tfStateServicePrincipal.ApplicationTemplateId = types.StringValue(*response.GetApplicationTemplateId())
 	} else {
 		tfStateServicePrincipal.ApplicationTemplateId = types.StringNull()
 	}
-	if result.GetCustomSecurityAttributes() != nil {
+	if response.GetCustomSecurityAttributes() != nil {
 		tfStateCustomSecurityAttributeValue := servicePrincipalCustomSecurityAttributeValueModel{}
 
 		tfStateServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfStateCustomSecurityAttributeValue.AttributeTypes(), tfStateCustomSecurityAttributeValue)
 	}
-	if result.GetDescription() != nil {
-		tfStateServicePrincipal.Description = types.StringValue(*result.GetDescription())
+	if response.GetDescription() != nil {
+		tfStateServicePrincipal.Description = types.StringValue(*response.GetDescription())
 	} else {
 		tfStateServicePrincipal.Description = types.StringNull()
 	}
-	if result.GetDisabledByMicrosoftStatus() != nil {
-		tfStateServicePrincipal.DisabledByMicrosoftStatus = types.StringValue(*result.GetDisabledByMicrosoftStatus())
+	if response.GetDisabledByMicrosoftStatus() != nil {
+		tfStateServicePrincipal.DisabledByMicrosoftStatus = types.StringValue(*response.GetDisabledByMicrosoftStatus())
 	} else {
 		tfStateServicePrincipal.DisabledByMicrosoftStatus = types.StringNull()
 	}
-	if result.GetDisplayName() != nil {
-		tfStateServicePrincipal.DisplayName = types.StringValue(*result.GetDisplayName())
+	if response.GetDisplayName() != nil {
+		tfStateServicePrincipal.DisplayName = types.StringValue(*response.GetDisplayName())
 	} else {
 		tfStateServicePrincipal.DisplayName = types.StringNull()
 	}
-	if result.GetHomepage() != nil {
-		tfStateServicePrincipal.Homepage = types.StringValue(*result.GetHomepage())
+	if response.GetHomepage() != nil {
+		tfStateServicePrincipal.Homepage = types.StringValue(*response.GetHomepage())
 	} else {
 		tfStateServicePrincipal.Homepage = types.StringNull()
 	}
-	if result.GetInfo() != nil {
+	if response.GetInfo() != nil {
 		tfStateInformationalUrl := servicePrincipalInformationalUrlModel{}
 
-		if result.GetInfo().GetLogoUrl() != nil {
-			tfStateInformationalUrl.LogoUrl = types.StringValue(*result.GetInfo().GetLogoUrl())
+		if response.GetInfo().GetLogoUrl() != nil {
+			tfStateInformationalUrl.LogoUrl = types.StringValue(*response.GetInfo().GetLogoUrl())
 		} else {
 			tfStateInformationalUrl.LogoUrl = types.StringNull()
 		}
-		if result.GetInfo().GetMarketingUrl() != nil {
-			tfStateInformationalUrl.MarketingUrl = types.StringValue(*result.GetInfo().GetMarketingUrl())
+		if response.GetInfo().GetMarketingUrl() != nil {
+			tfStateInformationalUrl.MarketingUrl = types.StringValue(*response.GetInfo().GetMarketingUrl())
 		} else {
 			tfStateInformationalUrl.MarketingUrl = types.StringNull()
 		}
-		if result.GetInfo().GetPrivacyStatementUrl() != nil {
-			tfStateInformationalUrl.PrivacyStatementUrl = types.StringValue(*result.GetInfo().GetPrivacyStatementUrl())
+		if response.GetInfo().GetPrivacyStatementUrl() != nil {
+			tfStateInformationalUrl.PrivacyStatementUrl = types.StringValue(*response.GetInfo().GetPrivacyStatementUrl())
 		} else {
 			tfStateInformationalUrl.PrivacyStatementUrl = types.StringNull()
 		}
-		if result.GetInfo().GetSupportUrl() != nil {
-			tfStateInformationalUrl.SupportUrl = types.StringValue(*result.GetInfo().GetSupportUrl())
+		if response.GetInfo().GetSupportUrl() != nil {
+			tfStateInformationalUrl.SupportUrl = types.StringValue(*response.GetInfo().GetSupportUrl())
 		} else {
 			tfStateInformationalUrl.SupportUrl = types.StringNull()
 		}
-		if result.GetInfo().GetTermsOfServiceUrl() != nil {
-			tfStateInformationalUrl.TermsOfServiceUrl = types.StringValue(*result.GetInfo().GetTermsOfServiceUrl())
+		if response.GetInfo().GetTermsOfServiceUrl() != nil {
+			tfStateInformationalUrl.TermsOfServiceUrl = types.StringValue(*response.GetInfo().GetTermsOfServiceUrl())
 		} else {
 			tfStateInformationalUrl.TermsOfServiceUrl = types.StringNull()
 		}
 
 		tfStateServicePrincipal.Info, _ = types.ObjectValueFrom(ctx, tfStateInformationalUrl.AttributeTypes(), tfStateInformationalUrl)
 	}
-	if len(result.GetKeyCredentials()) > 0 {
+	if len(response.GetKeyCredentials()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, resultKeyCredentials := range result.GetKeyCredentials() {
+		for _, responseKeyCredentials := range response.GetKeyCredentials() {
 			tfStateKeyCredential := servicePrincipalKeyCredentialModel{}
 
-			if resultKeyCredentials.GetCustomKeyIdentifier() != nil {
-				tfStateKeyCredential.CustomKeyIdentifier = types.StringValue(string(resultKeyCredentials.GetCustomKeyIdentifier()[:]))
+			if responseKeyCredentials.GetCustomKeyIdentifier() != nil {
+				tfStateKeyCredential.CustomKeyIdentifier = types.StringValue(string(responseKeyCredentials.GetCustomKeyIdentifier()[:]))
 			} else {
 				tfStateKeyCredential.CustomKeyIdentifier = types.StringNull()
 			}
-			if resultKeyCredentials.GetDisplayName() != nil {
-				tfStateKeyCredential.DisplayName = types.StringValue(*resultKeyCredentials.GetDisplayName())
+			if responseKeyCredentials.GetDisplayName() != nil {
+				tfStateKeyCredential.DisplayName = types.StringValue(*responseKeyCredentials.GetDisplayName())
 			} else {
 				tfStateKeyCredential.DisplayName = types.StringNull()
 			}
-			if resultKeyCredentials.GetEndDateTime() != nil {
-				tfStateKeyCredential.EndDateTime = types.StringValue(resultKeyCredentials.GetEndDateTime().String())
+			if responseKeyCredentials.GetEndDateTime() != nil {
+				tfStateKeyCredential.EndDateTime = types.StringValue(responseKeyCredentials.GetEndDateTime().String())
 			} else {
 				tfStateKeyCredential.EndDateTime = types.StringNull()
 			}
-			if resultKeyCredentials.GetKey() != nil {
-				tfStateKeyCredential.Key = types.StringValue(string(resultKeyCredentials.GetKey()[:]))
+			if responseKeyCredentials.GetKey() != nil {
+				tfStateKeyCredential.Key = types.StringValue(string(responseKeyCredentials.GetKey()[:]))
 			} else {
 				tfStateKeyCredential.Key = types.StringNull()
 			}
-			if resultKeyCredentials.GetKeyId() != nil {
-				tfStateKeyCredential.KeyId = types.StringValue(resultKeyCredentials.GetKeyId().String())
+			if responseKeyCredentials.GetKeyId() != nil {
+				tfStateKeyCredential.KeyId = types.StringValue(responseKeyCredentials.GetKeyId().String())
 			} else {
 				tfStateKeyCredential.KeyId = types.StringNull()
 			}
-			if resultKeyCredentials.GetStartDateTime() != nil {
-				tfStateKeyCredential.StartDateTime = types.StringValue(resultKeyCredentials.GetStartDateTime().String())
+			if responseKeyCredentials.GetStartDateTime() != nil {
+				tfStateKeyCredential.StartDateTime = types.StringValue(responseKeyCredentials.GetStartDateTime().String())
 			} else {
 				tfStateKeyCredential.StartDateTime = types.StringNull()
 			}
-			if resultKeyCredentials.GetTypeEscaped() != nil {
-				tfStateKeyCredential.Type = types.StringValue(*resultKeyCredentials.GetTypeEscaped())
+			if responseKeyCredentials.GetTypeEscaped() != nil {
+				tfStateKeyCredential.Type = types.StringValue(*responseKeyCredentials.GetTypeEscaped())
 			} else {
 				tfStateKeyCredential.Type = types.StringNull()
 			}
-			if resultKeyCredentials.GetUsage() != nil {
-				tfStateKeyCredential.Usage = types.StringValue(*resultKeyCredentials.GetUsage())
+			if responseKeyCredentials.GetUsage() != nil {
+				tfStateKeyCredential.Usage = types.StringValue(*responseKeyCredentials.GetUsage())
 			} else {
 				tfStateKeyCredential.Usage = types.StringNull()
 			}
@@ -764,78 +764,78 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		}
 		tfStateServicePrincipal.KeyCredentials, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if result.GetLoginUrl() != nil {
-		tfStateServicePrincipal.LoginUrl = types.StringValue(*result.GetLoginUrl())
+	if response.GetLoginUrl() != nil {
+		tfStateServicePrincipal.LoginUrl = types.StringValue(*response.GetLoginUrl())
 	} else {
 		tfStateServicePrincipal.LoginUrl = types.StringNull()
 	}
-	if result.GetLogoutUrl() != nil {
-		tfStateServicePrincipal.LogoutUrl = types.StringValue(*result.GetLogoutUrl())
+	if response.GetLogoutUrl() != nil {
+		tfStateServicePrincipal.LogoutUrl = types.StringValue(*response.GetLogoutUrl())
 	} else {
 		tfStateServicePrincipal.LogoutUrl = types.StringNull()
 	}
-	if result.GetNotes() != nil {
-		tfStateServicePrincipal.Notes = types.StringValue(*result.GetNotes())
+	if response.GetNotes() != nil {
+		tfStateServicePrincipal.Notes = types.StringValue(*response.GetNotes())
 	} else {
 		tfStateServicePrincipal.Notes = types.StringNull()
 	}
-	if len(result.GetNotificationEmailAddresses()) > 0 {
+	if len(response.GetNotificationEmailAddresses()) > 0 {
 		var valueArrayNotificationEmailAddresses []attr.Value
-		for _, resultNotificationEmailAddresses := range result.GetNotificationEmailAddresses() {
-			valueArrayNotificationEmailAddresses = append(valueArrayNotificationEmailAddresses, types.StringValue(resultNotificationEmailAddresses))
+		for _, responseNotificationEmailAddresses := range response.GetNotificationEmailAddresses() {
+			valueArrayNotificationEmailAddresses = append(valueArrayNotificationEmailAddresses, types.StringValue(responseNotificationEmailAddresses))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayNotificationEmailAddresses)
 		tfStateServicePrincipal.NotificationEmailAddresses = listValue
 	} else {
 		tfStateServicePrincipal.NotificationEmailAddresses = types.ListNull(types.StringType)
 	}
-	if len(result.GetOauth2PermissionScopes()) > 0 {
+	if len(response.GetOauth2PermissionScopes()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, resultOauth2PermissionScopes := range result.GetOauth2PermissionScopes() {
+		for _, responseOauth2PermissionScopes := range response.GetOauth2PermissionScopes() {
 			tfStatePermissionScope := servicePrincipalPermissionScopeModel{}
 
-			if resultOauth2PermissionScopes.GetAdminConsentDescription() != nil {
-				tfStatePermissionScope.AdminConsentDescription = types.StringValue(*resultOauth2PermissionScopes.GetAdminConsentDescription())
+			if responseOauth2PermissionScopes.GetAdminConsentDescription() != nil {
+				tfStatePermissionScope.AdminConsentDescription = types.StringValue(*responseOauth2PermissionScopes.GetAdminConsentDescription())
 			} else {
 				tfStatePermissionScope.AdminConsentDescription = types.StringNull()
 			}
-			if resultOauth2PermissionScopes.GetAdminConsentDisplayName() != nil {
-				tfStatePermissionScope.AdminConsentDisplayName = types.StringValue(*resultOauth2PermissionScopes.GetAdminConsentDisplayName())
+			if responseOauth2PermissionScopes.GetAdminConsentDisplayName() != nil {
+				tfStatePermissionScope.AdminConsentDisplayName = types.StringValue(*responseOauth2PermissionScopes.GetAdminConsentDisplayName())
 			} else {
 				tfStatePermissionScope.AdminConsentDisplayName = types.StringNull()
 			}
-			if resultOauth2PermissionScopes.GetId() != nil {
-				tfStatePermissionScope.Id = types.StringValue(resultOauth2PermissionScopes.GetId().String())
+			if responseOauth2PermissionScopes.GetId() != nil {
+				tfStatePermissionScope.Id = types.StringValue(responseOauth2PermissionScopes.GetId().String())
 			} else {
 				tfStatePermissionScope.Id = types.StringNull()
 			}
-			if resultOauth2PermissionScopes.GetIsEnabled() != nil {
-				tfStatePermissionScope.IsEnabled = types.BoolValue(*resultOauth2PermissionScopes.GetIsEnabled())
+			if responseOauth2PermissionScopes.GetIsEnabled() != nil {
+				tfStatePermissionScope.IsEnabled = types.BoolValue(*responseOauth2PermissionScopes.GetIsEnabled())
 			} else {
 				tfStatePermissionScope.IsEnabled = types.BoolNull()
 			}
-			if resultOauth2PermissionScopes.GetOrigin() != nil {
-				tfStatePermissionScope.Origin = types.StringValue(*resultOauth2PermissionScopes.GetOrigin())
+			if responseOauth2PermissionScopes.GetOrigin() != nil {
+				tfStatePermissionScope.Origin = types.StringValue(*responseOauth2PermissionScopes.GetOrigin())
 			} else {
 				tfStatePermissionScope.Origin = types.StringNull()
 			}
-			if resultOauth2PermissionScopes.GetTypeEscaped() != nil {
-				tfStatePermissionScope.Type = types.StringValue(*resultOauth2PermissionScopes.GetTypeEscaped())
+			if responseOauth2PermissionScopes.GetTypeEscaped() != nil {
+				tfStatePermissionScope.Type = types.StringValue(*responseOauth2PermissionScopes.GetTypeEscaped())
 			} else {
 				tfStatePermissionScope.Type = types.StringNull()
 			}
-			if resultOauth2PermissionScopes.GetUserConsentDescription() != nil {
-				tfStatePermissionScope.UserConsentDescription = types.StringValue(*resultOauth2PermissionScopes.GetUserConsentDescription())
+			if responseOauth2PermissionScopes.GetUserConsentDescription() != nil {
+				tfStatePermissionScope.UserConsentDescription = types.StringValue(*responseOauth2PermissionScopes.GetUserConsentDescription())
 			} else {
 				tfStatePermissionScope.UserConsentDescription = types.StringNull()
 			}
-			if resultOauth2PermissionScopes.GetUserConsentDisplayName() != nil {
-				tfStatePermissionScope.UserConsentDisplayName = types.StringValue(*resultOauth2PermissionScopes.GetUserConsentDisplayName())
+			if responseOauth2PermissionScopes.GetUserConsentDisplayName() != nil {
+				tfStatePermissionScope.UserConsentDisplayName = types.StringValue(*responseOauth2PermissionScopes.GetUserConsentDisplayName())
 			} else {
 				tfStatePermissionScope.UserConsentDisplayName = types.StringNull()
 			}
-			if resultOauth2PermissionScopes.GetValue() != nil {
-				tfStatePermissionScope.Value = types.StringValue(*resultOauth2PermissionScopes.GetValue())
+			if responseOauth2PermissionScopes.GetValue() != nil {
+				tfStatePermissionScope.Value = types.StringValue(*responseOauth2PermissionScopes.GetValue())
 			} else {
 				tfStatePermissionScope.Value = types.StringNull()
 			}
@@ -844,43 +844,43 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		}
 		tfStateServicePrincipal.Oauth2PermissionScopes, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if len(result.GetPasswordCredentials()) > 0 {
+	if len(response.GetPasswordCredentials()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, resultPasswordCredentials := range result.GetPasswordCredentials() {
+		for _, responsePasswordCredentials := range response.GetPasswordCredentials() {
 			tfStatePasswordCredential := servicePrincipalPasswordCredentialModel{}
 
-			if resultPasswordCredentials.GetCustomKeyIdentifier() != nil {
-				tfStatePasswordCredential.CustomKeyIdentifier = types.StringValue(string(resultPasswordCredentials.GetCustomKeyIdentifier()[:]))
+			if responsePasswordCredentials.GetCustomKeyIdentifier() != nil {
+				tfStatePasswordCredential.CustomKeyIdentifier = types.StringValue(string(responsePasswordCredentials.GetCustomKeyIdentifier()[:]))
 			} else {
 				tfStatePasswordCredential.CustomKeyIdentifier = types.StringNull()
 			}
-			if resultPasswordCredentials.GetDisplayName() != nil {
-				tfStatePasswordCredential.DisplayName = types.StringValue(*resultPasswordCredentials.GetDisplayName())
+			if responsePasswordCredentials.GetDisplayName() != nil {
+				tfStatePasswordCredential.DisplayName = types.StringValue(*responsePasswordCredentials.GetDisplayName())
 			} else {
 				tfStatePasswordCredential.DisplayName = types.StringNull()
 			}
-			if resultPasswordCredentials.GetEndDateTime() != nil {
-				tfStatePasswordCredential.EndDateTime = types.StringValue(resultPasswordCredentials.GetEndDateTime().String())
+			if responsePasswordCredentials.GetEndDateTime() != nil {
+				tfStatePasswordCredential.EndDateTime = types.StringValue(responsePasswordCredentials.GetEndDateTime().String())
 			} else {
 				tfStatePasswordCredential.EndDateTime = types.StringNull()
 			}
-			if resultPasswordCredentials.GetHint() != nil {
-				tfStatePasswordCredential.Hint = types.StringValue(*resultPasswordCredentials.GetHint())
+			if responsePasswordCredentials.GetHint() != nil {
+				tfStatePasswordCredential.Hint = types.StringValue(*responsePasswordCredentials.GetHint())
 			} else {
 				tfStatePasswordCredential.Hint = types.StringNull()
 			}
-			if resultPasswordCredentials.GetKeyId() != nil {
-				tfStatePasswordCredential.KeyId = types.StringValue(resultPasswordCredentials.GetKeyId().String())
+			if responsePasswordCredentials.GetKeyId() != nil {
+				tfStatePasswordCredential.KeyId = types.StringValue(responsePasswordCredentials.GetKeyId().String())
 			} else {
 				tfStatePasswordCredential.KeyId = types.StringNull()
 			}
-			if resultPasswordCredentials.GetSecretText() != nil {
-				tfStatePasswordCredential.SecretText = types.StringValue(*resultPasswordCredentials.GetSecretText())
+			if responsePasswordCredentials.GetSecretText() != nil {
+				tfStatePasswordCredential.SecretText = types.StringValue(*responsePasswordCredentials.GetSecretText())
 			} else {
 				tfStatePasswordCredential.SecretText = types.StringNull()
 			}
-			if resultPasswordCredentials.GetStartDateTime() != nil {
-				tfStatePasswordCredential.StartDateTime = types.StringValue(resultPasswordCredentials.GetStartDateTime().String())
+			if responsePasswordCredentials.GetStartDateTime() != nil {
+				tfStatePasswordCredential.StartDateTime = types.StringValue(responsePasswordCredentials.GetStartDateTime().String())
 			} else {
 				tfStatePasswordCredential.StartDateTime = types.StringNull()
 			}
@@ -889,53 +889,53 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		}
 		tfStateServicePrincipal.PasswordCredentials, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if result.GetPreferredSingleSignOnMode() != nil {
-		tfStateServicePrincipal.PreferredSingleSignOnMode = types.StringValue(*result.GetPreferredSingleSignOnMode())
+	if response.GetPreferredSingleSignOnMode() != nil {
+		tfStateServicePrincipal.PreferredSingleSignOnMode = types.StringValue(*response.GetPreferredSingleSignOnMode())
 	} else {
 		tfStateServicePrincipal.PreferredSingleSignOnMode = types.StringNull()
 	}
-	if result.GetPreferredTokenSigningKeyThumbprint() != nil {
-		tfStateServicePrincipal.PreferredTokenSigningKeyThumbprint = types.StringValue(*result.GetPreferredTokenSigningKeyThumbprint())
+	if response.GetPreferredTokenSigningKeyThumbprint() != nil {
+		tfStateServicePrincipal.PreferredTokenSigningKeyThumbprint = types.StringValue(*response.GetPreferredTokenSigningKeyThumbprint())
 	} else {
 		tfStateServicePrincipal.PreferredTokenSigningKeyThumbprint = types.StringNull()
 	}
-	if len(result.GetReplyUrls()) > 0 {
+	if len(response.GetReplyUrls()) > 0 {
 		var valueArrayReplyUrls []attr.Value
-		for _, resultReplyUrls := range result.GetReplyUrls() {
-			valueArrayReplyUrls = append(valueArrayReplyUrls, types.StringValue(resultReplyUrls))
+		for _, responseReplyUrls := range response.GetReplyUrls() {
+			valueArrayReplyUrls = append(valueArrayReplyUrls, types.StringValue(responseReplyUrls))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayReplyUrls)
 		tfStateServicePrincipal.ReplyUrls = listValue
 	} else {
 		tfStateServicePrincipal.ReplyUrls = types.ListNull(types.StringType)
 	}
-	if len(result.GetResourceSpecificApplicationPermissions()) > 0 {
+	if len(response.GetResourceSpecificApplicationPermissions()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, resultResourceSpecificApplicationPermissions := range result.GetResourceSpecificApplicationPermissions() {
+		for _, responseResourceSpecificApplicationPermissions := range response.GetResourceSpecificApplicationPermissions() {
 			tfStateResourceSpecificPermission := servicePrincipalResourceSpecificPermissionModel{}
 
-			if resultResourceSpecificApplicationPermissions.GetDescription() != nil {
-				tfStateResourceSpecificPermission.Description = types.StringValue(*resultResourceSpecificApplicationPermissions.GetDescription())
+			if responseResourceSpecificApplicationPermissions.GetDescription() != nil {
+				tfStateResourceSpecificPermission.Description = types.StringValue(*responseResourceSpecificApplicationPermissions.GetDescription())
 			} else {
 				tfStateResourceSpecificPermission.Description = types.StringNull()
 			}
-			if resultResourceSpecificApplicationPermissions.GetDisplayName() != nil {
-				tfStateResourceSpecificPermission.DisplayName = types.StringValue(*resultResourceSpecificApplicationPermissions.GetDisplayName())
+			if responseResourceSpecificApplicationPermissions.GetDisplayName() != nil {
+				tfStateResourceSpecificPermission.DisplayName = types.StringValue(*responseResourceSpecificApplicationPermissions.GetDisplayName())
 			} else {
 				tfStateResourceSpecificPermission.DisplayName = types.StringNull()
 			}
-			if resultResourceSpecificApplicationPermissions.GetId() != nil {
-				tfStateResourceSpecificPermission.Id = types.StringValue(resultResourceSpecificApplicationPermissions.GetId().String())
+			if responseResourceSpecificApplicationPermissions.GetId() != nil {
+				tfStateResourceSpecificPermission.Id = types.StringValue(responseResourceSpecificApplicationPermissions.GetId().String())
 			} else {
 				tfStateResourceSpecificPermission.Id = types.StringNull()
 			}
-			if resultResourceSpecificApplicationPermissions.GetIsEnabled() != nil {
-				tfStateResourceSpecificPermission.IsEnabled = types.BoolValue(*resultResourceSpecificApplicationPermissions.GetIsEnabled())
+			if responseResourceSpecificApplicationPermissions.GetIsEnabled() != nil {
+				tfStateResourceSpecificPermission.IsEnabled = types.BoolValue(*responseResourceSpecificApplicationPermissions.GetIsEnabled())
 			} else {
 				tfStateResourceSpecificPermission.IsEnabled = types.BoolNull()
 			}
-			if resultResourceSpecificApplicationPermissions.GetValue() != nil {
-				tfStateResourceSpecificPermission.Value = types.StringValue(*resultResourceSpecificApplicationPermissions.GetValue())
+			if responseResourceSpecificApplicationPermissions.GetValue() != nil {
+				tfStateResourceSpecificPermission.Value = types.StringValue(*responseResourceSpecificApplicationPermissions.GetValue())
 			} else {
 				tfStateResourceSpecificPermission.Value = types.StringNull()
 			}
@@ -944,67 +944,67 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		}
 		tfStateServicePrincipal.ResourceSpecificApplicationPermissions, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
-	if result.GetSamlSingleSignOnSettings() != nil {
+	if response.GetSamlSingleSignOnSettings() != nil {
 		tfStateSamlSingleSignOnSettings := servicePrincipalSamlSingleSignOnSettingsModel{}
 
-		if result.GetSamlSingleSignOnSettings().GetRelayState() != nil {
-			tfStateSamlSingleSignOnSettings.RelayState = types.StringValue(*result.GetSamlSingleSignOnSettings().GetRelayState())
+		if response.GetSamlSingleSignOnSettings().GetRelayState() != nil {
+			tfStateSamlSingleSignOnSettings.RelayState = types.StringValue(*response.GetSamlSingleSignOnSettings().GetRelayState())
 		} else {
 			tfStateSamlSingleSignOnSettings.RelayState = types.StringNull()
 		}
 
 		tfStateServicePrincipal.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, tfStateSamlSingleSignOnSettings.AttributeTypes(), tfStateSamlSingleSignOnSettings)
 	}
-	if len(result.GetServicePrincipalNames()) > 0 {
+	if len(response.GetServicePrincipalNames()) > 0 {
 		var valueArrayServicePrincipalNames []attr.Value
-		for _, resultServicePrincipalNames := range result.GetServicePrincipalNames() {
-			valueArrayServicePrincipalNames = append(valueArrayServicePrincipalNames, types.StringValue(resultServicePrincipalNames))
+		for _, responseServicePrincipalNames := range response.GetServicePrincipalNames() {
+			valueArrayServicePrincipalNames = append(valueArrayServicePrincipalNames, types.StringValue(responseServicePrincipalNames))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayServicePrincipalNames)
 		tfStateServicePrincipal.ServicePrincipalNames = listValue
 	} else {
 		tfStateServicePrincipal.ServicePrincipalNames = types.ListNull(types.StringType)
 	}
-	if result.GetServicePrincipalType() != nil {
-		tfStateServicePrincipal.ServicePrincipalType = types.StringValue(*result.GetServicePrincipalType())
+	if response.GetServicePrincipalType() != nil {
+		tfStateServicePrincipal.ServicePrincipalType = types.StringValue(*response.GetServicePrincipalType())
 	} else {
 		tfStateServicePrincipal.ServicePrincipalType = types.StringNull()
 	}
-	if result.GetSignInAudience() != nil {
-		tfStateServicePrincipal.SignInAudience = types.StringValue(*result.GetSignInAudience())
+	if response.GetSignInAudience() != nil {
+		tfStateServicePrincipal.SignInAudience = types.StringValue(*response.GetSignInAudience())
 	} else {
 		tfStateServicePrincipal.SignInAudience = types.StringNull()
 	}
-	if len(result.GetTags()) > 0 {
+	if len(response.GetTags()) > 0 {
 		var valueArrayTags []attr.Value
-		for _, resultTags := range result.GetTags() {
-			valueArrayTags = append(valueArrayTags, types.StringValue(resultTags))
+		for _, responseTags := range response.GetTags() {
+			valueArrayTags = append(valueArrayTags, types.StringValue(responseTags))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayTags)
 		tfStateServicePrincipal.Tags = listValue
 	} else {
 		tfStateServicePrincipal.Tags = types.ListNull(types.StringType)
 	}
-	if result.GetTokenEncryptionKeyId() != nil {
-		tfStateServicePrincipal.TokenEncryptionKeyId = types.StringValue(result.GetTokenEncryptionKeyId().String())
+	if response.GetTokenEncryptionKeyId() != nil {
+		tfStateServicePrincipal.TokenEncryptionKeyId = types.StringValue(response.GetTokenEncryptionKeyId().String())
 	} else {
 		tfStateServicePrincipal.TokenEncryptionKeyId = types.StringNull()
 	}
-	if result.GetVerifiedPublisher() != nil {
+	if response.GetVerifiedPublisher() != nil {
 		tfStateVerifiedPublisher := servicePrincipalVerifiedPublisherModel{}
 
-		if result.GetVerifiedPublisher().GetAddedDateTime() != nil {
-			tfStateVerifiedPublisher.AddedDateTime = types.StringValue(result.GetVerifiedPublisher().GetAddedDateTime().String())
+		if response.GetVerifiedPublisher().GetAddedDateTime() != nil {
+			tfStateVerifiedPublisher.AddedDateTime = types.StringValue(response.GetVerifiedPublisher().GetAddedDateTime().String())
 		} else {
 			tfStateVerifiedPublisher.AddedDateTime = types.StringNull()
 		}
-		if result.GetVerifiedPublisher().GetDisplayName() != nil {
-			tfStateVerifiedPublisher.DisplayName = types.StringValue(*result.GetVerifiedPublisher().GetDisplayName())
+		if response.GetVerifiedPublisher().GetDisplayName() != nil {
+			tfStateVerifiedPublisher.DisplayName = types.StringValue(*response.GetVerifiedPublisher().GetDisplayName())
 		} else {
 			tfStateVerifiedPublisher.DisplayName = types.StringNull()
 		}
-		if result.GetVerifiedPublisher().GetVerifiedPublisherId() != nil {
-			tfStateVerifiedPublisher.VerifiedPublisherId = types.StringValue(*result.GetVerifiedPublisher().GetVerifiedPublisherId())
+		if response.GetVerifiedPublisher().GetVerifiedPublisherId() != nil {
+			tfStateVerifiedPublisher.VerifiedPublisherId = types.StringValue(*response.GetVerifiedPublisher().GetVerifiedPublisherId())
 		} else {
 			tfStateVerifiedPublisher.VerifiedPublisherId = types.StringNull()
 		}
