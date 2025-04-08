@@ -1069,8 +1069,8 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var valueArrayDisabledPlans []attr.Value
-				for _, v := range v.GetDisabledPlans() {
-					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
+				for _, resultDisabledPlans := range v.GetDisabledPlans() {
+					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(resultDisabledPlans.String()))
 				}
 				tfStateAssignedLicense.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {

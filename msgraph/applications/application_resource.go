@@ -2769,8 +2769,8 @@ func (d *applicationResource) Read(ctx context.Context, req resource.ReadRequest
 		}
 		if len(result.GetApi().GetKnownClientApplications()) > 0 {
 			var valueArrayKnownClientApplications []attr.Value
-			for _, v := range result.GetApi().GetKnownClientApplications() {
-				valueArrayKnownClientApplications = append(valueArrayKnownClientApplications, types.StringValue(v.String()))
+			for _, resultKnownClientApplications := range result.GetApi().GetKnownClientApplications() {
+				valueArrayKnownClientApplications = append(valueArrayKnownClientApplications, types.StringValue(resultKnownClientApplications.String()))
 			}
 			tfStateApiApplication.KnownClientApplications, _ = types.ListValue(types.StringType, valueArrayKnownClientApplications)
 		} else {

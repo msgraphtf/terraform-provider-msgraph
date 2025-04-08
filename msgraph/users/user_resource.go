@@ -2586,8 +2586,8 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var valueArrayDisabledPlans []attr.Value
-				for _, v := range v.GetDisabledPlans() {
-					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
+				for _, resultDisabledPlans := range v.GetDisabledPlans() {
+					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(resultDisabledPlans.String()))
 				}
 				tfStateAssignedLicense.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {
@@ -2847,8 +2847,8 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			}
 			if len(v.GetDisabledPlans()) > 0 {
 				var valueArrayDisabledPlans []attr.Value
-				for _, v := range v.GetDisabledPlans() {
-					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
+				for _, resultDisabledPlans := range v.GetDisabledPlans() {
+					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(resultDisabledPlans.String()))
 				}
 				tfStateLicenseAssignmentState.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {
