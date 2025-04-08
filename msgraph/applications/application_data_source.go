@@ -886,8 +886,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 				}
 				if len(v.GetDelegatedPermissionIds()) > 0 {
 					var valueArrayDelegatedPermissionIds []attr.Value
-					for _, v := range v.GetDelegatedPermissionIds() {
-						valueArrayDelegatedPermissionIds = append(valueArrayDelegatedPermissionIds, types.StringValue(v))
+					for _, resultDelegatedPermissionIds := range v.GetDelegatedPermissionIds() {
+						valueArrayDelegatedPermissionIds = append(valueArrayDelegatedPermissionIds, types.StringValue(resultDelegatedPermissionIds))
 					}
 					listValue, _ := types.ListValue(types.StringType, valueArrayDelegatedPermissionIds)
 					tfStatePreAuthorizedApplication.DelegatedPermissionIds = listValue
@@ -914,8 +914,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 			if len(v.GetAllowedMemberTypes()) > 0 {
 				var valueArrayAllowedMemberTypes []attr.Value
-				for _, v := range v.GetAllowedMemberTypes() {
-					valueArrayAllowedMemberTypes = append(valueArrayAllowedMemberTypes, types.StringValue(v))
+				for _, resultAllowedMemberTypes := range v.GetAllowedMemberTypes() {
+					valueArrayAllowedMemberTypes = append(valueArrayAllowedMemberTypes, types.StringValue(resultAllowedMemberTypes))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayAllowedMemberTypes)
 				tfStateAppRole.AllowedMemberTypes = listValue
@@ -1025,8 +1025,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 	}
 	if len(result.GetIdentifierUris()) > 0 {
 		var valueArrayIdentifierUris []attr.Value
-		for _, v := range result.GetIdentifierUris() {
-			valueArrayIdentifierUris = append(valueArrayIdentifierUris, types.StringValue(v))
+		for _, resultIdentifierUris := range result.GetIdentifierUris() {
+			valueArrayIdentifierUris = append(valueArrayIdentifierUris, types.StringValue(resultIdentifierUris))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayIdentifierUris)
 		tfStateApplication.IdentifierUris = listValue
@@ -1154,8 +1154,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 				if len(v.GetAdditionalProperties()) > 0 {
 					var valueArrayAdditionalProperties []attr.Value
-					for _, v := range v.GetAdditionalProperties() {
-						valueArrayAdditionalProperties = append(valueArrayAdditionalProperties, types.StringValue(v))
+					for _, resultAdditionalProperties := range v.GetAdditionalProperties() {
+						valueArrayAdditionalProperties = append(valueArrayAdditionalProperties, types.StringValue(resultAdditionalProperties))
 					}
 					listValue, _ := types.ListValue(types.StringType, valueArrayAdditionalProperties)
 					tfStateOptionalClaim.AdditionalProperties = listValue
@@ -1189,8 +1189,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 				if len(v.GetAdditionalProperties()) > 0 {
 					var valueArrayAdditionalProperties []attr.Value
-					for _, v := range v.GetAdditionalProperties() {
-						valueArrayAdditionalProperties = append(valueArrayAdditionalProperties, types.StringValue(v))
+					for _, resultAdditionalProperties := range v.GetAdditionalProperties() {
+						valueArrayAdditionalProperties = append(valueArrayAdditionalProperties, types.StringValue(resultAdditionalProperties))
 					}
 					listValue, _ := types.ListValue(types.StringType, valueArrayAdditionalProperties)
 					tfStateOptionalClaim.AdditionalProperties = listValue
@@ -1224,8 +1224,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 				if len(v.GetAdditionalProperties()) > 0 {
 					var valueArrayAdditionalProperties []attr.Value
-					for _, v := range v.GetAdditionalProperties() {
-						valueArrayAdditionalProperties = append(valueArrayAdditionalProperties, types.StringValue(v))
+					for _, resultAdditionalProperties := range v.GetAdditionalProperties() {
+						valueArrayAdditionalProperties = append(valueArrayAdditionalProperties, types.StringValue(resultAdditionalProperties))
 					}
 					listValue, _ := types.ListValue(types.StringType, valueArrayAdditionalProperties)
 					tfStateOptionalClaim.AdditionalProperties = listValue
@@ -1260,8 +1260,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 		if len(result.GetParentalControlSettings().GetCountriesBlockedForMinors()) > 0 {
 			var valueArrayCountriesBlockedForMinors []attr.Value
-			for _, v := range result.GetParentalControlSettings().GetCountriesBlockedForMinors() {
-				valueArrayCountriesBlockedForMinors = append(valueArrayCountriesBlockedForMinors, types.StringValue(v))
+			for _, resultCountriesBlockedForMinors := range result.GetParentalControlSettings().GetCountriesBlockedForMinors() {
+				valueArrayCountriesBlockedForMinors = append(valueArrayCountriesBlockedForMinors, types.StringValue(resultCountriesBlockedForMinors))
 			}
 			listValue, _ := types.ListValue(types.StringType, valueArrayCountriesBlockedForMinors)
 			tfStateParentalControlSettings.CountriesBlockedForMinors = listValue
@@ -1326,8 +1326,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 		if len(result.GetPublicClient().GetRedirectUris()) > 0 {
 			var valueArrayRedirectUris []attr.Value
-			for _, v := range result.GetPublicClient().GetRedirectUris() {
-				valueArrayRedirectUris = append(valueArrayRedirectUris, types.StringValue(v))
+			for _, resultRedirectUris := range result.GetPublicClient().GetRedirectUris() {
+				valueArrayRedirectUris = append(valueArrayRedirectUris, types.StringValue(resultRedirectUris))
 			}
 			listValue, _ := types.ListValue(types.StringType, valueArrayRedirectUris)
 			tfStatePublicClientApplication.RedirectUris = listValue
@@ -1444,8 +1444,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 		if len(result.GetSpa().GetRedirectUris()) > 0 {
 			var valueArrayRedirectUris []attr.Value
-			for _, v := range result.GetSpa().GetRedirectUris() {
-				valueArrayRedirectUris = append(valueArrayRedirectUris, types.StringValue(v))
+			for _, resultRedirectUris := range result.GetSpa().GetRedirectUris() {
+				valueArrayRedirectUris = append(valueArrayRedirectUris, types.StringValue(resultRedirectUris))
 			}
 			listValue, _ := types.ListValue(types.StringType, valueArrayRedirectUris)
 			tfStateSpaApplication.RedirectUris = listValue
@@ -1457,8 +1457,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 	}
 	if len(result.GetTags()) > 0 {
 		var valueArrayTags []attr.Value
-		for _, v := range result.GetTags() {
-			valueArrayTags = append(valueArrayTags, types.StringValue(v))
+		for _, resultTags := range result.GetTags() {
+			valueArrayTags = append(valueArrayTags, types.StringValue(resultTags))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayTags)
 		tfStateApplication.Tags = listValue
@@ -1542,8 +1542,8 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		}
 		if len(result.GetWeb().GetRedirectUris()) > 0 {
 			var valueArrayRedirectUris []attr.Value
-			for _, v := range result.GetWeb().GetRedirectUris() {
-				valueArrayRedirectUris = append(valueArrayRedirectUris, types.StringValue(v))
+			for _, resultRedirectUris := range result.GetWeb().GetRedirectUris() {
+				valueArrayRedirectUris = append(valueArrayRedirectUris, types.StringValue(resultRedirectUris))
 			}
 			listValue, _ := types.ListValue(types.StringType, valueArrayRedirectUris)
 			tfStateWebApplication.RedirectUris = listValue

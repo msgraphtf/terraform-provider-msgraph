@@ -405,8 +405,8 @@ func (d *deviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	if len(result.GetPhysicalIds()) > 0 {
 		var valueArrayPhysicalIds []attr.Value
-		for _, v := range result.GetPhysicalIds() {
-			valueArrayPhysicalIds = append(valueArrayPhysicalIds, types.StringValue(v))
+		for _, resultPhysicalIds := range result.GetPhysicalIds() {
+			valueArrayPhysicalIds = append(valueArrayPhysicalIds, types.StringValue(resultPhysicalIds))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayPhysicalIds)
 		tfStateDevice.PhysicalIds = listValue
@@ -425,8 +425,8 @@ func (d *deviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	if len(result.GetSystemLabels()) > 0 {
 		var valueArraySystemLabels []attr.Value
-		for _, v := range result.GetSystemLabels() {
-			valueArraySystemLabels = append(valueArraySystemLabels, types.StringValue(v))
+		for _, resultSystemLabels := range result.GetSystemLabels() {
+			valueArraySystemLabels = append(valueArraySystemLabels, types.StringValue(resultSystemLabels))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArraySystemLabels)
 		tfStateDevice.SystemLabels = listValue

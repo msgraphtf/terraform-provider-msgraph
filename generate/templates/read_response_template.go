@@ -51,8 +51,8 @@ if {{.GetMethod}} != nil {
 {{- define "ReadListStringAttribute" }}
 if len({{.GetMethod}}) > 0 {
 	var valueArray{{.Name}} []attr.Value
-	for _, v := range {{.GetMethod}} {
-		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(v))
+	for _, result{{.Name}} := range {{.GetMethod}} {
+		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(result{{.Name}}))
 	}
 	listValue, _ := types.ListValue(types.StringType, valueArray{{.Name}})
 	tfState{{.ParentName}}.{{.Name}} = listValue

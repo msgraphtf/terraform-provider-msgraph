@@ -379,8 +379,8 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			}
 			if len(v.GetGroupTypes()) > 0 {
 				var valueArrayGroupTypes []attr.Value
-				for _, v := range v.GetGroupTypes() {
-					valueArrayGroupTypes = append(valueArrayGroupTypes, types.StringValue(v))
+				for _, resultGroupTypes := range v.GetGroupTypes() {
+					valueArrayGroupTypes = append(valueArrayGroupTypes, types.StringValue(resultGroupTypes))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayGroupTypes)
 				tfStateGroup.GroupTypes = listValue
@@ -505,8 +505,8 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			}
 			if len(v.GetProxyAddresses()) > 0 {
 				var valueArrayProxyAddresses []attr.Value
-				for _, v := range v.GetProxyAddresses() {
-					valueArrayProxyAddresses = append(valueArrayProxyAddresses, types.StringValue(v))
+				for _, resultProxyAddresses := range v.GetProxyAddresses() {
+					valueArrayProxyAddresses = append(valueArrayProxyAddresses, types.StringValue(resultProxyAddresses))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayProxyAddresses)
 				tfStateGroup.ProxyAddresses = listValue

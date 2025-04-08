@@ -570,8 +570,8 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	}
 	if len(result.GetAlternativeNames()) > 0 {
 		var valueArrayAlternativeNames []attr.Value
-		for _, v := range result.GetAlternativeNames() {
-			valueArrayAlternativeNames = append(valueArrayAlternativeNames, types.StringValue(v))
+		for _, resultAlternativeNames := range result.GetAlternativeNames() {
+			valueArrayAlternativeNames = append(valueArrayAlternativeNames, types.StringValue(resultAlternativeNames))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayAlternativeNames)
 		tfStateServicePrincipal.AlternativeNames = listValue
@@ -610,8 +610,8 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 
 			if len(v.GetAllowedMemberTypes()) > 0 {
 				var valueArrayAllowedMemberTypes []attr.Value
-				for _, v := range v.GetAllowedMemberTypes() {
-					valueArrayAllowedMemberTypes = append(valueArrayAllowedMemberTypes, types.StringValue(v))
+				for _, resultAllowedMemberTypes := range v.GetAllowedMemberTypes() {
+					valueArrayAllowedMemberTypes = append(valueArrayAllowedMemberTypes, types.StringValue(resultAllowedMemberTypes))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayAllowedMemberTypes)
 				tfStateAppRole.AllowedMemberTypes = listValue
@@ -781,8 +781,8 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	}
 	if len(result.GetNotificationEmailAddresses()) > 0 {
 		var valueArrayNotificationEmailAddresses []attr.Value
-		for _, v := range result.GetNotificationEmailAddresses() {
-			valueArrayNotificationEmailAddresses = append(valueArrayNotificationEmailAddresses, types.StringValue(v))
+		for _, resultNotificationEmailAddresses := range result.GetNotificationEmailAddresses() {
+			valueArrayNotificationEmailAddresses = append(valueArrayNotificationEmailAddresses, types.StringValue(resultNotificationEmailAddresses))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayNotificationEmailAddresses)
 		tfStateServicePrincipal.NotificationEmailAddresses = listValue
@@ -901,8 +901,8 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	}
 	if len(result.GetReplyUrls()) > 0 {
 		var valueArrayReplyUrls []attr.Value
-		for _, v := range result.GetReplyUrls() {
-			valueArrayReplyUrls = append(valueArrayReplyUrls, types.StringValue(v))
+		for _, resultReplyUrls := range result.GetReplyUrls() {
+			valueArrayReplyUrls = append(valueArrayReplyUrls, types.StringValue(resultReplyUrls))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayReplyUrls)
 		tfStateServicePrincipal.ReplyUrls = listValue
@@ -957,8 +957,8 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	}
 	if len(result.GetServicePrincipalNames()) > 0 {
 		var valueArrayServicePrincipalNames []attr.Value
-		for _, v := range result.GetServicePrincipalNames() {
-			valueArrayServicePrincipalNames = append(valueArrayServicePrincipalNames, types.StringValue(v))
+		for _, resultServicePrincipalNames := range result.GetServicePrincipalNames() {
+			valueArrayServicePrincipalNames = append(valueArrayServicePrincipalNames, types.StringValue(resultServicePrincipalNames))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayServicePrincipalNames)
 		tfStateServicePrincipal.ServicePrincipalNames = listValue
@@ -977,8 +977,8 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	}
 	if len(result.GetTags()) > 0 {
 		var valueArrayTags []attr.Value
-		for _, v := range result.GetTags() {
-			valueArrayTags = append(valueArrayTags, types.StringValue(v))
+		for _, resultTags := range result.GetTags() {
+			valueArrayTags = append(valueArrayTags, types.StringValue(resultTags))
 		}
 		listValue, _ := types.ListValue(types.StringType, valueArrayTags)
 		tfStateServicePrincipal.Tags = listValue

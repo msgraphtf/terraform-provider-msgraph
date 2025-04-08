@@ -690,8 +690,8 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 				if len(v.GetAuthorizationInfo().GetCertificateUserIds()) > 0 {
 					var valueArrayCertificateUserIds []attr.Value
-					for _, v := range v.GetAuthorizationInfo().GetCertificateUserIds() {
-						valueArrayCertificateUserIds = append(valueArrayCertificateUserIds, types.StringValue(v))
+					for _, resultCertificateUserIds := range v.GetAuthorizationInfo().GetCertificateUserIds() {
+						valueArrayCertificateUserIds = append(valueArrayCertificateUserIds, types.StringValue(resultCertificateUserIds))
 					}
 					listValue, _ := types.ListValue(types.StringType, valueArrayCertificateUserIds)
 					tfStateAuthorizationInfo.CertificateUserIds = listValue
@@ -703,8 +703,8 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			}
 			if len(v.GetBusinessPhones()) > 0 {
 				var valueArrayBusinessPhones []attr.Value
-				for _, v := range v.GetBusinessPhones() {
-					valueArrayBusinessPhones = append(valueArrayBusinessPhones, types.StringValue(v))
+				for _, resultBusinessPhones := range v.GetBusinessPhones() {
+					valueArrayBusinessPhones = append(valueArrayBusinessPhones, types.StringValue(resultBusinessPhones))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayBusinessPhones)
 				tfStateUser.BusinessPhones = listValue
@@ -839,8 +839,8 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			}
 			if len(v.GetImAddresses()) > 0 {
 				var valueArrayImAddresses []attr.Value
-				for _, v := range v.GetImAddresses() {
-					valueArrayImAddresses = append(valueArrayImAddresses, types.StringValue(v))
+				for _, resultImAddresses := range v.GetImAddresses() {
+					valueArrayImAddresses = append(valueArrayImAddresses, types.StringValue(resultImAddresses))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayImAddresses)
 				tfStateUser.ImAddresses = listValue
@@ -1089,8 +1089,8 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			}
 			if len(v.GetOtherMails()) > 0 {
 				var valueArrayOtherMails []attr.Value
-				for _, v := range v.GetOtherMails() {
-					valueArrayOtherMails = append(valueArrayOtherMails, types.StringValue(v))
+				for _, resultOtherMails := range v.GetOtherMails() {
+					valueArrayOtherMails = append(valueArrayOtherMails, types.StringValue(resultOtherMails))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayOtherMails)
 				tfStateUser.OtherMails = listValue
@@ -1165,8 +1165,8 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			}
 			if len(v.GetProxyAddresses()) > 0 {
 				var valueArrayProxyAddresses []attr.Value
-				for _, v := range v.GetProxyAddresses() {
-					valueArrayProxyAddresses = append(valueArrayProxyAddresses, types.StringValue(v))
+				for _, resultProxyAddresses := range v.GetProxyAddresses() {
+					valueArrayProxyAddresses = append(valueArrayProxyAddresses, types.StringValue(resultProxyAddresses))
 				}
 				listValue, _ := types.ListValue(types.StringType, valueArrayProxyAddresses)
 				tfStateUser.ProxyAddresses = listValue
