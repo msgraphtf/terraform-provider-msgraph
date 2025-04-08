@@ -1907,8 +1907,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 	if result.GetCustomSecurityAttributes() != nil {
 		customSecurityAttributes := new(servicePrincipalCustomSecurityAttributeValueModel)
 
-		objectValue, _ := types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
-		tfStateServicePrincipal.CustomSecurityAttributes = objectValue
+		tfStateServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
 	}
 	if result.GetDescription() != nil {
 		tfStateServicePrincipal.Description = types.StringValue(*result.GetDescription())
@@ -1959,8 +1958,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			info.TermsOfServiceUrl = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, info.AttributeTypes(), info)
-		tfStateServicePrincipal.Info = objectValue
+		tfStateServicePrincipal.Info, _ = types.ObjectValueFrom(ctx, info.AttributeTypes(), info)
 	}
 	if len(result.GetKeyCredentials()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -2201,8 +2199,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			samlSingleSignOnSettings.RelayState = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, samlSingleSignOnSettings.AttributeTypes(), samlSingleSignOnSettings)
-		tfStateServicePrincipal.SamlSingleSignOnSettings = objectValue
+		tfStateServicePrincipal.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, samlSingleSignOnSettings.AttributeTypes(), samlSingleSignOnSettings)
 	}
 	if len(result.GetServicePrincipalNames()) > 0 {
 		var servicePrincipalNames []attr.Value
@@ -2258,8 +2255,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			verifiedPublisher.VerifiedPublisherId = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, verifiedPublisher.AttributeTypes(), verifiedPublisher)
-		tfStateServicePrincipal.VerifiedPublisher = objectValue
+		tfStateServicePrincipal.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, verifiedPublisher.AttributeTypes(), verifiedPublisher)
 	}
 
 	// Overwrite items with refreshed state

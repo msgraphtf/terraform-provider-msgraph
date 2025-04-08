@@ -762,8 +762,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				for _, v := range v.GetDisabledPlans() {
 					disabledPlans = append(disabledPlans, types.StringValue(v.String()))
 				}
-				listValue, _ := types.ListValue(types.StringType, disabledPlans)
-				assignedLicenses.DisabledPlans = listValue
+				assignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, disabledPlans)
 			} else {
 				assignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -821,8 +820,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			authorizationInfo.CertificateUserIds = types.ListNull(types.StringType)
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfo.AttributeTypes(), authorizationInfo)
-		tfStateUser.AuthorizationInfo = objectValue
+		tfStateUser.AuthorizationInfo, _ = types.ObjectValueFrom(ctx, authorizationInfo.AttributeTypes(), authorizationInfo)
 	}
 	if result.GetBirthday() != nil {
 		tfStateUser.Birthday = types.StringValue(result.GetBirthday().String())
@@ -908,8 +906,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			employeeOrgData.Division = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, employeeOrgData.AttributeTypes(), employeeOrgData)
-		tfStateUser.EmployeeOrgData = objectValue
+		tfStateUser.EmployeeOrgData, _ = types.ObjectValueFrom(ctx, employeeOrgData.AttributeTypes(), employeeOrgData)
 	}
 	if result.GetEmployeeType() != nil {
 		tfStateUser.EmployeeType = types.StringValue(*result.GetEmployeeType())
@@ -1026,8 +1023,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				for _, v := range v.GetDisabledPlans() {
 					disabledPlans = append(disabledPlans, types.StringValue(v.String()))
 				}
-				listValue, _ := types.ListValue(types.StringType, disabledPlans)
-				licenseAssignmentStates.DisabledPlans = listValue
+				licenseAssignmentStates.DisabledPlans, _ = types.ListValue(types.StringType, disabledPlans)
 			} else {
 				licenseAssignmentStates.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -1170,8 +1166,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			onPremisesExtensionAttributes.ExtensionAttribute9 = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, onPremisesExtensionAttributes.AttributeTypes(), onPremisesExtensionAttributes)
-		tfStateUser.OnPremisesExtensionAttributes = objectValue
+		tfStateUser.OnPremisesExtensionAttributes, _ = types.ObjectValueFrom(ctx, onPremisesExtensionAttributes.AttributeTypes(), onPremisesExtensionAttributes)
 	}
 	if result.GetOnPremisesImmutableId() != nil {
 		tfStateUser.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())
@@ -1267,8 +1262,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			passwordProfile.Password = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, passwordProfile.AttributeTypes(), passwordProfile)
-		tfStateUser.PasswordProfile = objectValue
+		tfStateUser.PasswordProfile, _ = types.ObjectValueFrom(ctx, passwordProfile.AttributeTypes(), passwordProfile)
 	}
 	if len(result.GetPastProjects()) > 0 {
 		var pastProjects []attr.Value
@@ -1424,8 +1418,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			signInActivity.LastSuccessfulSignInRequestId = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, signInActivity.AttributeTypes(), signInActivity)
-		tfStateUser.SignInActivity = objectValue
+		tfStateUser.SignInActivity, _ = types.ObjectValueFrom(ctx, signInActivity.AttributeTypes(), signInActivity)
 	}
 	if result.GetSignInSessionsValidFromDateTime() != nil {
 		tfStateUser.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())

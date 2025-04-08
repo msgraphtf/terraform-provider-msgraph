@@ -476,8 +476,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				application.Id = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, application.AttributeTypes(), application)
-			createdBy.Application = objectValue
+			createdBy.Application, _ = types.ObjectValueFrom(ctx, application.AttributeTypes(), application)
 		}
 		if result.GetCreatedBy().GetDevice() != nil {
 			device := new(siteIdentityModel)
@@ -493,8 +492,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				device.Id = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, device.AttributeTypes(), device)
-			createdBy.Device = objectValue
+			createdBy.Device, _ = types.ObjectValueFrom(ctx, device.AttributeTypes(), device)
 		}
 		if result.GetCreatedBy().GetUser() != nil {
 			user := new(siteIdentityModel)
@@ -510,12 +508,10 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				user.Id = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, user.AttributeTypes(), user)
-			createdBy.User = objectValue
+			createdBy.User, _ = types.ObjectValueFrom(ctx, user.AttributeTypes(), user)
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, createdBy.AttributeTypes(), createdBy)
-		tfStateSite.CreatedBy = objectValue
+		tfStateSite.CreatedBy, _ = types.ObjectValueFrom(ctx, createdBy.AttributeTypes(), createdBy)
 	}
 	if result.GetCreatedDateTime() != nil {
 		tfStateSite.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
@@ -549,8 +545,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				application.Id = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, application.AttributeTypes(), application)
-			lastModifiedBy.Application = objectValue
+			lastModifiedBy.Application, _ = types.ObjectValueFrom(ctx, application.AttributeTypes(), application)
 		}
 		if result.GetLastModifiedBy().GetDevice() != nil {
 			device := new(siteIdentityModel)
@@ -566,8 +561,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				device.Id = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, device.AttributeTypes(), device)
-			lastModifiedBy.Device = objectValue
+			lastModifiedBy.Device, _ = types.ObjectValueFrom(ctx, device.AttributeTypes(), device)
 		}
 		if result.GetLastModifiedBy().GetUser() != nil {
 			user := new(siteIdentityModel)
@@ -583,12 +577,10 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				user.Id = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, user.AttributeTypes(), user)
-			lastModifiedBy.User = objectValue
+			lastModifiedBy.User, _ = types.ObjectValueFrom(ctx, user.AttributeTypes(), user)
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, lastModifiedBy.AttributeTypes(), lastModifiedBy)
-		tfStateSite.LastModifiedBy = objectValue
+		tfStateSite.LastModifiedBy, _ = types.ObjectValueFrom(ctx, lastModifiedBy.AttributeTypes(), lastModifiedBy)
 	}
 	if result.GetLastModifiedDateTime() != nil {
 		tfStateSite.LastModifiedDateTime = types.StringValue(result.GetLastModifiedDateTime().String())
@@ -672,8 +664,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				sharepointIds.WebId = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, sharepointIds.AttributeTypes(), sharepointIds)
-			parentReference.SharepointIds = objectValue
+			parentReference.SharepointIds, _ = types.ObjectValueFrom(ctx, sharepointIds.AttributeTypes(), sharepointIds)
 		}
 		if result.GetParentReference().GetSiteId() != nil {
 			parentReference.SiteId = types.StringValue(*result.GetParentReference().GetSiteId())
@@ -681,8 +672,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			parentReference.SiteId = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, parentReference.AttributeTypes(), parentReference)
-		tfStateSite.ParentReference = objectValue
+		tfStateSite.ParentReference, _ = types.ObjectValueFrom(ctx, parentReference.AttributeTypes(), parentReference)
 	}
 	if result.GetWebUrl() != nil {
 		tfStateSite.WebUrl = types.StringValue(*result.GetWebUrl())
@@ -771,8 +761,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				innerError.Target = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, innerError.AttributeTypes(), innerError)
-			error.InnerError = objectValue
+			error.InnerError, _ = types.ObjectValueFrom(ctx, innerError.AttributeTypes(), innerError)
 		}
 		if result.GetError().GetMessage() != nil {
 			error.Message = types.StringValue(*result.GetError().GetMessage())
@@ -785,8 +774,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			error.Target = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, error.AttributeTypes(), error)
-		tfStateSite.Error = objectValue
+		tfStateSite.Error, _ = types.ObjectValueFrom(ctx, error.AttributeTypes(), error)
 	}
 	if result.GetIsPersonalSite() != nil {
 		tfStateSite.IsPersonalSite = types.BoolValue(*result.GetIsPersonalSite())
@@ -796,8 +784,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	if result.GetRoot() != nil {
 		root := new(siteRootModel)
 
-		objectValue, _ := types.ObjectValueFrom(ctx, root.AttributeTypes(), root)
-		tfStateSite.Root = objectValue
+		tfStateSite.Root, _ = types.ObjectValueFrom(ctx, root.AttributeTypes(), root)
 	}
 	if result.GetSharepointIds() != nil {
 		sharepointIds := new(siteSharepointIdsModel)
@@ -838,8 +825,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			sharepointIds.WebId = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, sharepointIds.AttributeTypes(), sharepointIds)
-		tfStateSite.SharepointIds = objectValue
+		tfStateSite.SharepointIds, _ = types.ObjectValueFrom(ctx, sharepointIds.AttributeTypes(), sharepointIds)
 	}
 	if result.GetSiteCollection() != nil {
 		siteCollection := new(siteSiteCollectionModel)
@@ -853,8 +839,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				archivalDetails.ArchiveStatus = types.StringNull()
 			}
 
-			objectValue, _ := types.ObjectValueFrom(ctx, archivalDetails.AttributeTypes(), archivalDetails)
-			siteCollection.ArchivalDetails = objectValue
+			siteCollection.ArchivalDetails, _ = types.ObjectValueFrom(ctx, archivalDetails.AttributeTypes(), archivalDetails)
 		}
 		if result.GetSiteCollection().GetDataLocationCode() != nil {
 			siteCollection.DataLocationCode = types.StringValue(*result.GetSiteCollection().GetDataLocationCode())
@@ -869,12 +854,10 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		if result.GetSiteCollection().GetRoot() != nil {
 			root := new(siteRootModel)
 
-			objectValue, _ := types.ObjectValueFrom(ctx, root.AttributeTypes(), root)
-			siteCollection.Root = objectValue
+			siteCollection.Root, _ = types.ObjectValueFrom(ctx, root.AttributeTypes(), root)
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, siteCollection.AttributeTypes(), siteCollection)
-		tfStateSite.SiteCollection = objectValue
+		tfStateSite.SiteCollection, _ = types.ObjectValueFrom(ctx, siteCollection.AttributeTypes(), siteCollection)
 	}
 
 	// Overwrite items with refreshed state

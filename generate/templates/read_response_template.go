@@ -44,8 +44,7 @@ if {{.GetMethod}} != nil {
 	{{.Property.Name}} := new({{.ModelName}})
 	{{template "generate_read" .NestedRead}}
 
-	objectValue, _ := types.ObjectValueFrom(ctx, {{.Property.Name}}.AttributeTypes(), {{.Property.Name}})
-	{{.StateVarName}} = objectValue
+	{{.StateVarName}}, _ = types.ObjectValueFrom(ctx, {{.Property.Name}}.AttributeTypes(), {{.Property.Name}})
 }
 {{- end}}
 
@@ -68,8 +67,7 @@ if len({{.GetMethod}}) > 0 {
 	for _, v := range {{.GetMethod}} {
 		{{.Property.Name}} = append({{.Property.Name}}, types.StringValue(v.String()))
 	}
-	listValue, _ := types.ListValue(types.StringType, {{.Property.Name}})
-	{{.StateVarName}} = listValue
+	{{.StateVarName}}, _ = types.ListValue(types.StringType, {{.Property.Name}})
 } else {
 	{{.StateVarName}} = types.ListNull(types.StringType)
 }

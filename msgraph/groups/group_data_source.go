@@ -372,8 +372,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				for _, v := range v.GetDisabledPlans() {
 					disabledPlans = append(disabledPlans, types.StringValue(v.String()))
 				}
-				listValue, _ := types.ListValue(types.StringType, disabledPlans)
-				assignedLicenses.DisabledPlans = listValue
+				assignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, disabledPlans)
 			} else {
 				assignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -441,8 +440,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			licenseProcessingState.State = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, licenseProcessingState.AttributeTypes(), licenseProcessingState)
-		tfStateGroup.LicenseProcessingState = objectValue
+		tfStateGroup.LicenseProcessingState, _ = types.ObjectValueFrom(ctx, licenseProcessingState.AttributeTypes(), licenseProcessingState)
 	}
 	if result.GetMail() != nil {
 		tfStateGroup.Mail = types.StringValue(*result.GetMail())

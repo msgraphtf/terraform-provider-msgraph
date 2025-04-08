@@ -772,8 +772,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					for _, v := range v.GetApi().GetKnownClientApplications() {
 						knownClientApplications = append(knownClientApplications, types.StringValue(v.String()))
 					}
-					listValue, _ := types.ListValue(types.StringType, knownClientApplications)
-					api.KnownClientApplications = listValue
+					api.KnownClientApplications, _ = types.ListValue(types.StringType, knownClientApplications)
 				} else {
 					api.KnownClientApplications = types.ListNull(types.StringType)
 				}
@@ -858,8 +857,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					api.PreAuthorizedApplications, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, api.AttributeTypes(), api)
-				value.Api = objectValue
+				value.Api, _ = types.ObjectValueFrom(ctx, api.AttributeTypes(), api)
 			}
 			if v.GetAppId() != nil {
 				value.AppId = types.StringValue(*v.GetAppId())
@@ -950,8 +948,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					certification.LastCertificationDateTime = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, certification.AttributeTypes(), certification)
-				value.Certification = objectValue
+				value.Certification, _ = types.ObjectValueFrom(ctx, certification.AttributeTypes(), certification)
 			}
 			if v.GetCreatedDateTime() != nil {
 				value.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
@@ -1022,8 +1019,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					info.TermsOfServiceUrl = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, info.AttributeTypes(), info)
-				value.Info = objectValue
+				value.Info, _ = types.ObjectValueFrom(ctx, info.AttributeTypes(), info)
 			}
 			if v.GetIsDeviceOnlyAuthSupported() != nil {
 				value.IsDeviceOnlyAuthSupported = types.BoolValue(*v.GetIsDeviceOnlyAuthSupported())
@@ -1214,8 +1210,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					optionalClaims.Saml2Token, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, optionalClaims.AttributeTypes(), optionalClaims)
-				value.OptionalClaims = objectValue
+				value.OptionalClaims, _ = types.ObjectValueFrom(ctx, optionalClaims.AttributeTypes(), optionalClaims)
 			}
 			if v.GetParentalControlSettings() != nil {
 				parentalControlSettings := new(applicationsParentalControlSettingsModel)
@@ -1236,8 +1231,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					parentalControlSettings.LegalAgeGroupRule = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, parentalControlSettings.AttributeTypes(), parentalControlSettings)
-				value.ParentalControlSettings = objectValue
+				value.ParentalControlSettings, _ = types.ObjectValueFrom(ctx, parentalControlSettings.AttributeTypes(), parentalControlSettings)
 			}
 			if len(v.GetPasswordCredentials()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
@@ -1298,8 +1292,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					publicClient.RedirectUris = types.ListNull(types.StringType)
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, publicClient.AttributeTypes(), publicClient)
-				value.PublicClient = objectValue
+				value.PublicClient, _ = types.ObjectValueFrom(ctx, publicClient.AttributeTypes(), publicClient)
 			}
 			if v.GetPublisherDomain() != nil {
 				value.PublisherDomain = types.StringValue(*v.GetPublisherDomain())
@@ -1320,8 +1313,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					requestSignatureVerification.IsSignedRequestRequired = types.BoolNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, requestSignatureVerification.AttributeTypes(), requestSignatureVerification)
-				value.RequestSignatureVerification = objectValue
+				value.RequestSignatureVerification, _ = types.ObjectValueFrom(ctx, requestSignatureVerification.AttributeTypes(), requestSignatureVerification)
 			}
 			if len(v.GetRequiredResourceAccess()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
@@ -1397,8 +1389,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					servicePrincipalLockConfiguration.TokenEncryptionKeyId = types.BoolNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, servicePrincipalLockConfiguration.AttributeTypes(), servicePrincipalLockConfiguration)
-				value.ServicePrincipalLockConfiguration = objectValue
+				value.ServicePrincipalLockConfiguration, _ = types.ObjectValueFrom(ctx, servicePrincipalLockConfiguration.AttributeTypes(), servicePrincipalLockConfiguration)
 			}
 			if v.GetSignInAudience() != nil {
 				value.SignInAudience = types.StringValue(*v.GetSignInAudience())
@@ -1419,8 +1410,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					spa.RedirectUris = types.ListNull(types.StringType)
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, spa.AttributeTypes(), spa)
-				value.Spa = objectValue
+				value.Spa, _ = types.ObjectValueFrom(ctx, spa.AttributeTypes(), spa)
 			}
 			if len(v.GetTags()) > 0 {
 				var tags []attr.Value
@@ -1461,8 +1451,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					verifiedPublisher.VerifiedPublisherId = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, verifiedPublisher.AttributeTypes(), verifiedPublisher)
-				value.VerifiedPublisher = objectValue
+				value.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, verifiedPublisher.AttributeTypes(), verifiedPublisher)
 			}
 			if v.GetWeb() != nil {
 				web := new(applicationsWebApplicationModel)
@@ -1486,8 +1475,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 						implicitGrantSettings.EnableIdTokenIssuance = types.BoolNull()
 					}
 
-					objectValue, _ := types.ObjectValueFrom(ctx, implicitGrantSettings.AttributeTypes(), implicitGrantSettings)
-					web.ImplicitGrantSettings = objectValue
+					web.ImplicitGrantSettings, _ = types.ObjectValueFrom(ctx, implicitGrantSettings.AttributeTypes(), implicitGrantSettings)
 				}
 				if v.GetWeb().GetLogoutUrl() != nil {
 					web.LogoutUrl = types.StringValue(*v.GetWeb().GetLogoutUrl())
@@ -1520,8 +1508,7 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 					web.RedirectUris = types.ListNull(types.StringType)
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, web.AttributeTypes(), web)
-				value.Web = objectValue
+				value.Web, _ = types.ObjectValueFrom(ctx, web.AttributeTypes(), web)
 			}
 			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
 			objectValues = append(objectValues, objectValue)

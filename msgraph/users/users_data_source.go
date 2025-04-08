@@ -641,8 +641,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 						for _, v := range v.GetDisabledPlans() {
 							disabledPlans = append(disabledPlans, types.StringValue(v.String()))
 						}
-						listValue, _ := types.ListValue(types.StringType, disabledPlans)
-						assignedLicenses.DisabledPlans = listValue
+						assignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, disabledPlans)
 					} else {
 						assignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 					}
@@ -700,8 +699,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 					authorizationInfo.CertificateUserIds = types.ListNull(types.StringType)
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfo.AttributeTypes(), authorizationInfo)
-				value.AuthorizationInfo = objectValue
+				value.AuthorizationInfo, _ = types.ObjectValueFrom(ctx, authorizationInfo.AttributeTypes(), authorizationInfo)
 			}
 			if len(v.GetBusinessPhones()) > 0 {
 				var businessPhones []attr.Value
@@ -746,8 +744,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			if v.GetCustomSecurityAttributes() != nil {
 				customSecurityAttributes := new(usersCustomSecurityAttributeValueModel)
 
-				objectValue, _ := types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
-				value.CustomSecurityAttributes = objectValue
+				value.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
 			}
 			if v.GetDepartment() != nil {
 				value.Department = types.StringValue(*v.GetDepartment())
@@ -788,8 +785,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 					employeeOrgData.Division = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, employeeOrgData.AttributeTypes(), employeeOrgData)
-				value.EmployeeOrgData = objectValue
+				value.EmployeeOrgData, _ = types.ObjectValueFrom(ctx, employeeOrgData.AttributeTypes(), employeeOrgData)
 			}
 			if v.GetEmployeeType() != nil {
 				value.EmployeeType = types.StringValue(*v.GetEmployeeType())
@@ -891,8 +887,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 						for _, v := range v.GetDisabledPlans() {
 							disabledPlans = append(disabledPlans, types.StringValue(v.String()))
 						}
-						listValue, _ := types.ListValue(types.StringType, disabledPlans)
-						licenseAssignmentStates.DisabledPlans = listValue
+						licenseAssignmentStates.DisabledPlans, _ = types.ListValue(types.StringType, disabledPlans)
 					} else {
 						licenseAssignmentStates.DisabledPlans = types.ListNull(types.StringType)
 					}
@@ -1030,8 +1025,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 					onPremisesExtensionAttributes.ExtensionAttribute9 = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, onPremisesExtensionAttributes.AttributeTypes(), onPremisesExtensionAttributes)
-				value.OnPremisesExtensionAttributes = objectValue
+				value.OnPremisesExtensionAttributes, _ = types.ObjectValueFrom(ctx, onPremisesExtensionAttributes.AttributeTypes(), onPremisesExtensionAttributes)
 			}
 			if v.GetOnPremisesImmutableId() != nil {
 				value.OnPremisesImmutableId = types.StringValue(*v.GetOnPremisesImmutableId())
@@ -1127,8 +1121,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 					passwordProfile.Password = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, passwordProfile.AttributeTypes(), passwordProfile)
-				value.PasswordProfile = objectValue
+				value.PasswordProfile, _ = types.ObjectValueFrom(ctx, passwordProfile.AttributeTypes(), passwordProfile)
 			}
 			if v.GetPostalCode() != nil {
 				value.PostalCode = types.StringValue(*v.GetPostalCode())
@@ -1249,8 +1242,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 					signInActivity.LastSuccessfulSignInRequestId = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, signInActivity.AttributeTypes(), signInActivity)
-				value.SignInActivity = objectValue
+				value.SignInActivity, _ = types.ObjectValueFrom(ctx, signInActivity.AttributeTypes(), signInActivity)
 			}
 			if v.GetSignInSessionsValidFromDateTime() != nil {
 				value.SignInSessionsValidFromDateTime = types.StringValue(v.GetSignInSessionsValidFromDateTime().String())

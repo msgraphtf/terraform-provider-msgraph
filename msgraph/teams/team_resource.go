@@ -798,8 +798,7 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			funSettings.GiphyContentRating = types.StringNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, funSettings.AttributeTypes(), funSettings)
-		tfStateTeam.FunSettings = objectValue
+		tfStateTeam.FunSettings, _ = types.ObjectValueFrom(ctx, funSettings.AttributeTypes(), funSettings)
 	}
 	if result.GetGuestSettings() != nil {
 		guestSettings := new(teamTeamGuestSettingsModel)
@@ -815,8 +814,7 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			guestSettings.AllowDeleteChannels = types.BoolNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, guestSettings.AttributeTypes(), guestSettings)
-		tfStateTeam.GuestSettings = objectValue
+		tfStateTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, guestSettings.AttributeTypes(), guestSettings)
 	}
 	if result.GetInternalId() != nil {
 		tfStateTeam.InternalId = types.StringValue(*result.GetInternalId())
@@ -862,8 +860,7 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			memberSettings.AllowDeleteChannels = types.BoolNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, memberSettings.AttributeTypes(), memberSettings)
-		tfStateTeam.MemberSettings = objectValue
+		tfStateTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, memberSettings.AttributeTypes(), memberSettings)
 	}
 	if result.GetMessagingSettings() != nil {
 		messagingSettings := new(teamTeamMessagingSettingsModel)
@@ -894,8 +891,7 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			messagingSettings.AllowUserEditMessages = types.BoolNull()
 		}
 
-		objectValue, _ := types.ObjectValueFrom(ctx, messagingSettings.AttributeTypes(), messagingSettings)
-		tfStateTeam.MessagingSettings = objectValue
+		tfStateTeam.MessagingSettings, _ = types.ObjectValueFrom(ctx, messagingSettings.AttributeTypes(), messagingSettings)
 	}
 	if result.GetSpecialization() != nil {
 		tfStateTeam.Specialization = types.StringValue(result.GetSpecialization().String())
@@ -905,8 +901,7 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if result.GetSummary() != nil {
 		summary := new(teamTeamSummaryModel)
 
-		objectValue, _ := types.ObjectValueFrom(ctx, summary.AttributeTypes(), summary)
-		tfStateTeam.Summary = objectValue
+		tfStateTeam.Summary, _ = types.ObjectValueFrom(ctx, summary.AttributeTypes(), summary)
 	}
 	if result.GetTenantId() != nil {
 		tfStateTeam.TenantId = types.StringValue(*result.GetTenantId())

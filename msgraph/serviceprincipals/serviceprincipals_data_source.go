@@ -622,8 +622,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			if v.GetCustomSecurityAttributes() != nil {
 				customSecurityAttributes := new(servicePrincipalsCustomSecurityAttributeValueModel)
 
-				objectValue, _ := types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
-				value.CustomSecurityAttributes = objectValue
+				value.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
 			}
 			if v.GetDescription() != nil {
 				value.Description = types.StringValue(*v.GetDescription())
@@ -674,8 +673,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 					info.TermsOfServiceUrl = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, info.AttributeTypes(), info)
-				value.Info = objectValue
+				value.Info, _ = types.ObjectValueFrom(ctx, info.AttributeTypes(), info)
 			}
 			if len(v.GetKeyCredentials()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
@@ -916,8 +914,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 					samlSingleSignOnSettings.RelayState = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, samlSingleSignOnSettings.AttributeTypes(), samlSingleSignOnSettings)
-				value.SamlSingleSignOnSettings = objectValue
+				value.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, samlSingleSignOnSettings.AttributeTypes(), samlSingleSignOnSettings)
 			}
 			if len(v.GetServicePrincipalNames()) > 0 {
 				var servicePrincipalNames []attr.Value
@@ -973,8 +970,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 					verifiedPublisher.VerifiedPublisherId = types.StringNull()
 				}
 
-				objectValue, _ := types.ObjectValueFrom(ctx, verifiedPublisher.AttributeTypes(), verifiedPublisher)
-				value.VerifiedPublisher = objectValue
+				value.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, verifiedPublisher.AttributeTypes(), verifiedPublisher)
 			}
 			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
 			objectValues = append(objectValues, objectValue)
