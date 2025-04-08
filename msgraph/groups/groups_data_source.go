@@ -283,7 +283,7 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		},
 	}
 
-	response, err := d.client.Groups().Get(context.Background(), &qparams)
+	responseGroups, err := d.client.Groups().Get(context.Background(), &qparams)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -293,9 +293,9 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	if len(response.GetValue()) > 0 {
+	if len(responseGroups.GetValue()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, responseGroup := range response.GetValue() {
+		for _, responseGroup := range responseGroups.GetValue() {
 			tfStateGroup := groupsGroupModel{}
 
 			if responseGroup.GetId() != nil {
@@ -399,9 +399,10 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			}
 			if responseGroup.GetLicenseProcessingState() != nil {
 				tfStateLicenseProcessingState := groupsLicenseProcessingStateModel{}
+				responseLicenseProcessingState := responseGroup.GetLicenseProcessingState()
 
-				if responseGroup.GetLicenseProcessingState().GetState() != nil {
-					tfStateLicenseProcessingState.State = types.StringValue(*responseGroup.GetLicenseProcessingState().GetState())
+				if responseLicenseProcessingState.GetState() != nil {
+					tfStateLicenseProcessingState.State = types.StringValue(*responseLicenseProcessingState.GetState())
 				} else {
 					tfStateLicenseProcessingState.State = types.StringNull()
 				}

@@ -9,17 +9,17 @@ qparams := {{.Configuration}}RequestBuilderGetRequestConfiguration{
 }
 
 {{ define "ZeroParameters" }}
-response, err := d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+response{{.BlockName.UpperCamel}}, err := d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 {{- end}}
 
 {{ define "NonZeroParameters" }}
-var response models.{{.BlockName.UpperCamel}}able
+var response{{.BlockName.UpperCamel}} models.{{.BlockName.UpperCamel}}able
 var err error
 
 if !tfState{{.BlockName.UpperCamel}}.Id.IsNull() {
-	response, err = d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+	response{{.BlockName.UpperCamel}}, err = d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 } {{range .AltGetMethod}} else if !tfState{{.BlockName.UpperCamel}}.{{.if}}.IsNull() {
-	response, err = d.client.{{.method}}.Get(context.Background(), &qparams)
+	response{{.BlockName.UpperCamel}}, err = d.client.{{.method}}.Get(context.Background(), &qparams)
 } {{end}}else {
 	resp.Diagnostics.AddError(
 		"Missing argument",

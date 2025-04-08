@@ -212,7 +212,7 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		},
 	}
 
-	response, err := d.client.Devices().Get(context.Background(), &qparams)
+	responseDevices, err := d.client.Devices().Get(context.Background(), &qparams)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -222,9 +222,9 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	if len(response.GetValue()) > 0 {
+	if len(responseDevices.GetValue()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, responseDevice := range response.GetValue() {
+		for _, responseDevice := range responseDevices.GetValue() {
 			tfStateDevice := devicesDeviceModel{}
 
 			if responseDevice.GetId() != nil {
