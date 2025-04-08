@@ -269,46 +269,46 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.DisplayName = types.StringNull()
 	}
 	if result.GetFunSettings() != nil {
-		funSettings := teamTeamFunSettingsModel{}
+		tfStateFunSettings := teamTeamFunSettingsModel{}
 
 		if result.GetFunSettings().GetAllowCustomMemes() != nil {
-			funSettings.AllowCustomMemes = types.BoolValue(*result.GetFunSettings().GetAllowCustomMemes())
+			tfStateFunSettings.AllowCustomMemes = types.BoolValue(*result.GetFunSettings().GetAllowCustomMemes())
 		} else {
-			funSettings.AllowCustomMemes = types.BoolNull()
+			tfStateFunSettings.AllowCustomMemes = types.BoolNull()
 		}
 		if result.GetFunSettings().GetAllowGiphy() != nil {
-			funSettings.AllowGiphy = types.BoolValue(*result.GetFunSettings().GetAllowGiphy())
+			tfStateFunSettings.AllowGiphy = types.BoolValue(*result.GetFunSettings().GetAllowGiphy())
 		} else {
-			funSettings.AllowGiphy = types.BoolNull()
+			tfStateFunSettings.AllowGiphy = types.BoolNull()
 		}
 		if result.GetFunSettings().GetAllowStickersAndMemes() != nil {
-			funSettings.AllowStickersAndMemes = types.BoolValue(*result.GetFunSettings().GetAllowStickersAndMemes())
+			tfStateFunSettings.AllowStickersAndMemes = types.BoolValue(*result.GetFunSettings().GetAllowStickersAndMemes())
 		} else {
-			funSettings.AllowStickersAndMemes = types.BoolNull()
+			tfStateFunSettings.AllowStickersAndMemes = types.BoolNull()
 		}
 		if result.GetFunSettings().GetGiphyContentRating() != nil {
-			funSettings.GiphyContentRating = types.StringValue(result.GetFunSettings().GetGiphyContentRating().String())
+			tfStateFunSettings.GiphyContentRating = types.StringValue(result.GetFunSettings().GetGiphyContentRating().String())
 		} else {
-			funSettings.GiphyContentRating = types.StringNull()
+			tfStateFunSettings.GiphyContentRating = types.StringNull()
 		}
 
-		tfStateTeam.FunSettings, _ = types.ObjectValueFrom(ctx, funSettings.AttributeTypes(), funSettings)
+		tfStateTeam.FunSettings, _ = types.ObjectValueFrom(ctx, tfStateFunSettings.AttributeTypes(), tfStateFunSettings)
 	}
 	if result.GetGuestSettings() != nil {
-		guestSettings := teamTeamGuestSettingsModel{}
+		tfStateGuestSettings := teamTeamGuestSettingsModel{}
 
 		if result.GetGuestSettings().GetAllowCreateUpdateChannels() != nil {
-			guestSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetGuestSettings().GetAllowCreateUpdateChannels())
+			tfStateGuestSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetGuestSettings().GetAllowCreateUpdateChannels())
 		} else {
-			guestSettings.AllowCreateUpdateChannels = types.BoolNull()
+			tfStateGuestSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
 		if result.GetGuestSettings().GetAllowDeleteChannels() != nil {
-			guestSettings.AllowDeleteChannels = types.BoolValue(*result.GetGuestSettings().GetAllowDeleteChannels())
+			tfStateGuestSettings.AllowDeleteChannels = types.BoolValue(*result.GetGuestSettings().GetAllowDeleteChannels())
 		} else {
-			guestSettings.AllowDeleteChannels = types.BoolNull()
+			tfStateGuestSettings.AllowDeleteChannels = types.BoolNull()
 		}
 
-		tfStateTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, guestSettings.AttributeTypes(), guestSettings)
+		tfStateTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfStateGuestSettings.AttributeTypes(), tfStateGuestSettings)
 	}
 	if result.GetInternalId() != nil {
 		tfStateTeam.InternalId = types.StringValue(*result.GetInternalId())
@@ -321,71 +321,71 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.IsArchived = types.BoolNull()
 	}
 	if result.GetMemberSettings() != nil {
-		memberSettings := teamTeamMemberSettingsModel{}
+		tfStateMemberSettings := teamTeamMemberSettingsModel{}
 
 		if result.GetMemberSettings().GetAllowAddRemoveApps() != nil {
-			memberSettings.AllowAddRemoveApps = types.BoolValue(*result.GetMemberSettings().GetAllowAddRemoveApps())
+			tfStateMemberSettings.AllowAddRemoveApps = types.BoolValue(*result.GetMemberSettings().GetAllowAddRemoveApps())
 		} else {
-			memberSettings.AllowAddRemoveApps = types.BoolNull()
+			tfStateMemberSettings.AllowAddRemoveApps = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowCreatePrivateChannels() != nil {
-			memberSettings.AllowCreatePrivateChannels = types.BoolValue(*result.GetMemberSettings().GetAllowCreatePrivateChannels())
+			tfStateMemberSettings.AllowCreatePrivateChannels = types.BoolValue(*result.GetMemberSettings().GetAllowCreatePrivateChannels())
 		} else {
-			memberSettings.AllowCreatePrivateChannels = types.BoolNull()
+			tfStateMemberSettings.AllowCreatePrivateChannels = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowCreateUpdateChannels() != nil {
-			memberSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateChannels())
+			tfStateMemberSettings.AllowCreateUpdateChannels = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateChannels())
 		} else {
-			memberSettings.AllowCreateUpdateChannels = types.BoolNull()
+			tfStateMemberSettings.AllowCreateUpdateChannels = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowCreateUpdateRemoveConnectors() != nil {
-			memberSettings.AllowCreateUpdateRemoveConnectors = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateRemoveConnectors())
+			tfStateMemberSettings.AllowCreateUpdateRemoveConnectors = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateRemoveConnectors())
 		} else {
-			memberSettings.AllowCreateUpdateRemoveConnectors = types.BoolNull()
+			tfStateMemberSettings.AllowCreateUpdateRemoveConnectors = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowCreateUpdateRemoveTabs() != nil {
-			memberSettings.AllowCreateUpdateRemoveTabs = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateRemoveTabs())
+			tfStateMemberSettings.AllowCreateUpdateRemoveTabs = types.BoolValue(*result.GetMemberSettings().GetAllowCreateUpdateRemoveTabs())
 		} else {
-			memberSettings.AllowCreateUpdateRemoveTabs = types.BoolNull()
+			tfStateMemberSettings.AllowCreateUpdateRemoveTabs = types.BoolNull()
 		}
 		if result.GetMemberSettings().GetAllowDeleteChannels() != nil {
-			memberSettings.AllowDeleteChannels = types.BoolValue(*result.GetMemberSettings().GetAllowDeleteChannels())
+			tfStateMemberSettings.AllowDeleteChannels = types.BoolValue(*result.GetMemberSettings().GetAllowDeleteChannels())
 		} else {
-			memberSettings.AllowDeleteChannels = types.BoolNull()
+			tfStateMemberSettings.AllowDeleteChannels = types.BoolNull()
 		}
 
-		tfStateTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, memberSettings.AttributeTypes(), memberSettings)
+		tfStateTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, tfStateMemberSettings.AttributeTypes(), tfStateMemberSettings)
 	}
 	if result.GetMessagingSettings() != nil {
-		messagingSettings := teamTeamMessagingSettingsModel{}
+		tfStateMessagingSettings := teamTeamMessagingSettingsModel{}
 
 		if result.GetMessagingSettings().GetAllowChannelMentions() != nil {
-			messagingSettings.AllowChannelMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowChannelMentions())
+			tfStateMessagingSettings.AllowChannelMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowChannelMentions())
 		} else {
-			messagingSettings.AllowChannelMentions = types.BoolNull()
+			tfStateMessagingSettings.AllowChannelMentions = types.BoolNull()
 		}
 		if result.GetMessagingSettings().GetAllowOwnerDeleteMessages() != nil {
-			messagingSettings.AllowOwnerDeleteMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowOwnerDeleteMessages())
+			tfStateMessagingSettings.AllowOwnerDeleteMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowOwnerDeleteMessages())
 		} else {
-			messagingSettings.AllowOwnerDeleteMessages = types.BoolNull()
+			tfStateMessagingSettings.AllowOwnerDeleteMessages = types.BoolNull()
 		}
 		if result.GetMessagingSettings().GetAllowTeamMentions() != nil {
-			messagingSettings.AllowTeamMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowTeamMentions())
+			tfStateMessagingSettings.AllowTeamMentions = types.BoolValue(*result.GetMessagingSettings().GetAllowTeamMentions())
 		} else {
-			messagingSettings.AllowTeamMentions = types.BoolNull()
+			tfStateMessagingSettings.AllowTeamMentions = types.BoolNull()
 		}
 		if result.GetMessagingSettings().GetAllowUserDeleteMessages() != nil {
-			messagingSettings.AllowUserDeleteMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowUserDeleteMessages())
+			tfStateMessagingSettings.AllowUserDeleteMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowUserDeleteMessages())
 		} else {
-			messagingSettings.AllowUserDeleteMessages = types.BoolNull()
+			tfStateMessagingSettings.AllowUserDeleteMessages = types.BoolNull()
 		}
 		if result.GetMessagingSettings().GetAllowUserEditMessages() != nil {
-			messagingSettings.AllowUserEditMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowUserEditMessages())
+			tfStateMessagingSettings.AllowUserEditMessages = types.BoolValue(*result.GetMessagingSettings().GetAllowUserEditMessages())
 		} else {
-			messagingSettings.AllowUserEditMessages = types.BoolNull()
+			tfStateMessagingSettings.AllowUserEditMessages = types.BoolNull()
 		}
 
-		tfStateTeam.MessagingSettings, _ = types.ObjectValueFrom(ctx, messagingSettings.AttributeTypes(), messagingSettings)
+		tfStateTeam.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfStateMessagingSettings.AttributeTypes(), tfStateMessagingSettings)
 	}
 	if result.GetSpecialization() != nil {
 		tfStateTeam.Specialization = types.StringValue(result.GetSpecialization().String())
@@ -393,9 +393,9 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.Specialization = types.StringNull()
 	}
 	if result.GetSummary() != nil {
-		summary := teamTeamSummaryModel{}
+		tfStateSummary := teamTeamSummaryModel{}
 
-		tfStateTeam.Summary, _ = types.ObjectValueFrom(ctx, summary.AttributeTypes(), summary)
+		tfStateTeam.Summary, _ = types.ObjectValueFrom(ctx, tfStateSummary.AttributeTypes(), tfStateSummary)
 	}
 	if result.GetTenantId() != nil {
 		tfStateTeam.TenantId = types.StringValue(*result.GetTenantId())

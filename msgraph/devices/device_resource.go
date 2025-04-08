@@ -768,19 +768,19 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	if len(result.GetAlternativeSecurityIds()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAlternativeSecurityIds() {
-			alternativeSecurityIds := deviceAlternativeSecurityIdModel{}
+			tfStateAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
 
 			if v.GetIdentityProvider() != nil {
-				alternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
+				tfStateAlternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
 			} else {
-				alternativeSecurityIds.IdentityProvider = types.StringNull()
+				tfStateAlternativeSecurityIds.IdentityProvider = types.StringNull()
 			}
 			if v.GetKey() != nil {
-				alternativeSecurityIds.Key = types.StringValue(string(v.GetKey()[:]))
+				tfStateAlternativeSecurityIds.Key = types.StringValue(string(v.GetKey()[:]))
 			} else {
-				alternativeSecurityIds.Key = types.StringNull()
+				tfStateAlternativeSecurityIds.Key = types.StringNull()
 			}
-			objectValue, _ := types.ObjectValueFrom(ctx, alternativeSecurityIds.AttributeTypes(), alternativeSecurityIds)
+			objectValue, _ := types.ObjectValueFrom(ctx, tfStateAlternativeSecurityIds.AttributeTypes(), tfStateAlternativeSecurityIds)
 			objectValues = append(objectValues, objectValue)
 		}
 		tfStateDevice.AlternativeSecurityIds, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
@@ -896,11 +896,11 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		tfStateDevice.OperatingSystemVersion = types.StringNull()
 	}
 	if len(result.GetPhysicalIds()) > 0 {
-		var physicalIds []attr.Value
+		var tfStatePhysicalIds []attr.Value
 		for _, v := range result.GetPhysicalIds() {
-			physicalIds = append(physicalIds, types.StringValue(v))
+			tfStatePhysicalIds = append(tfStatePhysicalIds, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, physicalIds)
+		listValue, _ := types.ListValue(types.StringType, tfStatePhysicalIds)
 		tfStateDevice.PhysicalIds = listValue
 	} else {
 		tfStateDevice.PhysicalIds = types.ListNull(types.StringType)
@@ -916,11 +916,11 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		tfStateDevice.RegistrationDateTime = types.StringNull()
 	}
 	if len(result.GetSystemLabels()) > 0 {
-		var systemLabels []attr.Value
+		var tfStateSystemLabels []attr.Value
 		for _, v := range result.GetSystemLabels() {
-			systemLabels = append(systemLabels, types.StringValue(v))
+			tfStateSystemLabels = append(tfStateSystemLabels, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, systemLabels)
+		listValue, _ := types.ListValue(types.StringType, tfStateSystemLabels)
 		tfStateDevice.SystemLabels = listValue
 	} else {
 		tfStateDevice.SystemLabels = types.ListNull(types.StringType)

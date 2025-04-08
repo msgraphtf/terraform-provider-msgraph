@@ -41,20 +41,20 @@ if {{.GetMethod}} != nil {
 
 {{- define "ReadSingleNestedAttribute" }}
 if {{.GetMethod}} != nil {
-	{{.Property.Name}} := {{.TfModelName}}Model{}
+	tfState{{.Name}} := {{.TfModelName}}Model{}
 	{{template "generate_read" .NestedRead}}
 
-	{{.StateVarName}}, _ = types.ObjectValueFrom(ctx, {{.Property.Name}}.AttributeTypes(), {{.Property.Name}})
+	{{.StateVarName}}, _ = types.ObjectValueFrom(ctx, tfState{{.Name}}.AttributeTypes(), tfState{{.Name}})
 }
 {{- end}}
 
 {{- define "ReadListStringAttribute" }}
 if len({{.GetMethod}}) > 0 {
-	var {{.Property.Name}} []attr.Value
+	var tfState{{.Name}} []attr.Value
 	for _, v := range {{.GetMethod}} {
-		{{.Property.Name}} = append({{.Property.Name}}, types.StringValue(v))
+		tfState{{.Name}} = append(tfState{{.Name}}, types.StringValue(v))
 	}
-	listValue, _ := types.ListValue(types.StringType, {{.Property.Name}})
+	listValue, _ := types.ListValue(types.StringType, tfState{{.Name}})
 	{{.StateVarName}} = listValue
 } else {
 	{{.StateVarName}} = types.ListNull(types.StringType)
@@ -63,11 +63,11 @@ if len({{.GetMethod}}) > 0 {
 
 {{- define "ReadListStringFormattedAttribute" }}
 if len({{.GetMethod}}) > 0 {
-	var {{.Property.Name}} []attr.Value
+	var tfState{{.Name}} []attr.Value
 	for _, v := range {{.GetMethod}} {
-		{{.Property.Name}} = append({{.Property.Name}}, types.StringValue(v.String()))
+		tfState{{.Name}} = append(tfState{{.Name}}, types.StringValue(v.String()))
 	}
-	{{.StateVarName}}, _ = types.ListValue(types.StringType, {{.Property.Name}})
+	{{.StateVarName}}, _ = types.ListValue(types.StringType, tfState{{.Name}})
 } else {
 	{{.StateVarName}} = types.ListNull(types.StringType)
 }
@@ -77,9 +77,9 @@ if len({{.GetMethod}}) > 0 {
 if len({{.GetMethod}}) > 0 {
 	objectValues := []basetypes.ObjectValue{}
 	for _, v := range {{.GetMethod}} {
-		{{.Property.Name}} := {{.TfModelName}}Model{}
+		tfState{{.Name}} := {{.TfModelName}}Model{}
 			{{template "generate_read" .NestedRead}}
-		objectValue, _ := types.ObjectValueFrom(ctx, {{.Property.Name}}.AttributeTypes(), {{.Property.Name}})
+		objectValue, _ := types.ObjectValueFrom(ctx, tfState{{.Name}}.AttributeTypes(), tfState{{.Name}})
 		objectValues = append(objectValues, objectValue)
 	}
 {{.StateVarName}}, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
