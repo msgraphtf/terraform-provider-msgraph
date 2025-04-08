@@ -1,41 +1,41 @@
 {{- /* Define templates for mapping each response type to state */}}
 {{- define "ReadStringAttribute" }}
 if {{.GetMethod}} != nil {
-	{{.StateVarName}} = types.StringValue(*{{.GetMethod}})
+	tfState{{.StateVarName}}.{{.Name}} = types.StringValue(*{{.GetMethod}})
 } else {
-	{{.StateVarName}} = types.StringNull()
+	tfState{{.StateVarName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadStringBase64Attribute" }}
 if {{.GetMethod}} != nil {
-	{{.StateVarName}} = types.StringValue(string({{.GetMethod}}[:]))
+	tfState{{.StateVarName}}.{{.Name}} = types.StringValue(string({{.GetMethod}}[:]))
 } else {
-	{{.StateVarName}} = types.StringNull()
+	tfState{{.StateVarName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadStringFormattedAttribute" }}
 if {{.GetMethod}} != nil {
-	{{.StateVarName}} = types.StringValue({{.GetMethod}}.String())
+	tfState{{.StateVarName}}.{{.Name}} = types.StringValue({{.GetMethod}}.String())
 } else {
-	{{.StateVarName}} = types.StringNull()
+	tfState{{.StateVarName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadInt64Attribute" }}
 if {{.GetMethod}} != nil {
-	{{ .StateVarName}} = types.Int64Value(int64(*{{.GetMethod}}))
+	{{.StateVarName}}.{{.Name}} = types.Int64Value(int64(*{{.GetMethod}}))
 } else {
-	{{.StateVarName}} = types.Int64Null()
+	tfState{{.StateVarName}}.{{.Name}} = types.Int64Null()
 }
 {{- end}}
 
 {{- define "ReadBoolAttribute" }}
 if {{.GetMethod}} != nil {
-	{{ .StateVarName}} = types.BoolValue(*{{.GetMethod}})
+	tfState{{ .StateVarName}}.{{.Name}} = types.BoolValue(*{{.GetMethod}})
 } else {
-	{{.StateVarName}} = types.BoolNull()
+	tfState{{.StateVarName}}.{{.Name}} = types.BoolNull()
 }
 {{- end}}
 
@@ -44,7 +44,7 @@ if {{.GetMethod}} != nil {
 	tfState{{.Name}} := {{.TfModelName}}Model{}
 	{{template "generate_read" .NestedRead}}
 
-	{{.StateVarName}}, _ = types.ObjectValueFrom(ctx, tfState{{.Name}}.AttributeTypes(), tfState{{.Name}})
+	tfState{{.StateVarName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfState{{.Name}}.AttributeTypes(), tfState{{.Name}})
 }
 {{- end}}
 
@@ -55,9 +55,9 @@ if len({{.GetMethod}}) > 0 {
 		tfState{{.Name}} = append(tfState{{.Name}}, types.StringValue(v))
 	}
 	listValue, _ := types.ListValue(types.StringType, tfState{{.Name}})
-	{{.StateVarName}} = listValue
+	tfState{{.StateVarName}}.{{.Name}} = listValue
 } else {
-	{{.StateVarName}} = types.ListNull(types.StringType)
+	tfState{{.StateVarName}}.{{.Name}} = types.ListNull(types.StringType)
 }
 {{- end}}
 
@@ -67,9 +67,9 @@ if len({{.GetMethod}}) > 0 {
 	for _, v := range {{.GetMethod}} {
 		tfState{{.Name}} = append(tfState{{.Name}}, types.StringValue(v.String()))
 	}
-	{{.StateVarName}}, _ = types.ListValue(types.StringType, tfState{{.Name}})
+	tfState{{.StateVarName}}.{{.Name}}, _ = types.ListValue(types.StringType, tfState{{.Name}})
 } else {
-	{{.StateVarName}} = types.ListNull(types.StringType)
+	tfState{{.StateVarName}}.{{.Name}} = types.ListNull(types.StringType)
 }
 {{- end}}
 
@@ -82,7 +82,7 @@ if len({{.GetMethod}}) > 0 {
 		objectValue, _ := types.ObjectValueFrom(ctx, tfState{{.Name}}.AttributeTypes(), tfState{{.Name}})
 		objectValues = append(objectValues, objectValue)
 	}
-{{.StateVarName}}, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+tfState{{.StateVarName}}.{{.Name}}, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 }
 {{- end}}
 
