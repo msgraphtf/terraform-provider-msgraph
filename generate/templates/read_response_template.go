@@ -1,46 +1,46 @@
 {{- /* Define templates for mapping each response type to state */}}
 {{- define "ReadStringAttribute" }}
-if {{.GetMethod}} != nil {
-	tfState{{.ParentName}}.{{.Name}} = types.StringValue(*{{.GetMethod}})
+if response{{.GetMethod}} != nil {
+	tfState{{.ParentName}}.{{.Name}} = types.StringValue(*response{{.GetMethod}})
 } else {
 	tfState{{.ParentName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadStringBase64Attribute" }}
-if {{.GetMethod}} != nil {
-	tfState{{.ParentName}}.{{.Name}} = types.StringValue(string({{.GetMethod}}[:]))
+if response{{.GetMethod}} != nil {
+	tfState{{.ParentName}}.{{.Name}} = types.StringValue(string(response{{.GetMethod}}[:]))
 } else {
 	tfState{{.ParentName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadStringFormattedAttribute" }}
-if {{.GetMethod}} != nil {
-	tfState{{.ParentName}}.{{.Name}} = types.StringValue({{.GetMethod}}.String())
+if response{{.GetMethod}} != nil {
+	tfState{{.ParentName}}.{{.Name}} = types.StringValue(response{{.GetMethod}}.String())
 } else {
 	tfState{{.ParentName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadInt64Attribute" }}
-if {{.GetMethod}} != nil {
-	{{.ParentName}}.{{.Name}} = types.Int64Value(int64(*{{.GetMethod}}))
+if response{{.GetMethod}} != nil {
+	{{.ParentName}}.{{.Name}} = types.Int64Value(int64(*response{{.GetMethod}}))
 } else {
 	tfState{{.ParentName}}.{{.Name}} = types.Int64Null()
 }
 {{- end}}
 
 {{- define "ReadBoolAttribute" }}
-if {{.GetMethod}} != nil {
-	tfState{{ .ParentName}}.{{.Name}} = types.BoolValue(*{{.GetMethod}})
+if response{{.GetMethod}} != nil {
+	tfState{{ .ParentName}}.{{.Name}} = types.BoolValue(*response{{.GetMethod}})
 } else {
 	tfState{{.ParentName}}.{{.Name}} = types.BoolNull()
 }
 {{- end}}
 
 {{- define "ReadSingleNestedAttribute" }}
-if {{.GetMethod}} != nil {
+if response{{.GetMethod}} != nil {
 	tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
 	{{template "generate_read" .NestedRead}}
 
@@ -49,9 +49,9 @@ if {{.GetMethod}} != nil {
 {{- end}}
 
 {{- define "ReadListStringAttribute" }}
-if len({{.GetMethod}}) > 0 {
+if len(response{{.GetMethod}}) > 0 {
 	var valueArray{{.Name}} []attr.Value
-	for _, response{{.Name}} := range {{.GetMethod}} {
+	for _, response{{.Name}} := range response{{.GetMethod}} {
 		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(response{{.Name}}))
 	}
 	listValue, _ := types.ListValue(types.StringType, valueArray{{.Name}})
@@ -62,9 +62,9 @@ if len({{.GetMethod}}) > 0 {
 {{- end}}
 
 {{- define "ReadListStringFormattedAttribute" }}
-if len({{.GetMethod}}) > 0 {
+if len(response{{.GetMethod}}) > 0 {
 	var valueArray{{.Name}} []attr.Value
-	for _, response{{.Name}} := range {{.GetMethod}} {
+	for _, response{{.Name}} := range response{{.GetMethod}} {
 		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(response{{.Name}}.String()))
 	}
 	tfState{{.ParentName}}.{{.Name}}, _ = types.ListValue(types.StringType, valueArray{{.Name}})
@@ -74,9 +74,9 @@ if len({{.GetMethod}}) > 0 {
 {{- end}}
 
 {{- define "ReadListNestedAttribute" }}
-if len({{.GetMethod}}) > 0 {
+if len(response{{.GetMethod}}) > 0 {
 	objectValues := []basetypes.ObjectValue{}
-	for _, response{{.ObjectOf}} := range {{.GetMethod}} {
+	for _, response{{.ObjectOf}} := range response{{.GetMethod}} {
 		tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
 			{{template "generate_read" .NestedRead}}
 		objectValue, _ := types.ObjectValueFrom(ctx, tfState{{.ObjectOf}}.AttributeTypes(), tfState{{.ObjectOf}})
