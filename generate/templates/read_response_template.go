@@ -91,23 +91,23 @@ tfState{{.ParentName}}.{{.Name}}, _ = types.ListValueFrom(ctx, objectValues[0].T
 {{/* Generate statements to map response to state */}}
 {{- block "generate_read" .Attributes}}
 {{- range .}}
-{{- if eq .AttributeType "ReadStringAttribute"}}
+{{- if eq .Type "ReadStringAttribute"}}
 {{- template "ReadStringAttribute" .}}
-{{- else if eq .AttributeType "ReadStringBase64Attribute"}}
+{{- else if eq .Type "ReadStringBase64Attribute"}}
 {{- template "ReadStringBase64Attribute" .}}
-{{- else if eq .AttributeType "ReadStringFormattedAttribute"}}
+{{- else if eq .Type "ReadStringFormattedAttribute"}}
 {{- template "ReadStringFormattedAttribute" .}}
-{{- else if eq .AttributeType "ReadInt64Attribute"}}
+{{- else if eq .Type "ReadInt64Attribute"}}
 {{- template "ReadInt64Attribute" .}}
-{{- else if eq .AttributeType "ReadBoolAttribute"}}
+{{- else if eq .Type "ReadBoolAttribute"}}
 {{- template "ReadBoolAttribute" .}}
-{{- else if eq .AttributeType "ReadListStringAttribute"}}
+{{- else if eq .Type "ReadListStringAttribute"}}
 {{- template "ReadListStringAttribute" .}}
-{{- else if eq .AttributeType "ReadListStringFormattedAttribute"}}
+{{- else if eq .Type "ReadListStringFormattedAttribute"}}
 {{- template "ReadListStringFormattedAttribute" .}}
-{{- else if eq .AttributeType "ReadSingleNestedAttribute"}}
+{{- else if eq .Type "ReadSingleNestedAttribute"}}
 {{- template "ReadSingleNestedAttribute" .}}
-{{- else if eq .AttributeType "ReadListNestedAttribute"}}
+{{- else if eq .Type "ReadListNestedAttribute"}}
 {{- template "ReadListNestedAttribute" .}}
 {{- end}}
 {{- end}}

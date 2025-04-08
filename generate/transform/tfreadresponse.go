@@ -43,7 +43,7 @@ func (rr ReadResponse) AllAttributes() []readResponseAttribute {
 	recurseAttributes = func(attributes []readResponseAttribute) []readResponseAttribute{
 
 		for _, rra := range attributes {
-			if rra.AttributeType() == "ReadSingleNestedAttribute" || rra.AttributeType() == "ReadListNestedAttribute" {
+			if rra.Type() == "ReadSingleNestedAttribute" || rra.Type() == "ReadListNestedAttribute" {
 				attributes = append(attributes, recurseAttributes(rra.NestedRead())...)
 			}
 		}
@@ -59,7 +59,7 @@ func (rr ReadResponse) AllAttributes() []readResponseAttribute {
 func (rr ReadResponse) IfAttrImportNeeded() bool {
 
 	for _, rra := range rr.AllAttributes() {
-		if rra.AttributeType() == "ReadListStringAttribute" || rra.AttributeType() == "ReadListStringFormattedAttribute" {
+		if rra.Type() == "ReadListStringAttribute" || rra.Type() == "ReadListStringFormattedAttribute" {
 			return true
 		}
 	}
@@ -71,7 +71,7 @@ func (rr ReadResponse) IfAttrImportNeeded() bool {
 func (rr ReadResponse) IfBasetypesImportNeeded() bool {
 
 	for _, rra := range rr.AllAttributes() {
-		if rra.AttributeType() == "ReadListNestedAttribute" {
+		if rra.Type() == "ReadListNestedAttribute" {
 			return true
 		}
 	}
@@ -90,23 +90,7 @@ func (rra readResponseAttribute) Name() string {
 	return upperFirst(rra.Property.Name)
 }
 
-func (rra readResponseAttribute) ParentName() string {
-	if rra.Parent != nil {
-		return rra.Parent.ObjectOf()
-	} else {
-		return upperFirst(rra.ReadResponse.BlockName)
-	}
-}
-
-func (rra readResponseAttribute) ObjectOf() string {
-	return upperFirst(rra.Property.ObjectOf.Title)
-}
-
-func (rra readResponseAttribute) TfModelName() string {
-	return rra.ReadResponse.BlockName + rra.ObjectOf()
-}
-
-func (rra readResponseAttribute) AttributeType() string {
+func (rra readResponseAttribute) Type() string {
 
 	switch rra.Property.Type {
 	case "string":
@@ -146,6 +130,23 @@ func (rra readResponseAttribute) AttributeType() string {
 
 	return "UNKNOWN"
 }
+
+func (rra readResponseAttribute) ParentName() string {
+	if rra.Parent != nil {
+		return rra.Parent.ObjectOf()
+	} else {
+		return upperFirst(rra.ReadResponse.BlockName)
+	}
+}
+
+func (rra readResponseAttribute) ObjectOf() string {
+	return upperFirst(rra.Property.ObjectOf.Title)
+}
+
+func (rra readResponseAttribute) TfModelName() string {
+	return rra.ReadResponse.BlockName + rra.ObjectOf()
+}
+
 
 // Infuriatingly, Kiota (the tool that generates msgraph-sdk-go) suffixes any attributes named "Type" with "Escaped"
 // If it didn't, we could get rid of this and just use {{.Name}} in the template
