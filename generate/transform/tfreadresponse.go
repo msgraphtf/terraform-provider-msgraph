@@ -105,7 +105,7 @@ func (rra readResponseAttribute) ObjectOf() string {
 func (rra readResponseAttribute) StateVarName() string {
 
 	if rra.Parent != nil {
-		return "tfState" + upperFirst(rra.Parent.Property.Name) + "." + upperFirst(rra.Property.Name)
+		return "tfState" + rra.Parent.Name() + "." + rra.Name()
 	} else {
 		return "tfState" + upperFirst(rra.ReadResponse.BlockName) + "." + upperFirst(rra.Property.Name)
 	}
