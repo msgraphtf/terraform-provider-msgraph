@@ -368,11 +368,11 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			tfStateAssignedLicenses := groupAssignedLicenseModel{}
 
 			if len(v.GetDisabledPlans()) > 0 {
-				var tfStateDisabledPlans []attr.Value
+				var valueArrayDisabledPlans []attr.Value
 				for _, v := range v.GetDisabledPlans() {
-					tfStateDisabledPlans = append(tfStateDisabledPlans, types.StringValue(v.String()))
+					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
 				}
-				tfStateAssignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, tfStateDisabledPlans)
+				tfStateAssignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {
 				tfStateAssignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -412,11 +412,11 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		tfStateGroup.ExpirationDateTime = types.StringNull()
 	}
 	if len(result.GetGroupTypes()) > 0 {
-		var tfStateGroupTypes []attr.Value
+		var valueArrayGroupTypes []attr.Value
 		for _, v := range result.GetGroupTypes() {
-			tfStateGroupTypes = append(tfStateGroupTypes, types.StringValue(v))
+			valueArrayGroupTypes = append(valueArrayGroupTypes, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateGroupTypes)
+		listValue, _ := types.ListValue(types.StringType, valueArrayGroupTypes)
 		tfStateGroup.GroupTypes = listValue
 	} else {
 		tfStateGroup.GroupTypes = types.ListNull(types.StringType)
@@ -538,11 +538,11 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		tfStateGroup.PreferredLanguage = types.StringNull()
 	}
 	if len(result.GetProxyAddresses()) > 0 {
-		var tfStateProxyAddresses []attr.Value
+		var valueArrayProxyAddresses []attr.Value
 		for _, v := range result.GetProxyAddresses() {
-			tfStateProxyAddresses = append(tfStateProxyAddresses, types.StringValue(v))
+			valueArrayProxyAddresses = append(valueArrayProxyAddresses, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateProxyAddresses)
+		listValue, _ := types.ListValue(types.StringType, valueArrayProxyAddresses)
 		tfStateGroup.ProxyAddresses = listValue
 	} else {
 		tfStateGroup.ProxyAddresses = types.ListNull(types.StringType)

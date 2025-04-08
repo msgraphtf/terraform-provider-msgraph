@@ -530,11 +530,11 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 				tfStateValue.AddIns, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
 			if len(v.GetAlternativeNames()) > 0 {
-				var tfStateAlternativeNames []attr.Value
+				var valueArrayAlternativeNames []attr.Value
 				for _, v := range v.GetAlternativeNames() {
-					tfStateAlternativeNames = append(tfStateAlternativeNames, types.StringValue(v))
+					valueArrayAlternativeNames = append(valueArrayAlternativeNames, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateAlternativeNames)
+				listValue, _ := types.ListValue(types.StringType, valueArrayAlternativeNames)
 				tfStateValue.AlternativeNames = listValue
 			} else {
 				tfStateValue.AlternativeNames = types.ListNull(types.StringType)
@@ -570,11 +570,11 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 					tfStateAppRoles := servicePrincipalsAppRoleModel{}
 
 					if len(v.GetAllowedMemberTypes()) > 0 {
-						var tfStateAllowedMemberTypes []attr.Value
+						var valueArrayAllowedMemberTypes []attr.Value
 						for _, v := range v.GetAllowedMemberTypes() {
-							tfStateAllowedMemberTypes = append(tfStateAllowedMemberTypes, types.StringValue(v))
+							valueArrayAllowedMemberTypes = append(valueArrayAllowedMemberTypes, types.StringValue(v))
 						}
-						listValue, _ := types.ListValue(types.StringType, tfStateAllowedMemberTypes)
+						listValue, _ := types.ListValue(types.StringType, valueArrayAllowedMemberTypes)
 						tfStateAppRoles.AllowedMemberTypes = listValue
 					} else {
 						tfStateAppRoles.AllowedMemberTypes = types.ListNull(types.StringType)
@@ -741,11 +741,11 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 				tfStateValue.Notes = types.StringNull()
 			}
 			if len(v.GetNotificationEmailAddresses()) > 0 {
-				var tfStateNotificationEmailAddresses []attr.Value
+				var valueArrayNotificationEmailAddresses []attr.Value
 				for _, v := range v.GetNotificationEmailAddresses() {
-					tfStateNotificationEmailAddresses = append(tfStateNotificationEmailAddresses, types.StringValue(v))
+					valueArrayNotificationEmailAddresses = append(valueArrayNotificationEmailAddresses, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateNotificationEmailAddresses)
+				listValue, _ := types.ListValue(types.StringType, valueArrayNotificationEmailAddresses)
 				tfStateValue.NotificationEmailAddresses = listValue
 			} else {
 				tfStateValue.NotificationEmailAddresses = types.ListNull(types.StringType)
@@ -861,11 +861,11 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 				tfStateValue.PreferredTokenSigningKeyThumbprint = types.StringNull()
 			}
 			if len(v.GetReplyUrls()) > 0 {
-				var tfStateReplyUrls []attr.Value
+				var valueArrayReplyUrls []attr.Value
 				for _, v := range v.GetReplyUrls() {
-					tfStateReplyUrls = append(tfStateReplyUrls, types.StringValue(v))
+					valueArrayReplyUrls = append(valueArrayReplyUrls, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateReplyUrls)
+				listValue, _ := types.ListValue(types.StringType, valueArrayReplyUrls)
 				tfStateValue.ReplyUrls = listValue
 			} else {
 				tfStateValue.ReplyUrls = types.ListNull(types.StringType)
@@ -917,11 +917,11 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 				tfStateValue.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, tfStateSamlSingleSignOnSettings.AttributeTypes(), tfStateSamlSingleSignOnSettings)
 			}
 			if len(v.GetServicePrincipalNames()) > 0 {
-				var tfStateServicePrincipalNames []attr.Value
+				var valueArrayServicePrincipalNames []attr.Value
 				for _, v := range v.GetServicePrincipalNames() {
-					tfStateServicePrincipalNames = append(tfStateServicePrincipalNames, types.StringValue(v))
+					valueArrayServicePrincipalNames = append(valueArrayServicePrincipalNames, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateServicePrincipalNames)
+				listValue, _ := types.ListValue(types.StringType, valueArrayServicePrincipalNames)
 				tfStateValue.ServicePrincipalNames = listValue
 			} else {
 				tfStateValue.ServicePrincipalNames = types.ListNull(types.StringType)
@@ -937,11 +937,11 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 				tfStateValue.SignInAudience = types.StringNull()
 			}
 			if len(v.GetTags()) > 0 {
-				var tfStateTags []attr.Value
+				var valueArrayTags []attr.Value
 				for _, v := range v.GetTags() {
-					tfStateTags = append(tfStateTags, types.StringValue(v))
+					valueArrayTags = append(valueArrayTags, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateTags)
+				listValue, _ := types.ListValue(types.StringType, valueArrayTags)
 				tfStateValue.Tags = listValue
 			} else {
 				tfStateValue.Tags = types.ListNull(types.StringType)

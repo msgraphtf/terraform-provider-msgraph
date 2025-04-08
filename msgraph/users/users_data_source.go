@@ -637,11 +637,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 					tfStateAssignedLicenses := usersAssignedLicenseModel{}
 
 					if len(v.GetDisabledPlans()) > 0 {
-						var tfStateDisabledPlans []attr.Value
+						var valueArrayDisabledPlans []attr.Value
 						for _, v := range v.GetDisabledPlans() {
-							tfStateDisabledPlans = append(tfStateDisabledPlans, types.StringValue(v.String()))
+							valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
 						}
-						tfStateAssignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, tfStateDisabledPlans)
+						tfStateAssignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 					} else {
 						tfStateAssignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 					}
@@ -689,11 +689,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				tfStateAuthorizationInfo := usersAuthorizationInfoModel{}
 
 				if len(v.GetAuthorizationInfo().GetCertificateUserIds()) > 0 {
-					var tfStateCertificateUserIds []attr.Value
+					var valueArrayCertificateUserIds []attr.Value
 					for _, v := range v.GetAuthorizationInfo().GetCertificateUserIds() {
-						tfStateCertificateUserIds = append(tfStateCertificateUserIds, types.StringValue(v))
+						valueArrayCertificateUserIds = append(valueArrayCertificateUserIds, types.StringValue(v))
 					}
-					listValue, _ := types.ListValue(types.StringType, tfStateCertificateUserIds)
+					listValue, _ := types.ListValue(types.StringType, valueArrayCertificateUserIds)
 					tfStateAuthorizationInfo.CertificateUserIds = listValue
 				} else {
 					tfStateAuthorizationInfo.CertificateUserIds = types.ListNull(types.StringType)
@@ -702,11 +702,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				tfStateValue.AuthorizationInfo, _ = types.ObjectValueFrom(ctx, tfStateAuthorizationInfo.AttributeTypes(), tfStateAuthorizationInfo)
 			}
 			if len(v.GetBusinessPhones()) > 0 {
-				var tfStateBusinessPhones []attr.Value
+				var valueArrayBusinessPhones []attr.Value
 				for _, v := range v.GetBusinessPhones() {
-					tfStateBusinessPhones = append(tfStateBusinessPhones, types.StringValue(v))
+					valueArrayBusinessPhones = append(valueArrayBusinessPhones, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateBusinessPhones)
+				listValue, _ := types.ListValue(types.StringType, valueArrayBusinessPhones)
 				tfStateValue.BusinessPhones = listValue
 			} else {
 				tfStateValue.BusinessPhones = types.ListNull(types.StringType)
@@ -838,11 +838,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				tfStateValue.Identities, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
 			if len(v.GetImAddresses()) > 0 {
-				var tfStateImAddresses []attr.Value
+				var valueArrayImAddresses []attr.Value
 				for _, v := range v.GetImAddresses() {
-					tfStateImAddresses = append(tfStateImAddresses, types.StringValue(v))
+					valueArrayImAddresses = append(valueArrayImAddresses, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateImAddresses)
+				listValue, _ := types.ListValue(types.StringType, valueArrayImAddresses)
 				tfStateValue.ImAddresses = listValue
 			} else {
 				tfStateValue.ImAddresses = types.ListNull(types.StringType)
@@ -883,11 +883,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 						tfStateLicenseAssignmentStates.AssignedByGroup = types.StringNull()
 					}
 					if len(v.GetDisabledPlans()) > 0 {
-						var tfStateDisabledPlans []attr.Value
+						var valueArrayDisabledPlans []attr.Value
 						for _, v := range v.GetDisabledPlans() {
-							tfStateDisabledPlans = append(tfStateDisabledPlans, types.StringValue(v.String()))
+							valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
 						}
-						tfStateLicenseAssignmentStates.DisabledPlans, _ = types.ListValue(types.StringType, tfStateDisabledPlans)
+						tfStateLicenseAssignmentStates.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 					} else {
 						tfStateLicenseAssignmentStates.DisabledPlans = types.ListNull(types.StringType)
 					}
@@ -1088,11 +1088,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				tfStateValue.OnPremisesUserPrincipalName = types.StringNull()
 			}
 			if len(v.GetOtherMails()) > 0 {
-				var tfStateOtherMails []attr.Value
+				var valueArrayOtherMails []attr.Value
 				for _, v := range v.GetOtherMails() {
-					tfStateOtherMails = append(tfStateOtherMails, types.StringValue(v))
+					valueArrayOtherMails = append(valueArrayOtherMails, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateOtherMails)
+				listValue, _ := types.ListValue(types.StringType, valueArrayOtherMails)
 				tfStateValue.OtherMails = listValue
 			} else {
 				tfStateValue.OtherMails = types.ListNull(types.StringType)
@@ -1164,11 +1164,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				tfStateValue.ProvisionedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
 			if len(v.GetProxyAddresses()) > 0 {
-				var tfStateProxyAddresses []attr.Value
+				var valueArrayProxyAddresses []attr.Value
 				for _, v := range v.GetProxyAddresses() {
-					tfStateProxyAddresses = append(tfStateProxyAddresses, types.StringValue(v))
+					valueArrayProxyAddresses = append(valueArrayProxyAddresses, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateProxyAddresses)
+				listValue, _ := types.ListValue(types.StringType, valueArrayProxyAddresses)
 				tfStateValue.ProxyAddresses = listValue
 			} else {
 				tfStateValue.ProxyAddresses = types.ListNull(types.StringType)

@@ -373,11 +373,11 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 				tfStateValue.OperatingSystemVersion = types.StringNull()
 			}
 			if len(v.GetPhysicalIds()) > 0 {
-				var tfStatePhysicalIds []attr.Value
+				var valueArrayPhysicalIds []attr.Value
 				for _, v := range v.GetPhysicalIds() {
-					tfStatePhysicalIds = append(tfStatePhysicalIds, types.StringValue(v))
+					valueArrayPhysicalIds = append(valueArrayPhysicalIds, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStatePhysicalIds)
+				listValue, _ := types.ListValue(types.StringType, valueArrayPhysicalIds)
 				tfStateValue.PhysicalIds = listValue
 			} else {
 				tfStateValue.PhysicalIds = types.ListNull(types.StringType)
@@ -393,11 +393,11 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 				tfStateValue.RegistrationDateTime = types.StringNull()
 			}
 			if len(v.GetSystemLabels()) > 0 {
-				var tfStateSystemLabels []attr.Value
+				var valueArraySystemLabels []attr.Value
 				for _, v := range v.GetSystemLabels() {
-					tfStateSystemLabels = append(tfStateSystemLabels, types.StringValue(v))
+					valueArraySystemLabels = append(valueArraySystemLabels, types.StringValue(v))
 				}
-				listValue, _ := types.ListValue(types.StringType, tfStateSystemLabels)
+				listValue, _ := types.ListValue(types.StringType, valueArraySystemLabels)
 				tfStateValue.SystemLabels = listValue
 			} else {
 				tfStateValue.SystemLabels = types.ListNull(types.StringType)

@@ -2585,11 +2585,11 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			tfStateAssignedLicenses := userAssignedLicenseModel{}
 
 			if len(v.GetDisabledPlans()) > 0 {
-				var tfStateDisabledPlans []attr.Value
+				var valueArrayDisabledPlans []attr.Value
 				for _, v := range v.GetDisabledPlans() {
-					tfStateDisabledPlans = append(tfStateDisabledPlans, types.StringValue(v.String()))
+					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
 				}
-				tfStateAssignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, tfStateDisabledPlans)
+				tfStateAssignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {
 				tfStateAssignedLicenses.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -2637,11 +2637,11 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateAuthorizationInfo := userAuthorizationInfoModel{}
 
 		if len(result.GetAuthorizationInfo().GetCertificateUserIds()) > 0 {
-			var tfStateCertificateUserIds []attr.Value
+			var valueArrayCertificateUserIds []attr.Value
 			for _, v := range result.GetAuthorizationInfo().GetCertificateUserIds() {
-				tfStateCertificateUserIds = append(tfStateCertificateUserIds, types.StringValue(v))
+				valueArrayCertificateUserIds = append(valueArrayCertificateUserIds, types.StringValue(v))
 			}
-			listValue, _ := types.ListValue(types.StringType, tfStateCertificateUserIds)
+			listValue, _ := types.ListValue(types.StringType, valueArrayCertificateUserIds)
 			tfStateAuthorizationInfo.CertificateUserIds = listValue
 		} else {
 			tfStateAuthorizationInfo.CertificateUserIds = types.ListNull(types.StringType)
@@ -2655,11 +2655,11 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.Birthday = types.StringNull()
 	}
 	if len(result.GetBusinessPhones()) > 0 {
-		var tfStateBusinessPhones []attr.Value
+		var valueArrayBusinessPhones []attr.Value
 		for _, v := range result.GetBusinessPhones() {
-			tfStateBusinessPhones = append(tfStateBusinessPhones, types.StringValue(v))
+			valueArrayBusinessPhones = append(valueArrayBusinessPhones, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateBusinessPhones)
+		listValue, _ := types.ListValue(types.StringType, valueArrayBusinessPhones)
 		tfStateUser.BusinessPhones = listValue
 	} else {
 		tfStateUser.BusinessPhones = types.ListNull(types.StringType)
@@ -2791,21 +2791,21 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.Identities, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if len(result.GetImAddresses()) > 0 {
-		var tfStateImAddresses []attr.Value
+		var valueArrayImAddresses []attr.Value
 		for _, v := range result.GetImAddresses() {
-			tfStateImAddresses = append(tfStateImAddresses, types.StringValue(v))
+			valueArrayImAddresses = append(valueArrayImAddresses, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateImAddresses)
+		listValue, _ := types.ListValue(types.StringType, valueArrayImAddresses)
 		tfStateUser.ImAddresses = listValue
 	} else {
 		tfStateUser.ImAddresses = types.ListNull(types.StringType)
 	}
 	if len(result.GetInterests()) > 0 {
-		var tfStateInterests []attr.Value
+		var valueArrayInterests []attr.Value
 		for _, v := range result.GetInterests() {
-			tfStateInterests = append(tfStateInterests, types.StringValue(v))
+			valueArrayInterests = append(valueArrayInterests, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateInterests)
+		listValue, _ := types.ListValue(types.StringType, valueArrayInterests)
 		tfStateUser.Interests = listValue
 	} else {
 		tfStateUser.Interests = types.ListNull(types.StringType)
@@ -2846,11 +2846,11 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 				tfStateLicenseAssignmentStates.AssignedByGroup = types.StringNull()
 			}
 			if len(v.GetDisabledPlans()) > 0 {
-				var tfStateDisabledPlans []attr.Value
+				var valueArrayDisabledPlans []attr.Value
 				for _, v := range v.GetDisabledPlans() {
-					tfStateDisabledPlans = append(tfStateDisabledPlans, types.StringValue(v.String()))
+					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
 				}
-				tfStateLicenseAssignmentStates.DisabledPlans, _ = types.ListValue(types.StringType, tfStateDisabledPlans)
+				tfStateLicenseAssignmentStates.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {
 				tfStateLicenseAssignmentStates.DisabledPlans = types.ListNull(types.StringType)
 			}
@@ -3056,11 +3056,11 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.OnPremisesUserPrincipalName = types.StringNull()
 	}
 	if len(result.GetOtherMails()) > 0 {
-		var tfStateOtherMails []attr.Value
+		var valueArrayOtherMails []attr.Value
 		for _, v := range result.GetOtherMails() {
-			tfStateOtherMails = append(tfStateOtherMails, types.StringValue(v))
+			valueArrayOtherMails = append(valueArrayOtherMails, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateOtherMails)
+		listValue, _ := types.ListValue(types.StringType, valueArrayOtherMails)
 		tfStateUser.OtherMails = listValue
 	} else {
 		tfStateUser.OtherMails = types.ListNull(types.StringType)
@@ -3092,11 +3092,11 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.PasswordProfile, _ = types.ObjectValueFrom(ctx, tfStatePasswordProfile.AttributeTypes(), tfStatePasswordProfile)
 	}
 	if len(result.GetPastProjects()) > 0 {
-		var tfStatePastProjects []attr.Value
+		var valueArrayPastProjects []attr.Value
 		for _, v := range result.GetPastProjects() {
-			tfStatePastProjects = append(tfStatePastProjects, types.StringValue(v))
+			valueArrayPastProjects = append(valueArrayPastProjects, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStatePastProjects)
+		listValue, _ := types.ListValue(types.StringType, valueArrayPastProjects)
 		tfStateUser.PastProjects = listValue
 	} else {
 		tfStateUser.PastProjects = types.ListNull(types.StringType)
@@ -3147,31 +3147,31 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.ProvisionedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if len(result.GetProxyAddresses()) > 0 {
-		var tfStateProxyAddresses []attr.Value
+		var valueArrayProxyAddresses []attr.Value
 		for _, v := range result.GetProxyAddresses() {
-			tfStateProxyAddresses = append(tfStateProxyAddresses, types.StringValue(v))
+			valueArrayProxyAddresses = append(valueArrayProxyAddresses, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateProxyAddresses)
+		listValue, _ := types.ListValue(types.StringType, valueArrayProxyAddresses)
 		tfStateUser.ProxyAddresses = listValue
 	} else {
 		tfStateUser.ProxyAddresses = types.ListNull(types.StringType)
 	}
 	if len(result.GetResponsibilities()) > 0 {
-		var tfStateResponsibilities []attr.Value
+		var valueArrayResponsibilities []attr.Value
 		for _, v := range result.GetResponsibilities() {
-			tfStateResponsibilities = append(tfStateResponsibilities, types.StringValue(v))
+			valueArrayResponsibilities = append(valueArrayResponsibilities, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateResponsibilities)
+		listValue, _ := types.ListValue(types.StringType, valueArrayResponsibilities)
 		tfStateUser.Responsibilities = listValue
 	} else {
 		tfStateUser.Responsibilities = types.ListNull(types.StringType)
 	}
 	if len(result.GetSchools()) > 0 {
-		var tfStateSchools []attr.Value
+		var valueArraySchools []attr.Value
 		for _, v := range result.GetSchools() {
-			tfStateSchools = append(tfStateSchools, types.StringValue(v))
+			valueArraySchools = append(valueArraySchools, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateSchools)
+		listValue, _ := types.ListValue(types.StringType, valueArraySchools)
 		tfStateUser.Schools = listValue
 	} else {
 		tfStateUser.Schools = types.ListNull(types.StringType)
@@ -3253,11 +3253,11 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateUser.SignInSessionsValidFromDateTime = types.StringNull()
 	}
 	if len(result.GetSkills()) > 0 {
-		var tfStateSkills []attr.Value
+		var valueArraySkills []attr.Value
 		for _, v := range result.GetSkills() {
-			tfStateSkills = append(tfStateSkills, types.StringValue(v))
+			valueArraySkills = append(valueArraySkills, types.StringValue(v))
 		}
-		listValue, _ := types.ListValue(types.StringType, tfStateSkills)
+		listValue, _ := types.ListValue(types.StringType, valueArraySkills)
 		tfStateUser.Skills = listValue
 	} else {
 		tfStateUser.Skills = types.ListNull(types.StringType)

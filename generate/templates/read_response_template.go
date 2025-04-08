@@ -50,11 +50,11 @@ if {{.GetMethod}} != nil {
 
 {{- define "ReadListStringAttribute" }}
 if len({{.GetMethod}}) > 0 {
-	var tfState{{.Name}} []attr.Value
+	var valueArray{{.Name}} []attr.Value
 	for _, v := range {{.GetMethod}} {
-		tfState{{.Name}} = append(tfState{{.Name}}, types.StringValue(v))
+		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(v))
 	}
-	listValue, _ := types.ListValue(types.StringType, tfState{{.Name}})
+	listValue, _ := types.ListValue(types.StringType, valueArray{{.Name}})
 	tfState{{.StateVarName}}.{{.Name}} = listValue
 } else {
 	tfState{{.StateVarName}}.{{.Name}} = types.ListNull(types.StringType)
@@ -63,11 +63,11 @@ if len({{.GetMethod}}) > 0 {
 
 {{- define "ReadListStringFormattedAttribute" }}
 if len({{.GetMethod}}) > 0 {
-	var tfState{{.Name}} []attr.Value
+	var valueArray{{.Name}} []attr.Value
 	for _, v := range {{.GetMethod}} {
-		tfState{{.Name}} = append(tfState{{.Name}}, types.StringValue(v.String()))
+		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(v.String()))
 	}
-	tfState{{.StateVarName}}.{{.Name}}, _ = types.ListValue(types.StringType, tfState{{.Name}})
+	tfState{{.StateVarName}}.{{.Name}}, _ = types.ListValue(types.StringType, valueArray{{.Name}})
 } else {
 	tfState{{.StateVarName}}.{{.Name}} = types.ListNull(types.StringType)
 }
