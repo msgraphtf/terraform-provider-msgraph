@@ -157,7 +157,7 @@ func (rra readResponseAttribute) GetMethod() string {
 	if rra.Parent != nil && rra.Parent.AttributeType() == "ReadSingleNestedAttribute" {
 		getMethod = rra.Parent.GetMethod() + "." + getMethod
 	} else if rra.Parent != nil && rra.Parent.AttributeType() == "ReadListNestedAttribute" {
-		getMethod = "v." + getMethod
+		getMethod = "result" + rra.Parent.Name() + "." + getMethod
 	} else {
 		getMethod = "result." + getMethod
 	}

@@ -275,16 +275,16 @@ func (d *deviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	if len(result.GetAlternativeSecurityIds()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, v := range result.GetAlternativeSecurityIds() {
+		for _, resultAlternativeSecurityIds := range result.GetAlternativeSecurityIds() {
 			tfStateAlternativeSecurityId := deviceAlternativeSecurityIdModel{}
 
-			if v.GetIdentityProvider() != nil {
-				tfStateAlternativeSecurityId.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
+			if resultAlternativeSecurityIds.GetIdentityProvider() != nil {
+				tfStateAlternativeSecurityId.IdentityProvider = types.StringValue(*resultAlternativeSecurityIds.GetIdentityProvider())
 			} else {
 				tfStateAlternativeSecurityId.IdentityProvider = types.StringNull()
 			}
-			if v.GetKey() != nil {
-				tfStateAlternativeSecurityId.Key = types.StringValue(string(v.GetKey()[:]))
+			if resultAlternativeSecurityIds.GetKey() != nil {
+				tfStateAlternativeSecurityId.Key = types.StringValue(string(resultAlternativeSecurityIds.GetKey()[:]))
 			} else {
 				tfStateAlternativeSecurityId.Key = types.StringNull()
 			}

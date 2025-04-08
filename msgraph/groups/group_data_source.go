@@ -344,16 +344,16 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 	if len(result.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, v := range result.GetAssignedLabels() {
+		for _, resultAssignedLabels := range result.GetAssignedLabels() {
 			tfStateAssignedLabel := groupAssignedLabelModel{}
 
-			if v.GetDisplayName() != nil {
-				tfStateAssignedLabel.DisplayName = types.StringValue(*v.GetDisplayName())
+			if resultAssignedLabels.GetDisplayName() != nil {
+				tfStateAssignedLabel.DisplayName = types.StringValue(*resultAssignedLabels.GetDisplayName())
 			} else {
 				tfStateAssignedLabel.DisplayName = types.StringNull()
 			}
-			if v.GetLabelId() != nil {
-				tfStateAssignedLabel.LabelId = types.StringValue(*v.GetLabelId())
+			if resultAssignedLabels.GetLabelId() != nil {
+				tfStateAssignedLabel.LabelId = types.StringValue(*resultAssignedLabels.GetLabelId())
 			} else {
 				tfStateAssignedLabel.LabelId = types.StringNull()
 			}
@@ -364,20 +364,20 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, v := range result.GetAssignedLicenses() {
+		for _, resultAssignedLicenses := range result.GetAssignedLicenses() {
 			tfStateAssignedLicense := groupAssignedLicenseModel{}
 
-			if len(v.GetDisabledPlans()) > 0 {
+			if len(resultAssignedLicenses.GetDisabledPlans()) > 0 {
 				var valueArrayDisabledPlans []attr.Value
-				for _, resultDisabledPlans := range v.GetDisabledPlans() {
+				for _, resultDisabledPlans := range resultAssignedLicenses.GetDisabledPlans() {
 					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(resultDisabledPlans.String()))
 				}
 				tfStateAssignedLicense.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {
 				tfStateAssignedLicense.DisabledPlans = types.ListNull(types.StringType)
 			}
-			if v.GetSkuId() != nil {
-				tfStateAssignedLicense.SkuId = types.StringValue(v.GetSkuId().String())
+			if resultAssignedLicenses.GetSkuId() != nil {
+				tfStateAssignedLicense.SkuId = types.StringValue(resultAssignedLicenses.GetSkuId().String())
 			} else {
 				tfStateAssignedLicense.SkuId = types.StringNull()
 			}
@@ -484,26 +484,26 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, v := range result.GetOnPremisesProvisioningErrors() {
+		for _, resultOnPremisesProvisioningErrors := range result.GetOnPremisesProvisioningErrors() {
 			tfStateOnPremisesProvisioningError := groupOnPremisesProvisioningErrorModel{}
 
-			if v.GetCategory() != nil {
-				tfStateOnPremisesProvisioningError.Category = types.StringValue(*v.GetCategory())
+			if resultOnPremisesProvisioningErrors.GetCategory() != nil {
+				tfStateOnPremisesProvisioningError.Category = types.StringValue(*resultOnPremisesProvisioningErrors.GetCategory())
 			} else {
 				tfStateOnPremisesProvisioningError.Category = types.StringNull()
 			}
-			if v.GetOccurredDateTime() != nil {
-				tfStateOnPremisesProvisioningError.OccurredDateTime = types.StringValue(v.GetOccurredDateTime().String())
+			if resultOnPremisesProvisioningErrors.GetOccurredDateTime() != nil {
+				tfStateOnPremisesProvisioningError.OccurredDateTime = types.StringValue(resultOnPremisesProvisioningErrors.GetOccurredDateTime().String())
 			} else {
 				tfStateOnPremisesProvisioningError.OccurredDateTime = types.StringNull()
 			}
-			if v.GetPropertyCausingError() != nil {
-				tfStateOnPremisesProvisioningError.PropertyCausingError = types.StringValue(*v.GetPropertyCausingError())
+			if resultOnPremisesProvisioningErrors.GetPropertyCausingError() != nil {
+				tfStateOnPremisesProvisioningError.PropertyCausingError = types.StringValue(*resultOnPremisesProvisioningErrors.GetPropertyCausingError())
 			} else {
 				tfStateOnPremisesProvisioningError.PropertyCausingError = types.StringNull()
 			}
-			if v.GetValue() != nil {
-				tfStateOnPremisesProvisioningError.Value = types.StringValue(*v.GetValue())
+			if resultOnPremisesProvisioningErrors.GetValue() != nil {
+				tfStateOnPremisesProvisioningError.Value = types.StringValue(*resultOnPremisesProvisioningErrors.GetValue())
 			} else {
 				tfStateOnPremisesProvisioningError.Value = types.StringNull()
 			}
@@ -564,21 +564,21 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
-		for _, v := range result.GetServiceProvisioningErrors() {
+		for _, resultServiceProvisioningErrors := range result.GetServiceProvisioningErrors() {
 			tfStateServiceProvisioningError := groupServiceProvisioningErrorModel{}
 
-			if v.GetCreatedDateTime() != nil {
-				tfStateServiceProvisioningError.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+			if resultServiceProvisioningErrors.GetCreatedDateTime() != nil {
+				tfStateServiceProvisioningError.CreatedDateTime = types.StringValue(resultServiceProvisioningErrors.GetCreatedDateTime().String())
 			} else {
 				tfStateServiceProvisioningError.CreatedDateTime = types.StringNull()
 			}
-			if v.GetIsResolved() != nil {
-				tfStateServiceProvisioningError.IsResolved = types.BoolValue(*v.GetIsResolved())
+			if resultServiceProvisioningErrors.GetIsResolved() != nil {
+				tfStateServiceProvisioningError.IsResolved = types.BoolValue(*resultServiceProvisioningErrors.GetIsResolved())
 			} else {
 				tfStateServiceProvisioningError.IsResolved = types.BoolNull()
 			}
-			if v.GetServiceInstance() != nil {
-				tfStateServiceProvisioningError.ServiceInstance = types.StringValue(*v.GetServiceInstance())
+			if resultServiceProvisioningErrors.GetServiceInstance() != nil {
+				tfStateServiceProvisioningError.ServiceInstance = types.StringValue(*resultServiceProvisioningErrors.GetServiceInstance())
 			} else {
 				tfStateServiceProvisioningError.ServiceInstance = types.StringNull()
 			}

@@ -694,21 +694,21 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 		if len(result.GetError().GetDetails()) > 0 {
 			objectValues := []basetypes.ObjectValue{}
-			for _, v := range result.GetError().GetDetails() {
+			for _, resultDetails := range result.GetError().GetDetails() {
 				tfStatePublicErrorDetail := sitePublicErrorDetailModel{}
 
-				if v.GetCode() != nil {
-					tfStatePublicErrorDetail.Code = types.StringValue(*v.GetCode())
+				if resultDetails.GetCode() != nil {
+					tfStatePublicErrorDetail.Code = types.StringValue(*resultDetails.GetCode())
 				} else {
 					tfStatePublicErrorDetail.Code = types.StringNull()
 				}
-				if v.GetMessage() != nil {
-					tfStatePublicErrorDetail.Message = types.StringValue(*v.GetMessage())
+				if resultDetails.GetMessage() != nil {
+					tfStatePublicErrorDetail.Message = types.StringValue(*resultDetails.GetMessage())
 				} else {
 					tfStatePublicErrorDetail.Message = types.StringNull()
 				}
-				if v.GetTarget() != nil {
-					tfStatePublicErrorDetail.Target = types.StringValue(*v.GetTarget())
+				if resultDetails.GetTarget() != nil {
+					tfStatePublicErrorDetail.Target = types.StringValue(*resultDetails.GetTarget())
 				} else {
 					tfStatePublicErrorDetail.Target = types.StringNull()
 				}
@@ -727,21 +727,21 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			}
 			if len(result.GetError().GetInnerError().GetDetails()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
-				for _, v := range result.GetError().GetInnerError().GetDetails() {
+				for _, resultDetails := range result.GetError().GetInnerError().GetDetails() {
 					tfStatePublicErrorDetail := sitePublicErrorDetailModel{}
 
-					if v.GetCode() != nil {
-						tfStatePublicErrorDetail.Code = types.StringValue(*v.GetCode())
+					if resultDetails.GetCode() != nil {
+						tfStatePublicErrorDetail.Code = types.StringValue(*resultDetails.GetCode())
 					} else {
 						tfStatePublicErrorDetail.Code = types.StringNull()
 					}
-					if v.GetMessage() != nil {
-						tfStatePublicErrorDetail.Message = types.StringValue(*v.GetMessage())
+					if resultDetails.GetMessage() != nil {
+						tfStatePublicErrorDetail.Message = types.StringValue(*resultDetails.GetMessage())
 					} else {
 						tfStatePublicErrorDetail.Message = types.StringNull()
 					}
-					if v.GetTarget() != nil {
-						tfStatePublicErrorDetail.Target = types.StringValue(*v.GetTarget())
+					if resultDetails.GetTarget() != nil {
+						tfStatePublicErrorDetail.Target = types.StringValue(*resultDetails.GetTarget())
 					} else {
 						tfStatePublicErrorDetail.Target = types.StringNull()
 					}
