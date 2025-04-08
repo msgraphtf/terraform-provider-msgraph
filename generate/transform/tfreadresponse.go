@@ -86,6 +86,22 @@ type readResponseAttribute struct {
 	Parent       *readResponseAttribute
 }
 
+func (rra readResponseAttribute) Name() string {
+	return upperFirst(rra.Property.Name)
+}
+
+func (rra readResponseAttribute) ParentName() string {
+	if rra.Parent != nil {
+		return rra.Parent.ObjectOf()
+	} else {
+		return rra.ReadResponse.BlockName
+	}
+}
+
+func (rra readResponseAttribute) ObjectOf() string {
+	return upperFirst(rra.Property.ObjectOf.Title)
+}
+
 func (rra readResponseAttribute) StateVarName() string {
 
 	if rra.Parent != nil && rra.Parent.AttributeType() == "ReadSingleNestedAttribute" {
@@ -93,7 +109,7 @@ func (rra readResponseAttribute) StateVarName() string {
 	} else if rra.Parent != nil && rra.Parent.AttributeType() == "ReadListNestedAttribute" {
 		return rra.Parent.Property.Name + "." + upperFirst(rra.Property.Name)
 	} else {
-		return "state." + upperFirst(rra.Property.Name)
+		return "tfState" + upperFirst(rra.ReadResponse.BlockName) + "." + upperFirst(rra.Property.Name)
 	}
 }
 

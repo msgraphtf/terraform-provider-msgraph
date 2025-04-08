@@ -193,8 +193,8 @@ func (d *teamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 
 // Read refreshes the Terraform state with the latest data.
 func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state teamModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateTeam teamModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateTeam)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -225,8 +225,8 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	var result models.Teamable
 	var err error
 
-	if !state.Id.IsNull() {
-		result, err = d.client.Teams().ByTeamId(state.Id.ValueString()).Get(context.Background(), &qparams)
+	if !tfStateTeam.Id.IsNull() {
+		result, err = d.client.Teams().ByTeamId(tfStateTeam.Id.ValueString()).Get(context.Background(), &qparams)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
@@ -244,29 +244,29 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	if result.GetId() != nil {
-		state.Id = types.StringValue(*result.GetId())
+		tfStateTeam.Id = types.StringValue(*result.GetId())
 	} else {
-		state.Id = types.StringNull()
+		tfStateTeam.Id = types.StringNull()
 	}
 	if result.GetClassification() != nil {
-		state.Classification = types.StringValue(*result.GetClassification())
+		tfStateTeam.Classification = types.StringValue(*result.GetClassification())
 	} else {
-		state.Classification = types.StringNull()
+		tfStateTeam.Classification = types.StringNull()
 	}
 	if result.GetCreatedDateTime() != nil {
-		state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
+		tfStateTeam.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
 	} else {
-		state.CreatedDateTime = types.StringNull()
+		tfStateTeam.CreatedDateTime = types.StringNull()
 	}
 	if result.GetDescription() != nil {
-		state.Description = types.StringValue(*result.GetDescription())
+		tfStateTeam.Description = types.StringValue(*result.GetDescription())
 	} else {
-		state.Description = types.StringNull()
+		tfStateTeam.Description = types.StringNull()
 	}
 	if result.GetDisplayName() != nil {
-		state.DisplayName = types.StringValue(*result.GetDisplayName())
+		tfStateTeam.DisplayName = types.StringValue(*result.GetDisplayName())
 	} else {
-		state.DisplayName = types.StringNull()
+		tfStateTeam.DisplayName = types.StringNull()
 	}
 	if result.GetFunSettings() != nil {
 		funSettings := new(teamTeamFunSettingsModel)
@@ -293,7 +293,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, funSettings.AttributeTypes(), funSettings)
-		state.FunSettings = objectValue
+		tfStateTeam.FunSettings = objectValue
 	}
 	if result.GetGuestSettings() != nil {
 		guestSettings := new(teamTeamGuestSettingsModel)
@@ -310,17 +310,17 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, guestSettings.AttributeTypes(), guestSettings)
-		state.GuestSettings = objectValue
+		tfStateTeam.GuestSettings = objectValue
 	}
 	if result.GetInternalId() != nil {
-		state.InternalId = types.StringValue(*result.GetInternalId())
+		tfStateTeam.InternalId = types.StringValue(*result.GetInternalId())
 	} else {
-		state.InternalId = types.StringNull()
+		tfStateTeam.InternalId = types.StringNull()
 	}
 	if result.GetIsArchived() != nil {
-		state.IsArchived = types.BoolValue(*result.GetIsArchived())
+		tfStateTeam.IsArchived = types.BoolValue(*result.GetIsArchived())
 	} else {
-		state.IsArchived = types.BoolNull()
+		tfStateTeam.IsArchived = types.BoolNull()
 	}
 	if result.GetMemberSettings() != nil {
 		memberSettings := new(teamTeamMemberSettingsModel)
@@ -357,7 +357,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, memberSettings.AttributeTypes(), memberSettings)
-		state.MemberSettings = objectValue
+		tfStateTeam.MemberSettings = objectValue
 	}
 	if result.GetMessagingSettings() != nil {
 		messagingSettings := new(teamTeamMessagingSettingsModel)
@@ -389,37 +389,37 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, messagingSettings.AttributeTypes(), messagingSettings)
-		state.MessagingSettings = objectValue
+		tfStateTeam.MessagingSettings = objectValue
 	}
 	if result.GetSpecialization() != nil {
-		state.Specialization = types.StringValue(result.GetSpecialization().String())
+		tfStateTeam.Specialization = types.StringValue(result.GetSpecialization().String())
 	} else {
-		state.Specialization = types.StringNull()
+		tfStateTeam.Specialization = types.StringNull()
 	}
 	if result.GetSummary() != nil {
 		summary := new(teamTeamSummaryModel)
 
 		objectValue, _ := types.ObjectValueFrom(ctx, summary.AttributeTypes(), summary)
-		state.Summary = objectValue
+		tfStateTeam.Summary = objectValue
 	}
 	if result.GetTenantId() != nil {
-		state.TenantId = types.StringValue(*result.GetTenantId())
+		tfStateTeam.TenantId = types.StringValue(*result.GetTenantId())
 	} else {
-		state.TenantId = types.StringNull()
+		tfStateTeam.TenantId = types.StringNull()
 	}
 	if result.GetVisibility() != nil {
-		state.Visibility = types.StringValue(result.GetVisibility().String())
+		tfStateTeam.Visibility = types.StringValue(result.GetVisibility().String())
 	} else {
-		state.Visibility = types.StringNull()
+		tfStateTeam.Visibility = types.StringNull()
 	}
 	if result.GetWebUrl() != nil {
-		state.WebUrl = types.StringValue(*result.GetWebUrl())
+		tfStateTeam.WebUrl = types.StringValue(*result.GetWebUrl())
 	} else {
-		state.WebUrl = types.StringNull()
+		tfStateTeam.WebUrl = types.StringNull()
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateTeam)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

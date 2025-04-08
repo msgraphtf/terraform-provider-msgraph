@@ -75,8 +75,8 @@ func (d *{{.BlockName.LowerCamel}}Resource) Schema(_ context.Context, _ resource
 
 // Read refreshes the Terraform state with the latest data.
 func (d *{{.BlockName.LowerCamel}}Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state {{.BlockName.LowerCamel}}Model
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	var tfState{{.BlockName.UpperCamel}} {{.BlockName.LowerCamel}}Model
+	resp.Diagnostics.Append(req.State.Get(ctx, &tfState{{.BlockName.UpperCamel}})...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -87,7 +87,7 @@ func (d *{{.BlockName.LowerCamel}}Resource) Read(ctx context.Context, req resour
 
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfState{{.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

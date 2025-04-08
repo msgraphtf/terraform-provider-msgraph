@@ -680,8 +680,8 @@ func (d *applicationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 
 // Read refreshes the Terraform state with the latest data.
 func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state applicationsModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateApplications applicationsModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateApplications)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1526,11 +1526,11 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateApplications.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateApplications)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

@@ -269,8 +269,8 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 
 // Read refreshes the Terraform state with the latest data.
 func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state groupsModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateGroups groupsModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateGroups)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -573,11 +573,11 @@ func (d *groupsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateGroups.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateGroups)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

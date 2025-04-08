@@ -582,8 +582,8 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 
 // Read refreshes the Terraform state with the latest data.
 func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state usersModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateUsers usersModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateUsers)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1290,11 +1290,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateUsers.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateUsers)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

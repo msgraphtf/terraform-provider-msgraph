@@ -198,8 +198,8 @@ func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 
 // Read refreshes the Terraform state with the latest data.
 func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state devicesModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateDevices devicesModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateDevices)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -410,11 +410,11 @@ func (d *devicesDataSource) Read(ctx context.Context, req datasource.ReadRequest
 			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateDevices.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateDevices)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

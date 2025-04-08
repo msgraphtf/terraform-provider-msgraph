@@ -403,8 +403,8 @@ func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 
 // Read refreshes the Terraform state with the latest data.
 func (d *sitesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state sitesModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateSites sitesModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateSites)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -857,11 +857,11 @@ func (d *sitesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateSites.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateSites)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

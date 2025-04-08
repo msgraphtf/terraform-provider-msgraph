@@ -1689,8 +1689,8 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 // Read refreshes the Terraform state with the latest data.
 func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state servicePrincipalModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	var tfStateServicePrincipal servicePrincipalModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &tfStateServicePrincipal)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1741,8 +1741,8 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 	var result models.ServicePrincipalable
 	var err error
 
-	if !state.Id.IsNull() {
-		result, err = d.client.ServicePrincipals().ByServicePrincipalId(state.Id.ValueString()).Get(context.Background(), &qparams)
+	if !tfStateServicePrincipal.Id.IsNull() {
+		result, err = d.client.ServicePrincipals().ByServicePrincipalId(tfStateServicePrincipal.Id.ValueString()).Get(context.Background(), &qparams)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
@@ -1760,19 +1760,19 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 	}
 
 	if result.GetId() != nil {
-		state.Id = types.StringValue(*result.GetId())
+		tfStateServicePrincipal.Id = types.StringValue(*result.GetId())
 	} else {
-		state.Id = types.StringNull()
+		tfStateServicePrincipal.Id = types.StringNull()
 	}
 	if result.GetDeletedDateTime() != nil {
-		state.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
+		tfStateServicePrincipal.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
 	} else {
-		state.DeletedDateTime = types.StringNull()
+		tfStateServicePrincipal.DeletedDateTime = types.StringNull()
 	}
 	if result.GetAccountEnabled() != nil {
-		state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
+		tfStateServicePrincipal.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
 	} else {
-		state.AccountEnabled = types.BoolNull()
+		tfStateServicePrincipal.AccountEnabled = types.BoolNull()
 	}
 	if len(result.GetAddIns()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -1812,7 +1812,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			objectValue, _ := types.ObjectValueFrom(ctx, addIns.AttributeTypes(), addIns)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.AddIns, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateServicePrincipal.AddIns, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if len(result.GetAlternativeNames()) > 0 {
 		var alternativeNames []attr.Value
@@ -1820,34 +1820,34 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			alternativeNames = append(alternativeNames, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, alternativeNames)
-		state.AlternativeNames = listValue
+		tfStateServicePrincipal.AlternativeNames = listValue
 	} else {
-		state.AlternativeNames = types.ListNull(types.StringType)
+		tfStateServicePrincipal.AlternativeNames = types.ListNull(types.StringType)
 	}
 	if result.GetAppDescription() != nil {
-		state.AppDescription = types.StringValue(*result.GetAppDescription())
+		tfStateServicePrincipal.AppDescription = types.StringValue(*result.GetAppDescription())
 	} else {
-		state.AppDescription = types.StringNull()
+		tfStateServicePrincipal.AppDescription = types.StringNull()
 	}
 	if result.GetAppDisplayName() != nil {
-		state.AppDisplayName = types.StringValue(*result.GetAppDisplayName())
+		tfStateServicePrincipal.AppDisplayName = types.StringValue(*result.GetAppDisplayName())
 	} else {
-		state.AppDisplayName = types.StringNull()
+		tfStateServicePrincipal.AppDisplayName = types.StringNull()
 	}
 	if result.GetAppId() != nil {
-		state.AppId = types.StringValue(*result.GetAppId())
+		tfStateServicePrincipal.AppId = types.StringValue(*result.GetAppId())
 	} else {
-		state.AppId = types.StringNull()
+		tfStateServicePrincipal.AppId = types.StringNull()
 	}
 	if result.GetAppOwnerOrganizationId() != nil {
-		state.AppOwnerOrganizationId = types.StringValue(result.GetAppOwnerOrganizationId().String())
+		tfStateServicePrincipal.AppOwnerOrganizationId = types.StringValue(result.GetAppOwnerOrganizationId().String())
 	} else {
-		state.AppOwnerOrganizationId = types.StringNull()
+		tfStateServicePrincipal.AppOwnerOrganizationId = types.StringNull()
 	}
 	if result.GetAppRoleAssignmentRequired() != nil {
-		state.AppRoleAssignmentRequired = types.BoolValue(*result.GetAppRoleAssignmentRequired())
+		tfStateServicePrincipal.AppRoleAssignmentRequired = types.BoolValue(*result.GetAppRoleAssignmentRequired())
 	} else {
-		state.AppRoleAssignmentRequired = types.BoolNull()
+		tfStateServicePrincipal.AppRoleAssignmentRequired = types.BoolNull()
 	}
 	if len(result.GetAppRoles()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -1897,38 +1897,38 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			objectValue, _ := types.ObjectValueFrom(ctx, appRoles.AttributeTypes(), appRoles)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.AppRoles, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateServicePrincipal.AppRoles, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetApplicationTemplateId() != nil {
-		state.ApplicationTemplateId = types.StringValue(*result.GetApplicationTemplateId())
+		tfStateServicePrincipal.ApplicationTemplateId = types.StringValue(*result.GetApplicationTemplateId())
 	} else {
-		state.ApplicationTemplateId = types.StringNull()
+		tfStateServicePrincipal.ApplicationTemplateId = types.StringNull()
 	}
 	if result.GetCustomSecurityAttributes() != nil {
 		customSecurityAttributes := new(servicePrincipalCustomSecurityAttributeValueModel)
 
 		objectValue, _ := types.ObjectValueFrom(ctx, customSecurityAttributes.AttributeTypes(), customSecurityAttributes)
-		state.CustomSecurityAttributes = objectValue
+		tfStateServicePrincipal.CustomSecurityAttributes = objectValue
 	}
 	if result.GetDescription() != nil {
-		state.Description = types.StringValue(*result.GetDescription())
+		tfStateServicePrincipal.Description = types.StringValue(*result.GetDescription())
 	} else {
-		state.Description = types.StringNull()
+		tfStateServicePrincipal.Description = types.StringNull()
 	}
 	if result.GetDisabledByMicrosoftStatus() != nil {
-		state.DisabledByMicrosoftStatus = types.StringValue(*result.GetDisabledByMicrosoftStatus())
+		tfStateServicePrincipal.DisabledByMicrosoftStatus = types.StringValue(*result.GetDisabledByMicrosoftStatus())
 	} else {
-		state.DisabledByMicrosoftStatus = types.StringNull()
+		tfStateServicePrincipal.DisabledByMicrosoftStatus = types.StringNull()
 	}
 	if result.GetDisplayName() != nil {
-		state.DisplayName = types.StringValue(*result.GetDisplayName())
+		tfStateServicePrincipal.DisplayName = types.StringValue(*result.GetDisplayName())
 	} else {
-		state.DisplayName = types.StringNull()
+		tfStateServicePrincipal.DisplayName = types.StringNull()
 	}
 	if result.GetHomepage() != nil {
-		state.Homepage = types.StringValue(*result.GetHomepage())
+		tfStateServicePrincipal.Homepage = types.StringValue(*result.GetHomepage())
 	} else {
-		state.Homepage = types.StringNull()
+		tfStateServicePrincipal.Homepage = types.StringNull()
 	}
 	if result.GetInfo() != nil {
 		info := new(servicePrincipalInformationalUrlModel)
@@ -1960,7 +1960,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, info.AttributeTypes(), info)
-		state.Info = objectValue
+		tfStateServicePrincipal.Info = objectValue
 	}
 	if len(result.GetKeyCredentials()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -2010,22 +2010,22 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			objectValue, _ := types.ObjectValueFrom(ctx, keyCredentials.AttributeTypes(), keyCredentials)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.KeyCredentials, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateServicePrincipal.KeyCredentials, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetLoginUrl() != nil {
-		state.LoginUrl = types.StringValue(*result.GetLoginUrl())
+		tfStateServicePrincipal.LoginUrl = types.StringValue(*result.GetLoginUrl())
 	} else {
-		state.LoginUrl = types.StringNull()
+		tfStateServicePrincipal.LoginUrl = types.StringNull()
 	}
 	if result.GetLogoutUrl() != nil {
-		state.LogoutUrl = types.StringValue(*result.GetLogoutUrl())
+		tfStateServicePrincipal.LogoutUrl = types.StringValue(*result.GetLogoutUrl())
 	} else {
-		state.LogoutUrl = types.StringNull()
+		tfStateServicePrincipal.LogoutUrl = types.StringNull()
 	}
 	if result.GetNotes() != nil {
-		state.Notes = types.StringValue(*result.GetNotes())
+		tfStateServicePrincipal.Notes = types.StringValue(*result.GetNotes())
 	} else {
-		state.Notes = types.StringNull()
+		tfStateServicePrincipal.Notes = types.StringNull()
 	}
 	if len(result.GetNotificationEmailAddresses()) > 0 {
 		var notificationEmailAddresses []attr.Value
@@ -2033,9 +2033,9 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			notificationEmailAddresses = append(notificationEmailAddresses, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, notificationEmailAddresses)
-		state.NotificationEmailAddresses = listValue
+		tfStateServicePrincipal.NotificationEmailAddresses = listValue
 	} else {
-		state.NotificationEmailAddresses = types.ListNull(types.StringType)
+		tfStateServicePrincipal.NotificationEmailAddresses = types.ListNull(types.StringType)
 	}
 	if len(result.GetOauth2PermissionScopes()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -2090,7 +2090,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			objectValue, _ := types.ObjectValueFrom(ctx, oauth2PermissionScopes.AttributeTypes(), oauth2PermissionScopes)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.Oauth2PermissionScopes, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateServicePrincipal.Oauth2PermissionScopes, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if len(result.GetPasswordCredentials()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -2135,17 +2135,17 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			objectValue, _ := types.ObjectValueFrom(ctx, passwordCredentials.AttributeTypes(), passwordCredentials)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.PasswordCredentials, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateServicePrincipal.PasswordCredentials, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetPreferredSingleSignOnMode() != nil {
-		state.PreferredSingleSignOnMode = types.StringValue(*result.GetPreferredSingleSignOnMode())
+		tfStateServicePrincipal.PreferredSingleSignOnMode = types.StringValue(*result.GetPreferredSingleSignOnMode())
 	} else {
-		state.PreferredSingleSignOnMode = types.StringNull()
+		tfStateServicePrincipal.PreferredSingleSignOnMode = types.StringNull()
 	}
 	if result.GetPreferredTokenSigningKeyThumbprint() != nil {
-		state.PreferredTokenSigningKeyThumbprint = types.StringValue(*result.GetPreferredTokenSigningKeyThumbprint())
+		tfStateServicePrincipal.PreferredTokenSigningKeyThumbprint = types.StringValue(*result.GetPreferredTokenSigningKeyThumbprint())
 	} else {
-		state.PreferredTokenSigningKeyThumbprint = types.StringNull()
+		tfStateServicePrincipal.PreferredTokenSigningKeyThumbprint = types.StringNull()
 	}
 	if len(result.GetReplyUrls()) > 0 {
 		var replyUrls []attr.Value
@@ -2153,9 +2153,9 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			replyUrls = append(replyUrls, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, replyUrls)
-		state.ReplyUrls = listValue
+		tfStateServicePrincipal.ReplyUrls = listValue
 	} else {
-		state.ReplyUrls = types.ListNull(types.StringType)
+		tfStateServicePrincipal.ReplyUrls = types.ListNull(types.StringType)
 	}
 	if len(result.GetResourceSpecificApplicationPermissions()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -2190,7 +2190,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			objectValue, _ := types.ObjectValueFrom(ctx, resourceSpecificApplicationPermissions.AttributeTypes(), resourceSpecificApplicationPermissions)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.ResourceSpecificApplicationPermissions, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateServicePrincipal.ResourceSpecificApplicationPermissions, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetSamlSingleSignOnSettings() != nil {
 		samlSingleSignOnSettings := new(servicePrincipalSamlSingleSignOnSettingsModel)
@@ -2202,7 +2202,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, samlSingleSignOnSettings.AttributeTypes(), samlSingleSignOnSettings)
-		state.SamlSingleSignOnSettings = objectValue
+		tfStateServicePrincipal.SamlSingleSignOnSettings = objectValue
 	}
 	if len(result.GetServicePrincipalNames()) > 0 {
 		var servicePrincipalNames []attr.Value
@@ -2210,19 +2210,19 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			servicePrincipalNames = append(servicePrincipalNames, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, servicePrincipalNames)
-		state.ServicePrincipalNames = listValue
+		tfStateServicePrincipal.ServicePrincipalNames = listValue
 	} else {
-		state.ServicePrincipalNames = types.ListNull(types.StringType)
+		tfStateServicePrincipal.ServicePrincipalNames = types.ListNull(types.StringType)
 	}
 	if result.GetServicePrincipalType() != nil {
-		state.ServicePrincipalType = types.StringValue(*result.GetServicePrincipalType())
+		tfStateServicePrincipal.ServicePrincipalType = types.StringValue(*result.GetServicePrincipalType())
 	} else {
-		state.ServicePrincipalType = types.StringNull()
+		tfStateServicePrincipal.ServicePrincipalType = types.StringNull()
 	}
 	if result.GetSignInAudience() != nil {
-		state.SignInAudience = types.StringValue(*result.GetSignInAudience())
+		tfStateServicePrincipal.SignInAudience = types.StringValue(*result.GetSignInAudience())
 	} else {
-		state.SignInAudience = types.StringNull()
+		tfStateServicePrincipal.SignInAudience = types.StringNull()
 	}
 	if len(result.GetTags()) > 0 {
 		var tags []attr.Value
@@ -2230,14 +2230,14 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 			tags = append(tags, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, tags)
-		state.Tags = listValue
+		tfStateServicePrincipal.Tags = listValue
 	} else {
-		state.Tags = types.ListNull(types.StringType)
+		tfStateServicePrincipal.Tags = types.ListNull(types.StringType)
 	}
 	if result.GetTokenEncryptionKeyId() != nil {
-		state.TokenEncryptionKeyId = types.StringValue(result.GetTokenEncryptionKeyId().String())
+		tfStateServicePrincipal.TokenEncryptionKeyId = types.StringValue(result.GetTokenEncryptionKeyId().String())
 	} else {
-		state.TokenEncryptionKeyId = types.StringNull()
+		tfStateServicePrincipal.TokenEncryptionKeyId = types.StringNull()
 	}
 	if result.GetVerifiedPublisher() != nil {
 		verifiedPublisher := new(servicePrincipalVerifiedPublisherModel)
@@ -2259,11 +2259,11 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, verifiedPublisher.AttributeTypes(), verifiedPublisher)
-		state.VerifiedPublisher = objectValue
+		tfStateServicePrincipal.VerifiedPublisher = objectValue
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateServicePrincipal)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

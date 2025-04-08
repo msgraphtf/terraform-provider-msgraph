@@ -617,8 +617,8 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 
 // Read refreshes the Terraform state with the latest data.
 func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state userModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateUser userModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateUser)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -709,8 +709,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	var result models.Userable
 	var err error
 
-	if !state.Id.IsNull() {
-		result, err = d.client.Users().ByUserId(state.Id.ValueString()).Get(context.Background(), &qparams)
+	if !tfStateUser.Id.IsNull() {
+		result, err = d.client.Users().ByUserId(tfStateUser.Id.ValueString()).Get(context.Background(), &qparams)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
@@ -728,29 +728,29 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	if result.GetId() != nil {
-		state.Id = types.StringValue(*result.GetId())
+		tfStateUser.Id = types.StringValue(*result.GetId())
 	} else {
-		state.Id = types.StringNull()
+		tfStateUser.Id = types.StringNull()
 	}
 	if result.GetDeletedDateTime() != nil {
-		state.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
+		tfStateUser.DeletedDateTime = types.StringValue(result.GetDeletedDateTime().String())
 	} else {
-		state.DeletedDateTime = types.StringNull()
+		tfStateUser.DeletedDateTime = types.StringNull()
 	}
 	if result.GetAboutMe() != nil {
-		state.AboutMe = types.StringValue(*result.GetAboutMe())
+		tfStateUser.AboutMe = types.StringValue(*result.GetAboutMe())
 	} else {
-		state.AboutMe = types.StringNull()
+		tfStateUser.AboutMe = types.StringNull()
 	}
 	if result.GetAccountEnabled() != nil {
-		state.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
+		tfStateUser.AccountEnabled = types.BoolValue(*result.GetAccountEnabled())
 	} else {
-		state.AccountEnabled = types.BoolNull()
+		tfStateUser.AccountEnabled = types.BoolNull()
 	}
 	if result.GetAgeGroup() != nil {
-		state.AgeGroup = types.StringValue(*result.GetAgeGroup())
+		tfStateUser.AgeGroup = types.StringValue(*result.GetAgeGroup())
 	} else {
-		state.AgeGroup = types.StringNull()
+		tfStateUser.AgeGroup = types.StringNull()
 	}
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -775,7 +775,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			objectValue, _ := types.ObjectValueFrom(ctx, assignedLicenses.AttributeTypes(), assignedLicenses)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.AssignedLicenses, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateUser.AssignedLicenses, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if len(result.GetAssignedPlans()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -805,7 +805,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			objectValue, _ := types.ObjectValueFrom(ctx, assignedPlans.AttributeTypes(), assignedPlans)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.AssignedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateUser.AssignedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetAuthorizationInfo() != nil {
 		authorizationInfo := new(userAuthorizationInfoModel)
@@ -822,12 +822,12 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, authorizationInfo.AttributeTypes(), authorizationInfo)
-		state.AuthorizationInfo = objectValue
+		tfStateUser.AuthorizationInfo = objectValue
 	}
 	if result.GetBirthday() != nil {
-		state.Birthday = types.StringValue(result.GetBirthday().String())
+		tfStateUser.Birthday = types.StringValue(result.GetBirthday().String())
 	} else {
-		state.Birthday = types.StringNull()
+		tfStateUser.Birthday = types.StringNull()
 	}
 	if len(result.GetBusinessPhones()) > 0 {
 		var businessPhones []attr.Value
@@ -835,64 +835,64 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			businessPhones = append(businessPhones, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, businessPhones)
-		state.BusinessPhones = listValue
+		tfStateUser.BusinessPhones = listValue
 	} else {
-		state.BusinessPhones = types.ListNull(types.StringType)
+		tfStateUser.BusinessPhones = types.ListNull(types.StringType)
 	}
 	if result.GetCity() != nil {
-		state.City = types.StringValue(*result.GetCity())
+		tfStateUser.City = types.StringValue(*result.GetCity())
 	} else {
-		state.City = types.StringNull()
+		tfStateUser.City = types.StringNull()
 	}
 	if result.GetCompanyName() != nil {
-		state.CompanyName = types.StringValue(*result.GetCompanyName())
+		tfStateUser.CompanyName = types.StringValue(*result.GetCompanyName())
 	} else {
-		state.CompanyName = types.StringNull()
+		tfStateUser.CompanyName = types.StringNull()
 	}
 	if result.GetConsentProvidedForMinor() != nil {
-		state.ConsentProvidedForMinor = types.StringValue(*result.GetConsentProvidedForMinor())
+		tfStateUser.ConsentProvidedForMinor = types.StringValue(*result.GetConsentProvidedForMinor())
 	} else {
-		state.ConsentProvidedForMinor = types.StringNull()
+		tfStateUser.ConsentProvidedForMinor = types.StringNull()
 	}
 	if result.GetCountry() != nil {
-		state.Country = types.StringValue(*result.GetCountry())
+		tfStateUser.Country = types.StringValue(*result.GetCountry())
 	} else {
-		state.Country = types.StringNull()
+		tfStateUser.Country = types.StringNull()
 	}
 	if result.GetCreatedDateTime() != nil {
-		state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
+		tfStateUser.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
 	} else {
-		state.CreatedDateTime = types.StringNull()
+		tfStateUser.CreatedDateTime = types.StringNull()
 	}
 	if result.GetCreationType() != nil {
-		state.CreationType = types.StringValue(*result.GetCreationType())
+		tfStateUser.CreationType = types.StringValue(*result.GetCreationType())
 	} else {
-		state.CreationType = types.StringNull()
+		tfStateUser.CreationType = types.StringNull()
 	}
 	if result.GetDepartment() != nil {
-		state.Department = types.StringValue(*result.GetDepartment())
+		tfStateUser.Department = types.StringValue(*result.GetDepartment())
 	} else {
-		state.Department = types.StringNull()
+		tfStateUser.Department = types.StringNull()
 	}
 	if result.GetDisplayName() != nil {
-		state.DisplayName = types.StringValue(*result.GetDisplayName())
+		tfStateUser.DisplayName = types.StringValue(*result.GetDisplayName())
 	} else {
-		state.DisplayName = types.StringNull()
+		tfStateUser.DisplayName = types.StringNull()
 	}
 	if result.GetEmployeeHireDate() != nil {
-		state.EmployeeHireDate = types.StringValue(result.GetEmployeeHireDate().String())
+		tfStateUser.EmployeeHireDate = types.StringValue(result.GetEmployeeHireDate().String())
 	} else {
-		state.EmployeeHireDate = types.StringNull()
+		tfStateUser.EmployeeHireDate = types.StringNull()
 	}
 	if result.GetEmployeeId() != nil {
-		state.EmployeeId = types.StringValue(*result.GetEmployeeId())
+		tfStateUser.EmployeeId = types.StringValue(*result.GetEmployeeId())
 	} else {
-		state.EmployeeId = types.StringNull()
+		tfStateUser.EmployeeId = types.StringNull()
 	}
 	if result.GetEmployeeLeaveDateTime() != nil {
-		state.EmployeeLeaveDateTime = types.StringValue(result.GetEmployeeLeaveDateTime().String())
+		tfStateUser.EmployeeLeaveDateTime = types.StringValue(result.GetEmployeeLeaveDateTime().String())
 	} else {
-		state.EmployeeLeaveDateTime = types.StringNull()
+		tfStateUser.EmployeeLeaveDateTime = types.StringNull()
 	}
 	if result.GetEmployeeOrgData() != nil {
 		employeeOrgData := new(userEmployeeOrgDataModel)
@@ -909,37 +909,37 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, employeeOrgData.AttributeTypes(), employeeOrgData)
-		state.EmployeeOrgData = objectValue
+		tfStateUser.EmployeeOrgData = objectValue
 	}
 	if result.GetEmployeeType() != nil {
-		state.EmployeeType = types.StringValue(*result.GetEmployeeType())
+		tfStateUser.EmployeeType = types.StringValue(*result.GetEmployeeType())
 	} else {
-		state.EmployeeType = types.StringNull()
+		tfStateUser.EmployeeType = types.StringNull()
 	}
 	if result.GetExternalUserState() != nil {
-		state.ExternalUserState = types.StringValue(*result.GetExternalUserState())
+		tfStateUser.ExternalUserState = types.StringValue(*result.GetExternalUserState())
 	} else {
-		state.ExternalUserState = types.StringNull()
+		tfStateUser.ExternalUserState = types.StringNull()
 	}
 	if result.GetExternalUserStateChangeDateTime() != nil {
-		state.ExternalUserStateChangeDateTime = types.StringValue(result.GetExternalUserStateChangeDateTime().String())
+		tfStateUser.ExternalUserStateChangeDateTime = types.StringValue(result.GetExternalUserStateChangeDateTime().String())
 	} else {
-		state.ExternalUserStateChangeDateTime = types.StringNull()
+		tfStateUser.ExternalUserStateChangeDateTime = types.StringNull()
 	}
 	if result.GetFaxNumber() != nil {
-		state.FaxNumber = types.StringValue(*result.GetFaxNumber())
+		tfStateUser.FaxNumber = types.StringValue(*result.GetFaxNumber())
 	} else {
-		state.FaxNumber = types.StringNull()
+		tfStateUser.FaxNumber = types.StringNull()
 	}
 	if result.GetGivenName() != nil {
-		state.GivenName = types.StringValue(*result.GetGivenName())
+		tfStateUser.GivenName = types.StringValue(*result.GetGivenName())
 	} else {
-		state.GivenName = types.StringNull()
+		tfStateUser.GivenName = types.StringNull()
 	}
 	if result.GetHireDate() != nil {
-		state.HireDate = types.StringValue(result.GetHireDate().String())
+		tfStateUser.HireDate = types.StringValue(result.GetHireDate().String())
 	} else {
-		state.HireDate = types.StringNull()
+		tfStateUser.HireDate = types.StringNull()
 	}
 	if len(result.GetIdentities()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -964,7 +964,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			objectValue, _ := types.ObjectValueFrom(ctx, identities.AttributeTypes(), identities)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.Identities, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateUser.Identities, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if len(result.GetImAddresses()) > 0 {
 		var imAddresses []attr.Value
@@ -972,9 +972,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			imAddresses = append(imAddresses, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, imAddresses)
-		state.ImAddresses = listValue
+		tfStateUser.ImAddresses = listValue
 	} else {
-		state.ImAddresses = types.ListNull(types.StringType)
+		tfStateUser.ImAddresses = types.ListNull(types.StringType)
 	}
 	if len(result.GetInterests()) > 0 {
 		var interests []attr.Value
@@ -982,34 +982,34 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			interests = append(interests, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, interests)
-		state.Interests = listValue
+		tfStateUser.Interests = listValue
 	} else {
-		state.Interests = types.ListNull(types.StringType)
+		tfStateUser.Interests = types.ListNull(types.StringType)
 	}
 	if result.GetIsManagementRestricted() != nil {
-		state.IsManagementRestricted = types.BoolValue(*result.GetIsManagementRestricted())
+		tfStateUser.IsManagementRestricted = types.BoolValue(*result.GetIsManagementRestricted())
 	} else {
-		state.IsManagementRestricted = types.BoolNull()
+		tfStateUser.IsManagementRestricted = types.BoolNull()
 	}
 	if result.GetIsResourceAccount() != nil {
-		state.IsResourceAccount = types.BoolValue(*result.GetIsResourceAccount())
+		tfStateUser.IsResourceAccount = types.BoolValue(*result.GetIsResourceAccount())
 	} else {
-		state.IsResourceAccount = types.BoolNull()
+		tfStateUser.IsResourceAccount = types.BoolNull()
 	}
 	if result.GetJobTitle() != nil {
-		state.JobTitle = types.StringValue(*result.GetJobTitle())
+		tfStateUser.JobTitle = types.StringValue(*result.GetJobTitle())
 	} else {
-		state.JobTitle = types.StringNull()
+		tfStateUser.JobTitle = types.StringNull()
 	}
 	if result.GetLastPasswordChangeDateTime() != nil {
-		state.LastPasswordChangeDateTime = types.StringValue(result.GetLastPasswordChangeDateTime().String())
+		tfStateUser.LastPasswordChangeDateTime = types.StringValue(result.GetLastPasswordChangeDateTime().String())
 	} else {
-		state.LastPasswordChangeDateTime = types.StringNull()
+		tfStateUser.LastPasswordChangeDateTime = types.StringNull()
 	}
 	if result.GetLegalAgeGroupClassification() != nil {
-		state.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())
+		tfStateUser.LegalAgeGroupClassification = types.StringValue(*result.GetLegalAgeGroupClassification())
 	} else {
-		state.LegalAgeGroupClassification = types.StringNull()
+		tfStateUser.LegalAgeGroupClassification = types.StringNull()
 	}
 	if len(result.GetLicenseAssignmentStates()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -1054,42 +1054,42 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			objectValue, _ := types.ObjectValueFrom(ctx, licenseAssignmentStates.AttributeTypes(), licenseAssignmentStates)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.LicenseAssignmentStates, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateUser.LicenseAssignmentStates, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetMail() != nil {
-		state.Mail = types.StringValue(*result.GetMail())
+		tfStateUser.Mail = types.StringValue(*result.GetMail())
 	} else {
-		state.Mail = types.StringNull()
+		tfStateUser.Mail = types.StringNull()
 	}
 	if result.GetMailNickname() != nil {
-		state.MailNickname = types.StringValue(*result.GetMailNickname())
+		tfStateUser.MailNickname = types.StringValue(*result.GetMailNickname())
 	} else {
-		state.MailNickname = types.StringNull()
+		tfStateUser.MailNickname = types.StringNull()
 	}
 	if result.GetMobilePhone() != nil {
-		state.MobilePhone = types.StringValue(*result.GetMobilePhone())
+		tfStateUser.MobilePhone = types.StringValue(*result.GetMobilePhone())
 	} else {
-		state.MobilePhone = types.StringNull()
+		tfStateUser.MobilePhone = types.StringNull()
 	}
 	if result.GetMySite() != nil {
-		state.MySite = types.StringValue(*result.GetMySite())
+		tfStateUser.MySite = types.StringValue(*result.GetMySite())
 	} else {
-		state.MySite = types.StringNull()
+		tfStateUser.MySite = types.StringNull()
 	}
 	if result.GetOfficeLocation() != nil {
-		state.OfficeLocation = types.StringValue(*result.GetOfficeLocation())
+		tfStateUser.OfficeLocation = types.StringValue(*result.GetOfficeLocation())
 	} else {
-		state.OfficeLocation = types.StringNull()
+		tfStateUser.OfficeLocation = types.StringNull()
 	}
 	if result.GetOnPremisesDistinguishedName() != nil {
-		state.OnPremisesDistinguishedName = types.StringValue(*result.GetOnPremisesDistinguishedName())
+		tfStateUser.OnPremisesDistinguishedName = types.StringValue(*result.GetOnPremisesDistinguishedName())
 	} else {
-		state.OnPremisesDistinguishedName = types.StringNull()
+		tfStateUser.OnPremisesDistinguishedName = types.StringNull()
 	}
 	if result.GetOnPremisesDomainName() != nil {
-		state.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())
+		tfStateUser.OnPremisesDomainName = types.StringValue(*result.GetOnPremisesDomainName())
 	} else {
-		state.OnPremisesDomainName = types.StringNull()
+		tfStateUser.OnPremisesDomainName = types.StringNull()
 	}
 	if result.GetOnPremisesExtensionAttributes() != nil {
 		onPremisesExtensionAttributes := new(userOnPremisesExtensionAttributesModel)
@@ -1171,17 +1171,17 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, onPremisesExtensionAttributes.AttributeTypes(), onPremisesExtensionAttributes)
-		state.OnPremisesExtensionAttributes = objectValue
+		tfStateUser.OnPremisesExtensionAttributes = objectValue
 	}
 	if result.GetOnPremisesImmutableId() != nil {
-		state.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())
+		tfStateUser.OnPremisesImmutableId = types.StringValue(*result.GetOnPremisesImmutableId())
 	} else {
-		state.OnPremisesImmutableId = types.StringNull()
+		tfStateUser.OnPremisesImmutableId = types.StringNull()
 	}
 	if result.GetOnPremisesLastSyncDateTime() != nil {
-		state.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
+		tfStateUser.OnPremisesLastSyncDateTime = types.StringValue(result.GetOnPremisesLastSyncDateTime().String())
 	} else {
-		state.OnPremisesLastSyncDateTime = types.StringNull()
+		tfStateUser.OnPremisesLastSyncDateTime = types.StringNull()
 	}
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -1211,27 +1211,27 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			objectValue, _ := types.ObjectValueFrom(ctx, onPremisesProvisioningErrors.AttributeTypes(), onPremisesProvisioningErrors)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.OnPremisesProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateUser.OnPremisesProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetOnPremisesSamAccountName() != nil {
-		state.OnPremisesSamAccountName = types.StringValue(*result.GetOnPremisesSamAccountName())
+		tfStateUser.OnPremisesSamAccountName = types.StringValue(*result.GetOnPremisesSamAccountName())
 	} else {
-		state.OnPremisesSamAccountName = types.StringNull()
+		tfStateUser.OnPremisesSamAccountName = types.StringNull()
 	}
 	if result.GetOnPremisesSecurityIdentifier() != nil {
-		state.OnPremisesSecurityIdentifier = types.StringValue(*result.GetOnPremisesSecurityIdentifier())
+		tfStateUser.OnPremisesSecurityIdentifier = types.StringValue(*result.GetOnPremisesSecurityIdentifier())
 	} else {
-		state.OnPremisesSecurityIdentifier = types.StringNull()
+		tfStateUser.OnPremisesSecurityIdentifier = types.StringNull()
 	}
 	if result.GetOnPremisesSyncEnabled() != nil {
-		state.OnPremisesSyncEnabled = types.BoolValue(*result.GetOnPremisesSyncEnabled())
+		tfStateUser.OnPremisesSyncEnabled = types.BoolValue(*result.GetOnPremisesSyncEnabled())
 	} else {
-		state.OnPremisesSyncEnabled = types.BoolNull()
+		tfStateUser.OnPremisesSyncEnabled = types.BoolNull()
 	}
 	if result.GetOnPremisesUserPrincipalName() != nil {
-		state.OnPremisesUserPrincipalName = types.StringValue(*result.GetOnPremisesUserPrincipalName())
+		tfStateUser.OnPremisesUserPrincipalName = types.StringValue(*result.GetOnPremisesUserPrincipalName())
 	} else {
-		state.OnPremisesUserPrincipalName = types.StringNull()
+		tfStateUser.OnPremisesUserPrincipalName = types.StringNull()
 	}
 	if len(result.GetOtherMails()) > 0 {
 		var otherMails []attr.Value
@@ -1239,14 +1239,14 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			otherMails = append(otherMails, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, otherMails)
-		state.OtherMails = listValue
+		tfStateUser.OtherMails = listValue
 	} else {
-		state.OtherMails = types.ListNull(types.StringType)
+		tfStateUser.OtherMails = types.ListNull(types.StringType)
 	}
 	if result.GetPasswordPolicies() != nil {
-		state.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())
+		tfStateUser.PasswordPolicies = types.StringValue(*result.GetPasswordPolicies())
 	} else {
-		state.PasswordPolicies = types.StringNull()
+		tfStateUser.PasswordPolicies = types.StringNull()
 	}
 	if result.GetPasswordProfile() != nil {
 		passwordProfile := new(userPasswordProfileModel)
@@ -1268,7 +1268,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, passwordProfile.AttributeTypes(), passwordProfile)
-		state.PasswordProfile = objectValue
+		tfStateUser.PasswordProfile = objectValue
 	}
 	if len(result.GetPastProjects()) > 0 {
 		var pastProjects []attr.Value
@@ -1276,29 +1276,29 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			pastProjects = append(pastProjects, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, pastProjects)
-		state.PastProjects = listValue
+		tfStateUser.PastProjects = listValue
 	} else {
-		state.PastProjects = types.ListNull(types.StringType)
+		tfStateUser.PastProjects = types.ListNull(types.StringType)
 	}
 	if result.GetPostalCode() != nil {
-		state.PostalCode = types.StringValue(*result.GetPostalCode())
+		tfStateUser.PostalCode = types.StringValue(*result.GetPostalCode())
 	} else {
-		state.PostalCode = types.StringNull()
+		tfStateUser.PostalCode = types.StringNull()
 	}
 	if result.GetPreferredDataLocation() != nil {
-		state.PreferredDataLocation = types.StringValue(*result.GetPreferredDataLocation())
+		tfStateUser.PreferredDataLocation = types.StringValue(*result.GetPreferredDataLocation())
 	} else {
-		state.PreferredDataLocation = types.StringNull()
+		tfStateUser.PreferredDataLocation = types.StringNull()
 	}
 	if result.GetPreferredLanguage() != nil {
-		state.PreferredLanguage = types.StringValue(*result.GetPreferredLanguage())
+		tfStateUser.PreferredLanguage = types.StringValue(*result.GetPreferredLanguage())
 	} else {
-		state.PreferredLanguage = types.StringNull()
+		tfStateUser.PreferredLanguage = types.StringNull()
 	}
 	if result.GetPreferredName() != nil {
-		state.PreferredName = types.StringValue(*result.GetPreferredName())
+		tfStateUser.PreferredName = types.StringValue(*result.GetPreferredName())
 	} else {
-		state.PreferredName = types.StringNull()
+		tfStateUser.PreferredName = types.StringNull()
 	}
 	if len(result.GetProvisionedPlans()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -1323,7 +1323,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			objectValue, _ := types.ObjectValueFrom(ctx, provisionedPlans.AttributeTypes(), provisionedPlans)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.ProvisionedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateUser.ProvisionedPlans, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if len(result.GetProxyAddresses()) > 0 {
 		var proxyAddresses []attr.Value
@@ -1331,9 +1331,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			proxyAddresses = append(proxyAddresses, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, proxyAddresses)
-		state.ProxyAddresses = listValue
+		tfStateUser.ProxyAddresses = listValue
 	} else {
-		state.ProxyAddresses = types.ListNull(types.StringType)
+		tfStateUser.ProxyAddresses = types.ListNull(types.StringType)
 	}
 	if len(result.GetResponsibilities()) > 0 {
 		var responsibilities []attr.Value
@@ -1341,9 +1341,9 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			responsibilities = append(responsibilities, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, responsibilities)
-		state.Responsibilities = listValue
+		tfStateUser.Responsibilities = listValue
 	} else {
-		state.Responsibilities = types.ListNull(types.StringType)
+		tfStateUser.Responsibilities = types.ListNull(types.StringType)
 	}
 	if len(result.GetSchools()) > 0 {
 		var schools []attr.Value
@@ -1351,14 +1351,14 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			schools = append(schools, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, schools)
-		state.Schools = listValue
+		tfStateUser.Schools = listValue
 	} else {
-		state.Schools = types.ListNull(types.StringType)
+		tfStateUser.Schools = types.ListNull(types.StringType)
 	}
 	if result.GetSecurityIdentifier() != nil {
-		state.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
+		tfStateUser.SecurityIdentifier = types.StringValue(*result.GetSecurityIdentifier())
 	} else {
-		state.SecurityIdentifier = types.StringNull()
+		tfStateUser.SecurityIdentifier = types.StringNull()
 	}
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
@@ -1383,12 +1383,12 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			objectValue, _ := types.ObjectValueFrom(ctx, serviceProvisioningErrors.AttributeTypes(), serviceProvisioningErrors)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.ServiceProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateUser.ServiceProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 	if result.GetShowInAddressList() != nil {
-		state.ShowInAddressList = types.BoolValue(*result.GetShowInAddressList())
+		tfStateUser.ShowInAddressList = types.BoolValue(*result.GetShowInAddressList())
 	} else {
-		state.ShowInAddressList = types.BoolNull()
+		tfStateUser.ShowInAddressList = types.BoolNull()
 	}
 	if result.GetSignInActivity() != nil {
 		signInActivity := new(userSignInActivityModel)
@@ -1425,12 +1425,12 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, signInActivity.AttributeTypes(), signInActivity)
-		state.SignInActivity = objectValue
+		tfStateUser.SignInActivity = objectValue
 	}
 	if result.GetSignInSessionsValidFromDateTime() != nil {
-		state.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())
+		tfStateUser.SignInSessionsValidFromDateTime = types.StringValue(result.GetSignInSessionsValidFromDateTime().String())
 	} else {
-		state.SignInSessionsValidFromDateTime = types.StringNull()
+		tfStateUser.SignInSessionsValidFromDateTime = types.StringNull()
 	}
 	if len(result.GetSkills()) > 0 {
 		var skills []attr.Value
@@ -1438,43 +1438,43 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			skills = append(skills, types.StringValue(v))
 		}
 		listValue, _ := types.ListValue(types.StringType, skills)
-		state.Skills = listValue
+		tfStateUser.Skills = listValue
 	} else {
-		state.Skills = types.ListNull(types.StringType)
+		tfStateUser.Skills = types.ListNull(types.StringType)
 	}
 	if result.GetState() != nil {
-		state.State = types.StringValue(*result.GetState())
+		tfStateUser.State = types.StringValue(*result.GetState())
 	} else {
-		state.State = types.StringNull()
+		tfStateUser.State = types.StringNull()
 	}
 	if result.GetStreetAddress() != nil {
-		state.StreetAddress = types.StringValue(*result.GetStreetAddress())
+		tfStateUser.StreetAddress = types.StringValue(*result.GetStreetAddress())
 	} else {
-		state.StreetAddress = types.StringNull()
+		tfStateUser.StreetAddress = types.StringNull()
 	}
 	if result.GetSurname() != nil {
-		state.Surname = types.StringValue(*result.GetSurname())
+		tfStateUser.Surname = types.StringValue(*result.GetSurname())
 	} else {
-		state.Surname = types.StringNull()
+		tfStateUser.Surname = types.StringNull()
 	}
 	if result.GetUsageLocation() != nil {
-		state.UsageLocation = types.StringValue(*result.GetUsageLocation())
+		tfStateUser.UsageLocation = types.StringValue(*result.GetUsageLocation())
 	} else {
-		state.UsageLocation = types.StringNull()
+		tfStateUser.UsageLocation = types.StringNull()
 	}
 	if result.GetUserPrincipalName() != nil {
-		state.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
+		tfStateUser.UserPrincipalName = types.StringValue(*result.GetUserPrincipalName())
 	} else {
-		state.UserPrincipalName = types.StringNull()
+		tfStateUser.UserPrincipalName = types.StringNull()
 	}
 	if result.GetUserType() != nil {
-		state.UserType = types.StringValue(*result.GetUserType())
+		tfStateUser.UserType = types.StringValue(*result.GetUserType())
 	} else {
-		state.UserType = types.StringNull()
+		tfStateUser.UserType = types.StringNull()
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateUser)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

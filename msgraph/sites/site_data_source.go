@@ -404,8 +404,8 @@ func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 
 // Read refreshes the Terraform state with the latest data.
 func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state siteModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateSite siteModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateSite)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -436,8 +436,8 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	var result models.Siteable
 	var err error
 
-	if !state.Id.IsNull() {
-		result, err = d.client.Sites().BySiteId(state.Id.ValueString()).Get(context.Background(), &qparams)
+	if !tfStateSite.Id.IsNull() {
+		result, err = d.client.Sites().BySiteId(tfStateSite.Id.ValueString()).Get(context.Background(), &qparams)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing argument",
@@ -455,9 +455,9 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	if result.GetId() != nil {
-		state.Id = types.StringValue(*result.GetId())
+		tfStateSite.Id = types.StringValue(*result.GetId())
 	} else {
-		state.Id = types.StringNull()
+		tfStateSite.Id = types.StringNull()
 	}
 	if result.GetCreatedBy() != nil {
 		createdBy := new(siteIdentitySetModel)
@@ -515,22 +515,22 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, createdBy.AttributeTypes(), createdBy)
-		state.CreatedBy = objectValue
+		tfStateSite.CreatedBy = objectValue
 	}
 	if result.GetCreatedDateTime() != nil {
-		state.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
+		tfStateSite.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
 	} else {
-		state.CreatedDateTime = types.StringNull()
+		tfStateSite.CreatedDateTime = types.StringNull()
 	}
 	if result.GetDescription() != nil {
-		state.Description = types.StringValue(*result.GetDescription())
+		tfStateSite.Description = types.StringValue(*result.GetDescription())
 	} else {
-		state.Description = types.StringNull()
+		tfStateSite.Description = types.StringNull()
 	}
 	if result.GetETag() != nil {
-		state.ETag = types.StringValue(*result.GetETag())
+		tfStateSite.ETag = types.StringValue(*result.GetETag())
 	} else {
-		state.ETag = types.StringNull()
+		tfStateSite.ETag = types.StringNull()
 	}
 	if result.GetLastModifiedBy() != nil {
 		lastModifiedBy := new(siteIdentitySetModel)
@@ -588,17 +588,17 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, lastModifiedBy.AttributeTypes(), lastModifiedBy)
-		state.LastModifiedBy = objectValue
+		tfStateSite.LastModifiedBy = objectValue
 	}
 	if result.GetLastModifiedDateTime() != nil {
-		state.LastModifiedDateTime = types.StringValue(result.GetLastModifiedDateTime().String())
+		tfStateSite.LastModifiedDateTime = types.StringValue(result.GetLastModifiedDateTime().String())
 	} else {
-		state.LastModifiedDateTime = types.StringNull()
+		tfStateSite.LastModifiedDateTime = types.StringNull()
 	}
 	if result.GetName() != nil {
-		state.Name = types.StringValue(*result.GetName())
+		tfStateSite.Name = types.StringValue(*result.GetName())
 	} else {
-		state.Name = types.StringNull()
+		tfStateSite.Name = types.StringNull()
 	}
 	if result.GetParentReference() != nil {
 		parentReference := new(siteItemReferenceModel)
@@ -682,17 +682,17 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, parentReference.AttributeTypes(), parentReference)
-		state.ParentReference = objectValue
+		tfStateSite.ParentReference = objectValue
 	}
 	if result.GetWebUrl() != nil {
-		state.WebUrl = types.StringValue(*result.GetWebUrl())
+		tfStateSite.WebUrl = types.StringValue(*result.GetWebUrl())
 	} else {
-		state.WebUrl = types.StringNull()
+		tfStateSite.WebUrl = types.StringNull()
 	}
 	if result.GetDisplayName() != nil {
-		state.DisplayName = types.StringValue(*result.GetDisplayName())
+		tfStateSite.DisplayName = types.StringValue(*result.GetDisplayName())
 	} else {
-		state.DisplayName = types.StringNull()
+		tfStateSite.DisplayName = types.StringNull()
 	}
 	if result.GetError() != nil {
 		error := new(sitePublicErrorModel)
@@ -786,18 +786,18 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, error.AttributeTypes(), error)
-		state.Error = objectValue
+		tfStateSite.Error = objectValue
 	}
 	if result.GetIsPersonalSite() != nil {
-		state.IsPersonalSite = types.BoolValue(*result.GetIsPersonalSite())
+		tfStateSite.IsPersonalSite = types.BoolValue(*result.GetIsPersonalSite())
 	} else {
-		state.IsPersonalSite = types.BoolNull()
+		tfStateSite.IsPersonalSite = types.BoolNull()
 	}
 	if result.GetRoot() != nil {
 		root := new(siteRootModel)
 
 		objectValue, _ := types.ObjectValueFrom(ctx, root.AttributeTypes(), root)
-		state.Root = objectValue
+		tfStateSite.Root = objectValue
 	}
 	if result.GetSharepointIds() != nil {
 		sharepointIds := new(siteSharepointIdsModel)
@@ -839,7 +839,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, sharepointIds.AttributeTypes(), sharepointIds)
-		state.SharepointIds = objectValue
+		tfStateSite.SharepointIds = objectValue
 	}
 	if result.GetSiteCollection() != nil {
 		siteCollection := new(siteSiteCollectionModel)
@@ -874,11 +874,11 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 
 		objectValue, _ := types.ObjectValueFrom(ctx, siteCollection.AttributeTypes(), siteCollection)
-		state.SiteCollection = objectValue
+		tfStateSite.SiteCollection = objectValue
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateSite)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

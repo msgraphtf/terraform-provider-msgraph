@@ -16,9 +16,9 @@ result, err := d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{en
 var result models.{{.BlockName.UpperCamel}}able
 var err error
 
-if !state.Id.IsNull() {
+if !tfState{{.BlockName.UpperCamel}}.Id.IsNull() {
 	result, err = d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
-} {{range .AltGetMethod}} else if !state.{{.if}}.IsNull() {
+} {{range .AltGetMethod}} else if !tfState{{.BlockName.UpperCamel}}.{{.if}}.IsNull() {
 	result, err = d.client.{{.method}}.Get(context.Background(), &qparams)
 } {{end}}else {
 	resp.Diagnostics.AddError(

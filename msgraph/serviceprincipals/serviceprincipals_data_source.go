@@ -445,8 +445,8 @@ func (d *servicePrincipalsDataSource) Schema(_ context.Context, _ datasource.Sch
 
 // Read refreshes the Terraform state with the latest data.
 func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state servicePrincipalsModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	var tfStateServicePrincipals servicePrincipalsModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfStateServicePrincipals)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -979,11 +979,11 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 			objectValue, _ := types.ObjectValueFrom(ctx, value.AttributeTypes(), value)
 			objectValues = append(objectValues, objectValue)
 		}
-		state.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+		tfStateServicePrincipals.Value, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 	}
 
 	// Overwrite items with refreshed state
-	diags := resp.State.Set(ctx, &state)
+	diags := resp.State.Set(ctx, &tfStateServicePrincipals)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

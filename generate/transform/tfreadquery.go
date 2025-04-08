@@ -72,7 +72,7 @@ func (rq ReadQuery) GetMethod() []queryMethod {
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "state." + pRight + ".ValueString()"
+			newMethod.Parameter = "tfState" + rq.BlockName.UpperCamel() + "." + pRight + ".ValueString()"
 		} else {
 			newMethod.MethodName = strcase.ToCamel(p)
 		}

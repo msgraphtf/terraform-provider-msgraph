@@ -64,6 +64,9 @@ func main() {
 		}
 	} else {
 
+		// TODO: Change from using paths to using tags and/or operation IDs.
+		// This should help to remove duplicate paths, and duplicate model stuff
+
 		knownGoodPaths := [...]string{
 			"/applications",
 			"/applications/{application-id}",
