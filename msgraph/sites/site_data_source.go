@@ -460,58 +460,58 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateSite.Id = types.StringNull()
 	}
 	if result.GetCreatedBy() != nil {
-		tfStateCreatedBy := siteIdentitySetModel{}
+		tfStateIdentitySet := siteIdentitySetModel{}
 
 		if result.GetCreatedBy().GetApplication() != nil {
-			tfStateApplication := siteIdentityModel{}
+			tfStateIdentity := siteIdentityModel{}
 
 			if result.GetCreatedBy().GetApplication().GetDisplayName() != nil {
-				tfStateApplication.DisplayName = types.StringValue(*result.GetCreatedBy().GetApplication().GetDisplayName())
+				tfStateIdentity.DisplayName = types.StringValue(*result.GetCreatedBy().GetApplication().GetDisplayName())
 			} else {
-				tfStateApplication.DisplayName = types.StringNull()
+				tfStateIdentity.DisplayName = types.StringNull()
 			}
 			if result.GetCreatedBy().GetApplication().GetId() != nil {
-				tfStateApplication.Id = types.StringValue(*result.GetCreatedBy().GetApplication().GetId())
+				tfStateIdentity.Id = types.StringValue(*result.GetCreatedBy().GetApplication().GetId())
 			} else {
-				tfStateApplication.Id = types.StringNull()
+				tfStateIdentity.Id = types.StringNull()
 			}
 
-			tfStateCreatedBy.Application, _ = types.ObjectValueFrom(ctx, tfStateApplication.AttributeTypes(), tfStateApplication)
+			tfStateIdentitySet.Application, _ = types.ObjectValueFrom(ctx, tfStateIdentity.AttributeTypes(), tfStateIdentity)
 		}
 		if result.GetCreatedBy().GetDevice() != nil {
-			tfStateDevice := siteIdentityModel{}
+			tfStateIdentity := siteIdentityModel{}
 
 			if result.GetCreatedBy().GetDevice().GetDisplayName() != nil {
-				tfStateDevice.DisplayName = types.StringValue(*result.GetCreatedBy().GetDevice().GetDisplayName())
+				tfStateIdentity.DisplayName = types.StringValue(*result.GetCreatedBy().GetDevice().GetDisplayName())
 			} else {
-				tfStateDevice.DisplayName = types.StringNull()
+				tfStateIdentity.DisplayName = types.StringNull()
 			}
 			if result.GetCreatedBy().GetDevice().GetId() != nil {
-				tfStateDevice.Id = types.StringValue(*result.GetCreatedBy().GetDevice().GetId())
+				tfStateIdentity.Id = types.StringValue(*result.GetCreatedBy().GetDevice().GetId())
 			} else {
-				tfStateDevice.Id = types.StringNull()
+				tfStateIdentity.Id = types.StringNull()
 			}
 
-			tfStateCreatedBy.Device, _ = types.ObjectValueFrom(ctx, tfStateDevice.AttributeTypes(), tfStateDevice)
+			tfStateIdentitySet.Device, _ = types.ObjectValueFrom(ctx, tfStateIdentity.AttributeTypes(), tfStateIdentity)
 		}
 		if result.GetCreatedBy().GetUser() != nil {
-			tfStateUser := siteIdentityModel{}
+			tfStateIdentity := siteIdentityModel{}
 
 			if result.GetCreatedBy().GetUser().GetDisplayName() != nil {
-				tfStateUser.DisplayName = types.StringValue(*result.GetCreatedBy().GetUser().GetDisplayName())
+				tfStateIdentity.DisplayName = types.StringValue(*result.GetCreatedBy().GetUser().GetDisplayName())
 			} else {
-				tfStateUser.DisplayName = types.StringNull()
+				tfStateIdentity.DisplayName = types.StringNull()
 			}
 			if result.GetCreatedBy().GetUser().GetId() != nil {
-				tfStateUser.Id = types.StringValue(*result.GetCreatedBy().GetUser().GetId())
+				tfStateIdentity.Id = types.StringValue(*result.GetCreatedBy().GetUser().GetId())
 			} else {
-				tfStateUser.Id = types.StringNull()
+				tfStateIdentity.Id = types.StringNull()
 			}
 
-			tfStateCreatedBy.User, _ = types.ObjectValueFrom(ctx, tfStateUser.AttributeTypes(), tfStateUser)
+			tfStateIdentitySet.User, _ = types.ObjectValueFrom(ctx, tfStateIdentity.AttributeTypes(), tfStateIdentity)
 		}
 
-		tfStateSite.CreatedBy, _ = types.ObjectValueFrom(ctx, tfStateCreatedBy.AttributeTypes(), tfStateCreatedBy)
+		tfStateSite.CreatedBy, _ = types.ObjectValueFrom(ctx, tfStateIdentitySet.AttributeTypes(), tfStateIdentitySet)
 	}
 	if result.GetCreatedDateTime() != nil {
 		tfStateSite.CreatedDateTime = types.StringValue(result.GetCreatedDateTime().String())
@@ -529,58 +529,58 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateSite.ETag = types.StringNull()
 	}
 	if result.GetLastModifiedBy() != nil {
-		tfStateLastModifiedBy := siteIdentitySetModel{}
+		tfStateIdentitySet := siteIdentitySetModel{}
 
 		if result.GetLastModifiedBy().GetApplication() != nil {
-			tfStateApplication := siteIdentityModel{}
+			tfStateIdentity := siteIdentityModel{}
 
 			if result.GetLastModifiedBy().GetApplication().GetDisplayName() != nil {
-				tfStateApplication.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetApplication().GetDisplayName())
+				tfStateIdentity.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetApplication().GetDisplayName())
 			} else {
-				tfStateApplication.DisplayName = types.StringNull()
+				tfStateIdentity.DisplayName = types.StringNull()
 			}
 			if result.GetLastModifiedBy().GetApplication().GetId() != nil {
-				tfStateApplication.Id = types.StringValue(*result.GetLastModifiedBy().GetApplication().GetId())
+				tfStateIdentity.Id = types.StringValue(*result.GetLastModifiedBy().GetApplication().GetId())
 			} else {
-				tfStateApplication.Id = types.StringNull()
+				tfStateIdentity.Id = types.StringNull()
 			}
 
-			tfStateLastModifiedBy.Application, _ = types.ObjectValueFrom(ctx, tfStateApplication.AttributeTypes(), tfStateApplication)
+			tfStateIdentitySet.Application, _ = types.ObjectValueFrom(ctx, tfStateIdentity.AttributeTypes(), tfStateIdentity)
 		}
 		if result.GetLastModifiedBy().GetDevice() != nil {
-			tfStateDevice := siteIdentityModel{}
+			tfStateIdentity := siteIdentityModel{}
 
 			if result.GetLastModifiedBy().GetDevice().GetDisplayName() != nil {
-				tfStateDevice.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetDevice().GetDisplayName())
+				tfStateIdentity.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetDevice().GetDisplayName())
 			} else {
-				tfStateDevice.DisplayName = types.StringNull()
+				tfStateIdentity.DisplayName = types.StringNull()
 			}
 			if result.GetLastModifiedBy().GetDevice().GetId() != nil {
-				tfStateDevice.Id = types.StringValue(*result.GetLastModifiedBy().GetDevice().GetId())
+				tfStateIdentity.Id = types.StringValue(*result.GetLastModifiedBy().GetDevice().GetId())
 			} else {
-				tfStateDevice.Id = types.StringNull()
+				tfStateIdentity.Id = types.StringNull()
 			}
 
-			tfStateLastModifiedBy.Device, _ = types.ObjectValueFrom(ctx, tfStateDevice.AttributeTypes(), tfStateDevice)
+			tfStateIdentitySet.Device, _ = types.ObjectValueFrom(ctx, tfStateIdentity.AttributeTypes(), tfStateIdentity)
 		}
 		if result.GetLastModifiedBy().GetUser() != nil {
-			tfStateUser := siteIdentityModel{}
+			tfStateIdentity := siteIdentityModel{}
 
 			if result.GetLastModifiedBy().GetUser().GetDisplayName() != nil {
-				tfStateUser.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetUser().GetDisplayName())
+				tfStateIdentity.DisplayName = types.StringValue(*result.GetLastModifiedBy().GetUser().GetDisplayName())
 			} else {
-				tfStateUser.DisplayName = types.StringNull()
+				tfStateIdentity.DisplayName = types.StringNull()
 			}
 			if result.GetLastModifiedBy().GetUser().GetId() != nil {
-				tfStateUser.Id = types.StringValue(*result.GetLastModifiedBy().GetUser().GetId())
+				tfStateIdentity.Id = types.StringValue(*result.GetLastModifiedBy().GetUser().GetId())
 			} else {
-				tfStateUser.Id = types.StringNull()
+				tfStateIdentity.Id = types.StringNull()
 			}
 
-			tfStateLastModifiedBy.User, _ = types.ObjectValueFrom(ctx, tfStateUser.AttributeTypes(), tfStateUser)
+			tfStateIdentitySet.User, _ = types.ObjectValueFrom(ctx, tfStateIdentity.AttributeTypes(), tfStateIdentity)
 		}
 
-		tfStateSite.LastModifiedBy, _ = types.ObjectValueFrom(ctx, tfStateLastModifiedBy.AttributeTypes(), tfStateLastModifiedBy)
+		tfStateSite.LastModifiedBy, _ = types.ObjectValueFrom(ctx, tfStateIdentitySet.AttributeTypes(), tfStateIdentitySet)
 	}
 	if result.GetLastModifiedDateTime() != nil {
 		tfStateSite.LastModifiedDateTime = types.StringValue(result.GetLastModifiedDateTime().String())
@@ -593,37 +593,37 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateSite.Name = types.StringNull()
 	}
 	if result.GetParentReference() != nil {
-		tfStateParentReference := siteItemReferenceModel{}
+		tfStateItemReference := siteItemReferenceModel{}
 
 		if result.GetParentReference().GetDriveId() != nil {
-			tfStateParentReference.DriveId = types.StringValue(*result.GetParentReference().GetDriveId())
+			tfStateItemReference.DriveId = types.StringValue(*result.GetParentReference().GetDriveId())
 		} else {
-			tfStateParentReference.DriveId = types.StringNull()
+			tfStateItemReference.DriveId = types.StringNull()
 		}
 		if result.GetParentReference().GetDriveType() != nil {
-			tfStateParentReference.DriveType = types.StringValue(*result.GetParentReference().GetDriveType())
+			tfStateItemReference.DriveType = types.StringValue(*result.GetParentReference().GetDriveType())
 		} else {
-			tfStateParentReference.DriveType = types.StringNull()
+			tfStateItemReference.DriveType = types.StringNull()
 		}
 		if result.GetParentReference().GetId() != nil {
-			tfStateParentReference.Id = types.StringValue(*result.GetParentReference().GetId())
+			tfStateItemReference.Id = types.StringValue(*result.GetParentReference().GetId())
 		} else {
-			tfStateParentReference.Id = types.StringNull()
+			tfStateItemReference.Id = types.StringNull()
 		}
 		if result.GetParentReference().GetName() != nil {
-			tfStateParentReference.Name = types.StringValue(*result.GetParentReference().GetName())
+			tfStateItemReference.Name = types.StringValue(*result.GetParentReference().GetName())
 		} else {
-			tfStateParentReference.Name = types.StringNull()
+			tfStateItemReference.Name = types.StringNull()
 		}
 		if result.GetParentReference().GetPath() != nil {
-			tfStateParentReference.Path = types.StringValue(*result.GetParentReference().GetPath())
+			tfStateItemReference.Path = types.StringValue(*result.GetParentReference().GetPath())
 		} else {
-			tfStateParentReference.Path = types.StringNull()
+			tfStateItemReference.Path = types.StringNull()
 		}
 		if result.GetParentReference().GetShareId() != nil {
-			tfStateParentReference.ShareId = types.StringValue(*result.GetParentReference().GetShareId())
+			tfStateItemReference.ShareId = types.StringValue(*result.GetParentReference().GetShareId())
 		} else {
-			tfStateParentReference.ShareId = types.StringNull()
+			tfStateItemReference.ShareId = types.StringNull()
 		}
 		if result.GetParentReference().GetSharepointIds() != nil {
 			tfStateSharepointIds := siteSharepointIdsModel{}
@@ -664,15 +664,15 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				tfStateSharepointIds.WebId = types.StringNull()
 			}
 
-			tfStateParentReference.SharepointIds, _ = types.ObjectValueFrom(ctx, tfStateSharepointIds.AttributeTypes(), tfStateSharepointIds)
+			tfStateItemReference.SharepointIds, _ = types.ObjectValueFrom(ctx, tfStateSharepointIds.AttributeTypes(), tfStateSharepointIds)
 		}
 		if result.GetParentReference().GetSiteId() != nil {
-			tfStateParentReference.SiteId = types.StringValue(*result.GetParentReference().GetSiteId())
+			tfStateItemReference.SiteId = types.StringValue(*result.GetParentReference().GetSiteId())
 		} else {
-			tfStateParentReference.SiteId = types.StringNull()
+			tfStateItemReference.SiteId = types.StringNull()
 		}
 
-		tfStateSite.ParentReference, _ = types.ObjectValueFrom(ctx, tfStateParentReference.AttributeTypes(), tfStateParentReference)
+		tfStateSite.ParentReference, _ = types.ObjectValueFrom(ctx, tfStateItemReference.AttributeTypes(), tfStateItemReference)
 	}
 	if result.GetWebUrl() != nil {
 		tfStateSite.WebUrl = types.StringValue(*result.GetWebUrl())
@@ -685,96 +685,96 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateSite.DisplayName = types.StringNull()
 	}
 	if result.GetError() != nil {
-		tfStateError := sitePublicErrorModel{}
+		tfStatePublicError := sitePublicErrorModel{}
 
 		if result.GetError().GetCode() != nil {
-			tfStateError.Code = types.StringValue(*result.GetError().GetCode())
+			tfStatePublicError.Code = types.StringValue(*result.GetError().GetCode())
 		} else {
-			tfStateError.Code = types.StringNull()
+			tfStatePublicError.Code = types.StringNull()
 		}
 		if len(result.GetError().GetDetails()) > 0 {
 			objectValues := []basetypes.ObjectValue{}
 			for _, v := range result.GetError().GetDetails() {
-				tfStateDetails := sitePublicErrorDetailModel{}
+				tfStatePublicErrorDetail := sitePublicErrorDetailModel{}
 
 				if v.GetCode() != nil {
-					tfStateDetails.Code = types.StringValue(*v.GetCode())
+					tfStatePublicErrorDetail.Code = types.StringValue(*v.GetCode())
 				} else {
-					tfStateDetails.Code = types.StringNull()
+					tfStatePublicErrorDetail.Code = types.StringNull()
 				}
 				if v.GetMessage() != nil {
-					tfStateDetails.Message = types.StringValue(*v.GetMessage())
+					tfStatePublicErrorDetail.Message = types.StringValue(*v.GetMessage())
 				} else {
-					tfStateDetails.Message = types.StringNull()
+					tfStatePublicErrorDetail.Message = types.StringNull()
 				}
 				if v.GetTarget() != nil {
-					tfStateDetails.Target = types.StringValue(*v.GetTarget())
+					tfStatePublicErrorDetail.Target = types.StringValue(*v.GetTarget())
 				} else {
-					tfStateDetails.Target = types.StringNull()
+					tfStatePublicErrorDetail.Target = types.StringNull()
 				}
-				objectValue, _ := types.ObjectValueFrom(ctx, tfStateDetails.AttributeTypes(), tfStateDetails)
+				objectValue, _ := types.ObjectValueFrom(ctx, tfStatePublicErrorDetail.AttributeTypes(), tfStatePublicErrorDetail)
 				objectValues = append(objectValues, objectValue)
 			}
-			tfStateError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+			tfStatePublicError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 		}
 		if result.GetError().GetInnerError() != nil {
-			tfStateInnerError := sitePublicInnerErrorModel{}
+			tfStatePublicInnerError := sitePublicInnerErrorModel{}
 
 			if result.GetError().GetInnerError().GetCode() != nil {
-				tfStateInnerError.Code = types.StringValue(*result.GetError().GetInnerError().GetCode())
+				tfStatePublicInnerError.Code = types.StringValue(*result.GetError().GetInnerError().GetCode())
 			} else {
-				tfStateInnerError.Code = types.StringNull()
+				tfStatePublicInnerError.Code = types.StringNull()
 			}
 			if len(result.GetError().GetInnerError().GetDetails()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, v := range result.GetError().GetInnerError().GetDetails() {
-					tfStateDetails := sitePublicErrorDetailModel{}
+					tfStatePublicErrorDetail := sitePublicErrorDetailModel{}
 
 					if v.GetCode() != nil {
-						tfStateDetails.Code = types.StringValue(*v.GetCode())
+						tfStatePublicErrorDetail.Code = types.StringValue(*v.GetCode())
 					} else {
-						tfStateDetails.Code = types.StringNull()
+						tfStatePublicErrorDetail.Code = types.StringNull()
 					}
 					if v.GetMessage() != nil {
-						tfStateDetails.Message = types.StringValue(*v.GetMessage())
+						tfStatePublicErrorDetail.Message = types.StringValue(*v.GetMessage())
 					} else {
-						tfStateDetails.Message = types.StringNull()
+						tfStatePublicErrorDetail.Message = types.StringNull()
 					}
 					if v.GetTarget() != nil {
-						tfStateDetails.Target = types.StringValue(*v.GetTarget())
+						tfStatePublicErrorDetail.Target = types.StringValue(*v.GetTarget())
 					} else {
-						tfStateDetails.Target = types.StringNull()
+						tfStatePublicErrorDetail.Target = types.StringNull()
 					}
-					objectValue, _ := types.ObjectValueFrom(ctx, tfStateDetails.AttributeTypes(), tfStateDetails)
+					objectValue, _ := types.ObjectValueFrom(ctx, tfStatePublicErrorDetail.AttributeTypes(), tfStatePublicErrorDetail)
 					objectValues = append(objectValues, objectValue)
 				}
-				tfStateInnerError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+				tfStatePublicInnerError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 			}
 			if result.GetError().GetInnerError().GetMessage() != nil {
-				tfStateInnerError.Message = types.StringValue(*result.GetError().GetInnerError().GetMessage())
+				tfStatePublicInnerError.Message = types.StringValue(*result.GetError().GetInnerError().GetMessage())
 			} else {
-				tfStateInnerError.Message = types.StringNull()
+				tfStatePublicInnerError.Message = types.StringNull()
 			}
 			if result.GetError().GetInnerError().GetTarget() != nil {
-				tfStateInnerError.Target = types.StringValue(*result.GetError().GetInnerError().GetTarget())
+				tfStatePublicInnerError.Target = types.StringValue(*result.GetError().GetInnerError().GetTarget())
 			} else {
-				tfStateInnerError.Target = types.StringNull()
+				tfStatePublicInnerError.Target = types.StringNull()
 			}
 
-			tfStateError.InnerError, _ = types.ObjectValueFrom(ctx, tfStateInnerError.AttributeTypes(), tfStateInnerError)
+			tfStatePublicError.InnerError, _ = types.ObjectValueFrom(ctx, tfStatePublicInnerError.AttributeTypes(), tfStatePublicInnerError)
 		}
 		if result.GetError().GetMessage() != nil {
-			tfStateError.Message = types.StringValue(*result.GetError().GetMessage())
+			tfStatePublicError.Message = types.StringValue(*result.GetError().GetMessage())
 		} else {
-			tfStateError.Message = types.StringNull()
+			tfStatePublicError.Message = types.StringNull()
 		}
 		if result.GetError().GetTarget() != nil {
-			tfStateError.Target = types.StringValue(*result.GetError().GetTarget())
+			tfStatePublicError.Target = types.StringValue(*result.GetError().GetTarget())
 		} else {
-			tfStateError.Target = types.StringNull()
+			tfStatePublicError.Target = types.StringNull()
 		}
 
-		tfStateSite.Error, _ = types.ObjectValueFrom(ctx, tfStateError.AttributeTypes(), tfStateError)
+		tfStateSite.Error, _ = types.ObjectValueFrom(ctx, tfStatePublicError.AttributeTypes(), tfStatePublicError)
 	}
 	if result.GetIsPersonalSite() != nil {
 		tfStateSite.IsPersonalSite = types.BoolValue(*result.GetIsPersonalSite())
@@ -831,15 +831,15 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateSiteCollection := siteSiteCollectionModel{}
 
 		if result.GetSiteCollection().GetArchivalDetails() != nil {
-			tfStateArchivalDetails := siteSiteArchivalDetailsModel{}
+			tfStateSiteArchivalDetails := siteSiteArchivalDetailsModel{}
 
 			if result.GetSiteCollection().GetArchivalDetails().GetArchiveStatus() != nil {
-				tfStateArchivalDetails.ArchiveStatus = types.StringValue(result.GetSiteCollection().GetArchivalDetails().GetArchiveStatus().String())
+				tfStateSiteArchivalDetails.ArchiveStatus = types.StringValue(result.GetSiteCollection().GetArchivalDetails().GetArchiveStatus().String())
 			} else {
-				tfStateArchivalDetails.ArchiveStatus = types.StringNull()
+				tfStateSiteArchivalDetails.ArchiveStatus = types.StringNull()
 			}
 
-			tfStateSiteCollection.ArchivalDetails, _ = types.ObjectValueFrom(ctx, tfStateArchivalDetails.AttributeTypes(), tfStateArchivalDetails)
+			tfStateSiteCollection.ArchivalDetails, _ = types.ObjectValueFrom(ctx, tfStateSiteArchivalDetails.AttributeTypes(), tfStateSiteArchivalDetails)
 		}
 		if result.GetSiteCollection().GetDataLocationCode() != nil {
 			tfStateSiteCollection.DataLocationCode = types.StringValue(*result.GetSiteCollection().GetDataLocationCode())

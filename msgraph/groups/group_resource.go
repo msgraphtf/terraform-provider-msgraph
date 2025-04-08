@@ -1045,19 +1045,19 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLabels() {
-			tfStateAssignedLabels := groupAssignedLabelModel{}
+			tfStateAssignedLabel := groupAssignedLabelModel{}
 
 			if v.GetDisplayName() != nil {
-				tfStateAssignedLabels.DisplayName = types.StringValue(*v.GetDisplayName())
+				tfStateAssignedLabel.DisplayName = types.StringValue(*v.GetDisplayName())
 			} else {
-				tfStateAssignedLabels.DisplayName = types.StringNull()
+				tfStateAssignedLabel.DisplayName = types.StringNull()
 			}
 			if v.GetLabelId() != nil {
-				tfStateAssignedLabels.LabelId = types.StringValue(*v.GetLabelId())
+				tfStateAssignedLabel.LabelId = types.StringValue(*v.GetLabelId())
 			} else {
-				tfStateAssignedLabels.LabelId = types.StringNull()
+				tfStateAssignedLabel.LabelId = types.StringNull()
 			}
-			objectValue, _ := types.ObjectValueFrom(ctx, tfStateAssignedLabels.AttributeTypes(), tfStateAssignedLabels)
+			objectValue, _ := types.ObjectValueFrom(ctx, tfStateAssignedLabel.AttributeTypes(), tfStateAssignedLabel)
 			objectValues = append(objectValues, objectValue)
 		}
 		tfStateGroup.AssignedLabels, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
@@ -1065,23 +1065,23 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetAssignedLicenses()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAssignedLicenses() {
-			tfStateAssignedLicenses := groupAssignedLicenseModel{}
+			tfStateAssignedLicense := groupAssignedLicenseModel{}
 
 			if len(v.GetDisabledPlans()) > 0 {
 				var valueArrayDisabledPlans []attr.Value
 				for _, v := range v.GetDisabledPlans() {
 					valueArrayDisabledPlans = append(valueArrayDisabledPlans, types.StringValue(v.String()))
 				}
-				tfStateAssignedLicenses.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
+				tfStateAssignedLicense.DisabledPlans, _ = types.ListValue(types.StringType, valueArrayDisabledPlans)
 			} else {
-				tfStateAssignedLicenses.DisabledPlans = types.ListNull(types.StringType)
+				tfStateAssignedLicense.DisabledPlans = types.ListNull(types.StringType)
 			}
 			if v.GetSkuId() != nil {
-				tfStateAssignedLicenses.SkuId = types.StringValue(v.GetSkuId().String())
+				tfStateAssignedLicense.SkuId = types.StringValue(v.GetSkuId().String())
 			} else {
-				tfStateAssignedLicenses.SkuId = types.StringNull()
+				tfStateAssignedLicense.SkuId = types.StringNull()
 			}
-			objectValue, _ := types.ObjectValueFrom(ctx, tfStateAssignedLicenses.AttributeTypes(), tfStateAssignedLicenses)
+			objectValue, _ := types.ObjectValueFrom(ctx, tfStateAssignedLicense.AttributeTypes(), tfStateAssignedLicense)
 			objectValues = append(objectValues, objectValue)
 		}
 		tfStateGroup.AssignedLicenses, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
@@ -1185,29 +1185,29 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetOnPremisesProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetOnPremisesProvisioningErrors() {
-			tfStateOnPremisesProvisioningErrors := groupOnPremisesProvisioningErrorModel{}
+			tfStateOnPremisesProvisioningError := groupOnPremisesProvisioningErrorModel{}
 
 			if v.GetCategory() != nil {
-				tfStateOnPremisesProvisioningErrors.Category = types.StringValue(*v.GetCategory())
+				tfStateOnPremisesProvisioningError.Category = types.StringValue(*v.GetCategory())
 			} else {
-				tfStateOnPremisesProvisioningErrors.Category = types.StringNull()
+				tfStateOnPremisesProvisioningError.Category = types.StringNull()
 			}
 			if v.GetOccurredDateTime() != nil {
-				tfStateOnPremisesProvisioningErrors.OccurredDateTime = types.StringValue(v.GetOccurredDateTime().String())
+				tfStateOnPremisesProvisioningError.OccurredDateTime = types.StringValue(v.GetOccurredDateTime().String())
 			} else {
-				tfStateOnPremisesProvisioningErrors.OccurredDateTime = types.StringNull()
+				tfStateOnPremisesProvisioningError.OccurredDateTime = types.StringNull()
 			}
 			if v.GetPropertyCausingError() != nil {
-				tfStateOnPremisesProvisioningErrors.PropertyCausingError = types.StringValue(*v.GetPropertyCausingError())
+				tfStateOnPremisesProvisioningError.PropertyCausingError = types.StringValue(*v.GetPropertyCausingError())
 			} else {
-				tfStateOnPremisesProvisioningErrors.PropertyCausingError = types.StringNull()
+				tfStateOnPremisesProvisioningError.PropertyCausingError = types.StringNull()
 			}
 			if v.GetValue() != nil {
-				tfStateOnPremisesProvisioningErrors.Value = types.StringValue(*v.GetValue())
+				tfStateOnPremisesProvisioningError.Value = types.StringValue(*v.GetValue())
 			} else {
-				tfStateOnPremisesProvisioningErrors.Value = types.StringNull()
+				tfStateOnPremisesProvisioningError.Value = types.StringNull()
 			}
-			objectValue, _ := types.ObjectValueFrom(ctx, tfStateOnPremisesProvisioningErrors.AttributeTypes(), tfStateOnPremisesProvisioningErrors)
+			objectValue, _ := types.ObjectValueFrom(ctx, tfStateOnPremisesProvisioningError.AttributeTypes(), tfStateOnPremisesProvisioningError)
 			objectValues = append(objectValues, objectValue)
 		}
 		tfStateGroup.OnPremisesProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
@@ -1265,24 +1265,24 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if len(result.GetServiceProvisioningErrors()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetServiceProvisioningErrors() {
-			tfStateServiceProvisioningErrors := groupServiceProvisioningErrorModel{}
+			tfStateServiceProvisioningError := groupServiceProvisioningErrorModel{}
 
 			if v.GetCreatedDateTime() != nil {
-				tfStateServiceProvisioningErrors.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
+				tfStateServiceProvisioningError.CreatedDateTime = types.StringValue(v.GetCreatedDateTime().String())
 			} else {
-				tfStateServiceProvisioningErrors.CreatedDateTime = types.StringNull()
+				tfStateServiceProvisioningError.CreatedDateTime = types.StringNull()
 			}
 			if v.GetIsResolved() != nil {
-				tfStateServiceProvisioningErrors.IsResolved = types.BoolValue(*v.GetIsResolved())
+				tfStateServiceProvisioningError.IsResolved = types.BoolValue(*v.GetIsResolved())
 			} else {
-				tfStateServiceProvisioningErrors.IsResolved = types.BoolNull()
+				tfStateServiceProvisioningError.IsResolved = types.BoolNull()
 			}
 			if v.GetServiceInstance() != nil {
-				tfStateServiceProvisioningErrors.ServiceInstance = types.StringValue(*v.GetServiceInstance())
+				tfStateServiceProvisioningError.ServiceInstance = types.StringValue(*v.GetServiceInstance())
 			} else {
-				tfStateServiceProvisioningErrors.ServiceInstance = types.StringNull()
+				tfStateServiceProvisioningError.ServiceInstance = types.StringNull()
 			}
-			objectValue, _ := types.ObjectValueFrom(ctx, tfStateServiceProvisioningErrors.AttributeTypes(), tfStateServiceProvisioningErrors)
+			objectValue, _ := types.ObjectValueFrom(ctx, tfStateServiceProvisioningError.AttributeTypes(), tfStateServiceProvisioningError)
 			objectValues = append(objectValues, objectValue)
 		}
 		tfStateGroup.ServiceProvisioningErrors, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)

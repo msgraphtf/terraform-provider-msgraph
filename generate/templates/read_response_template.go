@@ -1,50 +1,50 @@
 {{- /* Define templates for mapping each response type to state */}}
 {{- define "ReadStringAttribute" }}
 if {{.GetMethod}} != nil {
-	tfState{{.StateVarName}}.{{.Name}} = types.StringValue(*{{.GetMethod}})
+	tfState{{.ParentName}}.{{.Name}} = types.StringValue(*{{.GetMethod}})
 } else {
-	tfState{{.StateVarName}}.{{.Name}} = types.StringNull()
+	tfState{{.ParentName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadStringBase64Attribute" }}
 if {{.GetMethod}} != nil {
-	tfState{{.StateVarName}}.{{.Name}} = types.StringValue(string({{.GetMethod}}[:]))
+	tfState{{.ParentName}}.{{.Name}} = types.StringValue(string({{.GetMethod}}[:]))
 } else {
-	tfState{{.StateVarName}}.{{.Name}} = types.StringNull()
+	tfState{{.ParentName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadStringFormattedAttribute" }}
 if {{.GetMethod}} != nil {
-	tfState{{.StateVarName}}.{{.Name}} = types.StringValue({{.GetMethod}}.String())
+	tfState{{.ParentName}}.{{.Name}} = types.StringValue({{.GetMethod}}.String())
 } else {
-	tfState{{.StateVarName}}.{{.Name}} = types.StringNull()
+	tfState{{.ParentName}}.{{.Name}} = types.StringNull()
 }
 {{- end}}
 
 {{- define "ReadInt64Attribute" }}
 if {{.GetMethod}} != nil {
-	{{.StateVarName}}.{{.Name}} = types.Int64Value(int64(*{{.GetMethod}}))
+	{{.ParentName}}.{{.Name}} = types.Int64Value(int64(*{{.GetMethod}}))
 } else {
-	tfState{{.StateVarName}}.{{.Name}} = types.Int64Null()
+	tfState{{.ParentName}}.{{.Name}} = types.Int64Null()
 }
 {{- end}}
 
 {{- define "ReadBoolAttribute" }}
 if {{.GetMethod}} != nil {
-	tfState{{ .StateVarName}}.{{.Name}} = types.BoolValue(*{{.GetMethod}})
+	tfState{{ .ParentName}}.{{.Name}} = types.BoolValue(*{{.GetMethod}})
 } else {
-	tfState{{.StateVarName}}.{{.Name}} = types.BoolNull()
+	tfState{{.ParentName}}.{{.Name}} = types.BoolNull()
 }
 {{- end}}
 
 {{- define "ReadSingleNestedAttribute" }}
 if {{.GetMethod}} != nil {
-	tfState{{.Name}} := {{.TfModelName}}Model{}
+	tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
 	{{template "generate_read" .NestedRead}}
 
-	tfState{{.StateVarName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfState{{.Name}}.AttributeTypes(), tfState{{.Name}})
+	tfState{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfState{{.ObjectOf}}.AttributeTypes(), tfState{{.ObjectOf}})
 }
 {{- end}}
 
@@ -55,9 +55,9 @@ if len({{.GetMethod}}) > 0 {
 		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(v))
 	}
 	listValue, _ := types.ListValue(types.StringType, valueArray{{.Name}})
-	tfState{{.StateVarName}}.{{.Name}} = listValue
+	tfState{{.ParentName}}.{{.Name}} = listValue
 } else {
-	tfState{{.StateVarName}}.{{.Name}} = types.ListNull(types.StringType)
+	tfState{{.ParentName}}.{{.Name}} = types.ListNull(types.StringType)
 }
 {{- end}}
 
@@ -67,9 +67,9 @@ if len({{.GetMethod}}) > 0 {
 	for _, v := range {{.GetMethod}} {
 		valueArray{{.Name}} = append(valueArray{{.Name}}, types.StringValue(v.String()))
 	}
-	tfState{{.StateVarName}}.{{.Name}}, _ = types.ListValue(types.StringType, valueArray{{.Name}})
+	tfState{{.ParentName}}.{{.Name}}, _ = types.ListValue(types.StringType, valueArray{{.Name}})
 } else {
-	tfState{{.StateVarName}}.{{.Name}} = types.ListNull(types.StringType)
+	tfState{{.ParentName}}.{{.Name}} = types.ListNull(types.StringType)
 }
 {{- end}}
 
@@ -77,12 +77,12 @@ if len({{.GetMethod}}) > 0 {
 if len({{.GetMethod}}) > 0 {
 	objectValues := []basetypes.ObjectValue{}
 	for _, v := range {{.GetMethod}} {
-		tfState{{.Name}} := {{.TfModelName}}Model{}
+		tfState{{.ObjectOf}} := {{.TfModelName}}Model{}
 			{{template "generate_read" .NestedRead}}
-		objectValue, _ := types.ObjectValueFrom(ctx, tfState{{.Name}}.AttributeTypes(), tfState{{.Name}})
+		objectValue, _ := types.ObjectValueFrom(ctx, tfState{{.ObjectOf}}.AttributeTypes(), tfState{{.ObjectOf}})
 		objectValues = append(objectValues, objectValue)
 	}
-tfState{{.StateVarName}}.{{.Name}}, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+tfState{{.ParentName}}.{{.Name}}, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
 }
 {{- end}}
 

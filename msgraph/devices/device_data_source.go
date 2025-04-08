@@ -276,19 +276,19 @@ func (d *deviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	if len(result.GetAlternativeSecurityIds()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, v := range result.GetAlternativeSecurityIds() {
-			tfStateAlternativeSecurityIds := deviceAlternativeSecurityIdModel{}
+			tfStateAlternativeSecurityId := deviceAlternativeSecurityIdModel{}
 
 			if v.GetIdentityProvider() != nil {
-				tfStateAlternativeSecurityIds.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
+				tfStateAlternativeSecurityId.IdentityProvider = types.StringValue(*v.GetIdentityProvider())
 			} else {
-				tfStateAlternativeSecurityIds.IdentityProvider = types.StringNull()
+				tfStateAlternativeSecurityId.IdentityProvider = types.StringNull()
 			}
 			if v.GetKey() != nil {
-				tfStateAlternativeSecurityIds.Key = types.StringValue(string(v.GetKey()[:]))
+				tfStateAlternativeSecurityId.Key = types.StringValue(string(v.GetKey()[:]))
 			} else {
-				tfStateAlternativeSecurityIds.Key = types.StringNull()
+				tfStateAlternativeSecurityId.Key = types.StringNull()
 			}
-			objectValue, _ := types.ObjectValueFrom(ctx, tfStateAlternativeSecurityIds.AttributeTypes(), tfStateAlternativeSecurityIds)
+			objectValue, _ := types.ObjectValueFrom(ctx, tfStateAlternativeSecurityId.AttributeTypes(), tfStateAlternativeSecurityId)
 			objectValues = append(objectValues, objectValue)
 		}
 		tfStateDevice.AlternativeSecurityIds, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)

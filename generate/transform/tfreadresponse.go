@@ -94,21 +94,12 @@ func (rra readResponseAttribute) ParentName() string {
 	if rra.Parent != nil {
 		return rra.Parent.ObjectOf()
 	} else {
-		return rra.ReadResponse.BlockName
+		return upperFirst(rra.ReadResponse.BlockName)
 	}
 }
 
 func (rra readResponseAttribute) ObjectOf() string {
 	return upperFirst(rra.Property.ObjectOf.Title)
-}
-
-func (rra readResponseAttribute) StateVarName() string {
-
-	if rra.Parent != nil {
-		return rra.Parent.Name()
-	} else {
-		return upperFirst(rra.ReadResponse.BlockName)
-	}
 }
 
 func (rra readResponseAttribute) TfModelName() string {
