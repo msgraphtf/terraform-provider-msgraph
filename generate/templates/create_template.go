@@ -133,7 +133,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	{{- block "generate_create" .Attributes}}
 	{{- range .}}
-	// START {{.Name}} | {{.Type -}}
 	{{- if eq .Type "CreateStringAttribute"}}
 	{{- template "CreateStringAttribute" .}}
 	{{- else if eq .Type "CreateStringEnumAttribute"}}
@@ -157,7 +156,6 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{- else if eq .Type "CreateObjectAttribute"}}
 	{{- template "CreateObjectAttribute" .}}
 	{{- end}}
-	// END {{.Name}} | {{.Type}}
 	{{end}}
 	{{- end}}
 

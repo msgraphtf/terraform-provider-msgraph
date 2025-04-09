@@ -468,16 +468,13 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// Generate API request body from Terraform plan
 	requestBodyGroup := models.NewGroup()
-	// START Id | CreateStringAttribute
 	if !tfPlanGroup.Id.IsUnknown() {
 		tfPlanId := tfPlanGroup.Id.ValueString()
 		requestBodyGroup.SetId(&tfPlanId)
 	} else {
 		tfPlanGroup.Id = types.StringNull()
 	}
-	// END Id | CreateStringAttribute
 
-	// START DeletedDateTime | CreateStringTimeAttribute
 	if !tfPlanGroup.DeletedDateTime.IsUnknown() {
 		tfPlanDeletedDateTime := tfPlanGroup.DeletedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
@@ -485,9 +482,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	} else {
 		tfPlanGroup.DeletedDateTime = types.StringNull()
 	}
-	// END DeletedDateTime | CreateStringTimeAttribute
 
-	// START AssignedLabels | CreateArrayObjectAttribute
 	if len(tfPlanGroup.AssignedLabels.Elements()) > 0 {
 		var requestBodyAssignedLabels []models.AssignedLabelable
 		for _, i := range tfPlanGroup.AssignedLabels.Elements() {
@@ -495,32 +490,26 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			tfPlanAssignedLabel := groupAssignedLabelModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLabel)
 
-			// START DisplayName | CreateStringAttribute
 			if !tfPlanAssignedLabel.DisplayName.IsUnknown() {
 				tfPlanDisplayName := tfPlanAssignedLabel.DisplayName.ValueString()
 				requestBodyAssignedLabel.SetDisplayName(&tfPlanDisplayName)
 			} else {
 				tfPlanAssignedLabel.DisplayName = types.StringNull()
 			}
-			// END DisplayName | CreateStringAttribute
 
-			// START LabelId | CreateStringAttribute
 			if !tfPlanAssignedLabel.LabelId.IsUnknown() {
 				tfPlanLabelId := tfPlanAssignedLabel.LabelId.ValueString()
 				requestBodyAssignedLabel.SetLabelId(&tfPlanLabelId)
 			} else {
 				tfPlanAssignedLabel.LabelId = types.StringNull()
 			}
-			// END LabelId | CreateStringAttribute
 
 		}
 		requestBodyGroup.SetAssignedLabels(requestBodyAssignedLabels)
 	} else {
 		tfPlanGroup.AssignedLabels = types.ListNull(tfPlanGroup.AssignedLabels.ElementType(ctx))
 	}
-	// END AssignedLabels | CreateArrayObjectAttribute
 
-	// START AssignedLicenses | CreateArrayObjectAttribute
 	if len(tfPlanGroup.AssignedLicenses.Elements()) > 0 {
 		var requestBodyAssignedLicenses []models.AssignedLicenseable
 		for _, i := range tfPlanGroup.AssignedLicenses.Elements() {
@@ -528,7 +517,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			tfPlanAssignedLicense := groupAssignedLicenseModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanAssignedLicense)
 
-			// START DisabledPlans | CreateArrayUuidAttribute
 			if len(tfPlanAssignedLicense.DisabledPlans.Elements()) > 0 {
 				var uuidArrayDisabledPlans []uuid.UUID
 				for _, i := range tfPlanAssignedLicense.DisabledPlans.Elements() {
@@ -540,9 +528,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 				tfPlanAssignedLicense.DisabledPlans = types.ListNull(types.StringType)
 			}
 
-			// END DisabledPlans | CreateArrayUuidAttribute
-
-			// START SkuId | CreateStringUuidAttribute
 			if !tfPlanAssignedLicense.SkuId.IsUnknown() {
 				tfPlanSkuId := tfPlanAssignedLicense.SkuId.ValueString()
 				u, _ := uuid.Parse(tfPlanSkuId)
@@ -550,25 +535,20 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			} else {
 				tfPlanAssignedLicense.SkuId = types.StringNull()
 			}
-			// END SkuId | CreateStringUuidAttribute
 
 		}
 		requestBodyGroup.SetAssignedLicenses(requestBodyAssignedLicenses)
 	} else {
 		tfPlanGroup.AssignedLicenses = types.ListNull(tfPlanGroup.AssignedLicenses.ElementType(ctx))
 	}
-	// END AssignedLicenses | CreateArrayObjectAttribute
 
-	// START Classification | CreateStringAttribute
 	if !tfPlanGroup.Classification.IsUnknown() {
 		tfPlanClassification := tfPlanGroup.Classification.ValueString()
 		requestBodyGroup.SetClassification(&tfPlanClassification)
 	} else {
 		tfPlanGroup.Classification = types.StringNull()
 	}
-	// END Classification | CreateStringAttribute
 
-	// START CreatedDateTime | CreateStringTimeAttribute
 	if !tfPlanGroup.CreatedDateTime.IsUnknown() {
 		tfPlanCreatedDateTime := tfPlanGroup.CreatedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
@@ -576,27 +556,21 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	} else {
 		tfPlanGroup.CreatedDateTime = types.StringNull()
 	}
-	// END CreatedDateTime | CreateStringTimeAttribute
 
-	// START Description | CreateStringAttribute
 	if !tfPlanGroup.Description.IsUnknown() {
 		tfPlanDescription := tfPlanGroup.Description.ValueString()
 		requestBodyGroup.SetDescription(&tfPlanDescription)
 	} else {
 		tfPlanGroup.Description = types.StringNull()
 	}
-	// END Description | CreateStringAttribute
 
-	// START DisplayName | CreateStringAttribute
 	if !tfPlanGroup.DisplayName.IsUnknown() {
 		tfPlanDisplayName := tfPlanGroup.DisplayName.ValueString()
 		requestBodyGroup.SetDisplayName(&tfPlanDisplayName)
 	} else {
 		tfPlanGroup.DisplayName = types.StringNull()
 	}
-	// END DisplayName | CreateStringAttribute
 
-	// START ExpirationDateTime | CreateStringTimeAttribute
 	if !tfPlanGroup.ExpirationDateTime.IsUnknown() {
 		tfPlanExpirationDateTime := tfPlanGroup.ExpirationDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanExpirationDateTime)
@@ -604,9 +578,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	} else {
 		tfPlanGroup.ExpirationDateTime = types.StringNull()
 	}
-	// END ExpirationDateTime | CreateStringTimeAttribute
 
-	// START GroupTypes | CreateArrayStringAttribute
 	if len(tfPlanGroup.GroupTypes.Elements()) > 0 {
 		var stringArrayGroupTypes []string
 		for _, i := range tfPlanGroup.GroupTypes.Elements() {
@@ -616,103 +588,81 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	} else {
 		tfPlanGroup.GroupTypes = types.ListNull(types.StringType)
 	}
-	// END GroupTypes | CreateArrayStringAttribute
 
-	// START IsAssignableToRole | CreateBoolAttribute
 	if !tfPlanGroup.IsAssignableToRole.IsUnknown() {
 		tfPlanIsAssignableToRole := tfPlanGroup.IsAssignableToRole.ValueBool()
 		requestBodyGroup.SetIsAssignableToRole(&tfPlanIsAssignableToRole)
 	} else {
 		tfPlanGroup.IsAssignableToRole = types.BoolNull()
 	}
-	// END IsAssignableToRole | CreateBoolAttribute
 
-	// START IsManagementRestricted | CreateBoolAttribute
 	if !tfPlanGroup.IsManagementRestricted.IsUnknown() {
 		tfPlanIsManagementRestricted := tfPlanGroup.IsManagementRestricted.ValueBool()
 		requestBodyGroup.SetIsManagementRestricted(&tfPlanIsManagementRestricted)
 	} else {
 		tfPlanGroup.IsManagementRestricted = types.BoolNull()
 	}
-	// END IsManagementRestricted | CreateBoolAttribute
 
-	// START LicenseProcessingState | CreateObjectAttribute
 	if !tfPlanGroup.LicenseProcessingState.IsUnknown() {
 		requestBodyLicenseProcessingState := models.NewLicenseProcessingState()
 		tfPlanLicenseProcessingState := groupLicenseProcessingStateModel{}
 		tfPlanGroup.LicenseProcessingState.As(ctx, &tfPlanLicenseProcessingState, basetypes.ObjectAsOptions{})
 
-		// START State | CreateStringAttribute
 		if !tfPlanLicenseProcessingState.State.IsUnknown() {
 			tfPlanState := tfPlanLicenseProcessingState.State.ValueString()
 			requestBodyLicenseProcessingState.SetState(&tfPlanState)
 		} else {
 			tfPlanLicenseProcessingState.State = types.StringNull()
 		}
-		// END State | CreateStringAttribute
 
 		requestBodyGroup.SetLicenseProcessingState(requestBodyLicenseProcessingState)
 		tfPlanGroup.LicenseProcessingState, _ = types.ObjectValueFrom(ctx, tfPlanLicenseProcessingState.AttributeTypes(), requestBodyLicenseProcessingState)
 	} else {
 		tfPlanGroup.LicenseProcessingState = types.ObjectNull(tfPlanGroup.LicenseProcessingState.AttributeTypes(ctx))
 	}
-	// END LicenseProcessingState | CreateObjectAttribute
 
-	// START Mail | CreateStringAttribute
 	if !tfPlanGroup.Mail.IsUnknown() {
 		tfPlanMail := tfPlanGroup.Mail.ValueString()
 		requestBodyGroup.SetMail(&tfPlanMail)
 	} else {
 		tfPlanGroup.Mail = types.StringNull()
 	}
-	// END Mail | CreateStringAttribute
 
-	// START MailEnabled | CreateBoolAttribute
 	if !tfPlanGroup.MailEnabled.IsUnknown() {
 		tfPlanMailEnabled := tfPlanGroup.MailEnabled.ValueBool()
 		requestBodyGroup.SetMailEnabled(&tfPlanMailEnabled)
 	} else {
 		tfPlanGroup.MailEnabled = types.BoolNull()
 	}
-	// END MailEnabled | CreateBoolAttribute
 
-	// START MailNickname | CreateStringAttribute
 	if !tfPlanGroup.MailNickname.IsUnknown() {
 		tfPlanMailNickname := tfPlanGroup.MailNickname.ValueString()
 		requestBodyGroup.SetMailNickname(&tfPlanMailNickname)
 	} else {
 		tfPlanGroup.MailNickname = types.StringNull()
 	}
-	// END MailNickname | CreateStringAttribute
 
-	// START MembershipRule | CreateStringAttribute
 	if !tfPlanGroup.MembershipRule.IsUnknown() {
 		tfPlanMembershipRule := tfPlanGroup.MembershipRule.ValueString()
 		requestBodyGroup.SetMembershipRule(&tfPlanMembershipRule)
 	} else {
 		tfPlanGroup.MembershipRule = types.StringNull()
 	}
-	// END MembershipRule | CreateStringAttribute
 
-	// START MembershipRuleProcessingState | CreateStringAttribute
 	if !tfPlanGroup.MembershipRuleProcessingState.IsUnknown() {
 		tfPlanMembershipRuleProcessingState := tfPlanGroup.MembershipRuleProcessingState.ValueString()
 		requestBodyGroup.SetMembershipRuleProcessingState(&tfPlanMembershipRuleProcessingState)
 	} else {
 		tfPlanGroup.MembershipRuleProcessingState = types.StringNull()
 	}
-	// END MembershipRuleProcessingState | CreateStringAttribute
 
-	// START OnPremisesDomainName | CreateStringAttribute
 	if !tfPlanGroup.OnPremisesDomainName.IsUnknown() {
 		tfPlanOnPremisesDomainName := tfPlanGroup.OnPremisesDomainName.ValueString()
 		requestBodyGroup.SetOnPremisesDomainName(&tfPlanOnPremisesDomainName)
 	} else {
 		tfPlanGroup.OnPremisesDomainName = types.StringNull()
 	}
-	// END OnPremisesDomainName | CreateStringAttribute
 
-	// START OnPremisesLastSyncDateTime | CreateStringTimeAttribute
 	if !tfPlanGroup.OnPremisesLastSyncDateTime.IsUnknown() {
 		tfPlanOnPremisesLastSyncDateTime := tfPlanGroup.OnPremisesLastSyncDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanOnPremisesLastSyncDateTime)
@@ -720,18 +670,14 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	} else {
 		tfPlanGroup.OnPremisesLastSyncDateTime = types.StringNull()
 	}
-	// END OnPremisesLastSyncDateTime | CreateStringTimeAttribute
 
-	// START OnPremisesNetBiosName | CreateStringAttribute
 	if !tfPlanGroup.OnPremisesNetBiosName.IsUnknown() {
 		tfPlanOnPremisesNetBiosName := tfPlanGroup.OnPremisesNetBiosName.ValueString()
 		requestBodyGroup.SetOnPremisesNetBiosName(&tfPlanOnPremisesNetBiosName)
 	} else {
 		tfPlanGroup.OnPremisesNetBiosName = types.StringNull()
 	}
-	// END OnPremisesNetBiosName | CreateStringAttribute
 
-	// START OnPremisesProvisioningErrors | CreateArrayObjectAttribute
 	if len(tfPlanGroup.OnPremisesProvisioningErrors.Elements()) > 0 {
 		var requestBodyOnPremisesProvisioningErrors []models.OnPremisesProvisioningErrorable
 		for _, i := range tfPlanGroup.OnPremisesProvisioningErrors.Elements() {
@@ -739,16 +685,13 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			tfPlanOnPremisesProvisioningError := groupOnPremisesProvisioningErrorModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanOnPremisesProvisioningError)
 
-			// START Category | CreateStringAttribute
 			if !tfPlanOnPremisesProvisioningError.Category.IsUnknown() {
 				tfPlanCategory := tfPlanOnPremisesProvisioningError.Category.ValueString()
 				requestBodyOnPremisesProvisioningError.SetCategory(&tfPlanCategory)
 			} else {
 				tfPlanOnPremisesProvisioningError.Category = types.StringNull()
 			}
-			// END Category | CreateStringAttribute
 
-			// START OccurredDateTime | CreateStringTimeAttribute
 			if !tfPlanOnPremisesProvisioningError.OccurredDateTime.IsUnknown() {
 				tfPlanOccurredDateTime := tfPlanOnPremisesProvisioningError.OccurredDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanOccurredDateTime)
@@ -756,79 +699,62 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			} else {
 				tfPlanOnPremisesProvisioningError.OccurredDateTime = types.StringNull()
 			}
-			// END OccurredDateTime | CreateStringTimeAttribute
 
-			// START PropertyCausingError | CreateStringAttribute
 			if !tfPlanOnPremisesProvisioningError.PropertyCausingError.IsUnknown() {
 				tfPlanPropertyCausingError := tfPlanOnPremisesProvisioningError.PropertyCausingError.ValueString()
 				requestBodyOnPremisesProvisioningError.SetPropertyCausingError(&tfPlanPropertyCausingError)
 			} else {
 				tfPlanOnPremisesProvisioningError.PropertyCausingError = types.StringNull()
 			}
-			// END PropertyCausingError | CreateStringAttribute
 
-			// START Value | CreateStringAttribute
 			if !tfPlanOnPremisesProvisioningError.Value.IsUnknown() {
 				tfPlanValue := tfPlanOnPremisesProvisioningError.Value.ValueString()
 				requestBodyOnPremisesProvisioningError.SetValue(&tfPlanValue)
 			} else {
 				tfPlanOnPremisesProvisioningError.Value = types.StringNull()
 			}
-			// END Value | CreateStringAttribute
 
 		}
 		requestBodyGroup.SetOnPremisesProvisioningErrors(requestBodyOnPremisesProvisioningErrors)
 	} else {
 		tfPlanGroup.OnPremisesProvisioningErrors = types.ListNull(tfPlanGroup.OnPremisesProvisioningErrors.ElementType(ctx))
 	}
-	// END OnPremisesProvisioningErrors | CreateArrayObjectAttribute
 
-	// START OnPremisesSamAccountName | CreateStringAttribute
 	if !tfPlanGroup.OnPremisesSamAccountName.IsUnknown() {
 		tfPlanOnPremisesSamAccountName := tfPlanGroup.OnPremisesSamAccountName.ValueString()
 		requestBodyGroup.SetOnPremisesSamAccountName(&tfPlanOnPremisesSamAccountName)
 	} else {
 		tfPlanGroup.OnPremisesSamAccountName = types.StringNull()
 	}
-	// END OnPremisesSamAccountName | CreateStringAttribute
 
-	// START OnPremisesSecurityIdentifier | CreateStringAttribute
 	if !tfPlanGroup.OnPremisesSecurityIdentifier.IsUnknown() {
 		tfPlanOnPremisesSecurityIdentifier := tfPlanGroup.OnPremisesSecurityIdentifier.ValueString()
 		requestBodyGroup.SetOnPremisesSecurityIdentifier(&tfPlanOnPremisesSecurityIdentifier)
 	} else {
 		tfPlanGroup.OnPremisesSecurityIdentifier = types.StringNull()
 	}
-	// END OnPremisesSecurityIdentifier | CreateStringAttribute
 
-	// START OnPremisesSyncEnabled | CreateBoolAttribute
 	if !tfPlanGroup.OnPremisesSyncEnabled.IsUnknown() {
 		tfPlanOnPremisesSyncEnabled := tfPlanGroup.OnPremisesSyncEnabled.ValueBool()
 		requestBodyGroup.SetOnPremisesSyncEnabled(&tfPlanOnPremisesSyncEnabled)
 	} else {
 		tfPlanGroup.OnPremisesSyncEnabled = types.BoolNull()
 	}
-	// END OnPremisesSyncEnabled | CreateBoolAttribute
 
-	// START PreferredDataLocation | CreateStringAttribute
 	if !tfPlanGroup.PreferredDataLocation.IsUnknown() {
 		tfPlanPreferredDataLocation := tfPlanGroup.PreferredDataLocation.ValueString()
 		requestBodyGroup.SetPreferredDataLocation(&tfPlanPreferredDataLocation)
 	} else {
 		tfPlanGroup.PreferredDataLocation = types.StringNull()
 	}
-	// END PreferredDataLocation | CreateStringAttribute
 
-	// START PreferredLanguage | CreateStringAttribute
 	if !tfPlanGroup.PreferredLanguage.IsUnknown() {
 		tfPlanPreferredLanguage := tfPlanGroup.PreferredLanguage.ValueString()
 		requestBodyGroup.SetPreferredLanguage(&tfPlanPreferredLanguage)
 	} else {
 		tfPlanGroup.PreferredLanguage = types.StringNull()
 	}
-	// END PreferredLanguage | CreateStringAttribute
 
-	// START ProxyAddresses | CreateArrayStringAttribute
 	if len(tfPlanGroup.ProxyAddresses.Elements()) > 0 {
 		var stringArrayProxyAddresses []string
 		for _, i := range tfPlanGroup.ProxyAddresses.Elements() {
@@ -838,9 +764,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	} else {
 		tfPlanGroup.ProxyAddresses = types.ListNull(types.StringType)
 	}
-	// END ProxyAddresses | CreateArrayStringAttribute
 
-	// START RenewedDateTime | CreateStringTimeAttribute
 	if !tfPlanGroup.RenewedDateTime.IsUnknown() {
 		tfPlanRenewedDateTime := tfPlanGroup.RenewedDateTime.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanRenewedDateTime)
@@ -848,27 +772,21 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	} else {
 		tfPlanGroup.RenewedDateTime = types.StringNull()
 	}
-	// END RenewedDateTime | CreateStringTimeAttribute
 
-	// START SecurityEnabled | CreateBoolAttribute
 	if !tfPlanGroup.SecurityEnabled.IsUnknown() {
 		tfPlanSecurityEnabled := tfPlanGroup.SecurityEnabled.ValueBool()
 		requestBodyGroup.SetSecurityEnabled(&tfPlanSecurityEnabled)
 	} else {
 		tfPlanGroup.SecurityEnabled = types.BoolNull()
 	}
-	// END SecurityEnabled | CreateBoolAttribute
 
-	// START SecurityIdentifier | CreateStringAttribute
 	if !tfPlanGroup.SecurityIdentifier.IsUnknown() {
 		tfPlanSecurityIdentifier := tfPlanGroup.SecurityIdentifier.ValueString()
 		requestBodyGroup.SetSecurityIdentifier(&tfPlanSecurityIdentifier)
 	} else {
 		tfPlanGroup.SecurityIdentifier = types.StringNull()
 	}
-	// END SecurityIdentifier | CreateStringAttribute
 
-	// START ServiceProvisioningErrors | CreateArrayObjectAttribute
 	if len(tfPlanGroup.ServiceProvisioningErrors.Elements()) > 0 {
 		var requestBodyServiceProvisioningErrors []models.ServiceProvisioningErrorable
 		for _, i := range tfPlanGroup.ServiceProvisioningErrors.Elements() {
@@ -876,7 +794,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			tfPlanServiceProvisioningError := groupServiceProvisioningErrorModel{}
 			types.ListValueFrom(ctx, i.Type(ctx), &tfPlanServiceProvisioningError)
 
-			// START CreatedDateTime | CreateStringTimeAttribute
 			if !tfPlanServiceProvisioningError.CreatedDateTime.IsUnknown() {
 				tfPlanCreatedDateTime := tfPlanServiceProvisioningError.CreatedDateTime.ValueString()
 				t, _ := time.Parse(time.RFC3339, tfPlanCreatedDateTime)
@@ -884,59 +801,47 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 			} else {
 				tfPlanServiceProvisioningError.CreatedDateTime = types.StringNull()
 			}
-			// END CreatedDateTime | CreateStringTimeAttribute
 
-			// START IsResolved | CreateBoolAttribute
 			if !tfPlanServiceProvisioningError.IsResolved.IsUnknown() {
 				tfPlanIsResolved := tfPlanServiceProvisioningError.IsResolved.ValueBool()
 				requestBodyServiceProvisioningError.SetIsResolved(&tfPlanIsResolved)
 			} else {
 				tfPlanServiceProvisioningError.IsResolved = types.BoolNull()
 			}
-			// END IsResolved | CreateBoolAttribute
 
-			// START ServiceInstance | CreateStringAttribute
 			if !tfPlanServiceProvisioningError.ServiceInstance.IsUnknown() {
 				tfPlanServiceInstance := tfPlanServiceProvisioningError.ServiceInstance.ValueString()
 				requestBodyServiceProvisioningError.SetServiceInstance(&tfPlanServiceInstance)
 			} else {
 				tfPlanServiceProvisioningError.ServiceInstance = types.StringNull()
 			}
-			// END ServiceInstance | CreateStringAttribute
 
 		}
 		requestBodyGroup.SetServiceProvisioningErrors(requestBodyServiceProvisioningErrors)
 	} else {
 		tfPlanGroup.ServiceProvisioningErrors = types.ListNull(tfPlanGroup.ServiceProvisioningErrors.ElementType(ctx))
 	}
-	// END ServiceProvisioningErrors | CreateArrayObjectAttribute
 
-	// START Theme | CreateStringAttribute
 	if !tfPlanGroup.Theme.IsUnknown() {
 		tfPlanTheme := tfPlanGroup.Theme.ValueString()
 		requestBodyGroup.SetTheme(&tfPlanTheme)
 	} else {
 		tfPlanGroup.Theme = types.StringNull()
 	}
-	// END Theme | CreateStringAttribute
 
-	// START UniqueName | CreateStringAttribute
 	if !tfPlanGroup.UniqueName.IsUnknown() {
 		tfPlanUniqueName := tfPlanGroup.UniqueName.ValueString()
 		requestBodyGroup.SetUniqueName(&tfPlanUniqueName)
 	} else {
 		tfPlanGroup.UniqueName = types.StringNull()
 	}
-	// END UniqueName | CreateStringAttribute
 
-	// START Visibility | CreateStringAttribute
 	if !tfPlanGroup.Visibility.IsUnknown() {
 		tfPlanVisibility := tfPlanGroup.Visibility.ValueString()
 		requestBodyGroup.SetVisibility(&tfPlanVisibility)
 	} else {
 		tfPlanGroup.Visibility = types.StringNull()
 	}
-	// END Visibility | CreateStringAttribute
 
 	// Create new group
 	result, err := r.client.Groups().Post(context.Background(), requestBodyGroup, nil)
