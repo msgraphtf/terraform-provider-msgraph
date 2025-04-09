@@ -34,7 +34,6 @@ Read-Only:
 - `app_role_assignment_required` (Boolean) Specifies whether users or other service principals need to be granted an app role assignment for this service principal before users can sign in or apps can get tokens. The default value is false. Not nullable. Supports $filter (eq, ne, NOT).
 - `app_roles` (Attributes List) The roles exposed by the application that's linked to this service principal. For more information, see the appRoles property definition on the application entity. Not nullable. (see [below for nested schema](#nestedatt--value--app_roles))
 - `application_template_id` (String) Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne). Read-only. null if the service principal wasn't created from an application template.
-- `custom_security_attributes` (Attributes) An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). Filter value is case sensitive. To read this property, the calling app must be assigned the CustomSecAttributeAssignment.Read.All permission. To write this property, the calling app must be assigned the CustomSecAttributeAssignment.ReadWrite.All permissions. To read or write this property in delegated scenarios, the admin must be assigned the Attribute Assignment Administrator role. (see [below for nested schema](#nestedatt--value--custom_security_attributes))
 - `deleted_date_time` (String) Date and time when this object was deleted. Always null when the object hasn't been deleted.
 - `description` (String) Free text field to provide an internal end-user facing description of the service principal. End-user portals such MyApps displays the application description in this field. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.
 - `disabled_by_microsoft_status` (String) Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).
@@ -92,10 +91,6 @@ Read-Only:
 - `is_enabled` (Boolean) When creating or updating an app role, this must be set to true (which is the default). To delete a role, this must first be set to false.  At that point, in a subsequent call, this role may be removed.
 - `origin` (String) Specifies if the app role is defined on the application object or on the servicePrincipal entity. Must not be included in any POST or PATCH requests. Read-only.
 - `value` (String) Specifies the value to include in the roles claim in ID tokens and access tokens authenticating an assigned user or service principal. Must not exceed 120 characters in length. Allowed characters are : ! # $ % & ' ( ) * + , - . / : ;  =  ? @ [ ] ^ + _  {  } ~, and characters in the ranges 0-9, A-Z and a-z. Any other character, including the space character, aren't allowed. May not begin with ..
-
-
-<a id="nestedatt--value--custom_security_attributes"></a>
-### Nested Schema for `value.custom_security_attributes`
 
 
 <a id="nestedatt--value--info"></a>

@@ -32,7 +32,6 @@ description: |-
 - `member_settings` (Attributes) Settings to configure whether members can perform certain actions, for example, create channels and add bots, in the team. (see [below for nested schema](#nestedatt--member_settings))
 - `messaging_settings` (Attributes) Settings to configure messaging and mentions in the team. (see [below for nested schema](#nestedatt--messaging_settings))
 - `specialization` (String) Optional. Indicates whether the team is intended for a particular use case.  Each team specialization has access to unique behaviors and experiences targeted to its use case.
-- `summary` (Attributes) Contains summary information about the team, including number of owners, members, and guests. (see [below for nested schema](#nestedatt--summary))
 - `tenant_id` (String) The ID of the Microsoft Entra tenant.
 - `visibility` (String) The visibility of the group and team. Defaults to Public.
 - `web_url` (String) A hyperlink that will go to the team in the Microsoft Teams client. This is the URL that you get when you right-click a team in the Microsoft Teams client and select Get link to team. This URL should be treated as an opaque blob, and not parsed.
@@ -80,7 +79,3 @@ Read-Only:
 - `allow_team_mentions` (Boolean) If set to true, @team mentions are allowed.
 - `allow_user_delete_messages` (Boolean) If set to true, users can delete their messages.
 - `allow_user_edit_messages` (Boolean) If set to true, users can edit their messages.
-
-
-<a id="nestedatt--summary"></a>
-### Nested Schema for `summary`

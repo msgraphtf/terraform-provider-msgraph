@@ -32,7 +32,6 @@ description: |-
 - `last_modified_date_time` (String) Date and time the item was last modified. Read-only.
 - `name` (String) The name of the item. Read-write.
 - `parent_reference` (Attributes) Parent information, if the item has a parent. Read-write. (see [below for nested schema](#nestedatt--parent_reference))
-- `root` (Attributes) If present, provides the root site in the site collection. Read-only. (see [below for nested schema](#nestedatt--root))
 - `sharepoint_ids` (Attributes) Returns identifiers useful for SharePoint REST compatibility. Read-only. (see [below for nested schema](#nestedatt--sharepoint_ids))
 - `site_collection` (Attributes) Provides details about the site's site collection. Available only on the root site. Read-only. (see [below for nested schema](#nestedatt--site_collection))
 - `web_url` (String) URL that either displays the resource in the browser (for Office file formats), or is a direct link to the file (for other formats). Read-only.
@@ -204,10 +203,6 @@ Read-Only:
 
 
 
-<a id="nestedatt--root"></a>
-### Nested Schema for `root`
-
-
 <a id="nestedatt--sharepoint_ids"></a>
 ### Nested Schema for `sharepoint_ids`
 
@@ -230,7 +225,6 @@ Read-Only:
 - `archival_details` (Attributes) Represents whether the site collection is recently archived, fully archived, or reactivating. Possible values are: recentlyArchived, fullyArchived, reactivating, unknownFutureValue. (see [below for nested schema](#nestedatt--site_collection--archival_details))
 - `data_location_code` (String) The geographic region code for where this site collection resides. Only present for multi-geo tenants. Read-only.
 - `hostname` (String) The hostname for the site collection. Read-only.
-- `root` (Attributes) If present, indicates that this is a root site collection in SharePoint. Read-only. (see [below for nested schema](#nestedatt--site_collection--root))
 
 <a id="nestedatt--site_collection--archival_details"></a>
 ### Nested Schema for `site_collection.archival_details`
@@ -238,7 +232,3 @@ Read-Only:
 Read-Only:
 
 - `archive_status` (String) Represents the current archive status of the site collection. Returned only on $select. The possible values are: recentlyArchived, fullyArchived, reactivating, unknownFutureValue.
-
-
-<a id="nestedatt--site_collection--root"></a>
-### Nested Schema for `site_collection.root`
