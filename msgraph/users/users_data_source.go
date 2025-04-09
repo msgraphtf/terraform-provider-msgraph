@@ -148,11 +148,6 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 							Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by a guest signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
 							Computed:    true,
 						},
-						"custom_security_attributes": schema.SingleNestedAttribute{
-							Description: "An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). The filter value is case-sensitive. To read this property, the calling app must be assigned the CustomSecAttributeAssignment.Read.All permission. To write this property, the calling app must be assigned the CustomSecAttributeAssignment.ReadWrite.All permissions. To read or write this property in delegated scenarios, the admin must be assigned the Attribute Assignment Administrator role.",
-							Computed:    true,
-							Attributes:  map[string]schema.Attribute{},
-						},
 						"department": schema.StringAttribute{
 							Description: "The name of the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).",
 							Computed:    true,
@@ -741,12 +736,6 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				tfStateUser.CreationType = types.StringValue(*responseUser.GetCreationType())
 			} else {
 				tfStateUser.CreationType = types.StringNull()
-			}
-			if responseUser.GetCustomSecurityAttributes() != nil {
-				tfStateCustomSecurityAttributeValue := usersCustomSecurityAttributeValueModel{}
-				responseCustomSecurityAttributeValue := responseUser.GetCustomSecurityAttributes()
-
-				tfStateUser.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfStateCustomSecurityAttributeValue.AttributeTypes(), tfStateCustomSecurityAttributeValue)
 			}
 			if responseUser.GetDepartment() != nil {
 				tfStateUser.Department = types.StringValue(*responseUser.GetDepartment())

@@ -1,6 +1,7 @@
 package transform
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 
@@ -21,6 +22,7 @@ func (rr ReadResponse) Attributes() []readResponseAttribute {
 
 		// Skip excluded properties
 		if slices.Contains(rr.Augment.ExcludedProperties, property.Name) {
+			fmt.Printf("SKIPPING: %s: %s\n", rr.BlockName, property.Name)
 			continue
 		}
 
@@ -168,6 +170,7 @@ func (rra readResponseAttribute) NestedRead() []readResponseAttribute {
 
 		// Skip excluded properties
 		if slices.Contains(rra.ReadResponse.Augment.ExcludedProperties, property.Name) {
+			fmt.Printf("SKIPPING: %s: %s\n", rra.ReadResponse.BlockName, property.Name)
 			continue
 		}
 

@@ -292,15 +292,6 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
-			"summary": schema.SingleNestedAttribute{
-				Description: "Contains summary information about the team, including number of owners, members, and guests.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifiers.UseStateForUnconfigured(),
-				},
-				Attributes: map[string]schema.Attribute{},
-			},
 			"tenant_id": schema.StringAttribute{
 				Description: "The ID of the Microsoft Entra tenant.",
 				Optional:    true,
@@ -565,17 +556,6 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanTeam.Specialization = types.StringNull()
 	}
 
-	if !tfPlanTeam.Summary.IsUnknown() {
-		requestBodyTeamSummary := models.NewTeamSummary()
-		tfPlanTeamSummary := teamTeamSummaryModel{}
-		tfPlanTeam.Summary.As(ctx, &tfPlanTeamSummary, basetypes.ObjectAsOptions{})
-
-		requestBodyTeam.SetSummary(requestBodyTeamSummary)
-		tfPlanTeam.Summary, _ = types.ObjectValueFrom(ctx, tfPlanTeamSummary.AttributeTypes(), requestBodyTeamSummary)
-	} else {
-		tfPlanTeam.Summary = types.ObjectNull(tfPlanTeam.Summary.AttributeTypes(ctx))
-	}
-
 	if !tfPlanTeam.TenantId.IsUnknown() {
 		tfPlanTenantId := tfPlanTeam.TenantId.ValueString()
 		requestBodyTeam.SetTenantId(&tfPlanTenantId)
@@ -645,7 +625,6 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 				"memberSettings",
 				"messagingSettings",
 				"specialization",
-				"summary",
 				"tenantId",
 				"visibility",
 				"webUrl",
@@ -826,12 +805,6 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		tfStateTeam.Specialization = types.StringValue(responseTeam.GetSpecialization().String())
 	} else {
 		tfStateTeam.Specialization = types.StringNull()
-	}
-	if responseTeam.GetSummary() != nil {
-		tfStateTeamSummary := teamTeamSummaryModel{}
-		responseTeamSummary := responseTeam.GetSummary()
-
-		tfStateTeam.Summary, _ = types.ObjectValueFrom(ctx, tfStateTeamSummary.AttributeTypes(), tfStateTeamSummary)
 	}
 	if responseTeam.GetTenantId() != nil {
 		tfStateTeam.TenantId = types.StringValue(*responseTeam.GetTenantId())
@@ -1047,17 +1020,6 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		parsedSpecialization, _ := models.ParseTeamSpecialization(tfPlanSpecialization)
 		assertedSpecialization := parsedSpecialization.(models.TeamSpecialization)
 		requestBodyTeam.SetSpecialization(&assertedSpecialization)
-	}
-
-	if !tfPlanTeam.Summary.Equal(tfStateTeam.Summary) {
-		requestBodyTeamSummary := models.NewTeamSummary()
-		tfPlanTeamSummary := teamTeamSummaryModel{}
-		tfPlanTeam.Summary.As(ctx, &tfPlanTeamSummary, basetypes.ObjectAsOptions{})
-		tfStateTeamSummary := teamTeamSummaryModel{}
-		tfStateTeam.Summary.As(ctx, &tfStateTeamSummary, basetypes.ObjectAsOptions{})
-
-		requestBodyTeam.SetSummary(requestBodyTeamSummary)
-		tfPlanTeam.Summary, _ = types.ObjectValueFrom(ctx, tfPlanTeamSummary.AttributeTypes(), tfPlanTeamSummary)
 	}
 
 	if !tfPlanTeam.TenantId.Equal(tfStateTeam.TenantId) {

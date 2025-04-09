@@ -30,7 +30,6 @@ type usersUserModel struct {
 	Country                         types.String `tfsdk:"country"`
 	CreatedDateTime                 types.String `tfsdk:"created_date_time"`
 	CreationType                    types.String `tfsdk:"creation_type"`
-	CustomSecurityAttributes        types.Object `tfsdk:"custom_security_attributes"`
 	Department                      types.String `tfsdk:"department"`
 	DisplayName                     types.String `tfsdk:"display_name"`
 	EmployeeHireDate                types.String `tfsdk:"employee_hire_date"`
@@ -101,7 +100,6 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"country":                               types.StringType,
 		"created_date_time":                     types.StringType,
 		"creation_type":                         types.StringType,
-		"custom_security_attributes":            types.ObjectType{AttrTypes: usersCustomSecurityAttributeValueModel{}.AttributeTypes()},
 		"department":                            types.StringType,
 		"display_name":                          types.StringType,
 		"employee_hire_date":                    types.StringType,

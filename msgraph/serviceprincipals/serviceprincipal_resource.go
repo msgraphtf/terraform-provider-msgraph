@@ -261,15 +261,6 @@ func (d *servicePrincipalResource) Schema(_ context.Context, _ resource.SchemaRe
 					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
-			"custom_security_attributes": schema.SingleNestedAttribute{
-				Description: "An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). Filter value is case sensitive. To read this property, the calling app must be assigned the CustomSecAttributeAssignment.Read.All permission. To write this property, the calling app must be assigned the CustomSecAttributeAssignment.ReadWrite.All permissions. To read or write this property in delegated scenarios, the admin must be assigned the Attribute Assignment Administrator role.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifiers.UseStateForUnconfigured(),
-				},
-				Attributes: map[string]schema.Attribute{},
-			},
 			"description": schema.StringAttribute{
 				Description: "Free text field to provide an internal end-user facing description of the service principal. End-user portals such MyApps displays the application description in this field. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 				Optional:    true,
@@ -996,17 +987,6 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		tfPlanServicePrincipal.ApplicationTemplateId = types.StringNull()
 	}
 
-	if !tfPlanServicePrincipal.CustomSecurityAttributes.IsUnknown() {
-		requestBodyCustomSecurityAttributeValue := models.NewCustomSecurityAttributeValue()
-		tfPlanCustomSecurityAttributeValue := servicePrincipalCustomSecurityAttributeValueModel{}
-		tfPlanServicePrincipal.CustomSecurityAttributes.As(ctx, &tfPlanCustomSecurityAttributeValue, basetypes.ObjectAsOptions{})
-
-		requestBodyServicePrincipal.SetCustomSecurityAttributes(requestBodyCustomSecurityAttributeValue)
-		tfPlanServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfPlanCustomSecurityAttributeValue.AttributeTypes(), requestBodyCustomSecurityAttributeValue)
-	} else {
-		tfPlanServicePrincipal.CustomSecurityAttributes = types.ObjectNull(tfPlanServicePrincipal.CustomSecurityAttributes.AttributeTypes(ctx))
-	}
-
 	if !tfPlanServicePrincipal.Description.IsUnknown() {
 		tfPlanDescription := tfPlanServicePrincipal.Description.ValueString()
 		requestBodyServicePrincipal.SetDescription(&tfPlanDescription)
@@ -1538,7 +1518,6 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 				"appRoleAssignmentRequired",
 				"appRoles",
 				"applicationTemplateId",
-				"customSecurityAttributes",
 				"description",
 				"disabledByMicrosoftStatus",
 				"displayName",
@@ -1731,12 +1710,6 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 		tfStateServicePrincipal.ApplicationTemplateId = types.StringValue(*responseServicePrincipal.GetApplicationTemplateId())
 	} else {
 		tfStateServicePrincipal.ApplicationTemplateId = types.StringNull()
-	}
-	if responseServicePrincipal.GetCustomSecurityAttributes() != nil {
-		tfStateCustomSecurityAttributeValue := servicePrincipalCustomSecurityAttributeValueModel{}
-		responseCustomSecurityAttributeValue := responseServicePrincipal.GetCustomSecurityAttributes()
-
-		tfStateServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfStateCustomSecurityAttributeValue.AttributeTypes(), tfStateCustomSecurityAttributeValue)
 	}
 	if responseServicePrincipal.GetDescription() != nil {
 		tfStateServicePrincipal.Description = types.StringValue(*responseServicePrincipal.GetDescription())
@@ -2269,17 +2242,6 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	if !tfPlanServicePrincipal.ApplicationTemplateId.Equal(tfStateServicePrincipal.ApplicationTemplateId) {
 		tfPlanApplicationTemplateId := tfPlanServicePrincipal.ApplicationTemplateId.ValueString()
 		requestBodyServicePrincipal.SetApplicationTemplateId(&tfPlanApplicationTemplateId)
-	}
-
-	if !tfPlanServicePrincipal.CustomSecurityAttributes.Equal(tfStateServicePrincipal.CustomSecurityAttributes) {
-		requestBodyCustomSecurityAttributeValue := models.NewCustomSecurityAttributeValue()
-		tfPlanCustomSecurityAttributeValue := servicePrincipalCustomSecurityAttributeValueModel{}
-		tfPlanServicePrincipal.CustomSecurityAttributes.As(ctx, &tfPlanCustomSecurityAttributeValue, basetypes.ObjectAsOptions{})
-		tfStateCustomSecurityAttributeValue := servicePrincipalCustomSecurityAttributeValueModel{}
-		tfStateServicePrincipal.CustomSecurityAttributes.As(ctx, &tfStateCustomSecurityAttributeValue, basetypes.ObjectAsOptions{})
-
-		requestBodyServicePrincipal.SetCustomSecurityAttributes(requestBodyCustomSecurityAttributeValue)
-		tfPlanServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfPlanCustomSecurityAttributeValue.AttributeTypes(), tfPlanCustomSecurityAttributeValue)
 	}
 
 	if !tfPlanServicePrincipal.Description.Equal(tfStateServicePrincipal.Description) {

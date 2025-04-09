@@ -19,7 +19,6 @@ type siteModel struct {
 	DisplayName          types.String `tfsdk:"display_name"`
 	Error                types.Object `tfsdk:"error"`
 	IsPersonalSite       types.Bool   `tfsdk:"is_personal_site"`
-	Root                 types.Object `tfsdk:"root"`
 	SharepointIds        types.Object `tfsdk:"sharepoint_ids"`
 	SiteCollection       types.Object `tfsdk:"site_collection"`
 }
@@ -39,7 +38,6 @@ func (m siteModel) AttributeTypes() map[string]attr.Type {
 		"display_name":            types.StringType,
 		"error":                   types.ObjectType{AttrTypes: sitePublicErrorModel{}.AttributeTypes()},
 		"is_personal_site":        types.BoolType,
-		"root":                    types.ObjectType{AttrTypes: siteRootModel{}.AttributeTypes()},
 		"sharepoint_ids":          types.ObjectType{AttrTypes: siteSharepointIdsModel{}.AttributeTypes()},
 		"site_collection":         types.ObjectType{AttrTypes: siteSiteCollectionModel{}.AttributeTypes()},
 	}
@@ -165,18 +163,10 @@ func (m sitePublicInnerErrorModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type siteRootModel struct {
-}
-
-func (m siteRootModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
-}
-
 type siteSiteCollectionModel struct {
 	ArchivalDetails  types.Object `tfsdk:"archival_details"`
 	DataLocationCode types.String `tfsdk:"data_location_code"`
 	Hostname         types.String `tfsdk:"hostname"`
-	Root             types.Object `tfsdk:"root"`
 }
 
 func (m siteSiteCollectionModel) AttributeTypes() map[string]attr.Type {
@@ -184,7 +174,6 @@ func (m siteSiteCollectionModel) AttributeTypes() map[string]attr.Type {
 		"archival_details":   types.ObjectType{AttrTypes: siteSiteArchivalDetailsModel{}.AttributeTypes()},
 		"data_location_code": types.StringType,
 		"hostname":           types.StringType,
-		"root":               types.ObjectType{AttrTypes: siteRootModel{}.AttributeTypes()},
 	}
 }
 
@@ -196,4 +185,11 @@ func (m siteSiteArchivalDetailsModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"archive_status": types.StringType,
 	}
+}
+
+type siteRootModel struct {
+}
+
+func (m siteRootModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
 }

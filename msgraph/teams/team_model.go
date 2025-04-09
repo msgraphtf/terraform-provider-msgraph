@@ -18,7 +18,6 @@ type teamModel struct {
 	MemberSettings    types.Object `tfsdk:"member_settings"`
 	MessagingSettings types.Object `tfsdk:"messaging_settings"`
 	Specialization    types.String `tfsdk:"specialization"`
-	Summary           types.Object `tfsdk:"summary"`
 	TenantId          types.String `tfsdk:"tenant_id"`
 	Visibility        types.String `tfsdk:"visibility"`
 	WebUrl            types.String `tfsdk:"web_url"`
@@ -38,7 +37,6 @@ func (m teamModel) AttributeTypes() map[string]attr.Type {
 		"member_settings":    types.ObjectType{AttrTypes: teamTeamMemberSettingsModel{}.AttributeTypes()},
 		"messaging_settings": types.ObjectType{AttrTypes: teamTeamMessagingSettingsModel{}.AttributeTypes()},
 		"specialization":     types.StringType,
-		"summary":            types.ObjectType{AttrTypes: teamTeamSummaryModel{}.AttributeTypes()},
 		"tenant_id":          types.StringType,
 		"visibility":         types.StringType,
 		"web_url":            types.StringType,
@@ -108,19 +106,5 @@ func (m teamTeamMessagingSettingsModel) AttributeTypes() map[string]attr.Type {
 		"allow_team_mentions":         types.BoolType,
 		"allow_user_delete_messages":  types.BoolType,
 		"allow_user_edit_messages":    types.BoolType,
-	}
-}
-
-type teamTeamSummaryModel struct {
-	GuestsCount  types.Int64 `tfsdk:"guests_count"`
-	MembersCount types.Int64 `tfsdk:"members_count"`
-	OwnersCount  types.Int64 `tfsdk:"owners_count"`
-}
-
-func (m teamTeamSummaryModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"guests_count":  types.Int64Type,
-		"members_count": types.Int64Type,
-		"owners_count":  types.Int64Type,
 	}
 }

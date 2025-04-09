@@ -160,11 +160,6 @@ func (d *servicePrincipalDataSource) Schema(_ context.Context, _ datasource.Sche
 				Description: "Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne). Read-only. null if the service principal wasn't created from an application template.",
 				Computed:    true,
 			},
-			"custom_security_attributes": schema.SingleNestedAttribute{
-				Description: "An open complex type that holds the value of a custom security attribute that is assigned to a directory object. Nullable. Returned only on $select. Supports $filter (eq, ne, not, startsWith). Filter value is case sensitive. To read this property, the calling app must be assigned the CustomSecAttributeAssignment.Read.All permission. To write this property, the calling app must be assigned the CustomSecAttributeAssignment.ReadWrite.All permissions. To read or write this property in delegated scenarios, the admin must be assigned the Attribute Assignment Administrator role.",
-				Computed:    true,
-				Attributes:  map[string]schema.Attribute{},
-			},
 			"description": schema.StringAttribute{
 				Description: "Free text field to provide an internal end-user facing description of the service principal. End-user portals such MyApps displays the application description in this field. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 				Computed:    true,
@@ -464,7 +459,6 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 				"appRoleAssignmentRequired",
 				"appRoles",
 				"applicationTemplateId",
-				"customSecurityAttributes",
 				"description",
 				"disabledByMicrosoftStatus",
 				"displayName",
@@ -657,12 +651,6 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		tfStateServicePrincipal.ApplicationTemplateId = types.StringValue(*responseServicePrincipal.GetApplicationTemplateId())
 	} else {
 		tfStateServicePrincipal.ApplicationTemplateId = types.StringNull()
-	}
-	if responseServicePrincipal.GetCustomSecurityAttributes() != nil {
-		tfStateCustomSecurityAttributeValue := servicePrincipalCustomSecurityAttributeValueModel{}
-		responseCustomSecurityAttributeValue := responseServicePrincipal.GetCustomSecurityAttributes()
-
-		tfStateServicePrincipal.CustomSecurityAttributes, _ = types.ObjectValueFrom(ctx, tfStateCustomSecurityAttributeValue.AttributeTypes(), tfStateCustomSecurityAttributeValue)
 	}
 	if responseServicePrincipal.GetDescription() != nil {
 		tfStateServicePrincipal.Description = types.StringValue(*responseServicePrincipal.GetDescription())

@@ -18,7 +18,6 @@ type servicePrincipalModel struct {
 	AppRoleAssignmentRequired              types.Bool   `tfsdk:"app_role_assignment_required"`
 	AppRoles                               types.List   `tfsdk:"app_roles"`
 	ApplicationTemplateId                  types.String `tfsdk:"application_template_id"`
-	CustomSecurityAttributes               types.Object `tfsdk:"custom_security_attributes"`
 	Description                            types.String `tfsdk:"description"`
 	DisabledByMicrosoftStatus              types.String `tfsdk:"disabled_by_microsoft_status"`
 	DisplayName                            types.String `tfsdk:"display_name"`
@@ -58,7 +57,6 @@ func (m servicePrincipalModel) AttributeTypes() map[string]attr.Type {
 		"app_role_assignment_required":           types.BoolType,
 		"app_roles":                              types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalAppRoleModel{}.AttributeTypes()}},
 		"application_template_id":                types.StringType,
-		"custom_security_attributes":             types.ObjectType{AttrTypes: servicePrincipalCustomSecurityAttributeValueModel{}.AttributeTypes()},
 		"description":                            types.StringType,
 		"disabled_by_microsoft_status":           types.StringType,
 		"display_name":                           types.StringType,
@@ -131,13 +129,6 @@ func (m servicePrincipalAppRoleModel) AttributeTypes() map[string]attr.Type {
 		"origin":               types.StringType,
 		"value":                types.StringType,
 	}
-}
-
-type servicePrincipalCustomSecurityAttributeValueModel struct {
-}
-
-func (m servicePrincipalCustomSecurityAttributeValueModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
 }
 
 type servicePrincipalInformationalUrlModel struct {

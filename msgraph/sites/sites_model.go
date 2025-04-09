@@ -29,7 +29,6 @@ type sitesSiteModel struct {
 	DisplayName          types.String `tfsdk:"display_name"`
 	Error                types.Object `tfsdk:"error"`
 	IsPersonalSite       types.Bool   `tfsdk:"is_personal_site"`
-	Root                 types.Object `tfsdk:"root"`
 	SharepointIds        types.Object `tfsdk:"sharepoint_ids"`
 	SiteCollection       types.Object `tfsdk:"site_collection"`
 }
@@ -49,7 +48,6 @@ func (m sitesSiteModel) AttributeTypes() map[string]attr.Type {
 		"display_name":            types.StringType,
 		"error":                   types.ObjectType{AttrTypes: sitesPublicErrorModel{}.AttributeTypes()},
 		"is_personal_site":        types.BoolType,
-		"root":                    types.ObjectType{AttrTypes: sitesRootModel{}.AttributeTypes()},
 		"sharepoint_ids":          types.ObjectType{AttrTypes: sitesSharepointIdsModel{}.AttributeTypes()},
 		"site_collection":         types.ObjectType{AttrTypes: sitesSiteCollectionModel{}.AttributeTypes()},
 	}
@@ -186,7 +184,6 @@ type sitesSiteCollectionModel struct {
 	ArchivalDetails  types.Object `tfsdk:"archival_details"`
 	DataLocationCode types.String `tfsdk:"data_location_code"`
 	Hostname         types.String `tfsdk:"hostname"`
-	Root             types.Object `tfsdk:"root"`
 }
 
 func (m sitesSiteCollectionModel) AttributeTypes() map[string]attr.Type {
@@ -194,7 +191,6 @@ func (m sitesSiteCollectionModel) AttributeTypes() map[string]attr.Type {
 		"archival_details":   types.ObjectType{AttrTypes: sitesSiteArchivalDetailsModel{}.AttributeTypes()},
 		"data_location_code": types.StringType,
 		"hostname":           types.StringType,
-		"root":               types.ObjectType{AttrTypes: sitesRootModel{}.AttributeTypes()},
 	}
 }
 

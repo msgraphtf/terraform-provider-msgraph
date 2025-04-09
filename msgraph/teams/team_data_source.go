@@ -170,11 +170,6 @@ func (d *teamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Optional. Indicates whether the team is intended for a particular use case.  Each team specialization has access to unique behaviors and experiences targeted to its use case.",
 				Computed:    true,
 			},
-			"summary": schema.SingleNestedAttribute{
-				Description: "Contains summary information about the team, including number of owners, members, and guests.",
-				Computed:    true,
-				Attributes:  map[string]schema.Attribute{},
-			},
 			"tenant_id": schema.StringAttribute{
 				Description: "The ID of the Microsoft Entra tenant.",
 				Computed:    true,
@@ -214,7 +209,6 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				"memberSettings",
 				"messagingSettings",
 				"specialization",
-				"summary",
 				"tenantId",
 				"visibility",
 				"webUrl",
@@ -395,12 +389,6 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateTeam.Specialization = types.StringValue(responseTeam.GetSpecialization().String())
 	} else {
 		tfStateTeam.Specialization = types.StringNull()
-	}
-	if responseTeam.GetSummary() != nil {
-		tfStateTeamSummary := teamTeamSummaryModel{}
-		responseTeamSummary := responseTeam.GetSummary()
-
-		tfStateTeam.Summary, _ = types.ObjectValueFrom(ctx, tfStateTeamSummary.AttributeTypes(), tfStateTeamSummary)
 	}
 	if responseTeam.GetTenantId() != nil {
 		tfStateTeam.TenantId = types.StringValue(*responseTeam.GetTenantId())

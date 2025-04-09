@@ -330,11 +330,6 @@ func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Identifies whether the site is personal or not. Read-only.",
 				Computed:    true,
 			},
-			"root": schema.SingleNestedAttribute{
-				Description: "If present, provides the root site in the site collection. Read-only.",
-				Computed:    true,
-				Attributes:  map[string]schema.Attribute{},
-			},
 			"sharepoint_ids": schema.SingleNestedAttribute{
 				Description: "Returns identifiers useful for SharePoint REST compatibility. Read-only.",
 				Computed:    true,
@@ -391,11 +386,6 @@ func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 						Description: "The hostname for the site collection. Read-only.",
 						Computed:    true,
 					},
-					"root": schema.SingleNestedAttribute{
-						Description: "If present, indicates that this is a root site collection in SharePoint. Read-only.",
-						Computed:    true,
-						Attributes:  map[string]schema.Attribute{},
-					},
 				},
 			},
 		},
@@ -426,7 +416,6 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 				"displayName",
 				"error",
 				"isPersonalSite",
-				"root",
 				"sharepointIds",
 				"siteCollection",
 			},
@@ -793,12 +782,6 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	} else {
 		tfStateSite.IsPersonalSite = types.BoolNull()
 	}
-	if responseSite.GetRoot() != nil {
-		tfStateRoot := siteRootModel{}
-		responseRoot := responseSite.GetRoot()
-
-		tfStateSite.Root, _ = types.ObjectValueFrom(ctx, tfStateRoot.AttributeTypes(), tfStateRoot)
-	}
 	if responseSite.GetSharepointIds() != nil {
 		tfStateSharepointIds := siteSharepointIdsModel{}
 		responseSharepointIds := responseSite.GetSharepointIds()
@@ -866,12 +849,6 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			tfStateSiteCollection.Hostname = types.StringValue(*responseSiteCollection.GetHostname())
 		} else {
 			tfStateSiteCollection.Hostname = types.StringNull()
-		}
-		if responseSiteCollection.GetRoot() != nil {
-			tfStateRoot := siteRootModel{}
-			responseRoot := responseSiteCollection.GetRoot()
-
-			tfStateSiteCollection.Root, _ = types.ObjectValueFrom(ctx, tfStateRoot.AttributeTypes(), tfStateRoot)
 		}
 
 		tfStateSite.SiteCollection, _ = types.ObjectValueFrom(ctx, tfStateSiteCollection.AttributeTypes(), tfStateSiteCollection)

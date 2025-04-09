@@ -1,4 +1,5 @@
 excludedProperties:
+  - customSecurityAttributes # Some kind of special Odata thing
   - deviceEnrollmentLimit # Seems to be bugged
   - print # Seems to be bugged
   - aboutMe # All the remaining only work when getting single users
