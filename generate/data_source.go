@@ -10,10 +10,6 @@ import (
 	"terraform-provider-msgraph/generate/transform"
 )
 
-func upperFirst(s string) string {
-	return strings.ToUpper(s[0:1]) + s[1:]
-}
-
 type templateInput struct {
 	PackageName   string
 	BlockName     transform.StrWithCases
