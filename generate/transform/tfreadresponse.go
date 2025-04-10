@@ -9,7 +9,7 @@ import (
 
 type ReadResponse struct {
 	OpenAPIPathObject openapi.OpenAPIPathObject
-	BlockName         string
+	BlockName         StrWithCases
 	Augment           TemplateAugment
 }
 
@@ -135,7 +135,7 @@ func (rra readResponseAttribute) ParentName() string {
 	if rra.Parent != nil {
 		return rra.Parent.ObjectOf()
 	} else {
-		return upperFirst(rra.ReadResponse.BlockName)
+		return rra.ReadResponse.BlockName.UpperCamel()
 	}
 }
 
@@ -144,7 +144,7 @@ func (rra readResponseAttribute) ObjectOf() string {
 }
 
 func (rra readResponseAttribute) TfModelName() string {
-	return rra.ReadResponse.BlockName + rra.ObjectOf()
+	return rra.ReadResponse.BlockName.LowerCamel() + rra.ObjectOf()
 }
 
 

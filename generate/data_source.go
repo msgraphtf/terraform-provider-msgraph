@@ -35,7 +35,7 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, 
 	input.BlockName = transform.StrWithCases{String: blockName}
 	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "DataSource", Augment: augment} // Generate  Schema from OpenAPI Schama properties
 	input.ReadQuery = transform.ReadQuery{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
-	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: blockName, Augment: augment} // Generate Read Go code from OpenAPI schema
+	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment} // Generate Read Go code from OpenAPI schema
 
 	// Create directory for package
 	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)

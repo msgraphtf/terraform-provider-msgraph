@@ -20,7 +20,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
 	input.ReadQuery = transform.ReadQuery{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
-	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: blockName, Augment: augment} // Generate Read Go code from OpenAPI schema
+	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment} // Generate Read Go code from OpenAPI schema
 
 	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource", Augment: augment}
 	input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
