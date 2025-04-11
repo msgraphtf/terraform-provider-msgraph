@@ -8,7 +8,6 @@ import (
 )
 
 var doc *openapi3.T = loadOpenAPISchema()
-var err error
 
 func loadOpenAPISchema() *openapi3.T {
 	_, b, _, _ := runtime.Caller(0)
