@@ -50,6 +50,7 @@ type TemplateInput struct {
 	ReadQuery     ReadQuery
 	ReadResponse  ReadResponse
 	UpdateRequest UpdateRequest
+	Augment       TemplateAugment
 }
 
 

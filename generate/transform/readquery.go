@@ -14,7 +14,6 @@ type ReadQuery struct {
 	Template     *TemplateInput
 	OpenAPIPath  openapi.OpenAPIPathObject
 	AltGetMethod []map[string]string
-	Augment      TemplateAugment
 }
 
 func (rq ReadQuery) BlockName() string {
@@ -49,7 +48,7 @@ func (rq ReadQuery) SelectParameters() []string {
 	var selectParams []string
 
 	for _, p := range rq.OpenAPIPath.Get.Response.Properties {
-		if !slices.Contains(rq.Augment.ExcludedProperties, p.Name) {
+		if !slices.Contains(rq.Template.Augment.ExcludedProperties, p.Name) {
 			selectParams = append(selectParams, p.Name)
 		}
 	}
