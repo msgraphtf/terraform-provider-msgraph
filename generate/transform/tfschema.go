@@ -197,13 +197,3 @@ func (tsa terraformSchemaAttribute) NestedAttribute() []terraformSchemaAttribute
 	return attributes
 }
 
-func (tsa terraformSchemaAttribute) ElementType() string {
-	if tsa.OpenAPISchemaProperty.Type == "array" && tsa.OpenAPISchemaProperty.ArrayOf == "string" {
-		return "types.StringType"
-	} else if tsa.OpenAPISchemaProperty.Type == "array" && tsa.OpenAPISchemaProperty.ArrayOf == "object" && tsa.OpenAPISchemaProperty.ObjectOf.Type == "string" {
-		return "types.StringType"
-	}
-
-	return "UNKNOWN"
-
-}

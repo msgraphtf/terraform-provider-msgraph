@@ -71,7 +71,7 @@
 		listplanmodifiers.UseStateForUnconfigured(),
 	},
 	{{- end}}
-	ElementType: {{.ElementType}},
+	ElementType: types.StringType,
 },
 {{- end }}
 
