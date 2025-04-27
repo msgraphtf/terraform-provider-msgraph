@@ -11,10 +11,14 @@ import (
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type ReadQuery struct {
+	Template     *TemplateInput
 	OpenAPIPath  openapi.OpenAPIPathObject
-	BlockName    StrWithCases
 	AltGetMethod []map[string]string
 	Augment      TemplateAugment
+}
+
+func (rq ReadQuery) BlockName() string {
+	return rq.Template.BlockName.UpperCamel()
 }
 
 func (rq ReadQuery) PathFields() []string {
@@ -72,7 +76,7 @@ func (rq ReadQuery) GetMethod() []queryMethod {
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "tfState" + rq.BlockName.UpperCamel() + "." + pRight + ".ValueString()"
+			newMethod.Parameter = "tfState" + rq.BlockName() + "." + pRight + ".ValueString()"
 		} else {
 			newMethod.MethodName = strcase.ToCamel(p)
 		}

@@ -9,17 +9,17 @@ qparams := {{.Configuration}}RequestBuilderGetRequestConfiguration{
 }
 
 {{ define "ZeroParameters" }}
-response{{.BlockName.UpperCamel}}, err := d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+response{{.BlockName}}, err := d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
 {{- end}}
 
 {{ define "NonZeroParameters" }}
-var response{{.BlockName.UpperCamel}} models.{{.BlockName.UpperCamel}}able
+var response{{.BlockName}} models.{{.BlockName}}able
 var err error
 
-if !tfState{{.BlockName.UpperCamel}}.Id.IsNull() {
-	response{{.BlockName.UpperCamel}}, err = d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
-} {{range .AltGetMethod}} else if !tfState{{.BlockName.UpperCamel}}.{{.if}}.IsNull() {
-	response{{.BlockName.UpperCamel}}, err = d.client.{{.method}}.Get(context.Background(), &qparams)
+if !tfState{{.BlockName}}.Id.IsNull() {
+	response{{.BlockName}}, err = d.client.{{range .GetMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Get(context.Background(), &qparams)
+} {{range .AltGetMethod}} else if !tfState{{.BlockName}}.{{.if}}.IsNull() {
+	response{{.BlockName}}, err = d.client.{{.method}}.Get(context.Background(), &qparams)
 } {{end}}else {
 	resp.Diagnostics.AddError(
 		"Missing argument",
@@ -37,7 +37,7 @@ if !tfState{{.BlockName.UpperCamel}}.Id.IsNull() {
 
 if err != nil {
 	resp.Diagnostics.AddError(
-		"Error getting {{.BlockName.UpperCamel}}",
+		"Error getting {{.BlockName}}",
 		err.Error(),
 	)
 	return
