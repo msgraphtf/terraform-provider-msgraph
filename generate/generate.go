@@ -61,10 +61,11 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, 
 	// Set input values to top level template
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
-	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
-	input.ReadQuery = transform.ReadQuery{OpenAPIPath: pathObject, Template: &input}
-	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, Template: &input} // Generate Read Go code from OpenAPI schema
+	input.Schema = transform.TerraformSchema{BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
+	input.ReadQuery = transform.ReadQuery{Template: &input}
+	input.ReadResponse = transform.ReadResponse{Template: &input} // Generate Read Go code from OpenAPI schema
 
+	input.OpenAPIPath = pathObject
 	input.Augment = augment
 
 	// Create directory for package
@@ -91,13 +92,14 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 	// Set input values to top level template
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
-	input.ReadQuery = transform.ReadQuery{OpenAPIPath: pathObject, Template: &input}
-	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, Template: &input} // Generate Read Go code from OpenAPI schema
+	input.ReadQuery = transform.ReadQuery{Template: &input}
+	input.ReadResponse = transform.ReadResponse{Template: &input} // Generate Read Go code from OpenAPI schema
 
-	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource", Template: &input}
-	input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject, Template: &input}
-	input.UpdateRequest = transform.UpdateRequest{OpenAPIPath: pathObject, Template: &input}
+	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
+	input.CreateRequest = transform.CreateRequest{Template: &input}
+	input.UpdateRequest = transform.UpdateRequest{Template: &input}
 
+	input.OpenAPIPath = pathObject
 	input.Augment = augment
 
 	// Get templates

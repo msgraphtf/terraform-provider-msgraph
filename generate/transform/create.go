@@ -11,12 +11,11 @@ import (
 
 type CreateRequest struct {
 	Template    *TemplateInput
-	OpenAPIPath openapi.OpenAPIPathObject
 }
 
 func (cr CreateRequest) PostMethod() []queryMethod {
 
-	pathFields := strings.Split(cr.OpenAPIPath.Path, "/")[1:]
+	pathFields := strings.Split(cr.Template.OpenAPIPath.Path, "/")[1:]
 	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
 
 	var postMethod []queryMethod
@@ -41,7 +40,7 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 
 	var cra []createRequestAttribute
 
-	for _, property := range cr.OpenAPIPath.Get.Response.Properties {
+	for _, property := range cr.Template.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
 		if slices.Contains(cr.Template.Augment.ExcludedProperties, property.Name) {

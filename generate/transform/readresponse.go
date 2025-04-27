@@ -9,14 +9,13 @@ import (
 
 type ReadResponse struct {
 	Template          *TemplateInput
-	OpenAPIPathObject openapi.OpenAPIPathObject
 }
 
 func (rr ReadResponse) Attributes() []readResponseAttribute {
 
 	var readResponseAttributes []readResponseAttribute
 
-	for _, property := range rr.OpenAPIPathObject.Get.Response.Properties {
+	for _, property := range rr.Template.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
 		if slices.Contains(rr.Template.Augment.ExcludedProperties, property.Name) {

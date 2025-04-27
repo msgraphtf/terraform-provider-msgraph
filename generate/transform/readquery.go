@@ -5,14 +5,11 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-
-	"terraform-provider-msgraph/generate/openapi"
 )
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
 type ReadQuery struct {
 	Template     *TemplateInput
-	OpenAPIPath  openapi.OpenAPIPathObject
 	AltGetMethod []map[string]string
 }
 
@@ -21,7 +18,7 @@ func (rq ReadQuery) BlockName() string {
 }
 
 func (rq ReadQuery) PathFields() []string {
-	return strings.Split(rq.OpenAPIPath.Path, "/")[1:]
+	return strings.Split(rq.Template.OpenAPIPath.Path, "/")[1:]
 }
 
 func (rq ReadQuery) Configuration() string {
@@ -47,7 +44,7 @@ func (rq ReadQuery) SelectParameters() []string {
 
 	var selectParams []string
 
-	for _, p := range rq.OpenAPIPath.Get.Response.Properties {
+	for _, p := range rq.Template.OpenAPIPath.Get.Response.Properties {
 		if !slices.Contains(rq.Template.Augment.ExcludedProperties, p.Name) {
 			selectParams = append(selectParams, p.Name)
 		}

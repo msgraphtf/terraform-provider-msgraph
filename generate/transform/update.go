@@ -11,12 +11,11 @@ import (
 
 type UpdateRequest struct {
 	Template    *TemplateInput
-	OpenAPIPath openapi.OpenAPIPathObject
 }
 
 func (ur UpdateRequest) PostMethod() []queryMethod {
 
-	pathFields := strings.Split(ur.OpenAPIPath.Path, "/")[1:]
+	pathFields := strings.Split(ur.Template.OpenAPIPath.Path, "/")[1:]
 
 	var postMethod []queryMethod
 	for _, p := range pathFields {
@@ -40,7 +39,7 @@ func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 
 	var newAttributes []updateRequestAttribute
 
-	for _, property := range ur.OpenAPIPath.Get.Response.Properties {
+	for _, property := range ur.Template.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
 		if slices.Contains(ur.Template.Augment.ExcludedProperties, property.Name) {

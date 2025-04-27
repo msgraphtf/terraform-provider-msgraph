@@ -1,8 +1,10 @@
 package transform
 
 import (
-	"github.com/iancoleman/strcase"
 	"strings"
+	"terraform-provider-msgraph/generate/openapi"
+
+	"github.com/iancoleman/strcase"
 )
 
 func upperFirst(s string) string {
@@ -45,6 +47,7 @@ type queryMethod struct {
 type TemplateInput struct {
 	PackageName   string
 	BlockName     StrWithCases
+	OpenAPIPath   openapi.OpenAPIPathObject
 	Schema        TerraformSchema
 	CreateRequest CreateRequest
 	ReadQuery     ReadQuery
