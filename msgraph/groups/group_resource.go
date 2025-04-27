@@ -843,11 +843,11 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		tfPlanGroup.Visibility = types.StringNull()
 	}
 
-	// Create new group
+	// Create new Group
 	result, err := r.client.Groups().Post(context.Background(), requestBodyGroup, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating group",
+			"Error creating Group",
 			err.Error(),
 		)
 		return

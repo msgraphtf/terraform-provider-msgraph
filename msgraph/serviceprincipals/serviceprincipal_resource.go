@@ -1472,11 +1472,11 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		tfPlanServicePrincipal.VerifiedPublisher = types.ObjectNull(tfPlanServicePrincipal.VerifiedPublisher.AttributeTypes(ctx))
 	}
 
-	// Create new servicePrincipal
+	// Create new ServicePrincipal
 	result, err := r.client.ServicePrincipals().Post(context.Background(), requestBodyServicePrincipal, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating service_principal",
+			"Error creating ServicePrincipal",
 			err.Error(),
 		)
 		return

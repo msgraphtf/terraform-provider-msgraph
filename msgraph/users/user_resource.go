@@ -2161,11 +2161,11 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanUser.UserType = types.StringNull()
 	}
 
-	// Create new user
+	// Create new User
 	result, err := r.client.Users().Post(context.Background(), requestBodyUser, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating user",
+			"Error creating User",
 			err.Error(),
 		)
 		return

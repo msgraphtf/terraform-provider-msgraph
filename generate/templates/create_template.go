@@ -159,11 +159,11 @@ func (r *{{.Template.BlockName.LowerCamel}}Resource) Create(ctx context.Context,
 	{{end}}
 	{{- end}}
 
-	// Create new {{.Template.BlockName.LowerCamel}}
+	// Create new {{.Template.BlockName.UpperCamel}}
 	result, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Post(context.Background(), requestBody{{.Template.BlockName.UpperCamel}}, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating {{.Template.BlockName.Snake}}",
+			"Error creating {{.Template.BlockName.UpperCamel}}",
 			err.Error(),
 		)
 		return

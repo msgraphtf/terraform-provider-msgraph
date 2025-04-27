@@ -587,11 +587,11 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		tfPlanDevice.TrustType = types.StringNull()
 	}
 
-	// Create new device
+	// Create new Device
 	result, err := r.client.Devices().Post(context.Background(), requestBodyDevice, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating device",
+			"Error creating Device",
 			err.Error(),
 		)
 		return

@@ -579,11 +579,11 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanTeam.WebUrl = types.StringNull()
 	}
 
-	// Create new team
+	// Create new Team
 	result, err := r.client.Teams().Post(context.Background(), requestBodyTeam, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating team",
+			"Error creating Team",
 			err.Error(),
 		)
 		return

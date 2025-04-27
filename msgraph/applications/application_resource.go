@@ -2337,11 +2337,11 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		tfPlanApplication.Web = types.ObjectNull(tfPlanApplication.Web.AttributeTypes(ctx))
 	}
 
-	// Create new application
+	// Create new Application
 	result, err := r.client.Applications().Post(context.Background(), requestBodyApplication, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating application",
+			"Error creating Application",
 			err.Error(),
 		)
 		return
