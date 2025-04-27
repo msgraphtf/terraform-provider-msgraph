@@ -8,9 +8,9 @@ import (
 )
 
 type ReadResponse struct {
+	Template          *TemplateInput
 	OpenAPIPathObject openapi.OpenAPIPathObject
 	BlockName         StrWithCases
-	Augment           TemplateAugment
 }
 
 func (rr ReadResponse) Attributes() []readResponseAttribute {
@@ -20,7 +20,7 @@ func (rr ReadResponse) Attributes() []readResponseAttribute {
 	for _, property := range rr.OpenAPIPathObject.Get.Response.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(rr.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(rr.Template.Augment.ExcludedProperties, property.Name) {
 			continue
 		}
 
@@ -167,7 +167,7 @@ func (rra readResponseAttribute) NestedRead() []readResponseAttribute {
 	for _, property := range rra.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(rra.ReadResponse.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(rra.ReadResponse.Template.Augment.ExcludedProperties, property.Name) {
 			continue
 		}
 
