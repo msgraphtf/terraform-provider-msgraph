@@ -42,6 +42,17 @@ type queryMethod struct {
 	Parameter  string
 }
 
+type TemplateInput struct {
+	PackageName   string
+	BlockName     StrWithCases
+	Schema        TerraformSchema
+	CreateRequest CreateRequest
+	ReadQuery     ReadQuery
+	ReadResponse  ReadResponse
+	UpdateRequest UpdateRequest
+}
+
+
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
 type TemplateAugment struct {
 	ExcludedProperties       []string            `yaml:"excludedProperties"`

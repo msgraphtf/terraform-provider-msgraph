@@ -52,19 +52,9 @@ func getBlockName(pathname string) string {
 	return blockName
 }
 
-type templateInput struct {
-	PackageName   string
-	BlockName     transform.StrWithCases
-	Schema        transform.TerraformSchema
-	CreateRequest transform.CreateRequest
-	ReadQuery     transform.ReadQuery
-	ReadResponse  transform.ReadResponse
-	UpdateRequest transform.UpdateRequest
-}
-
 func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
 
-	input := templateInput{}
+	input := transform.TemplateInput{}
 
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
@@ -92,7 +82,7 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, 
 
 func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
 
-	input := templateInput{}
+	input := transform.TemplateInput{}
 
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
