@@ -1,15 +1,15 @@
 // Create creates the resource and sets the initial Terraform state.
-func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *{{.Template.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from Terraform plan
-	var tfPlan{{.BlockName.UpperCamel}} {{.BlockName.LowerCamel}}Model
-	diags := req.Plan.Get(ctx, &tfPlan{{.BlockName.UpperCamel}})
+	var tfPlan{{.Template.BlockName.UpperCamel}} {{.Template.BlockName.LowerCamel}}Model
+	diags := req.Plan.Get(ctx, &tfPlan{{.Template.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// Generate API request body from Terraform plan
-	requestBody{{.BlockName.UpperCamel}} := models.New{{.BlockName.UpperCamel}}()
+	requestBody{{.Template.BlockName.UpperCamel}} := models.New{{.Template.BlockName.UpperCamel}}()
 
 	{{- define "CreateStringAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.IsUnknown(){
@@ -159,11 +159,11 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 	{{end}}
 	{{- end}}
 
-	// Create new {{.BlockName.LowerCamel}}
-	result, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Post(context.Background(), requestBody{{.BlockName.UpperCamel}}, nil)
+	// Create new {{.Template.BlockName.LowerCamel}}
+	result, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Post(context.Background(), requestBody{{.Template.BlockName.UpperCamel}}, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error creating {{.BlockName.Snake}}",
+			"Error creating {{.Template.BlockName.Snake}}",
 			err.Error(),
 		)
 		return
@@ -171,10 +171,10 @@ func (r *{{.BlockName.LowerCamel}}Resource) Create(ctx context.Context, req reso
 
 	// Map response body to schema and populate Computed attribute value
 	// TODO: Add support for other Computed values
-	tfPlan{{.BlockName.UpperCamel}}.Id = types.StringValue(*result.GetId())
+	tfPlan{{.Template.BlockName.UpperCamel}}.Id = types.StringValue(*result.GetId())
 
 	// Set state to fully populated data
-	diags = resp.State.Set(ctx, tfPlan{{.BlockName.UpperCamel}})
+	diags = resp.State.Set(ctx, tfPlan{{.Template.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

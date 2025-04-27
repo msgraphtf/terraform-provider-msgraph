@@ -12,7 +12,6 @@ import (
 type CreateRequest struct {
 	Template    *TemplateInput
 	OpenAPIPath openapi.OpenAPIPathObject
-	BlockName   StrWithCases
 }
 
 func (cr CreateRequest) PostMethod() []queryMethod {
@@ -147,7 +146,7 @@ func (cra createRequestAttribute) ParentName() string {
 	if cra.Parent != nil {
 		return cra.Parent.ObjectOf()
 	} else {
-		return cra.CreateRequest.BlockName.UpperCamel()
+		return cra.CreateRequest.Template.BlockName.UpperCamel()
 	}
 }
 
@@ -170,7 +169,7 @@ func (cra createRequestAttribute) ObjectOf() string {
 
 // Generates the Terraform Model name of the given attribute
 func (cra createRequestAttribute) TfModelName() string {
-	return cra.CreateRequest.BlockName.LowerCamel() + cra.ObjectOf()
+	return cra.CreateRequest.Template.BlockName.LowerCamel() + cra.ObjectOf()
 }
 
 func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {

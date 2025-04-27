@@ -1,23 +1,23 @@
 // Update updates the resource and sets the updated Terraform state on success.
-func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *{{.Template.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	// Retrieve values from Terraform plan
-	var tfPlan{{.BlockName.UpperCamel}} {{.BlockName.LowerCamel}}Model
-	diags := req.Plan.Get(ctx, &tfPlan{{.BlockName.UpperCamel}})
+	var tfPlan{{.Template.BlockName.UpperCamel}} {{.Template.BlockName.LowerCamel}}Model
+	diags := req.Plan.Get(ctx, &tfPlan{{.Template.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// Get current Terraform state
-	var tfState{{.BlockName.UpperCamel}} {{.BlockName.LowerCamel}}Model
-	diags = req.State.Get(ctx, &tfState{{.BlockName.UpperCamel}})
+	var tfState{{.Template.BlockName.UpperCamel}} {{.Template.BlockName.LowerCamel}}Model
+	diags = req.State.Get(ctx, &tfState{{.Template.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// Generate API request body from plan
-	requestBody{{.BlockName.UpperCamel}} := models.New{{.BlockName.UpperCamel}}()
+	requestBody{{.Template.BlockName.UpperCamel}} := models.New{{.Template.BlockName.UpperCamel}}()
 
 	{{- define "UpdateStringAttribute" }}
 	if !tfPlan{{.ParentName}}.{{.Name}}.Equal(tfState{{.ParentName}}.{{.Name}}){
@@ -159,18 +159,18 @@ func (r *{{.BlockName.LowerCamel}}Resource) Update(ctx context.Context, req reso
 	{{- end}}
 
 
-	// Update {{.BlockName.LowerCamel}}
-	_, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Patch(context.Background(), requestBody{{.BlockName.UpperCamel}}, nil)
+	// Update {{.Template.BlockName.LowerCamel}}
+	_, err := r.client.{{range .PostMethod}}{{.MethodName}}({{.Parameter}}).{{end}}Patch(context.Background(), requestBody{{.Template.BlockName.UpperCamel}}, nil)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error updating {{.BlockName.Snake}}",
+			"Error updating {{.Template.BlockName.Snake}}",
 			err.Error(),
 		)
 		return
 	}
 
 	// Update resource state with Computed values
-	diags = resp.State.Set(ctx, tfPlan{{.BlockName.UpperCamel}})
+	diags = resp.State.Set(ctx, tfPlan{{.Template.BlockName.UpperCamel}})
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
