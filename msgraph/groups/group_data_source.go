@@ -326,7 +326,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting group",
+			"Error getting Group",
 			err.Error(),
 		)
 		return

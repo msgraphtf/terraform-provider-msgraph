@@ -458,7 +458,7 @@ func (d *servicePrincipalsDataSource) Read(ctx context.Context, req datasource.R
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting service_principals",
+			"Error getting ServicePrincipals",
 			err.Error(),
 		)
 		return

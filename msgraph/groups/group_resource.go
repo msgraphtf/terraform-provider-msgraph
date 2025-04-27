@@ -931,7 +931,7 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting group",
+			"Error getting Group",
 			err.Error(),
 		)
 		return

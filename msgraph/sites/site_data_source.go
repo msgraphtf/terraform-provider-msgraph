@@ -437,7 +437,7 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting site",
+			"Error getting Site",
 			err.Error(),
 		)
 		return

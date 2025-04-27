@@ -647,7 +647,7 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting team",
+			"Error getting Team",
 			err.Error(),
 		)
 		return

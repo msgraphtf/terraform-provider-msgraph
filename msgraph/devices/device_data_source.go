@@ -252,7 +252,7 @@ func (d *deviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting device",
+			"Error getting Device",
 			err.Error(),
 		)
 		return

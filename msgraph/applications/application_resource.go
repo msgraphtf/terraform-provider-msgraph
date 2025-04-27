@@ -2430,7 +2430,7 @@ func (d *applicationResource) Read(ctx context.Context, req resource.ReadRequest
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting application",
+			"Error getting Application",
 			err.Error(),
 		)
 		return

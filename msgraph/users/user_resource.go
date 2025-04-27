@@ -2290,7 +2290,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting user",
+			"Error getting User",
 			err.Error(),
 		)
 		return

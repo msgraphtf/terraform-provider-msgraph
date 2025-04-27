@@ -37,7 +37,7 @@ if !tfState{{.BlockName.UpperCamel}}.Id.IsNull() {
 
 if err != nil {
 	resp.Diagnostics.AddError(
-		"Error getting {{.BlockName.Snake}}",
+		"Error getting {{.BlockName.UpperCamel}}",
 		err.Error(),
 	)
 	return

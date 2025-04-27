@@ -1560,7 +1560,7 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting service_principal",
+			"Error getting ServicePrincipal",
 			err.Error(),
 		)
 		return

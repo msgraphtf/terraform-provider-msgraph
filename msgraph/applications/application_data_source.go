@@ -746,7 +746,7 @@ func (d *applicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting application",
+			"Error getting Application",
 			err.Error(),
 		)
 		return

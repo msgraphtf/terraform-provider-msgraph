@@ -231,7 +231,7 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting team",
+			"Error getting Team",
 			err.Error(),
 		)
 		return

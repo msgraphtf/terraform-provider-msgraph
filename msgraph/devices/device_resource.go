@@ -672,7 +672,7 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error getting device",
+			"Error getting Device",
 			err.Error(),
 		)
 		return
