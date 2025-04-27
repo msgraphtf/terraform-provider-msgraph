@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v3"
+	"text/template"
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
@@ -49,6 +50,73 @@ func getBlockName(pathname string) string {
 	}
 
 	return blockName
+}
+
+type templateInput struct {
+	PackageName   string
+	BlockName     transform.StrWithCases
+	Schema        transform.TerraformSchema
+	CreateRequest transform.CreateRequest
+	ReadQuery     transform.ReadQuery
+	ReadResponse  transform.ReadResponse
+	UpdateRequest transform.UpdateRequest
+}
+
+func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
+
+	input := templateInput{}
+
+	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
+
+	// Set input values to top level template
+	input.PackageName = packageName
+	input.BlockName = transform.StrWithCases{String: blockName}
+	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "DataSource", Augment: augment} // Generate  Schema from OpenAPI Schama properties
+	input.ReadQuery = transform.ReadQuery{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
+	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment} // Generate Read Go code from OpenAPI schema
+
+	// Create directory for package
+	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)
+
+	// Get datasource templates
+	datasourceTmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
+	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/schema_template.go")
+	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_query_template.go")
+	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_response_template.go")
+
+	// Create output file, and execute datasource template
+	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_data_source.go")
+	datasourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
+
+}
+
+func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
+
+	input := templateInput{}
+
+	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
+
+	// Set input values to top level template
+	input.PackageName = packageName
+	input.BlockName = transform.StrWithCases{String: blockName}
+	input.ReadQuery = transform.ReadQuery{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
+	input.ReadResponse = transform.ReadResponse{OpenAPIPathObject: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment} // Generate Read Go code from OpenAPI schema
+
+	input.Schema = transform.TerraformSchema{OpenAPIPath: pathObject, BehaviourMode: "Resource", Augment: augment}
+	input.CreateRequest = transform.CreateRequest{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
+	input.UpdateRequest = transform.UpdateRequest{OpenAPIPath: pathObject, BlockName: transform.StrWithCases{String: blockName}, Augment: augment}
+
+	// Get templates
+	resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
+	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/schema_template.go")
+	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_query_template.go")
+	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/read_response_template.go")
+	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/create_template.go")
+	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/update_template.go")
+
+	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_resource.go")
+	resourceTmpl.ExecuteTemplate(outfile, "resource_template.go", input)
+
 }
 
 func main() {
