@@ -10,9 +10,9 @@ import (
 )
 
 type CreateRequest struct {
+	Template    *TemplateInput
 	OpenAPIPath openapi.OpenAPIPathObject
 	BlockName   StrWithCases
-	Augment     TemplateAugment
 }
 
 func (cr CreateRequest) PostMethod() []queryMethod {
@@ -45,7 +45,7 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 	for _, property := range cr.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(cr.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(cr.Template.Augment.ExcludedProperties, property.Name) {
 			continue
 		}
 
@@ -179,7 +179,7 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	for _, property := range cra.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(cra.CreateRequest.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(cra.CreateRequest.Template.Augment.ExcludedProperties, property.Name) {
 			continue
 		}
 

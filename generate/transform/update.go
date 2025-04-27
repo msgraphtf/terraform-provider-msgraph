@@ -10,9 +10,9 @@ import (
 )
 
 type UpdateRequest struct {
+	Template    *TemplateInput
 	OpenAPIPath openapi.OpenAPIPathObject
 	BlockName   StrWithCases
-	Augment     TemplateAugment
 }
 
 func (ur UpdateRequest) PostMethod() []queryMethod {
@@ -44,7 +44,7 @@ func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 	for _, property := range ur.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(ur.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(ur.Template.Augment.ExcludedProperties, property.Name) {
 			continue
 		}
 
@@ -152,7 +152,7 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 	for _, property := range ura.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(ura.UpdateRequest.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(ura.UpdateRequest.Template.Augment.ExcludedProperties, property.Name) {
 			continue
 		}
 
