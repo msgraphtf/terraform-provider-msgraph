@@ -53,6 +53,7 @@ type TemplateInput struct {
 	ReadQuery     ReadQuery
 	ReadResponse  ReadResponse
 	UpdateRequest UpdateRequest
+	Model         Model
 	Augment       TemplateAugment
 }
 

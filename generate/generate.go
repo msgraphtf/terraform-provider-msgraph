@@ -115,6 +115,22 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 
 }
 
+func generateModel(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
+
+	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
+
+	input := transform.TemplateInput{
+		PackageName: packageName,
+		Model:       transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName, Augment: augment},
+	}
+
+	// Generate model
+	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
+	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_model.go")
+	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", input)
+
+}
+
 func main() {
 
 	if len(os.Args) > 1 {
