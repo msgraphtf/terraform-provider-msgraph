@@ -8,20 +8,20 @@ import (
 )
 
 // Used by templates defined inside of read_query_template.go to generate the read query code
-type ReadQuery struct {
+type readQuery struct {
 	Template     *TemplateInput
 	AltGetMethod []map[string]string
 }
 
-func (rq ReadQuery) BlockName() string {
+func (rq readQuery) BlockName() string {
 	return rq.Template.BlockName.UpperCamel()
 }
 
-func (rq ReadQuery) PathFields() []string {
+func (rq readQuery) PathFields() []string {
 	return strings.Split(rq.Template.OpenAPIPath.Path, "/")[1:]
 }
 
-func (rq ReadQuery) Configuration() string {
+func (rq readQuery) Configuration() string {
 
 	var config string
 
@@ -40,7 +40,7 @@ func (rq ReadQuery) Configuration() string {
 
 }
 
-func (rq ReadQuery) SelectParameters() []string {
+func (rq readQuery) SelectParameters() []string {
 
 	var selectParams []string
 
@@ -54,7 +54,7 @@ func (rq ReadQuery) SelectParameters() []string {
 
 }
 
-func (rq ReadQuery) MultipleGetMethodParameters() bool {
+func (rq readQuery) MultipleGetMethodParameters() bool {
 	for _, p := range rq.PathFields()[1:] {
 		if strings.HasPrefix(p, "{") {
 			return true
@@ -63,7 +63,7 @@ func (rq ReadQuery) MultipleGetMethodParameters() bool {
 	return false
 }
 
-func (rq ReadQuery) GetMethod() []queryMethod {
+func (rq readQuery) GetMethod() []queryMethod {
 	var getMethod []queryMethod
 	for _, p := range rq.PathFields() {
 		newMethod := new(queryMethod)

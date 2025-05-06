@@ -55,12 +55,12 @@ type TemplateInput struct {
 	Augment       TemplateAugment
 }
 
-func (ti TemplateInput) ReadQuery() ReadQuery {
-	return ReadQuery{Template: &ti}
+func (ti TemplateInput) ReadQuery() readQuery {
+	return readQuery{Template: &ti}
 }
 
-func (ti TemplateInput) ReadResponse() ReadResponse {
-	return ReadResponse{Template: &ti}
+func (ti TemplateInput) ReadResponse() readResponse {
+	return readResponse{Template: &ti}
 }
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec

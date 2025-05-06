@@ -7,11 +7,11 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-type ReadResponse struct {
+type readResponse struct {
 	Template          *TemplateInput
 }
 
-func (rr ReadResponse) Attributes() []readResponseAttribute {
+func (rr readResponse) Attributes() []readResponseAttribute {
 
 	var readResponseAttributes []readResponseAttribute
 
@@ -35,7 +35,7 @@ func (rr ReadResponse) Attributes() []readResponseAttribute {
 }
 
 // AllAttributes returns an array of all readResponseAttributes in the ReadResponse instance, including all nested/child attributes
-func (rr ReadResponse) AllAttributes() []readResponseAttribute {
+func (rr readResponse) AllAttributes() []readResponseAttribute {
 
 	var recurseAttributes func(attributes []readResponseAttribute) []readResponseAttribute
 	recurseAttributes = func(attributes []readResponseAttribute) []readResponseAttribute{
@@ -54,7 +54,7 @@ func (rr ReadResponse) AllAttributes() []readResponseAttribute {
 }
 
 // Determines if a terraform datasource or resource needs to import terraform-plugin-framework/attr
-func (rr ReadResponse) IfAttrImportNeeded() bool {
+func (rr readResponse) IfAttrImportNeeded() bool {
 
 	for _, rra := range rr.AllAttributes() {
 		if rra.Type() == "ReadListStringAttribute" || rra.Type() == "ReadListStringFormattedAttribute" {
@@ -66,7 +66,7 @@ func (rr ReadResponse) IfAttrImportNeeded() bool {
 }
 
 // Determines if a terraform datasource or resource needs to import terraform-plugin-framework/types/basetypes
-func (rr ReadResponse) IfBasetypesImportNeeded() bool {
+func (rr readResponse) IfBasetypesImportNeeded() bool {
 
 	for _, rra := range rr.AllAttributes() {
 		if rra.Type() == "ReadListNestedAttribute" {
@@ -79,7 +79,7 @@ func (rr ReadResponse) IfBasetypesImportNeeded() bool {
 
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type readResponseAttribute struct {
-	ReadResponse *ReadResponse
+	ReadResponse *readResponse
 	Property     openapi.OpenAPISchemaProperty
 	Parent       *readResponseAttribute
 }
