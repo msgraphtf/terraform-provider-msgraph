@@ -50,13 +50,18 @@ type TemplateInput struct {
 	OpenAPIPath   openapi.OpenAPIPathObject
 	Schema        TerraformSchema
 	CreateRequest CreateRequest
-	ReadQuery     ReadQuery
-	ReadResponse  ReadResponse
 	UpdateRequest UpdateRequest
 	Model         Model
 	Augment       TemplateAugment
 }
 
+func (ti TemplateInput) ReadQuery() ReadQuery {
+	return ReadQuery{Template: &ti}
+}
+
+func (ti TemplateInput) ReadResponse() ReadResponse {
+	return ReadResponse{Template: &ti}
+}
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
 type TemplateAugment struct {

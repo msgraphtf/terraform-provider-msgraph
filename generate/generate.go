@@ -62,9 +62,6 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, 
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
 	input.Schema = transform.TerraformSchema{BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
-	input.ReadQuery = transform.ReadQuery{Template: &input}
-	input.ReadResponse = transform.ReadResponse{Template: &input} // Generate Read Go code from OpenAPI schema
-
 	input.OpenAPIPath = pathObject
 	input.Augment = augment
 
@@ -92,9 +89,6 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 	// Set input values to top level template
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
-	input.ReadQuery = transform.ReadQuery{Template: &input}
-	input.ReadResponse = transform.ReadResponse{Template: &input} // Generate Read Go code from OpenAPI schema
-
 	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
 	input.CreateRequest = transform.CreateRequest{Template: &input}
 	input.UpdateRequest = transform.UpdateRequest{Template: &input}
