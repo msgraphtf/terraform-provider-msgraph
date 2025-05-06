@@ -4,8 +4,9 @@ import (
 	"os"
 	"strings"
 
-	"gopkg.in/yaml.v3"
 	"text/template"
+
+	"gopkg.in/yaml.v3"
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
@@ -108,12 +109,14 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 
 func generateModel(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
 
+	input := transform.TemplateInput{}
+
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
-	input := transform.TemplateInput{
-		PackageName: packageName,
-		Model:       transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName, Augment: augment},
-	}
+	input.PackageName = packageName
+	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName, Augment: augment}
+	input.Model.Template = &input
+	input.Augment = augment
 
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")

@@ -11,6 +11,7 @@ import (
 )
 
 type Model struct {
+	Template      *TemplateInput
 	BlockName     string
 	OpenAPISchema openapi.OpenAPISchemaObject
 	Augment       TemplateAugment
