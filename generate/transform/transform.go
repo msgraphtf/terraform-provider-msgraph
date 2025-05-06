@@ -49,8 +49,6 @@ type TemplateInput struct {
 	BlockName     StrWithCases
 	OpenAPIPath   openapi.OpenAPIPathObject
 	Schema        TerraformSchema
-	CreateRequest CreateRequest
-	UpdateRequest UpdateRequest
 	Model         Model
 	Augment       TemplateAugment
 }
@@ -61,6 +59,14 @@ func (ti TemplateInput) ReadQuery() readQuery {
 
 func (ti TemplateInput) ReadResponse() readResponse {
 	return readResponse{Template: &ti}
+}
+
+func (ti TemplateInput) CreateRequest() createRequest {
+	return createRequest{Template: &ti}
+}
+
+func (ti TemplateInput) UpdateRequest() updateRequest {
+	return updateRequest{Template: &ti}
 }
 
 // Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec

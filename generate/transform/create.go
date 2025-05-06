@@ -9,11 +9,11 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-type CreateRequest struct {
+type createRequest struct {
 	Template    *TemplateInput
 }
 
-func (cr CreateRequest) PostMethod() []queryMethod {
+func (cr createRequest) PostMethod() []queryMethod {
 
 	pathFields := strings.Split(cr.Template.OpenAPIPath.Path, "/")[1:]
 	pathFields = pathFields[:len(pathFields)-1] // Cut last element, since the endpoint to create uses the previous method
@@ -36,7 +36,7 @@ func (cr CreateRequest) PostMethod() []queryMethod {
 	return postMethod
 }
 
-func (cr CreateRequest) Attributes() []createRequestAttribute {
+func (cr createRequest) Attributes() []createRequestAttribute {
 
 	var cra []createRequestAttribute
 
@@ -60,7 +60,7 @@ func (cr CreateRequest) Attributes() []createRequestAttribute {
 }
 
 // AllAttributes returns an array of all createRequestAttributes in the CreateRequest instance, including all nested/child attributes
-func (cr CreateRequest) AllAttributes() []createRequestAttribute {
+func (cr createRequest) AllAttributes() []createRequestAttribute {
 
 	var recurseAttributes func(attributes []createRequestAttribute) []createRequestAttribute
 	recurseAttributes = func(attributes []createRequestAttribute) []createRequestAttribute{
@@ -77,7 +77,7 @@ func (cr CreateRequest) AllAttributes() []createRequestAttribute {
 }
 
 // Determines if a terraform resource needs to import google/uuid
-func (cr CreateRequest) IfUuidImportNeeded() bool {
+func (cr createRequest) IfUuidImportNeeded() bool {
 
 	for _, cra := range cr.AllAttributes() {
 		if cra.Type() == "CreateStringUuidAttribute" || cra.Type() == "CreateArrayUuidAttribute" {
@@ -90,7 +90,7 @@ func (cr CreateRequest) IfUuidImportNeeded() bool {
 }
 
 type createRequestAttribute struct {
-	CreateRequest *CreateRequest
+	CreateRequest *createRequest
 	Property      openapi.OpenAPISchemaProperty
 	Parent        *createRequestAttribute
 }

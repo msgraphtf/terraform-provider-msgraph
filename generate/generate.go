@@ -90,9 +90,6 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
 	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
-	input.CreateRequest = transform.CreateRequest{Template: &input}
-	input.UpdateRequest = transform.UpdateRequest{Template: &input}
-
 	input.OpenAPIPath = pathObject
 	input.Augment = augment
 

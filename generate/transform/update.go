@@ -9,11 +9,11 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-type UpdateRequest struct {
+type updateRequest struct {
 	Template    *TemplateInput
 }
 
-func (ur UpdateRequest) PostMethod() []queryMethod {
+func (ur updateRequest) PostMethod() []queryMethod {
 
 	pathFields := strings.Split(ur.Template.OpenAPIPath.Path, "/")[1:]
 
@@ -35,7 +35,7 @@ func (ur UpdateRequest) PostMethod() []queryMethod {
 	return postMethod
 }
 
-func (ur UpdateRequest) Attributes() []updateRequestAttribute {
+func (ur updateRequest) Attributes() []updateRequestAttribute {
 
 	var newAttributes []updateRequestAttribute
 
@@ -59,7 +59,7 @@ func (ur UpdateRequest) Attributes() []updateRequestAttribute {
 }
 
 type updateRequestAttribute struct {
-	UpdateRequest *UpdateRequest
+	UpdateRequest *updateRequest
 	Property      openapi.OpenAPISchemaProperty
 	Parent        *updateRequestAttribute
 }
