@@ -186,10 +186,3 @@ func (m siteSiteArchivalDetailsModel) AttributeTypes() map[string]attr.Type {
 		"archive_status": types.StringType,
 	}
 }
-
-type siteRootModel struct {
-}
-
-func (m siteRootModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
-}

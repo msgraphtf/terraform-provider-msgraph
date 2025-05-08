@@ -193,13 +193,6 @@ func (m usersAuthorizationInfoModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type usersCustomSecurityAttributeValueModel struct {
-}
-
-func (m usersCustomSecurityAttributeValueModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
-}
-
 type usersEmployeeOrgDataModel struct {
 	CostCenter types.String `tfsdk:"cost_center"`
 	Division   types.String `tfsdk:"division"`
@@ -243,102 +236,6 @@ func (m usersLicenseAssignmentStateModel) AttributeTypes() map[string]attr.Type 
 		"last_updated_date_time": types.StringType,
 		"sku_id":                 types.StringType,
 		"state":                  types.StringType,
-	}
-}
-
-type usersMailboxSettingsModel struct {
-	ArchiveFolder                         types.String `tfsdk:"archive_folder"`
-	AutomaticRepliesSetting               types.Object `tfsdk:"automatic_replies_setting"`
-	DateFormat                            types.String `tfsdk:"date_format"`
-	DelegateMeetingMessageDeliveryOptions types.String `tfsdk:"delegate_meeting_message_delivery_options"`
-	Language                              types.Object `tfsdk:"language"`
-	TimeFormat                            types.String `tfsdk:"time_format"`
-	TimeZone                              types.String `tfsdk:"time_zone"`
-	UserPurpose                           types.String `tfsdk:"user_purpose"`
-	WorkingHours                          types.Object `tfsdk:"working_hours"`
-}
-
-func (m usersMailboxSettingsModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"archive_folder":                            types.StringType,
-		"automatic_replies_setting":                 types.ObjectType{AttrTypes: usersAutomaticRepliesSettingModel{}.AttributeTypes()},
-		"date_format":                               types.StringType,
-		"delegate_meeting_message_delivery_options": types.StringType,
-		"language":                                  types.ObjectType{AttrTypes: usersLocaleInfoModel{}.AttributeTypes()},
-		"time_format":                               types.StringType,
-		"time_zone":                                 types.StringType,
-		"user_purpose":                              types.StringType,
-		"working_hours":                             types.ObjectType{AttrTypes: usersWorkingHoursModel{}.AttributeTypes()},
-	}
-}
-
-type usersAutomaticRepliesSettingModel struct {
-	ExternalAudience       types.String `tfsdk:"external_audience"`
-	ExternalReplyMessage   types.String `tfsdk:"external_reply_message"`
-	InternalReplyMessage   types.String `tfsdk:"internal_reply_message"`
-	ScheduledEndDateTime   types.Object `tfsdk:"scheduled_end_date_time"`
-	ScheduledStartDateTime types.Object `tfsdk:"scheduled_start_date_time"`
-	Status                 types.String `tfsdk:"status"`
-}
-
-func (m usersAutomaticRepliesSettingModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"external_audience":         types.StringType,
-		"external_reply_message":    types.StringType,
-		"internal_reply_message":    types.StringType,
-		"scheduled_end_date_time":   types.ObjectType{AttrTypes: usersDateTimeTimeZoneModel{}.AttributeTypes()},
-		"scheduled_start_date_time": types.ObjectType{AttrTypes: usersDateTimeTimeZoneModel{}.AttributeTypes()},
-		"status":                    types.StringType,
-	}
-}
-
-type usersDateTimeTimeZoneModel struct {
-	DateTime types.String `tfsdk:"date_time"`
-	TimeZone types.String `tfsdk:"time_zone"`
-}
-
-func (m usersDateTimeTimeZoneModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"date_time": types.StringType,
-		"time_zone": types.StringType,
-	}
-}
-
-type usersLocaleInfoModel struct {
-	DisplayName types.String `tfsdk:"display_name"`
-	Locale      types.String `tfsdk:"locale"`
-}
-
-func (m usersLocaleInfoModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"display_name": types.StringType,
-		"locale":       types.StringType,
-	}
-}
-
-type usersWorkingHoursModel struct {
-	DaysOfWeek types.List   `tfsdk:"days_of_week"`
-	EndTime    types.String `tfsdk:"end_time"`
-	StartTime  types.String `tfsdk:"start_time"`
-	TimeZone   types.Object `tfsdk:"time_zone"`
-}
-
-func (m usersWorkingHoursModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"days_of_week": types.ListType{ElemType: types.StringType},
-		"end_time":     types.StringType,
-		"start_time":   types.StringType,
-		"time_zone":    types.ObjectType{AttrTypes: usersTimeZoneBaseModel{}.AttributeTypes()},
-	}
-}
-
-type usersTimeZoneBaseModel struct {
-	Name types.String `tfsdk:"name"`
-}
-
-func (m usersTimeZoneBaseModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"name": types.StringType,
 	}
 }
 
@@ -408,13 +305,6 @@ func (m usersPasswordProfileModel) AttributeTypes() map[string]attr.Type {
 		"force_change_password_next_sign_in_with_mfa": types.BoolType,
 		"password": types.StringType,
 	}
-}
-
-type usersUserPrintModel struct {
-}
-
-func (m usersUserPrintModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
 }
 
 type usersProvisionedPlanModel struct {

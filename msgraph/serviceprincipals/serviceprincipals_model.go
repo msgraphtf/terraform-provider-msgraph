@@ -141,13 +141,6 @@ func (m servicePrincipalsAppRoleModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type servicePrincipalsCustomSecurityAttributeValueModel struct {
-}
-
-func (m servicePrincipalsCustomSecurityAttributeValueModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
-}
-
 type servicePrincipalsInformationalUrlModel struct {
 	LogoUrl             types.String `tfsdk:"logo_url"`
 	MarketingUrl        types.String `tfsdk:"marketing_url"`

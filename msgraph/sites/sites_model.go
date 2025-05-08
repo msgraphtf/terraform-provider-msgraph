@@ -173,13 +173,6 @@ func (m sitesPublicInnerErrorModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type sitesRootModel struct {
-}
-
-func (m sitesRootModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
-}
-
 type sitesSiteCollectionModel struct {
 	ArchivalDetails  types.Object `tfsdk:"archival_details"`
 	DataLocationCode types.String `tfsdk:"data_location_code"`
