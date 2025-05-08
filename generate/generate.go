@@ -115,8 +115,7 @@ func generateModel(pathObject openapi.OpenAPIPathObject, blockName string, augme
 
 	input.PackageName = packageName
 	input.BlockName = transform.StrWithCases{String: blockName}
-	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response}
-	input.Model.Template = &input
+	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, Template: &input}
 	input.Augment = augment
 
 	// Generate model
