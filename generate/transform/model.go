@@ -12,7 +12,6 @@ import (
 
 type Model struct {
 	Template      *TemplateInput
-	BlockName     string
 	OpenAPISchema openapi.OpenAPISchemaObject
 	Augment       TemplateAugment
 }
@@ -39,9 +38,9 @@ func (m Model) Definitions() []ModelDefinition {
 		var nestedDefinition []ModelDefinition
 
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinition = Model{BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
+			nestedDefinition = Model{Template: m.Template, OpenAPISchema: property.ObjectOf}.Definitions()
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinition = Model{BlockName: m.BlockName, OpenAPISchema: property.ObjectOf}.Definitions()
+			nestedDefinition = Model{Template: m.Template, OpenAPISchema: property.ObjectOf}.Definitions()
 		}
 
 		nestedDefinitions = append(nestedDefinitions, nestedDefinition...)
@@ -77,10 +76,10 @@ type ModelDefinition struct {
 
 func (md ModelDefinition) ModelName() string {
 
-	if len(md.OpenAPISchema.Title) > 0 && strings.ToLower(md.Model.BlockName) != strings.ToLower(md.OpenAPISchema.Title) {
-		return md.Model.BlockName + upperFirst(md.OpenAPISchema.Title) + "Model"
+	if len(md.OpenAPISchema.Title) > 0 && strings.ToLower(md.Model.Template.BlockName.LowerCamel()) != strings.ToLower(md.OpenAPISchema.Title) {
+		return md.Model.Template.BlockName.LowerCamel() + upperFirst(md.OpenAPISchema.Title) + "Model"
 	} else {
-		return md.Model.BlockName + "Model"
+		return md.Model.Template.BlockName.LowerCamel() + "Model"
 	}
 
 }
@@ -176,7 +175,7 @@ func (mf ModelField) AttributeType() string {
 		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
-			return fmt.Sprintf("types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}", mf.Definition.Model.BlockName+upperFirst(mf.Property.ObjectOf.Title))
+			return fmt.Sprintf("types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}", mf.Definition.Model.Template.BlockName.LowerCamel()+upperFirst(mf.Property.ObjectOf.Title))
 		}
 	case "array":
 		switch mf.Property.ArrayOf {
@@ -184,7 +183,7 @@ func (mf ModelField) AttributeType() string {
 			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
-				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}}", mf.Definition.Model.BlockName+upperFirst(mf.Property.ObjectOf.Title))
+				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}}", mf.Definition.Model.Template.BlockName.LowerCamel()+upperFirst(mf.Property.ObjectOf.Title))
 			}
 		case "string":
 			return "types.ListType{ElemType:types.StringType}"

@@ -114,7 +114,8 @@ func generateModel(pathObject openapi.OpenAPIPathObject, blockName string, augme
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
 	input.PackageName = packageName
-	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, BlockName: blockName, Augment: augment}
+	input.BlockName = transform.StrWithCases{String: blockName}
+	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, Augment: augment}
 	input.Model.Template = &input
 	input.Augment = augment
 
