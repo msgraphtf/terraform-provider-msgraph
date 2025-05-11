@@ -59,7 +59,7 @@ func generateModel(pathObject openapi.OpenAPIPathObject) {
 	input := transform.TemplateInput{}
 
 	input.OpenAPIPath = pathObject
-	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, Template: &input}
+	input.Model = transform.Model{Template: &input}
 
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")

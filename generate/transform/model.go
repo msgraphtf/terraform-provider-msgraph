@@ -12,7 +12,6 @@ import (
 
 type Model struct {
 	Template      *TemplateInput
-	OpenAPISchema openapi.OpenAPISchemaObject
 }
 
 func (m Model) Definitions() []ModelDefinition {
@@ -30,7 +29,7 @@ func (m Model) Definitions() []ModelDefinition {
 	}
 
 	var allDefinitions []ModelDefinition
-	newDefinition := ModelDefinition{Model: &m, OpenAPISchema: m.OpenAPISchema}
+	newDefinition := ModelDefinition{Model: &m, OpenAPISchema: m.Template.OpenAPIPath.Get.Response}
 	allDefinitions = append(allDefinitions, newDefinition)
 	allDefinitions = append(allDefinitions, recurseDefinitions(allDefinitions)...)
 
