@@ -22,7 +22,7 @@ func (cr createRequest) PostMethod() []queryMethod {
 	for _, p := range pathFields {
 		newMethod := new(queryMethod)
 		if strings.HasPrefix(p, "{") {
-			pLeft, pRight := PathFieldName(p)
+			pLeft, pRight := pathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight

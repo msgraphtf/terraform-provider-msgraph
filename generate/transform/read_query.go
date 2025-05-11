@@ -30,7 +30,7 @@ func (rq readQuery) Configuration() string {
 	if len(rq.PathFields()) == 1 {
 		config += upperFirst(rq.PathFields()[0])
 	} else if len(rq.PathFields()) == 2 {
-		s, _ := PathFieldName(rq.PathFields()[1])
+		s, _ := pathFieldName(rq.PathFields()[1])
 		config += upperFirst(s) + "Item"
 	} else {
 		config += "MISSING"
@@ -68,7 +68,7 @@ func (rq readQuery) GetMethod() []queryMethod {
 	for _, p := range rq.PathFields() {
 		newMethod := new(queryMethod)
 		if strings.HasPrefix(p, "{") {
-			pLeft, pRight := PathFieldName(p)
+			pLeft, pRight := pathFieldName(p)
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight

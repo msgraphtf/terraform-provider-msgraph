@@ -13,7 +13,7 @@ func upperFirst(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]
 }
 
-func PathFieldName(s string) (string, string) {
+func pathFieldName(s string) (string, string) {
 	s = strings.TrimLeft(s, "{")
 	s = strings.TrimRight(s, "}")
 	pLeft, pRight, _ := strings.Cut(s, "-")
@@ -62,7 +62,7 @@ func (ti TemplateInput) BlockName() StrWithCases {
 	if len(pathFields) > 1 {
 		for _, p := range pathFields[1:] {
 			if strings.HasPrefix(p, "{") {
-				pLeft, _ := PathFieldName(p)
+				pLeft, _ := pathFieldName(p)
 				blockName += pLeft
 			} else {
 				blockName += p
