@@ -136,11 +136,7 @@ func (tsa terraformSchemaAttribute) Type() string {
 }
 
 func (tsa terraformSchemaAttribute) Required() bool {
-	if tsa.Schema.BehaviourMode == "DataSource" {
-		return false
-	} else { // Resource
-		return false
-	}
+	return false
 }
 
 func (tsa terraformSchemaAttribute) Optional() bool {
