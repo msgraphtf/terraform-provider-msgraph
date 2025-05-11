@@ -67,18 +67,6 @@ func (m sitesIdentitySetModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type sitesIdentityModel struct {
-	DisplayName types.String `tfsdk:"display_name"`
-	Id          types.String `tfsdk:"id"`
-}
-
-func (m sitesIdentityModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"display_name": types.StringType,
-		"id":           types.StringType,
-	}
-}
-
 type sitesItemReferenceModel struct {
 	DriveId       types.String `tfsdk:"drive_id"`
 	DriveType     types.String `tfsdk:"drive_type"`
@@ -100,6 +88,24 @@ func (m sitesItemReferenceModel) AttributeTypes() map[string]attr.Type {
 		"share_id":       types.StringType,
 		"sharepoint_ids": types.ObjectType{AttrTypes: sitesSharepointIdsModel{}.AttributeTypes()},
 		"site_id":        types.StringType,
+	}
+}
+
+type sitesPublicErrorModel struct {
+	Code       types.String `tfsdk:"code"`
+	Details    types.List   `tfsdk:"details"`
+	InnerError types.Object `tfsdk:"inner_error"`
+	Message    types.String `tfsdk:"message"`
+	Target     types.String `tfsdk:"target"`
+}
+
+func (m sitesPublicErrorModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"code":        types.StringType,
+		"details":     types.ListType{ElemType: types.ObjectType{AttrTypes: sitesPublicErrorDetailModel{}.AttributeTypes()}},
+		"inner_error": types.ObjectType{AttrTypes: sitesPublicInnerErrorModel{}.AttributeTypes()},
+		"message":     types.StringType,
+		"target":      types.StringType,
 	}
 }
 
@@ -125,21 +131,29 @@ func (m sitesSharepointIdsModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type sitesPublicErrorModel struct {
-	Code       types.String `tfsdk:"code"`
-	Details    types.List   `tfsdk:"details"`
-	InnerError types.Object `tfsdk:"inner_error"`
-	Message    types.String `tfsdk:"message"`
-	Target     types.String `tfsdk:"target"`
+type sitesSiteCollectionModel struct {
+	ArchivalDetails  types.Object `tfsdk:"archival_details"`
+	DataLocationCode types.String `tfsdk:"data_location_code"`
+	Hostname         types.String `tfsdk:"hostname"`
 }
 
-func (m sitesPublicErrorModel) AttributeTypes() map[string]attr.Type {
+func (m sitesSiteCollectionModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"code":        types.StringType,
-		"details":     types.ListType{ElemType: types.ObjectType{AttrTypes: sitesPublicErrorDetailModel{}.AttributeTypes()}},
-		"inner_error": types.ObjectType{AttrTypes: sitesPublicInnerErrorModel{}.AttributeTypes()},
-		"message":     types.StringType,
-		"target":      types.StringType,
+		"archival_details":   types.ObjectType{AttrTypes: sitesSiteArchivalDetailsModel{}.AttributeTypes()},
+		"data_location_code": types.StringType,
+		"hostname":           types.StringType,
+	}
+}
+
+type sitesIdentityModel struct {
+	DisplayName types.String `tfsdk:"display_name"`
+	Id          types.String `tfsdk:"id"`
+}
+
+func (m sitesIdentityModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"display_name": types.StringType,
+		"id":           types.StringType,
 	}
 }
 
@@ -170,20 +184,6 @@ func (m sitesPublicInnerErrorModel) AttributeTypes() map[string]attr.Type {
 		"details": types.ListType{ElemType: types.ObjectType{AttrTypes: sitesPublicErrorDetailModel{}.AttributeTypes()}},
 		"message": types.StringType,
 		"target":  types.StringType,
-	}
-}
-
-type sitesSiteCollectionModel struct {
-	ArchivalDetails  types.Object `tfsdk:"archival_details"`
-	DataLocationCode types.String `tfsdk:"data_location_code"`
-	Hostname         types.String `tfsdk:"hostname"`
-}
-
-func (m sitesSiteCollectionModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"archival_details":   types.ObjectType{AttrTypes: sitesSiteArchivalDetailsModel{}.AttributeTypes()},
-		"data_location_code": types.StringType,
-		"hostname":           types.StringType,
 	}
 }
 

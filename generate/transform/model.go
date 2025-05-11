@@ -17,41 +17,28 @@ type Model struct {
 
 func (m Model) Definitions() []ModelDefinition {
 
-	var definitions []ModelDefinition
+	// Recurse all definitions
+	var recurseDefinitions func(definitions []ModelDefinition) []ModelDefinition
+	recurseDefinitions = func(definitions []ModelDefinition) []ModelDefinition{
 
-	newDefinition := ModelDefinition{
-		Model:         &m,
-		OpenAPISchema: m.OpenAPISchema,
-	}
-
-	// Get Model Definitions for OpenAPI properties of objects
-	var nestedDefinitions []ModelDefinition
-
-	for _, property := range m.OpenAPISchema.Properties {
-
-		// Skip excluded properties
-		if slices.Contains(m.Template.Augment().ExcludedProperties, property.Name) {
-			continue
+		for _, definition := range definitions {
+			definitions = append(definitions, recurseDefinitions(definition.NestedDefinitions())...)
 		}
 
-		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinitions = append(nestedDefinitions, Model{Template: m.Template, OpenAPISchema: property.ObjectOf}.Definitions()...)
-		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinitions = append(nestedDefinitions, Model{Template: m.Template, OpenAPISchema: property.ObjectOf}.Definitions()...)
-		}
+		return definitions
 
 	}
 
-	definitions = append(definitions, newDefinition)
-	if len(nestedDefinitions) != 0 {
-		definitions = append(definitions, nestedDefinitions...)
-	}
+	var allDefinitions []ModelDefinition
+	newDefinition := ModelDefinition{Model: &m, OpenAPISchema: m.OpenAPISchema}
+	allDefinitions = append(allDefinitions, newDefinition)
+	allDefinitions = append(allDefinitions, recurseDefinitions(allDefinitions)...)
 
 	// Deduplicate definitions
 	var modelDefinitionNames []string
 	var deDupedDefinitions []ModelDefinition
 
-	for _, definition := range definitions {
+	for _, definition := range allDefinitions {
 		if !slices.Contains(modelDefinitionNames, definition.ModelName()) {
 			definition.Model = &m
 			deDupedDefinitions = append(deDupedDefinitions, definition)
@@ -100,6 +87,29 @@ func (md ModelDefinition) ModelFields() []ModelField {
 	}
 
 	return newModelFields
+
+}
+
+func (md ModelDefinition) NestedDefinitions() []ModelDefinition {
+
+	var definitions []ModelDefinition
+
+	for _, property := range md.OpenAPISchema.Properties {
+
+		// Skip excluded properties
+		if slices.Contains(md.Model.Template.Augment().ExcludedProperties, property.Name) {
+			continue
+		}
+
+		if property.Type == "object" && property.ObjectOf.Type != "string" {
+			definitions = append(definitions, ModelDefinition{Model: md.Model, OpenAPISchema: property.ObjectOf})
+		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
+			definitions = append(definitions, ModelDefinition{Model: md.Model, OpenAPISchema: property.ObjectOf})
+		}
+
+	}
+
+	return definitions
 
 }
 

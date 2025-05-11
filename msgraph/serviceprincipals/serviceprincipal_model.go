@@ -97,18 +97,6 @@ func (m servicePrincipalAddInModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type servicePrincipalKeyValueModel struct {
-	Key   types.String `tfsdk:"key"`
-	Value types.String `tfsdk:"value"`
-}
-
-func (m servicePrincipalKeyValueModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"key":   types.StringType,
-		"value": types.StringType,
-	}
-}
-
 type servicePrincipalAppRoleModel struct {
 	AllowedMemberTypes types.List   `tfsdk:"allowed_member_types"`
 	Description        types.String `tfsdk:"description"`
@@ -260,5 +248,17 @@ func (m servicePrincipalVerifiedPublisherModel) AttributeTypes() map[string]attr
 		"added_date_time":       types.StringType,
 		"display_name":          types.StringType,
 		"verified_publisher_id": types.StringType,
+	}
+}
+
+type servicePrincipalKeyValueModel struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func (m servicePrincipalKeyValueModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
 	}
 }

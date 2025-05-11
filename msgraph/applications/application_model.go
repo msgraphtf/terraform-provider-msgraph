@@ -107,18 +107,6 @@ func (m applicationAddInModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type applicationKeyValueModel struct {
-	Key   types.String `tfsdk:"key"`
-	Value types.String `tfsdk:"value"`
-}
-
-func (m applicationKeyValueModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"key":   types.StringType,
-		"value": types.StringType,
-	}
-}
-
 type applicationApiApplicationModel struct {
 	AcceptMappedClaims          types.Bool  `tfsdk:"accept_mapped_claims"`
 	KnownClientApplications     types.List  `tfsdk:"known_client_applications"`
@@ -134,44 +122,6 @@ func (m applicationApiApplicationModel) AttributeTypes() map[string]attr.Type {
 		"oauth_2_permission_scopes":      types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPermissionScopeModel{}.AttributeTypes()}},
 		"pre_authorized_applications":    types.ListType{ElemType: types.ObjectType{AttrTypes: applicationPreAuthorizedApplicationModel{}.AttributeTypes()}},
 		"requested_access_token_version": types.Int64Type,
-	}
-}
-
-type applicationPermissionScopeModel struct {
-	AdminConsentDescription types.String `tfsdk:"admin_consent_description"`
-	AdminConsentDisplayName types.String `tfsdk:"admin_consent_display_name"`
-	Id                      types.String `tfsdk:"id"`
-	IsEnabled               types.Bool   `tfsdk:"is_enabled"`
-	Origin                  types.String `tfsdk:"origin"`
-	Type                    types.String `tfsdk:"type"`
-	UserConsentDescription  types.String `tfsdk:"user_consent_description"`
-	UserConsentDisplayName  types.String `tfsdk:"user_consent_display_name"`
-	Value                   types.String `tfsdk:"value"`
-}
-
-func (m applicationPermissionScopeModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"admin_consent_description":  types.StringType,
-		"admin_consent_display_name": types.StringType,
-		"id":                         types.StringType,
-		"is_enabled":                 types.BoolType,
-		"origin":                     types.StringType,
-		"type":                       types.StringType,
-		"user_consent_description":   types.StringType,
-		"user_consent_display_name":  types.StringType,
-		"value":                      types.StringType,
-	}
-}
-
-type applicationPreAuthorizedApplicationModel struct {
-	AppId                  types.String `tfsdk:"app_id"`
-	DelegatedPermissionIds types.List   `tfsdk:"delegated_permission_ids"`
-}
-
-func (m applicationPreAuthorizedApplicationModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"app_id":                   types.StringType,
-		"delegated_permission_ids": types.ListType{ElemType: types.StringType},
 	}
 }
 
@@ -271,22 +221,6 @@ func (m applicationOptionalClaimsModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-type applicationOptionalClaimModel struct {
-	AdditionalProperties types.List   `tfsdk:"additional_properties"`
-	Essential            types.Bool   `tfsdk:"essential"`
-	Name                 types.String `tfsdk:"name"`
-	Source               types.String `tfsdk:"source"`
-}
-
-func (m applicationOptionalClaimModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"additional_properties": types.ListType{ElemType: types.StringType},
-		"essential":             types.BoolType,
-		"name":                  types.StringType,
-		"source":                types.StringType,
-	}
-}
-
 type applicationParentalControlSettingsModel struct {
 	CountriesBlockedForMinors types.List   `tfsdk:"countries_blocked_for_minors"`
 	LegalAgeGroupRule         types.String `tfsdk:"legal_age_group_rule"`
@@ -355,18 +289,6 @@ func (m applicationRequiredResourceAccessModel) AttributeTypes() map[string]attr
 	}
 }
 
-type applicationResourceAccessModel struct {
-	Id   types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
-}
-
-func (m applicationResourceAccessModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"id":   types.StringType,
-		"type": types.StringType,
-	}
-}
-
 type applicationServicePrincipalLockConfigurationModel struct {
 	AllProperties              types.Bool `tfsdk:"all_properties"`
 	CredentialsWithUsageSign   types.Bool `tfsdk:"credentials_with_usage_sign"`
@@ -424,6 +346,84 @@ func (m applicationWebApplicationModel) AttributeTypes() map[string]attr.Type {
 		"logout_url":              types.StringType,
 		"redirect_uri_settings":   types.ListType{ElemType: types.ObjectType{AttrTypes: applicationRedirectUriSettingsModel{}.AttributeTypes()}},
 		"redirect_uris":           types.ListType{ElemType: types.StringType},
+	}
+}
+
+type applicationKeyValueModel struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func (m applicationKeyValueModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+type applicationPermissionScopeModel struct {
+	AdminConsentDescription types.String `tfsdk:"admin_consent_description"`
+	AdminConsentDisplayName types.String `tfsdk:"admin_consent_display_name"`
+	Id                      types.String `tfsdk:"id"`
+	IsEnabled               types.Bool   `tfsdk:"is_enabled"`
+	Origin                  types.String `tfsdk:"origin"`
+	Type                    types.String `tfsdk:"type"`
+	UserConsentDescription  types.String `tfsdk:"user_consent_description"`
+	UserConsentDisplayName  types.String `tfsdk:"user_consent_display_name"`
+	Value                   types.String `tfsdk:"value"`
+}
+
+func (m applicationPermissionScopeModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"admin_consent_description":  types.StringType,
+		"admin_consent_display_name": types.StringType,
+		"id":                         types.StringType,
+		"is_enabled":                 types.BoolType,
+		"origin":                     types.StringType,
+		"type":                       types.StringType,
+		"user_consent_description":   types.StringType,
+		"user_consent_display_name":  types.StringType,
+		"value":                      types.StringType,
+	}
+}
+
+type applicationPreAuthorizedApplicationModel struct {
+	AppId                  types.String `tfsdk:"app_id"`
+	DelegatedPermissionIds types.List   `tfsdk:"delegated_permission_ids"`
+}
+
+func (m applicationPreAuthorizedApplicationModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"app_id":                   types.StringType,
+		"delegated_permission_ids": types.ListType{ElemType: types.StringType},
+	}
+}
+
+type applicationOptionalClaimModel struct {
+	AdditionalProperties types.List   `tfsdk:"additional_properties"`
+	Essential            types.Bool   `tfsdk:"essential"`
+	Name                 types.String `tfsdk:"name"`
+	Source               types.String `tfsdk:"source"`
+}
+
+func (m applicationOptionalClaimModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"additional_properties": types.ListType{ElemType: types.StringType},
+		"essential":             types.BoolType,
+		"name":                  types.StringType,
+		"source":                types.StringType,
+	}
+}
+
+type applicationResourceAccessModel struct {
+	Id   types.String `tfsdk:"id"`
+	Type types.String `tfsdk:"type"`
+}
+
+func (m applicationResourceAccessModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":   types.StringType,
+		"type": types.StringType,
 	}
 }
 
