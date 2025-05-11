@@ -10,13 +10,10 @@ import (
 	"terraform-provider-msgraph/generate/transform"
 )
 
-func generateDataSource(pathObject openapi.OpenAPIPathObject) {
-
-	input := transform.TemplateInput{}
+func generateDataSource(input transform.TemplateInput) {
 
 	// Set input values to top level template
 	input.Schema = transform.TerraformSchema{BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
-	input.OpenAPIPath = pathObject
 
 	// Create directory for package
 	os.Mkdir("msgraph/"+input.PackageName()+"/", os.ModePerm)
@@ -33,13 +30,10 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 
 }
 
-func generateResource(pathObject openapi.OpenAPIPathObject) {
-
-	input := transform.TemplateInput{}
+func generateResource(input transform.TemplateInput) {
 
 	// Set input values to top level template
 	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
-	input.OpenAPIPath = pathObject
 
 	// Get templates
 	resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
@@ -54,11 +48,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject) {
 
 }
 
-func generateModel(pathObject openapi.OpenAPIPathObject) {
-
-	input := transform.TemplateInput{}
-
-	input.OpenAPIPath = pathObject
+func generateModel(input transform.TemplateInput) {
 
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
@@ -71,10 +61,15 @@ func main() {
 
 	if len(os.Args) > 1 {
 		pathObject := openapi.GetPath(os.Args[1])
-		generateDataSource(pathObject)
-		generateModel(pathObject)
+
+		input := transform.TemplateInput{
+			OpenAPIPath: pathObject,
+		}
+
+		generateDataSource(input)
+		generateModel(input)
 		if pathObject.Patch.Summary != "" {
-			generateResource(pathObject)
+			generateResource(input)
 		}
 	} else {
 
@@ -99,10 +94,14 @@ func main() {
 
 		for _, path := range knownGoodPaths {
 			pathObject := openapi.GetPath(path)
-			generateDataSource(pathObject)
-			generateModel(pathObject)
+			input := transform.TemplateInput{
+				OpenAPIPath: pathObject,
+			}
+
+			generateDataSource(input)
+			generateModel(input)
 			if pathObject.Patch.Summary != "" && pathObject.Delete.Summary != "" {
-				generateResource(pathObject)
+				generateResource(input)
 			}
 		}
 
