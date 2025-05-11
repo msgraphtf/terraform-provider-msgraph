@@ -160,11 +160,7 @@ func (tsa terraformSchemaAttribute) Optional() bool {
 }
 
 func (tsa terraformSchemaAttribute) Computed() bool {
-	if tsa.Schema.BehaviourMode == "DataSource" {
-		return true
-	} else { // Resource
-		return true
-	}
+	return true
 }
 
 func (tsa terraformSchemaAttribute) PlanModifiers() bool {
