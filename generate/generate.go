@@ -6,52 +6,9 @@ import (
 
 	"text/template"
 
-	"gopkg.in/yaml.v3"
-
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
 )
-
-func getAugment(pathname string) transform.TemplateAugment {
-	pathObject := openapi.GetPath(pathname)
-
-	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-	packageName := strings.ToLower(pathFields[0])
-
-	// Open augment file if available
-	var err error = nil
-	augment := transform.TemplateAugment{}
-	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + getBlockName(pathname).LowerCamel() + ".yaml")
-	if err == nil {
-		yaml.Unmarshal(augmentFile, &augment)
-	}
-
-	return augment
-
-}
-
-func getBlockName(pathname string) transform.StrWithCases {
-
-	pathObject := openapi.GetPath(pathname)
-	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
-
-	// Generate name of the terraform block
-	blockName := ""
-	if len(pathFields) > 1 {
-		for _, p := range pathFields[1:] {
-			if strings.HasPrefix(p, "{") {
-				pLeft, _ := transform.PathFieldName(p)
-				blockName += pLeft
-			} else {
-				blockName += p
-			}
-		}
-	} else {
-		blockName = pathFields[0]
-	}
-
-	return transform.StrWithCases{String: blockName}
-}
 
 func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 

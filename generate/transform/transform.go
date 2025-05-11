@@ -91,14 +91,22 @@ func (ti TemplateInput) UpdateRequest() updateRequest {
 	return updateRequest{Template: &ti}
 }
 
-func (ti TemplateInput) Augment() TemplateAugment {
+// Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
+type templateAugment struct {
+	ExcludedProperties       []string            `yaml:"excludedProperties"`
+	AltReadMethods           []map[string]string `yaml:"altReadMethods"`
+	DataSourceExtraOptionals []string            `yaml:"dataSourceExtraOptionals"`
+	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
+}
+
+func (ti TemplateInput) Augment() templateAugment {
 
 	pathFields := strings.Split(ti.OpenAPIPath.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 	packageName := strings.ToLower(pathFields[0])
 
 	// Open augment file if available
 	var err error = nil
-	augment := TemplateAugment{}
+	augment := templateAugment{}
 	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + ti.BlockName().LowerCamel() + ".yaml")
 	if err == nil {
 		yaml.Unmarshal(augmentFile, &augment)
@@ -107,10 +115,3 @@ func (ti TemplateInput) Augment() TemplateAugment {
 	return augment
 }
 
-// Represents an 'augment' YAML file, used to describe manual changes from the MS Graph OpenAPI spec
-type TemplateAugment struct {
-	ExcludedProperties       []string            `yaml:"excludedProperties"`
-	AltReadMethods           []map[string]string `yaml:"altReadMethods"`
-	DataSourceExtraOptionals []string            `yaml:"dataSourceExtraOptionals"`
-	ResourceExtraComputed    []string            `yaml:"resourceExtraComputed"`
-}
