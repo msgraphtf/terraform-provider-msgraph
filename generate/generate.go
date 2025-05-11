@@ -21,7 +21,7 @@ func getAugment(pathname string) transform.TemplateAugment {
 	// Open augment file if available
 	var err error = nil
 	augment := transform.TemplateAugment{}
-	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + getBlockName(pathname) + ".yaml")
+	augmentFile, err := os.ReadFile("generate/augment/" + packageName + "/" + getBlockName(pathname).LowerCamel() + ".yaml")
 	if err == nil {
 		yaml.Unmarshal(augmentFile, &augment)
 	}
@@ -30,7 +30,7 @@ func getAugment(pathname string) transform.TemplateAugment {
 
 }
 
-func getBlockName(pathname string) string {
+func getBlockName(pathname string) transform.StrWithCases {
 
 	pathObject := openapi.GetPath(pathname)
 	pathFields := strings.Split(pathObject.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
@@ -50,10 +50,10 @@ func getBlockName(pathname string) string {
 		blockName = pathFields[0]
 	}
 
-	return blockName
+	return transform.StrWithCases{String: blockName}
 }
 
-func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
+func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName transform.StrWithCases, augment transform.TemplateAugment) {
 
 	input := transform.TemplateInput{}
 
@@ -61,7 +61,7 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, 
 
 	// Set input values to top level template
 	input.PackageName = packageName
-	input.BlockName = transform.StrWithCases{String: blockName}
+	input.BlockName = blockName
 	input.Schema = transform.TerraformSchema{BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
 	input.OpenAPIPath = pathObject
 	input.Augment = augment
@@ -76,12 +76,12 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName string, 
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_response_template.go")
 
 	// Create output file, and execute datasource template
-	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_data_source.go")
+	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName.LowerCamel()) + "_data_source.go")
 	datasourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
 
 }
 
-func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
+func generateResource(pathObject openapi.OpenAPIPathObject, blockName transform.StrWithCases, augment transform.TemplateAugment) {
 
 	input := transform.TemplateInput{}
 
@@ -89,7 +89,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 
 	// Set input values to top level template
 	input.PackageName = packageName
-	input.BlockName = transform.StrWithCases{String: blockName}
+	input.BlockName = blockName
 	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
 	input.OpenAPIPath = pathObject
 	input.Augment = augment
@@ -102,25 +102,25 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName string, au
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/create_template.go")
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/update_template.go")
 
-	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_resource.go")
+	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName.LowerCamel()) + "_resource.go")
 	resourceTmpl.ExecuteTemplate(outfile, "resource_template.go", input)
 
 }
 
-func generateModel(pathObject openapi.OpenAPIPathObject, blockName string, augment transform.TemplateAugment) {
+func generateModel(pathObject openapi.OpenAPIPathObject, blockName transform.StrWithCases, augment transform.TemplateAugment) {
 
 	input := transform.TemplateInput{}
 
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
 	input.PackageName = packageName
-	input.BlockName = transform.StrWithCases{String: blockName}
+	input.BlockName = blockName
 	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, Template: &input}
 	input.Augment = augment
 
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
-	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName) + "_model.go")
+	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName.LowerCamel()) + "_model.go")
 	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", input)
 
 }
