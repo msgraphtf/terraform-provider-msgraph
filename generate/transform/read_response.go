@@ -133,7 +133,7 @@ func (rra readResponseAttribute) ParentName() string {
 	if rra.Parent != nil {
 		return rra.Parent.ObjectOf()
 	} else {
-		return rra.ReadResponse.Template.BlockName.UpperCamel()
+		return rra.ReadResponse.Template.BlockName().UpperCamel()
 	}
 }
 
@@ -142,7 +142,7 @@ func (rra readResponseAttribute) ObjectOf() string {
 }
 
 func (rra readResponseAttribute) TfModelName() string {
-	return rra.ReadResponse.Template.BlockName.LowerCamel() + rra.ObjectOf()
+	return rra.ReadResponse.Template.BlockName().LowerCamel() + rra.ObjectOf()
 }
 
 

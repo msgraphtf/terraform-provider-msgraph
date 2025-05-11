@@ -25,7 +25,7 @@ func (ur updateRequest) PostMethod() []queryMethod {
 			pLeft = strcase.ToCamel(pLeft)
 			pRight = strcase.ToCamel(pRight)
 			newMethod.MethodName = "By" + pLeft + pRight
-			newMethod.Parameter = "tfState" + ur.Template.BlockName.UpperCamel() + "." + pRight + ".ValueString()"
+			newMethod.Parameter = "tfState" + ur.Template.BlockName().UpperCamel() + "." + pRight + ".ValueString()"
 		} else {
 			newMethod.MethodName = strcase.ToCamel(p)
 		}
@@ -117,7 +117,7 @@ func (ura updateRequestAttribute) ParentName() string {
 	if ura.Parent != nil {
 		return ura.Parent.ObjectOf()
 	} else {
-		return ura.UpdateRequest.Template.BlockName.UpperCamel()
+		return ura.UpdateRequest.Template.BlockName().UpperCamel()
 	}
 }
 
@@ -140,7 +140,7 @@ func (ura updateRequestAttribute) ObjectOf() string {
 
 // Generates the Terraform Model name of the given attribute
 func (ura updateRequestAttribute) TfModelName() string {
-	return ura.UpdateRequest.Template.BlockName.LowerCamel() + ura.ObjectOf()
+	return ura.UpdateRequest.Template.BlockName().LowerCamel() + ura.ObjectOf()
 }
 
 func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {

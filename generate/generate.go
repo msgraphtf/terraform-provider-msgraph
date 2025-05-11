@@ -61,7 +61,6 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName transfor
 
 	// Set input values to top level template
 	input.PackageName = packageName
-	input.BlockName = blockName
 	input.Schema = transform.TerraformSchema{BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
 	input.OpenAPIPath = pathObject
 	input.Augment = augment
@@ -89,7 +88,6 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName transform.
 
 	// Set input values to top level template
 	input.PackageName = packageName
-	input.BlockName = blockName
 	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
 	input.OpenAPIPath = pathObject
 	input.Augment = augment
@@ -114,7 +112,7 @@ func generateModel(pathObject openapi.OpenAPIPathObject, blockName transform.Str
 	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
 
 	input.PackageName = packageName
-	input.BlockName = blockName
+	input.OpenAPIPath = pathObject
 	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, Template: &input}
 	input.Augment = augment
 

@@ -14,7 +14,7 @@ type readQuery struct {
 }
 
 func (rq readQuery) BlockName() string {
-	return rq.Template.BlockName.UpperCamel()
+	return rq.Template.BlockName().UpperCamel()
 }
 
 func (rq readQuery) PathFields() []string {

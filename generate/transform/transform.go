@@ -46,11 +46,32 @@ type queryMethod struct {
 
 type TemplateInput struct {
 	PackageName   string
-	BlockName     StrWithCases
 	OpenAPIPath   openapi.OpenAPIPathObject
 	Schema        TerraformSchema
 	Model         Model
 	Augment       TemplateAugment
+}
+
+func (ti TemplateInput) BlockName() StrWithCases {
+
+	pathFields := strings.Split(ti.OpenAPIPath.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
+
+	// Generate name of the terraform block
+	blockName := ""
+	if len(pathFields) > 1 {
+		for _, p := range pathFields[1:] {
+			if strings.HasPrefix(p, "{") {
+				pLeft, _ := PathFieldName(p)
+				blockName += pLeft
+			} else {
+				blockName += p
+			}
+		}
+	} else {
+		blockName = pathFields[0]
+	}
+
+	return StrWithCases{String: blockName}
 }
 
 func (ti TemplateInput) ReadQuery() readQuery {
