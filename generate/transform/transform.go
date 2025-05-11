@@ -49,7 +49,6 @@ type queryMethod struct {
 type TemplateInput struct {
 	OpenAPIPath   openapi.OpenAPIPathObject
 	Schema        TerraformSchema
-	Model         Model
 }
 
 func (ti TemplateInput) PackageName() string {
@@ -76,6 +75,10 @@ func (ti TemplateInput) BlockName() strWithCases {
 	}
 
 	return strWithCases{String: blockName}
+}
+
+func (ti TemplateInput) Model() model {
+	return model{Template: &ti}
 }
 
 func (ti TemplateInput) ReadQuery() readQuery {

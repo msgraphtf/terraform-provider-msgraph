@@ -10,11 +10,11 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-type Model struct {
+type model struct {
 	Template      *TemplateInput
 }
 
-func (m Model) Definitions() []ModelDefinition {
+func (m model) Definitions() []ModelDefinition {
 
 	// Recurse all definitions
 	var recurseDefinitions func(definitions []ModelDefinition) []ModelDefinition
@@ -51,7 +51,7 @@ func (m Model) Definitions() []ModelDefinition {
 
 // Used by templates defined inside of data_source_template.go to generate the data models
 type ModelDefinition struct {
-	Model         *Model
+	Model         *model
 	OpenAPISchema openapi.OpenAPISchemaObject
 }
 
