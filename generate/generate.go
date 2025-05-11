@@ -14,15 +14,12 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 
 	input := transform.TemplateInput{}
 
-	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
-
 	// Set input values to top level template
-	input.PackageName = packageName
 	input.Schema = transform.TerraformSchema{BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
 	input.OpenAPIPath = pathObject
 
 	// Create directory for package
-	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)
+	os.Mkdir("msgraph/"+input.PackageName()+"/", os.ModePerm)
 
 	// Get datasource templates
 	datasourceTmpl, _ := template.ParseFiles("generate/templates/data_source_template.go")
@@ -31,7 +28,7 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_response_template.go")
 
 	// Create output file, and execute datasource template
-	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_data_source.go")
+	outfile, _ := os.Create("msgraph/" + input.PackageName() + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_data_source.go")
 	datasourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
 
 }
@@ -40,10 +37,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject) {
 
 	input := transform.TemplateInput{}
 
-	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
-
 	// Set input values to top level template
-	input.PackageName = packageName
 	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
 	input.OpenAPIPath = pathObject
 
@@ -55,7 +49,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject) {
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/create_template.go")
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/update_template.go")
 
-	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_resource.go")
+	outfile, _ := os.Create("msgraph/" + input.PackageName() + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_resource.go")
 	resourceTmpl.ExecuteTemplate(outfile, "resource_template.go", input)
 
 }
@@ -64,15 +58,12 @@ func generateModel(pathObject openapi.OpenAPIPathObject) {
 
 	input := transform.TemplateInput{}
 
-	packageName := strings.ToLower(strings.Split(pathObject.Path, "/")[1])
-
-	input.PackageName = packageName
 	input.OpenAPIPath = pathObject
 	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, Template: &input}
 
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
-	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_model.go")
+	modelOutfile, _ := os.Create("msgraph/" + input.PackageName() + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_model.go")
 	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", input)
 
 }

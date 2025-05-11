@@ -47,10 +47,13 @@ type queryMethod struct {
 }
 
 type TemplateInput struct {
-	PackageName   string
 	OpenAPIPath   openapi.OpenAPIPathObject
 	Schema        TerraformSchema
 	Model         Model
+}
+
+func (ti TemplateInput) PackageName() string {
+	return strings.ToLower(strings.Split(ti.OpenAPIPath.Path, "/")[1])
 }
 
 func (ti TemplateInput) BlockName() strWithCases {
