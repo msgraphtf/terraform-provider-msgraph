@@ -20,23 +20,23 @@ func pathFieldName(s string) (string, string) {
 	return pLeft, pRight
 }
 
-type StrWithCases struct {
+type strWithCases struct {
 	String string
 }
 
-func (s StrWithCases) LowerCamel() string {
+func (s strWithCases) LowerCamel() string {
 	return strcase.ToLowerCamel(s.String)
 }
 
-func (s StrWithCases) UpperCamel() string {
+func (s strWithCases) UpperCamel() string {
 	return strcase.ToCamel(s.String)
 }
 
-func (s StrWithCases) Snake() string {
+func (s strWithCases) Snake() string {
 	return strcase.ToSnake(s.String)
 }
 
-func (s StrWithCases) UpperFirst() string {
+func (s strWithCases) UpperFirst() string {
 	return strings.ToUpper(s.String[0:1]) + s.String[1:]
 }
 
@@ -53,7 +53,7 @@ type TemplateInput struct {
 	Model         Model
 }
 
-func (ti TemplateInput) BlockName() StrWithCases {
+func (ti TemplateInput) BlockName() strWithCases {
 
 	pathFields := strings.Split(ti.OpenAPIPath.Path, "/")[1:] // Paths start with a '/', so we need to get rid of the first empty entry in the array
 
@@ -72,7 +72,7 @@ func (ti TemplateInput) BlockName() StrWithCases {
 		blockName = pathFields[0]
 	}
 
-	return StrWithCases{String: blockName}
+	return strWithCases{String: blockName}
 }
 
 func (ti TemplateInput) ReadQuery() readQuery {
