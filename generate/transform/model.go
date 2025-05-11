@@ -34,15 +34,11 @@ func (m Model) Definitions() []ModelDefinition {
 			continue
 		}
 
-		var nestedDefinition []ModelDefinition
-
 		if property.Type == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinition = Model{Template: m.Template, OpenAPISchema: property.ObjectOf}.Definitions()
+			nestedDefinitions = append(nestedDefinitions, Model{Template: m.Template, OpenAPISchema: property.ObjectOf}.Definitions()...)
 		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
-			nestedDefinition = Model{Template: m.Template, OpenAPISchema: property.ObjectOf}.Definitions()
+			nestedDefinitions = append(nestedDefinitions, Model{Template: m.Template, OpenAPISchema: property.ObjectOf}.Definitions()...)
 		}
-
-		nestedDefinitions = append(nestedDefinitions, nestedDefinition...)
 
 	}
 
