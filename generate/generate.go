@@ -53,7 +53,7 @@ func getBlockName(pathname string) transform.StrWithCases {
 	return transform.StrWithCases{String: blockName}
 }
 
-func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName transform.StrWithCases, augment transform.TemplateAugment) {
+func generateDataSource(pathObject openapi.OpenAPIPathObject, augment transform.TemplateAugment) {
 
 	input := transform.TemplateInput{}
 
@@ -75,12 +75,12 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, blockName transfor
 	datasourceTmpl, _ = datasourceTmpl.ParseFiles("generate/templates/read_response_template.go")
 
 	// Create output file, and execute datasource template
-	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName.LowerCamel()) + "_data_source.go")
+	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_data_source.go")
 	datasourceTmpl.ExecuteTemplate(outfile, "data_source_template.go", input)
 
 }
 
-func generateResource(pathObject openapi.OpenAPIPathObject, blockName transform.StrWithCases, augment transform.TemplateAugment) {
+func generateResource(pathObject openapi.OpenAPIPathObject, augment transform.TemplateAugment) {
 
 	input := transform.TemplateInput{}
 
@@ -100,12 +100,12 @@ func generateResource(pathObject openapi.OpenAPIPathObject, blockName transform.
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/create_template.go")
 	resourceTmpl, _ = resourceTmpl.ParseFiles("generate/templates/update_template.go")
 
-	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName.LowerCamel()) + "_resource.go")
+	outfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_resource.go")
 	resourceTmpl.ExecuteTemplate(outfile, "resource_template.go", input)
 
 }
 
-func generateModel(pathObject openapi.OpenAPIPathObject, blockName transform.StrWithCases, augment transform.TemplateAugment) {
+func generateModel(pathObject openapi.OpenAPIPathObject, augment transform.TemplateAugment) {
 
 	input := transform.TemplateInput{}
 
@@ -118,7 +118,7 @@ func generateModel(pathObject openapi.OpenAPIPathObject, blockName transform.Str
 
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
-	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(blockName.LowerCamel()) + "_model.go")
+	modelOutfile, _ := os.Create("msgraph/" + packageName + "/" + strings.ToLower(input.BlockName().LowerCamel()) + "_model.go")
 	modelTmpl.ExecuteTemplate(modelOutfile, "model_template.go", input)
 
 }
@@ -127,12 +127,11 @@ func main() {
 
 	if len(os.Args) > 1 {
 		pathObject := openapi.GetPath(os.Args[1])
-		blockName := getBlockName(os.Args[1])
 		augment := getAugment(os.Args[1])
-		generateDataSource(pathObject, blockName, augment)
-		generateModel(pathObject, blockName, augment)
+		generateDataSource(pathObject, augment)
+		generateModel(pathObject, augment)
 		if pathObject.Patch.Summary != "" {
-			generateResource(pathObject, blockName, augment)
+			generateResource(pathObject, augment)
 		}
 	} else {
 
@@ -157,12 +156,11 @@ func main() {
 
 		for _, path := range knownGoodPaths {
 			pathObject := openapi.GetPath(path)
-			blockName := getBlockName(path)
 			augment := getAugment(path)
-			generateDataSource(pathObject, blockName, augment)
-			generateModel(pathObject, blockName, augment)
+			generateDataSource(pathObject, augment)
+			generateModel(pathObject, augment)
 			if pathObject.Patch.Summary != "" && pathObject.Delete.Summary != "" {
-				generateResource(pathObject, blockName, augment)
+				generateResource(pathObject, augment)
 			}
 		}
 
