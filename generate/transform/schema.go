@@ -20,7 +20,7 @@ func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
 	for _, property := range ts.Template.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(ts.Template.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(ts.Template.Augment().ExcludedProperties, property.Name) {
 			continue
 		}
 
@@ -148,7 +148,7 @@ func (tsa terraformSchemaAttribute) Optional() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
 		if slices.Contains(tsa.Schema.Template.OpenAPIPath.Parameters, tsa.Schema.Template.OpenAPIPath.Get.Response.Title+"-"+tsa.Name()) {
 			return true
-		} else if slices.Contains(tsa.Schema.Template.Augment.DataSourceExtraOptionals, tsa.Name()) {
+		} else if slices.Contains(tsa.Schema.Template.Augment().DataSourceExtraOptionals, tsa.Name()) {
 			return true
 		}
 	} else if tsa.Schema.BehaviourMode == "Resource" {
@@ -181,7 +181,7 @@ func (tsa terraformSchemaAttribute) NestedAttribute() []terraformSchemaAttribute
 	for _, property := range tsa.OpenAPISchemaProperty.ObjectOf.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(tsa.Schema.Template.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(tsa.Schema.Template.Augment().ExcludedProperties, property.Name) {
 			continue
 		}
 

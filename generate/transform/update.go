@@ -42,7 +42,7 @@ func (ur updateRequest) Attributes() []updateRequestAttribute {
 	for _, property := range ur.Template.OpenAPIPath.Get.Response.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(ur.Template.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(ur.Template.Augment().ExcludedProperties, property.Name) {
 			continue
 		}
 
@@ -150,7 +150,7 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 	for _, property := range ura.Property.ObjectOf.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(ura.UpdateRequest.Template.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(ura.UpdateRequest.Template.Augment().ExcludedProperties, property.Name) {
 			continue
 		}
 

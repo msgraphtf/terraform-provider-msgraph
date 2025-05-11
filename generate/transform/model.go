@@ -30,7 +30,7 @@ func (m Model) Definitions() []ModelDefinition {
 	for _, property := range m.OpenAPISchema.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(m.Template.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(m.Template.Augment().ExcludedProperties, property.Name) {
 			continue
 		}
 
@@ -90,7 +90,7 @@ func (md ModelDefinition) ModelFields() []ModelField {
 	for _, property := range md.OpenAPISchema.Properties {
 
 		// Skip excluded properties
-		if slices.Contains(md.Model.Template.Augment.ExcludedProperties, property.Name) {
+		if slices.Contains(md.Model.Template.Augment().ExcludedProperties, property.Name) {
 			continue
 		}
 

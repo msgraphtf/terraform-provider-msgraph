@@ -53,7 +53,7 @@ func getBlockName(pathname string) transform.StrWithCases {
 	return transform.StrWithCases{String: blockName}
 }
 
-func generateDataSource(pathObject openapi.OpenAPIPathObject, augment transform.TemplateAugment) {
+func generateDataSource(pathObject openapi.OpenAPIPathObject) {
 
 	input := transform.TemplateInput{}
 
@@ -63,7 +63,6 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, augment transform.
 	input.PackageName = packageName
 	input.Schema = transform.TerraformSchema{BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
 	input.OpenAPIPath = pathObject
-	input.Augment = augment
 
 	// Create directory for package
 	os.Mkdir("msgraph/"+packageName+"/", os.ModePerm)
@@ -80,7 +79,7 @@ func generateDataSource(pathObject openapi.OpenAPIPathObject, augment transform.
 
 }
 
-func generateResource(pathObject openapi.OpenAPIPathObject, augment transform.TemplateAugment) {
+func generateResource(pathObject openapi.OpenAPIPathObject) {
 
 	input := transform.TemplateInput{}
 
@@ -90,7 +89,6 @@ func generateResource(pathObject openapi.OpenAPIPathObject, augment transform.Te
 	input.PackageName = packageName
 	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
 	input.OpenAPIPath = pathObject
-	input.Augment = augment
 
 	// Get templates
 	resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
@@ -105,7 +103,7 @@ func generateResource(pathObject openapi.OpenAPIPathObject, augment transform.Te
 
 }
 
-func generateModel(pathObject openapi.OpenAPIPathObject, augment transform.TemplateAugment) {
+func generateModel(pathObject openapi.OpenAPIPathObject) {
 
 	input := transform.TemplateInput{}
 
@@ -114,7 +112,6 @@ func generateModel(pathObject openapi.OpenAPIPathObject, augment transform.Templ
 	input.PackageName = packageName
 	input.OpenAPIPath = pathObject
 	input.Model = transform.Model{OpenAPISchema: pathObject.Get.Response, Template: &input}
-	input.Augment = augment
 
 	// Generate model
 	modelTmpl, _ := template.ParseFiles("generate/templates/model_template.go")
@@ -127,11 +124,10 @@ func main() {
 
 	if len(os.Args) > 1 {
 		pathObject := openapi.GetPath(os.Args[1])
-		augment := getAugment(os.Args[1])
-		generateDataSource(pathObject, augment)
-		generateModel(pathObject, augment)
+		generateDataSource(pathObject)
+		generateModel(pathObject)
 		if pathObject.Patch.Summary != "" {
-			generateResource(pathObject, augment)
+			generateResource(pathObject)
 		}
 	} else {
 
@@ -156,11 +152,10 @@ func main() {
 
 		for _, path := range knownGoodPaths {
 			pathObject := openapi.GetPath(path)
-			augment := getAugment(path)
-			generateDataSource(pathObject, augment)
-			generateModel(pathObject, augment)
+			generateDataSource(pathObject)
+			generateModel(pathObject)
 			if pathObject.Patch.Summary != "" && pathObject.Delete.Summary != "" {
-				generateResource(pathObject, augment)
+				generateResource(pathObject)
 			}
 		}
 
