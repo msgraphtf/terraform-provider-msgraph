@@ -8,12 +8,12 @@ import (
 	"terraform-provider-msgraph/generate/openapi"
 )
 
-type TerraformSchema struct {
+type schema struct {
 	Template      *TemplateInput
 	BehaviourMode string
 }
 
-func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
+func (ts schema) Attributes() []terraformSchemaAttribute {
 
 	var attributes []terraformSchemaAttribute
 
@@ -37,7 +37,7 @@ func (ts TerraformSchema) Attributes() []terraformSchemaAttribute {
 }
 
 // AllAttributes returns an array of all terraformSchemaAttribute in the TerraformSchema instance, including all nested/child attributes
-func (ts TerraformSchema) AllAttributes() []terraformSchemaAttribute {
+func (ts schema) AllAttributes() []terraformSchemaAttribute {
 
 	var recurseAttributes func(attributes []terraformSchemaAttribute) []terraformSchemaAttribute
 	recurseAttributes = func(attributes []terraformSchemaAttribute) []terraformSchemaAttribute{
@@ -56,7 +56,7 @@ func (ts TerraformSchema) AllAttributes() []terraformSchemaAttribute {
 }
 
 // Determines if a terraform resource needs to import terraform-provider-msgraph/planmodifiers/listplanmodifiers
-func (ts TerraformSchema) IfListPlanModifiersImportNeeded() bool {
+func (ts schema) IfListPlanModifiersImportNeeded() bool {
 
 	for _, tsa := range ts.AllAttributes() {
 		if tsa.Type() == "ListAttribute" || tsa.Type() == "ListNestedAttribute" {
@@ -68,7 +68,7 @@ func (ts TerraformSchema) IfListPlanModifiersImportNeeded() bool {
 
 }
 
-func (ts TerraformSchema) IfSingleNestedAttributeUsed(attributes []terraformSchemaAttribute) bool {
+func (ts schema) IfSingleNestedAttributeUsed(attributes []terraformSchemaAttribute) bool {
 
 	result := false
 
@@ -90,7 +90,7 @@ func (ts TerraformSchema) IfSingleNestedAttributeUsed(attributes []terraformSche
 
 // Used by templates defined inside of data_source_template.go to generate the schema
 type terraformSchemaAttribute struct {
-	Schema                *TerraformSchema
+	Schema                *schema
 	OpenAPISchemaProperty openapi.OpenAPISchemaProperty
 }
 

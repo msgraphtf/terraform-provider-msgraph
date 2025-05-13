@@ -80,12 +80,12 @@ func (ti TemplateInput) Model() model {
 	return model{Template: &ti}
 }
 
-func (ti TemplateInput) SchemaDataSource() TerraformSchema {
-	return TerraformSchema{Template: &ti, BehaviourMode: "DataSource"}
+func (ti TemplateInput) SchemaDataSource() schema {
+	return schema{Template: &ti, BehaviourMode: "DataSource"}
 }
 
-func (ti TemplateInput) SchemaResource() TerraformSchema {
-	return TerraformSchema{Template: &ti, BehaviourMode: "Resource"}
+func (ti TemplateInput) SchemaResource() schema {
+	return schema{Template: &ti, BehaviourMode: "Resource"}
 }
 
 func (ti TemplateInput) ReadQuery() readQuery {
