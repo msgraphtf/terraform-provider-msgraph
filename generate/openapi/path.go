@@ -3,14 +3,14 @@ package openapi
 type OpenAPIPathObject struct {
 	Path        string
 	Description string
-	Get         OpenAPIPathOperationObject
-	Post        OpenAPIPathOperationObject
-	Patch       OpenAPIPathOperationObject
-	Delete      OpenAPIPathOperationObject
+	Get         openAPIPathOperationObject
+	Post        openAPIPathOperationObject
+	Patch       openAPIPathOperationObject
+	Delete      openAPIPathOperationObject
 	Parameters  []string
 }
 
-type OpenAPIPathOperationObject struct {
+type openAPIPathOperationObject struct {
 	Summary          string
 	Description      string
 	SelectParameters []string
