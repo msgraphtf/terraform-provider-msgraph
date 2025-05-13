@@ -12,9 +12,6 @@ import (
 
 func generateDataSource(input transform.TemplateInput) {
 
-	// Set input values to top level template
-	input.Schema = transform.TerraformSchema{BehaviourMode: "DataSource", Template: &input} // Generate  Schema from OpenAPI Schama properties
-
 	// Create directory for package
 	os.Mkdir("msgraph/"+input.PackageName()+"/", os.ModePerm)
 
@@ -31,9 +28,6 @@ func generateDataSource(input transform.TemplateInput) {
 }
 
 func generateResource(input transform.TemplateInput) {
-
-	// Set input values to top level template
-	input.Schema = transform.TerraformSchema{BehaviourMode: "Resource", Template: &input}
 
 	// Get templates
 	resourceTmpl, _ := template.ParseFiles("generate/templates/resource_template.go")
