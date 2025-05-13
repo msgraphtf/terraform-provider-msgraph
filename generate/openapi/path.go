@@ -36,17 +36,17 @@ func GetPath(pathname string) OpenAPIPathObject {
 			for _, param := range path.Get.Parameters.GetByInAndName("query", "$select").Schema.Value.Items.Value.Enum {
 				pathObject.Get.SelectParameters = append(pathObject.Get.SelectParameters, param.(string))
 			}
-			pathObject.Get.Response = GetSchemaObjectByRef(path.Get.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
+			pathObject.Get.Response = getSchemaObjectByRef(path.Get.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
 		}
 		if name == "POST" {
 			pathObject.Post.Summary = path.Post.Summary
 			pathObject.Post.Description = path.Post.Description
-			pathObject.Post.Response = GetSchemaObjectByRef(path.Post.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
+			pathObject.Post.Response = getSchemaObjectByRef(path.Post.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
 		}
 		if name == "PATCH" {
 			pathObject.Patch.Summary = path.Patch.Summary
 			pathObject.Patch.Description = path.Patch.Description
-			pathObject.Patch.Response = GetSchemaObjectByRef(path.Patch.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
+			pathObject.Patch.Response = getSchemaObjectByRef(path.Patch.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
 		}
 		if name == "DELETE" {
 			pathObject.Delete.Summary = path.Delete.Summary
