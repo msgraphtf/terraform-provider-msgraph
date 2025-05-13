@@ -66,7 +66,7 @@ func (d *{{.BlockName.LowerCamel}}Resource) Configure(_ context.Context, req res
 func (d *{{.BlockName.LowerCamel}}Resource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
     resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			{{- template "schema_template.go" .}}
+			{{- template "schema_template.go" .Schema}}
 		},
 	}
 }
