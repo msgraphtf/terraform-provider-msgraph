@@ -31,12 +31,16 @@ func (so OpenAPISchemaObject) Type() string {
 }
 
 type OpenAPISchemaProperty struct {
+	Schema      *openapi3.Schema
 	Name        string
 	Type        string
-	Description string
 	Format      string
 	ArrayOf     string
 	ObjectOf    OpenAPISchemaObject
+}
+
+func (sp OpenAPISchemaProperty) Description() string {
+	return sp.Schema.Description
 }
 
 func getSchemaObjectByRef(ref string) OpenAPISchemaObject {
@@ -107,8 +111,8 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 
 		var newProperty OpenAPISchemaProperty
 
+		newProperty.Schema = property
 		newProperty.Name = k
-		newProperty.Description = property.Description
 		newProperty.Type = strings.Join(property.Type.Slice(), "")
 
 		// Determines what type of data the OpenAPI schema object is

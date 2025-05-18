@@ -95,7 +95,7 @@ type terraformSchemaAttribute struct {
 }
 
 func (tsa terraformSchemaAttribute) Description() string {
-	return tsa.OpenAPISchemaProperty.Description
+	return tsa.OpenAPISchemaProperty.Description()
 }
 
 func (tsa terraformSchemaAttribute) Name() string {
