@@ -101,7 +101,7 @@ func (cra createRequestAttribute) Name() string {
 
 func (cra createRequestAttribute) Type() string {
 
-	switch cra.Property.Type {
+	switch cra.Property.Type() {
 	case "string":
 		switch cra.Property.Format() {
 		case "date-time":

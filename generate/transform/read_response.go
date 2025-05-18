@@ -90,7 +90,7 @@ func (rra readResponseAttribute) Name() string {
 
 func (rra readResponseAttribute) Type() string {
 
-	switch rra.Property.Type {
+	switch rra.Property.Type() {
 	case "string":
 		if rra.Property.Format() == "" {
 			return "ReadStringAttribute"

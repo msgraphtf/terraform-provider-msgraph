@@ -72,7 +72,7 @@ func (ura updateRequestAttribute) Name() string {
 
 func (ura updateRequestAttribute) Type() string {
 
-	switch ura.Property.Type {
+	switch ura.Property.Type() {
 	case "string":
 		switch ura.Property.Format() {
 		case "date-time":

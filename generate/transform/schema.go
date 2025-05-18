@@ -105,7 +105,7 @@ func (tsa terraformSchemaAttribute) Name() string {
 func (tsa terraformSchemaAttribute) Type() string {
 
 	// Convert types from OpenAPI schema types to  attributes
-	switch tsa.OpenAPISchemaProperty.Type {
+	switch tsa.OpenAPISchemaProperty.Type() {
 	case "string":
 		return "StringAttribute"
 	case "integer":

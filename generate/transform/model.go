@@ -100,9 +100,9 @@ func (md ModelDefinition) NestedDefinitions() []ModelDefinition {
 			continue
 		}
 
-		if property.Type == "object" && property.ObjectOf.Type() != "string" {
+		if property.Type() == "object" && property.ObjectOf.Type() != "string" {
 			definitions = append(definitions, ModelDefinition{Model: md.Model, OpenAPISchema: property.ObjectOf})
-		} else if property.Type == "array" && property.ArrayOf() == "object" && property.ObjectOf.Type() != "string" {
+		} else if property.Type() == "array" && property.ArrayOf() == "object" && property.ObjectOf.Type() != "string" {
 			definitions = append(definitions, ModelDefinition{Model: md.Model, OpenAPISchema: property.ObjectOf})
 		}
 
@@ -135,7 +135,7 @@ func (m ModelField) IfObjectType() bool {
 
 func (mf ModelField) FieldType() string {
 
-	switch mf.Property.Type {
+	switch mf.Property.Type() {
 	case "string":
 		return "types.String"
 	case "number":
@@ -168,7 +168,7 @@ func (mf ModelField) FieldType() string {
 
 func (mf ModelField) AttributeType() string {
 
-	switch mf.Property.Type {
+	switch mf.Property.Type() {
 	case "string":
 		return "types.StringType"
 	case "number":
