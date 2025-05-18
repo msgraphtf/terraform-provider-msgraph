@@ -39,14 +39,6 @@ type OpenAPISchemaProperty struct {
 	ObjectOf    OpenAPISchemaObject
 }
 
-// getSchemaObjectByName will read an OpenAPI schema, and return a simplified and distilled representation of that schema.
-// The returned data type contains all the information necessary for the template package, to generate a Terraform provider for the Microsoft Graph API
-func getSchemaObjectByName(schemaName string) OpenAPISchemaObject {
-	schema := doc.Components.Schemas[schemaName].Value
-	schemaObject := getSchemaObject(schema)
-	return schemaObject
-}
-
 func getSchemaObjectByRef(ref string) OpenAPISchemaObject {
 	schema := getSchemaFromRef(ref)
 	schemaObject := getSchemaObject(schema)
