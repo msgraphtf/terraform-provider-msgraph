@@ -103,7 +103,7 @@ func (cra createRequestAttribute) Type() string {
 
 	switch cra.Property.Type {
 	case "string":
-		switch cra.Property.Format {
+		switch cra.Property.Format() {
 		case "date-time":
 			return "CreateStringTimeAttribute"
 		case "uuid":
@@ -119,7 +119,7 @@ func (cra createRequestAttribute) Type() string {
 	case "array":
 		switch cra.Property.ArrayOf() {
 		case "string":
-			if cra.Property.Format == "uuid" {
+			if cra.Property.Format() == "uuid" {
 				return "CreateArrayUuidAttribute"
 			} else {
 				return "CreateArrayStringAttribute"

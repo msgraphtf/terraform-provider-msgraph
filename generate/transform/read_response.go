@@ -92,9 +92,9 @@ func (rra readResponseAttribute) Type() string {
 
 	switch rra.Property.Type {
 	case "string":
-		if rra.Property.Format == "" {
+		if rra.Property.Format() == "" {
 			return "ReadStringAttribute"
-		} else if strings.Contains(rra.Property.Format, "base64") { // TODO: base64 encoded data is probably not stored correctly
+		} else if strings.Contains(rra.Property.Format(), "base64") { // TODO: base64 encoded data is probably not stored correctly
 			return "ReadStringBase64Attribute"
 		} else {
 			return "ReadStringFormattedAttribute"
@@ -112,7 +112,7 @@ func (rra readResponseAttribute) Type() string {
 	case "array":
 		switch rra.Property.ArrayOf() {
 		case "string":
-			if rra.Property.Format == "" {
+			if rra.Property.Format() == "" {
 				return "ReadListStringAttribute"
 			} else {
 				return "ReadListStringFormattedAttribute"

@@ -74,7 +74,7 @@ func (ura updateRequestAttribute) Type() string {
 
 	switch ura.Property.Type {
 	case "string":
-		switch ura.Property.Format {
+		switch ura.Property.Format() {
 		case "date-time":
 			return "UpdateStringTimeAttribute"
 		case "uuid":
@@ -90,7 +90,7 @@ func (ura updateRequestAttribute) Type() string {
 	case "array":
 		switch ura.Property.ArrayOf() {
 		case "string":
-			if ura.Property.Format == "uuid" {
+			if ura.Property.Format() == "uuid" {
 				return "UpdateArrayUuidAttribute"
 			} else {
 				return "UpdateArrayStringAttribute"

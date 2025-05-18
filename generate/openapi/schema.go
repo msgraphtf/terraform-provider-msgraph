@@ -34,7 +34,6 @@ type OpenAPISchemaProperty struct {
 	Schema      *openapi3.Schema
 	Name        string
 	Type        string
-	Format      string
 	ObjectOf    OpenAPISchemaObject
 }
 
@@ -55,6 +54,21 @@ func (sp OpenAPISchemaProperty) ArrayOf() string {
 	} else {
 		return ""
 	}
+}
+
+func (sp OpenAPISchemaProperty) Format() string {
+
+	if strings.Join(sp.Schema.Type.Slice(), "") == "array" { // Array
+		if strings.Join(sp.Schema.Items.Value.Type.Slice(), "") == "object" || sp.Schema.Items.Ref != "" { // Array of objects
+		} else if sp.Schema.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
+		} else { // Array of primitive type
+			return sp.Schema.Items.Value.Format
+		}
+	} else if sp.Schema.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
+	} else if strings.Join(sp.Schema.Type.Slice(), "") != "" { // Primitive type
+		return sp.Schema.Format
+	}
+	return ""
 }
 
 func getSchemaObjectByRef(ref string) OpenAPISchemaObject {
@@ -135,14 +149,10 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Ref))
 			} else if property.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
 				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Value.AnyOf[0].Ref))
-			} else { // Array of primitive type
-				newProperty.Format = property.Items.Value.Format
 			}
 		} else if property.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
 			newProperty.Type = "object"
 			newProperty.ObjectOf = getSchemaObject(property)
-		} else if strings.Join(property.Type.Slice(), "") != "" { // Primitive type
-			newProperty.Format = property.Format
 		} else if property.AnyOf != nil { // Object
 			newProperty.Type = "object"
 			newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.AnyOf[0].Ref))
