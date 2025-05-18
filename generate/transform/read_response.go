@@ -15,7 +15,7 @@ func (rr readResponse) Attributes() []readResponseAttribute {
 
 	var readResponseAttributes []readResponseAttribute
 
-	for _, property := range rr.Template.OpenAPIPath.Get.Response().Properties {
+	for _, property := range rr.Template.OpenAPIPath.Get().Response().Properties {
 
 		// Skip excluded properties
 		if slices.Contains(rr.Template.Augment().ExcludedProperties, property.Name) {

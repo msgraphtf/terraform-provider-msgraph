@@ -7,7 +7,6 @@ import (
 type OpenAPIPathObject struct {
 	PathItem    *openapi3.PathItem
 	Path        string
-	Get         openAPIPathOperationObject
 	Post        openAPIPathOperationObject
 	Patch       openAPIPathOperationObject
 	Delete      openAPIPathOperationObject
@@ -15,6 +14,10 @@ type OpenAPIPathObject struct {
 
 func (po OpenAPIPathObject) Description() string {
 	return po.PathItem.Description
+}
+
+func (po OpenAPIPathObject) Get() openAPIPathOperationObject {
+	return openAPIPathOperationObject{Operation: po.PathItem.Get}
 }
 
 func (po OpenAPIPathObject) Parameters() []string {
@@ -65,9 +68,6 @@ func GetPath(pathname string) OpenAPIPathObject {
 	pathObject.Path = pathname
 
 	for name := range path.Operations() {
-		if name == "GET" {
-			pathObject.Get.Operation = path.Get
-		}
 		if name == "POST" {
 			pathObject.Post.Operation = path.Post
 		}
