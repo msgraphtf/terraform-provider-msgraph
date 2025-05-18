@@ -16,7 +16,6 @@ type OpenAPIPathObject struct {
 
 type openAPIPathOperationObject struct {
 	Operation        *openapi3.Operation
-	SelectParameters []string
 }
 
 func (oo openAPIPathOperationObject) Summary() string {
@@ -35,6 +34,15 @@ func (oo openAPIPathOperationObject) Response() OpenAPISchemaObject {
 	return getSchemaObjectByRef(oo.Operation.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
 }
 
+func (oo openAPIPathOperationObject) SelectParameters() []string {
+
+	var selectparams []string
+	for _, param := range oo.Operation.Parameters.GetByInAndName("query", "$select").Schema.Value.Items.Value.Enum {
+		selectparams = append(selectparams, param.(string))
+	}
+	return selectparams
+}
+
 func GetPath(pathname string) OpenAPIPathObject {
 
 	var pathObject OpenAPIPathObject
@@ -50,9 +58,6 @@ func GetPath(pathname string) OpenAPIPathObject {
 	for name := range path.Operations() {
 		if name == "GET" {
 			pathObject.Get.Operation = path.Get
-			for _, param := range path.Get.Parameters.GetByInAndName("query", "$select").Schema.Value.Items.Value.Enum {
-				pathObject.Get.SelectParameters = append(pathObject.Get.SelectParameters, param.(string))
-			}
 		}
 		if name == "POST" {
 			pathObject.Post.Operation = path.Post
