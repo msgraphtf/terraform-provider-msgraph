@@ -59,16 +59,10 @@ func (sp OpenAPISchemaProperty) ArrayOf() string {
 func (sp OpenAPISchemaProperty) Format() string {
 
 	if strings.Join(sp.Schema.Type.Slice(), "") == "array" { // Array
-		if strings.Join(sp.Schema.Items.Value.Type.Slice(), "") == "object" || sp.Schema.Items.Ref != "" { // Array of objects
-		} else if sp.Schema.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
-		} else { // Array of primitive type
-			return sp.Schema.Items.Value.Format
-		}
-	} else if sp.Schema.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
-	} else if strings.Join(sp.Schema.Type.Slice(), "") != "" { // Primitive type
+		return sp.Schema.Items.Value.Format
+	} else { // Primitive type
 		return sp.Schema.Format
 	}
-	return ""
 }
 
 func getSchemaObjectByRef(ref string) OpenAPISchemaObject {
