@@ -138,7 +138,7 @@ func (rra readResponseAttribute) ParentName() string {
 }
 
 func (rra readResponseAttribute) ObjectOf() string {
-	return upperFirst(rra.Property.ObjectOf.Title)
+	return upperFirst(rra.Property.ObjectOf.Title())
 }
 
 func (rra readResponseAttribute) TfModelName() string {

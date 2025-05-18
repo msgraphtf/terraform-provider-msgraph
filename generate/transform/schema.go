@@ -142,7 +142,7 @@ func (tsa terraformSchemaAttribute) Required() bool {
 func (tsa terraformSchemaAttribute) Optional() bool {
 
 	if tsa.Schema.BehaviourMode == "DataSource" {
-		if slices.Contains(tsa.Schema.Template.OpenAPIPath.Parameters(), tsa.Schema.Template.OpenAPIPath.Get().Response().Title+"-"+tsa.Name()) {
+		if slices.Contains(tsa.Schema.Template.OpenAPIPath.Parameters(), tsa.Schema.Template.OpenAPIPath.Get().Response().Title()+"-"+tsa.Name()) {
 			return true
 		} else if slices.Contains(tsa.Schema.Template.Augment().DataSourceExtraOptionals, tsa.Name()) {
 			return true

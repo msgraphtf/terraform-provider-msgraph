@@ -135,7 +135,7 @@ func (ura updateRequestAttribute) SetModelMethod() string {
 // This can be slightly (grammatically) different from the name of the attribute.
 // The attribute name may be plural if it's an array of some kind, but the ObjectOf will be singular
 func (ura updateRequestAttribute) ObjectOf() string {
-	return upperFirst(ura.Property.ObjectOf.Title)
+	return upperFirst(ura.Property.ObjectOf.Title())
 }
 
 // Generates the Terraform Model name of the given attribute

@@ -10,10 +10,18 @@ import (
 )
 
 type OpenAPISchemaObject struct {
-	Title      string
+	Schema     *openapi3.Schema
 	Type       string
 	Properties []OpenAPISchemaProperty
 	Enum       []string
+}
+
+func (so OpenAPISchemaObject) Title() string {
+	if len(so.Schema.AllOf) == 0 {
+		return so.Schema.Title
+	} else {
+		return so.Schema.AllOf[1].Value.Title
+	}
 }
 
 type OpenAPISchemaProperty struct {
@@ -43,8 +51,9 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 
 	var schemaObject OpenAPISchemaObject
 
+	schemaObject.Schema = schema
+
 	if len(schema.AllOf) == 0 {
-		schemaObject.Title = schema.Title
 		schemaObject.Type = strings.Join(schema.Type.Slice(), "")
 		schemaObject.Properties = recurseDownSchemaProperties(schema)
 		for _, e := range schema.Enum {
@@ -52,7 +61,6 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 		}
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		schemaObject.Title = schema.AllOf[1].Value.Title
 		schemaObject.Type = strings.Join(schema.AllOf[1].Value.Type.Slice(), "")
 		schemaObject.Properties = append(schemaObject.Properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
 		schemaObject.Properties = append(schemaObject.Properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
