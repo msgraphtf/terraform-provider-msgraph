@@ -5,13 +5,25 @@ import (
 )
 
 type OpenAPIPathObject struct {
+	PathItem    *openapi3.PathItem
 	Path        string
-	Description string
 	Get         openAPIPathOperationObject
 	Post        openAPIPathOperationObject
 	Patch       openAPIPathOperationObject
 	Delete      openAPIPathOperationObject
-	Parameters  []string
+}
+
+func (po OpenAPIPathObject) Description() string {
+	return po.PathItem.Description
+}
+
+func (po OpenAPIPathObject) Parameters() []string {
+	var parameters []string
+	for _, param := range po.PathItem.Parameters {
+		parameters = append(parameters, param.Value.Name)
+	}
+	return parameters
+
 }
 
 type openAPIPathOperationObject struct {
@@ -49,11 +61,8 @@ func GetPath(pathname string) OpenAPIPathObject {
 
 	path := doc.Paths.Find(pathname)
 
+	pathObject.PathItem = path
 	pathObject.Path = pathname
-	pathObject.Description = path.Description
-	for _, param := range path.Parameters {
-		pathObject.Parameters = append(pathObject.Parameters, param.Value.Name)
-	}
 
 	for name := range path.Operations() {
 		if name == "GET" {
