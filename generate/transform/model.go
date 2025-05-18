@@ -100,9 +100,9 @@ func (md ModelDefinition) NestedDefinitions() []ModelDefinition {
 			continue
 		}
 
-		if property.Type == "object" && property.ObjectOf.Type != "string" {
+		if property.Type == "object" && property.ObjectOf.Type() != "string" {
 			definitions = append(definitions, ModelDefinition{Model: md.Model, OpenAPISchema: property.ObjectOf})
-		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type != "string" {
+		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type() != "string" {
 			definitions = append(definitions, ModelDefinition{Model: md.Model, OpenAPISchema: property.ObjectOf})
 		}
 
@@ -143,7 +143,7 @@ func (mf ModelField) FieldType() string {
 	case "boolean":
 		return "types.Bool"
 	case "object":
-		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
+		if mf.Property.ObjectOf.Type() == "string" { // This is a string enum.
 			return "types.String"
 		} else {
 			return "types.Object"
@@ -151,7 +151,7 @@ func (mf ModelField) FieldType() string {
 	case "array":
 		switch mf.Property.ArrayOf {
 		case "object":
-			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
+			if mf.Property.ObjectOf.Type() == "string" { // This is a string enum.
 				return "types.List"
 			} else {
 				return "types.List"
@@ -176,7 +176,7 @@ func (mf ModelField) AttributeType() string {
 	case "boolean":
 		return "types.BoolType"
 	case "object":
-		if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
+		if mf.Property.ObjectOf.Type() == "string" { // This is a string enum.
 			return "types.StringType"
 		} else {
 			return fmt.Sprintf("types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}", mf.Definition.Model.Template.BlockName().LowerCamel()+upperFirst(mf.Property.ObjectOf.Title()))
@@ -184,7 +184,7 @@ func (mf ModelField) AttributeType() string {
 	case "array":
 		switch mf.Property.ArrayOf {
 		case "object":
-			if mf.Property.ObjectOf.Type == "string" { // This is a string enum.
+			if mf.Property.ObjectOf.Type() == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"
 			} else {
 				return fmt.Sprintf("types.ListType{ElemType:types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}}", mf.Definition.Model.Template.BlockName().LowerCamel()+upperFirst(mf.Property.ObjectOf.Title()))

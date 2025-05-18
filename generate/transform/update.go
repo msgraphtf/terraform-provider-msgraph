@@ -99,7 +99,7 @@ func (ura updateRequestAttribute) Type() string {
 			return "UpdateArrayObjectAttribute"
 		}
 	case "object":
-		if ura.Property.ObjectOf.Type == "string" { // This is a string enum
+		if ura.Property.ObjectOf.Type() == "string" { // This is a string enum
 			return "UpdateStringEnumAttribute"
 		} else {
 			return "UpdateObjectAttribute"

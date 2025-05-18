@@ -104,7 +104,7 @@ func (rra readResponseAttribute) Type() string {
 	case "boolean":
 		return "ReadBoolAttribute"
 	case "object":
-		if rra.Property.ObjectOf.Type == "string" { // This is a string enum.
+		if rra.Property.ObjectOf.Type() == "string" { // This is a string enum.
 			return "ReadStringFormattedAttribute"
 		} else {
 			return "ReadSingleNestedAttribute"
@@ -118,7 +118,7 @@ func (rra readResponseAttribute) Type() string {
 				return "ReadListStringFormattedAttribute"
 			}
 		case "object":
-			if rra.Property.ObjectOf.Type == "string" { // This is a string enum.
+			if rra.Property.ObjectOf.Type() == "string" { // This is a string enum.
 				return "ReadListStringFormattedAttribute"
 			} else {
 				return "ReadListNestedAttribute"

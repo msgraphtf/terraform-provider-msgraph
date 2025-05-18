@@ -113,7 +113,7 @@ func (tsa terraformSchemaAttribute) Type() string {
 	case "boolean":
 		return "BoolAttribute"
 	case "object":
-		if tsa.OpenAPISchemaProperty.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
+		if tsa.OpenAPISchemaProperty.ObjectOf.Type() == "string" { // This is a string enum. TODO: Implement validation
 			return "StringAttribute"
 		} else {
 			return "SingleNestedAttribute"
@@ -123,7 +123,7 @@ func (tsa terraformSchemaAttribute) Type() string {
 		case "string":
 			return "ListAttribute"
 		case "object":
-			if tsa.OpenAPISchemaProperty.ObjectOf.Type == "string" { // This is a string enum. TODO: Implement validation
+			if tsa.OpenAPISchemaProperty.ObjectOf.Type() == "string" { // This is a string enum. TODO: Implement validation
 				return "ListAttribute"
 			} else {
 				return "ListNestedAttribute"

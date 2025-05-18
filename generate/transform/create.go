@@ -128,7 +128,7 @@ func (cra createRequestAttribute) Type() string {
 			return "CreateArrayObjectAttribute"
 		}
 	case "object":
-		if cra.Property.ObjectOf.Type == "string" {
+		if cra.Property.ObjectOf.Type() == "string" {
 			return "CreateStringEnumAttribute"
 		} else {
 			return "CreateObjectAttribute"
