@@ -1,5 +1,9 @@
 package openapi
 
+import (
+	"github.com/getkin/kin-openapi/openapi3"
+)
+
 type OpenAPIPathObject struct {
 	Path        string
 	Description string
@@ -11,10 +15,24 @@ type OpenAPIPathObject struct {
 }
 
 type openAPIPathOperationObject struct {
-	Summary          string
-	Description      string
+	Operation        *openapi3.Operation
 	SelectParameters []string
-	Response         OpenAPISchemaObject
+}
+
+func (oo openAPIPathOperationObject) Summary() string {
+	if oo.Operation != nil {
+		return oo.Operation.Summary
+	} else {
+		return ""
+	}
+}
+
+func (oo openAPIPathOperationObject) Description() string {
+	return oo.Operation.Description
+}
+
+func (oo openAPIPathOperationObject) Response() OpenAPISchemaObject {
+	return getSchemaObjectByRef(oo.Operation.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
 }
 
 func GetPath(pathname string) OpenAPIPathObject {
@@ -31,26 +49,19 @@ func GetPath(pathname string) OpenAPIPathObject {
 
 	for name := range path.Operations() {
 		if name == "GET" {
-			pathObject.Get.Summary = path.Get.Summary
-			pathObject.Get.Description = path.Get.Description
+			pathObject.Get.Operation = path.Get
 			for _, param := range path.Get.Parameters.GetByInAndName("query", "$select").Schema.Value.Items.Value.Enum {
 				pathObject.Get.SelectParameters = append(pathObject.Get.SelectParameters, param.(string))
 			}
-			pathObject.Get.Response = getSchemaObjectByRef(path.Get.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
 		}
 		if name == "POST" {
-			pathObject.Post.Summary = path.Post.Summary
-			pathObject.Post.Description = path.Post.Description
-			pathObject.Post.Response = getSchemaObjectByRef(path.Post.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
+			pathObject.Post.Operation = path.Post
 		}
 		if name == "PATCH" {
-			pathObject.Patch.Summary = path.Patch.Summary
-			pathObject.Patch.Description = path.Patch.Description
-			pathObject.Patch.Response = getSchemaObjectByRef(path.Patch.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
+			pathObject.Patch.Operation = path.Patch
 		}
 		if name == "DELETE" {
-			pathObject.Delete.Summary = path.Delete.Summary
-			pathObject.Delete.Description = path.Delete.Description
+			pathObject.Delete.Operation = path.Delete
 		}
 	}
 

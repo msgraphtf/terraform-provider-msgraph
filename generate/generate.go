@@ -62,7 +62,7 @@ func main() {
 
 		generateDataSource(input)
 		generateModel(input)
-		if pathObject.Patch.Summary != "" {
+		if pathObject.Patch.Summary() != "" {
 			generateResource(input)
 		}
 	} else {
@@ -94,7 +94,7 @@ func main() {
 
 			generateDataSource(input)
 			generateModel(input)
-			if pathObject.Patch.Summary != "" && pathObject.Delete.Summary != "" {
+			if pathObject.Patch.Summary() != "" && pathObject.Delete.Summary() != "" {
 				generateResource(input)
 			}
 		}

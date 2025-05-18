@@ -29,7 +29,7 @@ func (m model) Definitions() []ModelDefinition {
 	}
 
 	var allDefinitions []ModelDefinition
-	newDefinition := ModelDefinition{Model: &m, OpenAPISchema: m.Template.OpenAPIPath.Get.Response}
+	newDefinition := ModelDefinition{Model: &m, OpenAPISchema: m.Template.OpenAPIPath.Get.Response()}
 	allDefinitions = append(allDefinitions, newDefinition)
 	allDefinitions = append(allDefinitions, recurseDefinitions(allDefinitions)...)
 

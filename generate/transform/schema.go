@@ -17,7 +17,7 @@ func (ts schema) Attributes() []terraformSchemaAttribute {
 
 	var attributes []terraformSchemaAttribute
 
-	for _, property := range ts.Template.OpenAPIPath.Get.Response.Properties {
+	for _, property := range ts.Template.OpenAPIPath.Get.Response().Properties {
 
 		// Skip excluded properties
 		if slices.Contains(ts.Template.Augment().ExcludedProperties, property.Name) {
@@ -142,7 +142,7 @@ func (tsa terraformSchemaAttribute) Required() bool {
 func (tsa terraformSchemaAttribute) Optional() bool {
 
 	if tsa.Schema.BehaviourMode == "DataSource" {
-		if slices.Contains(tsa.Schema.Template.OpenAPIPath.Parameters, tsa.Schema.Template.OpenAPIPath.Get.Response.Title+"-"+tsa.Name()) {
+		if slices.Contains(tsa.Schema.Template.OpenAPIPath.Parameters, tsa.Schema.Template.OpenAPIPath.Get.Response().Title+"-"+tsa.Name()) {
 			return true
 		} else if slices.Contains(tsa.Schema.Template.Augment().DataSourceExtraOptionals, tsa.Name()) {
 			return true
