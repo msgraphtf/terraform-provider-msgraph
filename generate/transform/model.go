@@ -102,7 +102,7 @@ func (md ModelDefinition) NestedDefinitions() []ModelDefinition {
 
 		if property.Type == "object" && property.ObjectOf.Type() != "string" {
 			definitions = append(definitions, ModelDefinition{Model: md.Model, OpenAPISchema: property.ObjectOf})
-		} else if property.Type == "array" && property.ArrayOf == "object" && property.ObjectOf.Type() != "string" {
+		} else if property.Type == "array" && property.ArrayOf() == "object" && property.ObjectOf.Type() != "string" {
 			definitions = append(definitions, ModelDefinition{Model: md.Model, OpenAPISchema: property.ObjectOf})
 		}
 
@@ -149,7 +149,7 @@ func (mf ModelField) FieldType() string {
 			return "types.Object"
 		}
 	case "array":
-		switch mf.Property.ArrayOf {
+		switch mf.Property.ArrayOf() {
 		case "object":
 			if mf.Property.ObjectOf.Type() == "string" { // This is a string enum.
 				return "types.List"
@@ -182,7 +182,7 @@ func (mf ModelField) AttributeType() string {
 			return fmt.Sprintf("types.ObjectType{AttrTypes:%sModel{}.AttributeTypes()}", mf.Definition.Model.Template.BlockName().LowerCamel()+upperFirst(mf.Property.ObjectOf.Title()))
 		}
 	case "array":
-		switch mf.Property.ArrayOf {
+		switch mf.Property.ArrayOf() {
 		case "object":
 			if mf.Property.ObjectOf.Type() == "string" { // This is a string enum.
 				return "types.ListType{ElemType:types.StringType}"

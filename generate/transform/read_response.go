@@ -110,7 +110,7 @@ func (rra readResponseAttribute) Type() string {
 			return "ReadSingleNestedAttribute"
 		}
 	case "array":
-		switch rra.Property.ArrayOf {
+		switch rra.Property.ArrayOf() {
 		case "string":
 			if rra.Property.Format == "" {
 				return "ReadListStringAttribute"

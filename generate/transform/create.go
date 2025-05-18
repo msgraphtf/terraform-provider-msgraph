@@ -117,7 +117,7 @@ func (cra createRequestAttribute) Type() string {
 	case "boolean":
 		return "CreateBoolAttribute"
 	case "array":
-		switch cra.Property.ArrayOf {
+		switch cra.Property.ArrayOf() {
 		case "string":
 			if cra.Property.Format == "uuid" {
 				return "CreateArrayUuidAttribute"

@@ -35,12 +35,26 @@ type OpenAPISchemaProperty struct {
 	Name        string
 	Type        string
 	Format      string
-	ArrayOf     string
 	ObjectOf    OpenAPISchemaObject
 }
 
 func (sp OpenAPISchemaProperty) Description() string {
 	return sp.Schema.Description
+}
+
+func (sp OpenAPISchemaProperty) ArrayOf() string {
+
+	if strings.Join(sp.Schema.Type.Slice(), "") == "array" { // Array
+		if strings.Join(sp.Schema.Items.Value.Type.Slice(), "") == "object" || sp.Schema.Items.Ref != "" { // Array of objects
+			return "object"
+		} else if sp.Schema.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
+			return "object"
+		} else { // Array of primitive type
+			return strings.Join(sp.Schema.Items.Value.Type.Slice(), "")
+		}
+	} else {
+		return ""
+	}
 }
 
 func getSchemaObjectByRef(ref string) OpenAPISchemaObject {
@@ -118,14 +132,11 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 		// Determines what type of data the OpenAPI schema object is
 		if strings.Join(property.Type.Slice(), "") == "array" { // Array
 			if strings.Join(property.Items.Value.Type.Slice(), "") == "object" || property.Items.Ref != "" { // Array of objects
-				newProperty.ArrayOf = "object"
 				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Ref))
 			} else if property.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
-				newProperty.ArrayOf = "object"
 				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Value.AnyOf[0].Ref))
 			} else { // Array of primitive type
 				newProperty.Format = property.Items.Value.Format
-				newProperty.ArrayOf = strings.Join(property.Items.Value.Type.Slice(), "")
 			}
 		} else if property.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
 			newProperty.Type = "object"

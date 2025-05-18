@@ -119,7 +119,7 @@ func (tsa terraformSchemaAttribute) Type() string {
 			return "SingleNestedAttribute"
 		}
 	case "array":
-		switch tsa.OpenAPISchemaProperty.ArrayOf {
+		switch tsa.OpenAPISchemaProperty.ArrayOf() {
 		case "string":
 			return "ListAttribute"
 		case "object":

@@ -88,7 +88,7 @@ func (ura updateRequestAttribute) Type() string {
 	case "boolean":
 		return "UpdateBoolAttribute"
 	case "array":
-		switch ura.Property.ArrayOf {
+		switch ura.Property.ArrayOf() {
 		case "string":
 			if ura.Property.Format == "uuid" {
 				return "UpdateArrayUuidAttribute"
