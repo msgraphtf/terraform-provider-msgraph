@@ -33,7 +33,6 @@ func (so OpenAPISchemaObject) Type() string {
 type OpenAPISchemaProperty struct {
 	Schema      *openapi3.Schema
 	Name        string
-	ObjectOf    OpenAPISchemaObject
 }
 
 func (sp OpenAPISchemaProperty) Description() string {
@@ -48,6 +47,24 @@ func (sp OpenAPISchemaProperty) Type() string {
 		} else {
 			return strings.Join(sp.Schema.Type.Slice(), "")
 		}
+}
+
+func (sp OpenAPISchemaProperty) ObjectOf() OpenAPISchemaObject {
+
+	// Determines what type of data the OpenAPI schema object is
+	if strings.Join(sp.Schema.Type.Slice(), "") == "array" { // Array
+		if strings.Join(sp.Schema.Items.Value.Type.Slice(), "") == "object" || sp.Schema.Items.Ref != "" { // Array of objects
+			return getSchemaObject(getSchemaFromRef(sp.Schema.Items.Ref))
+		} else if sp.Schema.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
+			return getSchemaObject(getSchemaFromRef(sp.Schema.Items.Value.AnyOf[0].Ref))
+		}
+	} else if sp.Schema.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
+		return getSchemaObject(sp.Schema)
+	} else if sp.Schema.AnyOf != nil { // Object
+		return getSchemaObject(getSchemaFromRef(sp.Schema.AnyOf[0].Ref))
+	}
+
+	return OpenAPISchemaObject{}
 }
 
 func (sp OpenAPISchemaProperty) ArrayOf() string {
@@ -144,19 +161,6 @@ func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaPropert
 
 		newProperty.Schema = property
 		newProperty.Name = k
-
-		// Determines what type of data the OpenAPI schema object is
-		if strings.Join(property.Type.Slice(), "") == "array" { // Array
-			if strings.Join(property.Items.Value.Type.Slice(), "") == "object" || property.Items.Ref != "" { // Array of objects
-				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Ref))
-			} else if property.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
-				newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.Items.Value.AnyOf[0].Ref))
-			}
-		} else if property.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
-			newProperty.ObjectOf = getSchemaObject(property)
-		} else if property.AnyOf != nil { // Object
-			newProperty.ObjectOf = getSchemaObject(getSchemaFromRef(property.AnyOf[0].Ref))
-		}
 
 		properties = append(properties, newProperty)
 	}

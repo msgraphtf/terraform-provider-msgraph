@@ -128,7 +128,7 @@ func (cra createRequestAttribute) Type() string {
 			return "CreateArrayObjectAttribute"
 		}
 	case "object":
-		if cra.Property.ObjectOf.Type() == "string" {
+		if cra.Property.ObjectOf().Type() == "string" {
 			return "CreateStringEnumAttribute"
 		} else {
 			return "CreateObjectAttribute"
@@ -163,7 +163,7 @@ func (cra createRequestAttribute) SetModelMethod() string {
 // This can be slightly (grammatically) different from the name of the attribute.
 // The attribute name may be plural if it's an array of some kind, but the ObjectOf will be singular
 func (cra createRequestAttribute) ObjectOf() string {
-	return upperFirst(cra.Property.ObjectOf.Title())
+	return upperFirst(cra.Property.ObjectOf().Title())
 }
 
 // Generates the Terraform Model name of the given attribute
@@ -174,7 +174,7 @@ func (cra createRequestAttribute) TfModelName() string {
 func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	var cr []createRequestAttribute
 
-	for _, property := range cra.Property.ObjectOf.Properties {
+	for _, property := range cra.Property.ObjectOf().Properties {
 
 		// Skip excluded properties
 		if slices.Contains(cra.CreateRequest.Template.Augment().ExcludedProperties, property.Name) {

@@ -104,7 +104,7 @@ func (rra readResponseAttribute) Type() string {
 	case "boolean":
 		return "ReadBoolAttribute"
 	case "object":
-		if rra.Property.ObjectOf.Type() == "string" { // This is a string enum.
+		if rra.Property.ObjectOf().Type() == "string" { // This is a string enum.
 			return "ReadStringFormattedAttribute"
 		} else {
 			return "ReadSingleNestedAttribute"
@@ -118,7 +118,7 @@ func (rra readResponseAttribute) Type() string {
 				return "ReadListStringFormattedAttribute"
 			}
 		case "object":
-			if rra.Property.ObjectOf.Type() == "string" { // This is a string enum.
+			if rra.Property.ObjectOf().Type() == "string" { // This is a string enum.
 				return "ReadListStringFormattedAttribute"
 			} else {
 				return "ReadListNestedAttribute"
@@ -138,7 +138,7 @@ func (rra readResponseAttribute) ParentName() string {
 }
 
 func (rra readResponseAttribute) ObjectOf() string {
-	return upperFirst(rra.Property.ObjectOf.Title())
+	return upperFirst(rra.Property.ObjectOf().Title())
 }
 
 func (rra readResponseAttribute) TfModelName() string {
@@ -162,7 +162,7 @@ func (rra readResponseAttribute) NestedRead() []readResponseAttribute {
 
 	var read []readResponseAttribute
 
-	for _, property := range rra.Property.ObjectOf.Properties {
+	for _, property := range rra.Property.ObjectOf().Properties {
 
 		// Skip excluded properties
 		if slices.Contains(rra.ReadResponse.Template.Augment().ExcludedProperties, property.Name) {

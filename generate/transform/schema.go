@@ -113,7 +113,7 @@ func (tsa terraformSchemaAttribute) Type() string {
 	case "boolean":
 		return "BoolAttribute"
 	case "object":
-		if tsa.OpenAPISchemaProperty.ObjectOf.Type() == "string" { // This is a string enum. TODO: Implement validation
+		if tsa.OpenAPISchemaProperty.ObjectOf().Type() == "string" { // This is a string enum. TODO: Implement validation
 			return "StringAttribute"
 		} else {
 			return "SingleNestedAttribute"
@@ -123,7 +123,7 @@ func (tsa terraformSchemaAttribute) Type() string {
 		case "string":
 			return "ListAttribute"
 		case "object":
-			if tsa.OpenAPISchemaProperty.ObjectOf.Type() == "string" { // This is a string enum. TODO: Implement validation
+			if tsa.OpenAPISchemaProperty.ObjectOf().Type() == "string" { // This is a string enum. TODO: Implement validation
 				return "ListAttribute"
 			} else {
 				return "ListNestedAttribute"
@@ -170,7 +170,7 @@ func (tsa terraformSchemaAttribute) PlanModifiers() bool {
 func (tsa terraformSchemaAttribute) NestedAttribute() []terraformSchemaAttribute {
 	var attributes []terraformSchemaAttribute
 
-	for _, property := range tsa.OpenAPISchemaProperty.ObjectOf.Properties {
+	for _, property := range tsa.OpenAPISchemaProperty.ObjectOf().Properties {
 
 		// Skip excluded properties
 		if slices.Contains(tsa.Schema.Template.Augment().ExcludedProperties, property.Name) {
