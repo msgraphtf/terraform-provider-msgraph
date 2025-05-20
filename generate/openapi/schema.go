@@ -91,6 +91,13 @@ func (sp OpenAPISchemaProperty) Format() string {
 	}
 }
 
+func getSchemaFromRef(ref string) *openapi3.Schema {
+
+	schemaName := strings.Split(ref, "/")[3]
+	return doc.Components.Schemas[schemaName].Value
+
+}
+
 func getSchemaObjectByRef(ref string) OpenAPISchemaObject {
 	schema := getSchemaFromRef(ref)
 	schemaObject := getSchemaObject(schema)
@@ -128,13 +135,6 @@ func recurseUpSchema(schema *openapi3.Schema) []OpenAPISchemaProperty {
 	}
 
 	return properties
-
-}
-
-func getSchemaFromRef(ref string) *openapi3.Schema {
-
-	schemaName := strings.Split(ref, "/")[3]
-	return doc.Components.Schemas[schemaName].Value
 
 }
 
