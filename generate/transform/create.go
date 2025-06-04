@@ -40,7 +40,7 @@ func (cr createRequest) Attributes() []createRequestAttribute {
 
 	var cra []createRequestAttribute
 
-	for _, property := range cr.Template.OpenAPIPath.Get().Response().AllProperties {
+	for _, property := range cr.Template.OpenAPIPath.Get().Response().Properties() {
 
 		// Skip excluded properties
 		if slices.Contains(cr.Template.Augment().ExcludedProperties, property.Name) {

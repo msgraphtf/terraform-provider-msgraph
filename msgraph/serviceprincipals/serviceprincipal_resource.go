@@ -791,21 +791,6 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 
 	// Generate API request body from Terraform plan
 	requestBodyServicePrincipal := models.NewServicePrincipal()
-	if !tfPlanServicePrincipal.Id.IsUnknown() {
-		tfPlanId := tfPlanServicePrincipal.Id.ValueString()
-		requestBodyServicePrincipal.SetId(&tfPlanId)
-	} else {
-		tfPlanServicePrincipal.Id = types.StringNull()
-	}
-
-	if !tfPlanServicePrincipal.DeletedDateTime.IsUnknown() {
-		tfPlanDeletedDateTime := tfPlanServicePrincipal.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyServicePrincipal.SetDeletedDateTime(&t)
-	} else {
-		tfPlanServicePrincipal.DeletedDateTime = types.StringNull()
-	}
-
 	if !tfPlanServicePrincipal.AccountEnabled.IsUnknown() {
 		tfPlanAccountEnabled := tfPlanServicePrincipal.AccountEnabled.ValueBool()
 		requestBodyServicePrincipal.SetAccountEnabled(&tfPlanAccountEnabled)
@@ -987,6 +972,14 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		tfPlanServicePrincipal.ApplicationTemplateId = types.StringNull()
 	}
 
+	if !tfPlanServicePrincipal.DeletedDateTime.IsUnknown() {
+		tfPlanDeletedDateTime := tfPlanServicePrincipal.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyServicePrincipal.SetDeletedDateTime(&t)
+	} else {
+		tfPlanServicePrincipal.DeletedDateTime = types.StringNull()
+	}
+
 	if !tfPlanServicePrincipal.Description.IsUnknown() {
 		tfPlanDescription := tfPlanServicePrincipal.Description.ValueString()
 		requestBodyServicePrincipal.SetDescription(&tfPlanDescription)
@@ -1013,6 +1006,13 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		requestBodyServicePrincipal.SetHomepage(&tfPlanHomepage)
 	} else {
 		tfPlanServicePrincipal.Homepage = types.StringNull()
+	}
+
+	if !tfPlanServicePrincipal.Id.IsUnknown() {
+		tfPlanId := tfPlanServicePrincipal.Id.ValueString()
+		requestBodyServicePrincipal.SetId(&tfPlanId)
+	} else {
+		tfPlanServicePrincipal.Id = types.StringNull()
 	}
 
 	if !tfPlanServicePrincipal.Info.IsUnknown() {

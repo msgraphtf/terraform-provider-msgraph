@@ -332,13 +332,6 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Generate API request body from Terraform plan
 	requestBodyTeam := models.NewTeam()
-	if !tfPlanTeam.Id.IsUnknown() {
-		tfPlanId := tfPlanTeam.Id.ValueString()
-		requestBodyTeam.SetId(&tfPlanId)
-	} else {
-		tfPlanTeam.Id = types.StringNull()
-	}
-
 	if !tfPlanTeam.Classification.IsUnknown() {
 		tfPlanClassification := tfPlanTeam.Classification.ValueString()
 		requestBodyTeam.SetClassification(&tfPlanClassification)
@@ -432,6 +425,13 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamGuestSettings.AttributeTypes(), requestBodyTeamGuestSettings)
 	} else {
 		tfPlanTeam.GuestSettings = types.ObjectNull(tfPlanTeam.GuestSettings.AttributeTypes(ctx))
+	}
+
+	if !tfPlanTeam.Id.IsUnknown() {
+		tfPlanId := tfPlanTeam.Id.ValueString()
+		requestBodyTeam.SetId(&tfPlanId)
+	} else {
+		tfPlanTeam.Id = types.StringNull()
 	}
 
 	if !tfPlanTeam.InternalId.IsUnknown() {

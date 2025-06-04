@@ -339,21 +339,6 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	// Generate API request body from Terraform plan
 	requestBodyDevice := models.NewDevice()
-	if !tfPlanDevice.Id.IsUnknown() {
-		tfPlanId := tfPlanDevice.Id.ValueString()
-		requestBodyDevice.SetId(&tfPlanId)
-	} else {
-		tfPlanDevice.Id = types.StringNull()
-	}
-
-	if !tfPlanDevice.DeletedDateTime.IsUnknown() {
-		tfPlanDeletedDateTime := tfPlanDevice.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyDevice.SetDeletedDateTime(&t)
-	} else {
-		tfPlanDevice.DeletedDateTime = types.StringNull()
-	}
-
 	if !tfPlanDevice.AccountEnabled.IsUnknown() {
 		tfPlanAccountEnabled := tfPlanDevice.AccountEnabled.ValueBool()
 		requestBodyDevice.SetAccountEnabled(&tfPlanAccountEnabled)
@@ -404,6 +389,14 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		tfPlanDevice.ComplianceExpirationDateTime = types.StringNull()
 	}
 
+	if !tfPlanDevice.DeletedDateTime.IsUnknown() {
+		tfPlanDeletedDateTime := tfPlanDevice.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyDevice.SetDeletedDateTime(&t)
+	} else {
+		tfPlanDevice.DeletedDateTime = types.StringNull()
+	}
+
 	if !tfPlanDevice.DeviceCategory.IsUnknown() {
 		tfPlanDeviceCategory := tfPlanDevice.DeviceCategory.ValueString()
 		requestBodyDevice.SetDeviceCategory(&tfPlanDeviceCategory)
@@ -451,6 +444,13 @@ func (r *deviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		requestBodyDevice.SetEnrollmentType(&tfPlanEnrollmentType)
 	} else {
 		tfPlanDevice.EnrollmentType = types.StringNull()
+	}
+
+	if !tfPlanDevice.Id.IsUnknown() {
+		tfPlanId := tfPlanDevice.Id.ValueString()
+		requestBodyDevice.SetId(&tfPlanId)
+	} else {
+		tfPlanDevice.Id = types.StringNull()
 	}
 
 	if !tfPlanDevice.IsCompliant.IsUnknown() {

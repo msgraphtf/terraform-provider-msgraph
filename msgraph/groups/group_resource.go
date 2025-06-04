@@ -468,21 +468,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	// Generate API request body from Terraform plan
 	requestBodyGroup := models.NewGroup()
-	if !tfPlanGroup.Id.IsUnknown() {
-		tfPlanId := tfPlanGroup.Id.ValueString()
-		requestBodyGroup.SetId(&tfPlanId)
-	} else {
-		tfPlanGroup.Id = types.StringNull()
-	}
-
-	if !tfPlanGroup.DeletedDateTime.IsUnknown() {
-		tfPlanDeletedDateTime := tfPlanGroup.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyGroup.SetDeletedDateTime(&t)
-	} else {
-		tfPlanGroup.DeletedDateTime = types.StringNull()
-	}
-
 	if len(tfPlanGroup.AssignedLabels.Elements()) > 0 {
 		var requestBodyAssignedLabels []models.AssignedLabelable
 		for _, i := range tfPlanGroup.AssignedLabels.Elements() {
@@ -557,6 +542,14 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		tfPlanGroup.CreatedDateTime = types.StringNull()
 	}
 
+	if !tfPlanGroup.DeletedDateTime.IsUnknown() {
+		tfPlanDeletedDateTime := tfPlanGroup.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyGroup.SetDeletedDateTime(&t)
+	} else {
+		tfPlanGroup.DeletedDateTime = types.StringNull()
+	}
+
 	if !tfPlanGroup.Description.IsUnknown() {
 		tfPlanDescription := tfPlanGroup.Description.ValueString()
 		requestBodyGroup.SetDescription(&tfPlanDescription)
@@ -587,6 +580,13 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		requestBodyGroup.SetGroupTypes(stringArrayGroupTypes)
 	} else {
 		tfPlanGroup.GroupTypes = types.ListNull(types.StringType)
+	}
+
+	if !tfPlanGroup.Id.IsUnknown() {
+		tfPlanId := tfPlanGroup.Id.ValueString()
+		requestBodyGroup.SetId(&tfPlanId)
+	} else {
+		tfPlanGroup.Id = types.StringNull()
 	}
 
 	if !tfPlanGroup.IsAssignableToRole.IsUnknown() {

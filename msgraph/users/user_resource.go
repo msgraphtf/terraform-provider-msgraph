@@ -1145,21 +1145,6 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Generate API request body from Terraform plan
 	requestBodyUser := models.NewUser()
-	if !tfPlanUser.Id.IsUnknown() {
-		tfPlanId := tfPlanUser.Id.ValueString()
-		requestBodyUser.SetId(&tfPlanId)
-	} else {
-		tfPlanUser.Id = types.StringNull()
-	}
-
-	if !tfPlanUser.DeletedDateTime.IsUnknown() {
-		tfPlanDeletedDateTime := tfPlanUser.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyUser.SetDeletedDateTime(&t)
-	} else {
-		tfPlanUser.DeletedDateTime = types.StringNull()
-	}
-
 	if !tfPlanUser.AboutMe.IsUnknown() {
 		tfPlanAboutMe := tfPlanUser.AboutMe.ValueString()
 		requestBodyUser.SetAboutMe(&tfPlanAboutMe)
@@ -1338,6 +1323,14 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		tfPlanUser.CreationType = types.StringNull()
 	}
 
+	if !tfPlanUser.DeletedDateTime.IsUnknown() {
+		tfPlanDeletedDateTime := tfPlanUser.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyUser.SetDeletedDateTime(&t)
+	} else {
+		tfPlanUser.DeletedDateTime = types.StringNull()
+	}
+
 	if !tfPlanUser.Department.IsUnknown() {
 		tfPlanDepartment := tfPlanUser.Department.ValueString()
 		requestBodyUser.SetDepartment(&tfPlanDepartment)
@@ -1442,6 +1435,13 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		requestBodyUser.SetHireDate(&t)
 	} else {
 		tfPlanUser.HireDate = types.StringNull()
+	}
+
+	if !tfPlanUser.Id.IsUnknown() {
+		tfPlanId := tfPlanUser.Id.ValueString()
+		requestBodyUser.SetId(&tfPlanId)
+	} else {
+		tfPlanUser.Id = types.StringNull()
 	}
 
 	if len(tfPlanUser.Identities.Elements()) > 0 {

@@ -1223,21 +1223,6 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Generate API request body from Terraform plan
 	requestBodyApplication := models.NewApplication()
-	if !tfPlanApplication.Id.IsUnknown() {
-		tfPlanId := tfPlanApplication.Id.ValueString()
-		requestBodyApplication.SetId(&tfPlanId)
-	} else {
-		tfPlanApplication.Id = types.StringNull()
-	}
-
-	if !tfPlanApplication.DeletedDateTime.IsUnknown() {
-		tfPlanDeletedDateTime := tfPlanApplication.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyApplication.SetDeletedDateTime(&t)
-	} else {
-		tfPlanApplication.DeletedDateTime = types.StringNull()
-	}
-
 	if len(tfPlanApplication.AddIns.Elements()) > 0 {
 		var requestBodyAddIns []models.AddInable
 		for _, i := range tfPlanApplication.AddIns.Elements() {
@@ -1572,6 +1557,14 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		tfPlanApplication.DefaultRedirectUri = types.StringNull()
 	}
 
+	if !tfPlanApplication.DeletedDateTime.IsUnknown() {
+		tfPlanDeletedDateTime := tfPlanApplication.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyApplication.SetDeletedDateTime(&t)
+	} else {
+		tfPlanApplication.DeletedDateTime = types.StringNull()
+	}
+
 	if !tfPlanApplication.Description.IsUnknown() {
 		tfPlanDescription := tfPlanApplication.Description.ValueString()
 		requestBodyApplication.SetDescription(&tfPlanDescription)
@@ -1598,6 +1591,13 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		requestBodyApplication.SetGroupMembershipClaims(&tfPlanGroupMembershipClaims)
 	} else {
 		tfPlanApplication.GroupMembershipClaims = types.StringNull()
+	}
+
+	if !tfPlanApplication.Id.IsUnknown() {
+		tfPlanId := tfPlanApplication.Id.ValueString()
+		requestBodyApplication.SetId(&tfPlanId)
+	} else {
+		tfPlanApplication.Id = types.StringNull()
 	}
 
 	if len(tfPlanApplication.IdentifierUris.Elements()) > 0 {
