@@ -727,16 +727,6 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	if responseUser.GetId() != nil {
-		tfStateUser.Id = types.StringValue(*responseUser.GetId())
-	} else {
-		tfStateUser.Id = types.StringNull()
-	}
-	if responseUser.GetDeletedDateTime() != nil {
-		tfStateUser.DeletedDateTime = types.StringValue(responseUser.GetDeletedDateTime().String())
-	} else {
-		tfStateUser.DeletedDateTime = types.StringNull()
-	}
 	if responseUser.GetAboutMe() != nil {
 		tfStateUser.AboutMe = types.StringValue(*responseUser.GetAboutMe())
 	} else {
@@ -868,6 +858,11 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	} else {
 		tfStateUser.CreationType = types.StringNull()
 	}
+	if responseUser.GetDeletedDateTime() != nil {
+		tfStateUser.DeletedDateTime = types.StringValue(responseUser.GetDeletedDateTime().String())
+	} else {
+		tfStateUser.DeletedDateTime = types.StringNull()
+	}
 	if responseUser.GetDepartment() != nil {
 		tfStateUser.Department = types.StringValue(*responseUser.GetDepartment())
 	} else {
@@ -939,6 +934,11 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		tfStateUser.HireDate = types.StringValue(responseUser.GetHireDate().String())
 	} else {
 		tfStateUser.HireDate = types.StringNull()
+	}
+	if responseUser.GetId() != nil {
+		tfStateUser.Id = types.StringValue(*responseUser.GetId())
+	} else {
+		tfStateUser.Id = types.StringNull()
 	}
 	if len(responseUser.GetIdentities()) > 0 {
 		objectValues := []basetypes.ObjectValue{}

@@ -606,16 +606,6 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		for _, responseUser := range responseUsers.GetValue() {
 			tfStateUser := usersUserModel{}
 
-			if responseUser.GetId() != nil {
-				tfStateUser.Id = types.StringValue(*responseUser.GetId())
-			} else {
-				tfStateUser.Id = types.StringNull()
-			}
-			if responseUser.GetDeletedDateTime() != nil {
-				tfStateUser.DeletedDateTime = types.StringValue(responseUser.GetDeletedDateTime().String())
-			} else {
-				tfStateUser.DeletedDateTime = types.StringNull()
-			}
 			if responseUser.GetAccountEnabled() != nil {
 				tfStateUser.AccountEnabled = types.BoolValue(*responseUser.GetAccountEnabled())
 			} else {
@@ -737,6 +727,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			} else {
 				tfStateUser.CreationType = types.StringNull()
 			}
+			if responseUser.GetDeletedDateTime() != nil {
+				tfStateUser.DeletedDateTime = types.StringValue(responseUser.GetDeletedDateTime().String())
+			} else {
+				tfStateUser.DeletedDateTime = types.StringNull()
+			}
 			if responseUser.GetDepartment() != nil {
 				tfStateUser.Department = types.StringValue(*responseUser.GetDepartment())
 			} else {
@@ -803,6 +798,11 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				tfStateUser.GivenName = types.StringValue(*responseUser.GetGivenName())
 			} else {
 				tfStateUser.GivenName = types.StringNull()
+			}
+			if responseUser.GetId() != nil {
+				tfStateUser.Id = types.StringValue(*responseUser.GetId())
+			} else {
+				tfStateUser.Id = types.StringNull()
 			}
 			if len(responseUser.GetIdentities()) > 0 {
 				objectValues := []basetypes.ObjectValue{}

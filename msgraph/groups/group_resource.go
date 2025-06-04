@@ -937,16 +937,6 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	if responseGroup.GetId() != nil {
-		tfStateGroup.Id = types.StringValue(*responseGroup.GetId())
-	} else {
-		tfStateGroup.Id = types.StringNull()
-	}
-	if responseGroup.GetDeletedDateTime() != nil {
-		tfStateGroup.DeletedDateTime = types.StringValue(responseGroup.GetDeletedDateTime().String())
-	} else {
-		tfStateGroup.DeletedDateTime = types.StringNull()
-	}
 	if len(responseGroup.GetAssignedLabels()) > 0 {
 		objectValues := []basetypes.ObjectValue{}
 		for _, responseAssignedLabel := range responseGroup.GetAssignedLabels() {
@@ -1001,6 +991,11 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	} else {
 		tfStateGroup.CreatedDateTime = types.StringNull()
 	}
+	if responseGroup.GetDeletedDateTime() != nil {
+		tfStateGroup.DeletedDateTime = types.StringValue(responseGroup.GetDeletedDateTime().String())
+	} else {
+		tfStateGroup.DeletedDateTime = types.StringNull()
+	}
 	if responseGroup.GetDescription() != nil {
 		tfStateGroup.Description = types.StringValue(*responseGroup.GetDescription())
 	} else {
@@ -1025,6 +1020,11 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		tfStateGroup.GroupTypes = listValue
 	} else {
 		tfStateGroup.GroupTypes = types.ListNull(types.StringType)
+	}
+	if responseGroup.GetId() != nil {
+		tfStateGroup.Id = types.StringValue(*responseGroup.GetId())
+	} else {
+		tfStateGroup.Id = types.StringNull()
 	}
 	if responseGroup.GetIsAssignableToRole() != nil {
 		tfStateGroup.IsAssignableToRole = types.BoolValue(*responseGroup.GetIsAssignableToRole())

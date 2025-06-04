@@ -653,11 +653,6 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 
-	if responseTeam.GetId() != nil {
-		tfStateTeam.Id = types.StringValue(*responseTeam.GetId())
-	} else {
-		tfStateTeam.Id = types.StringNull()
-	}
 	if responseTeam.GetClassification() != nil {
 		tfStateTeam.Classification = types.StringValue(*responseTeam.GetClassification())
 	} else {
@@ -721,6 +716,11 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		}
 
 		tfStateTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfStateTeamGuestSettings.AttributeTypes(), tfStateTeamGuestSettings)
+	}
+	if responseTeam.GetId() != nil {
+		tfStateTeam.Id = types.StringValue(*responseTeam.GetId())
+	} else {
+		tfStateTeam.Id = types.StringNull()
 	}
 	if responseTeam.GetInternalId() != nil {
 		tfStateTeam.InternalId = types.StringValue(*responseTeam.GetInternalId())

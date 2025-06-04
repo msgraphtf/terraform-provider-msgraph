@@ -709,16 +709,6 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 		for _, responseApplication := range responseApplications.GetValue() {
 			tfStateApplication := applicationsApplicationModel{}
 
-			if responseApplication.GetId() != nil {
-				tfStateApplication.Id = types.StringValue(*responseApplication.GetId())
-			} else {
-				tfStateApplication.Id = types.StringNull()
-			}
-			if responseApplication.GetDeletedDateTime() != nil {
-				tfStateApplication.DeletedDateTime = types.StringValue(responseApplication.GetDeletedDateTime().String())
-			} else {
-				tfStateApplication.DeletedDateTime = types.StringNull()
-			}
 			if len(responseApplication.GetAddIns()) > 0 {
 				objectValues := []basetypes.ObjectValue{}
 				for _, responseAddIn := range responseApplication.GetAddIns() {
@@ -962,6 +952,11 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 			} else {
 				tfStateApplication.DefaultRedirectUri = types.StringNull()
 			}
+			if responseApplication.GetDeletedDateTime() != nil {
+				tfStateApplication.DeletedDateTime = types.StringValue(responseApplication.GetDeletedDateTime().String())
+			} else {
+				tfStateApplication.DeletedDateTime = types.StringNull()
+			}
 			if responseApplication.GetDescription() != nil {
 				tfStateApplication.Description = types.StringValue(*responseApplication.GetDescription())
 			} else {
@@ -981,6 +976,11 @@ func (d *applicationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 				tfStateApplication.GroupMembershipClaims = types.StringValue(*responseApplication.GetGroupMembershipClaims())
 			} else {
 				tfStateApplication.GroupMembershipClaims = types.StringNull()
+			}
+			if responseApplication.GetId() != nil {
+				tfStateApplication.Id = types.StringValue(*responseApplication.GetId())
+			} else {
+				tfStateApplication.Id = types.StringNull()
 			}
 			if len(responseApplication.GetIdentifierUris()) > 0 {
 				var valueArrayIdentifierUris []attr.Value

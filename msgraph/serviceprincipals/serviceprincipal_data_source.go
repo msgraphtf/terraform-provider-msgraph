@@ -507,16 +507,6 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		return
 	}
 
-	if responseServicePrincipal.GetId() != nil {
-		tfStateServicePrincipal.Id = types.StringValue(*responseServicePrincipal.GetId())
-	} else {
-		tfStateServicePrincipal.Id = types.StringNull()
-	}
-	if responseServicePrincipal.GetDeletedDateTime() != nil {
-		tfStateServicePrincipal.DeletedDateTime = types.StringValue(responseServicePrincipal.GetDeletedDateTime().String())
-	} else {
-		tfStateServicePrincipal.DeletedDateTime = types.StringNull()
-	}
 	if responseServicePrincipal.GetAccountEnabled() != nil {
 		tfStateServicePrincipal.AccountEnabled = types.BoolValue(*responseServicePrincipal.GetAccountEnabled())
 	} else {
@@ -652,6 +642,11 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 	} else {
 		tfStateServicePrincipal.ApplicationTemplateId = types.StringNull()
 	}
+	if responseServicePrincipal.GetDeletedDateTime() != nil {
+		tfStateServicePrincipal.DeletedDateTime = types.StringValue(responseServicePrincipal.GetDeletedDateTime().String())
+	} else {
+		tfStateServicePrincipal.DeletedDateTime = types.StringNull()
+	}
 	if responseServicePrincipal.GetDescription() != nil {
 		tfStateServicePrincipal.Description = types.StringValue(*responseServicePrincipal.GetDescription())
 	} else {
@@ -671,6 +666,11 @@ func (d *servicePrincipalDataSource) Read(ctx context.Context, req datasource.Re
 		tfStateServicePrincipal.Homepage = types.StringValue(*responseServicePrincipal.GetHomepage())
 	} else {
 		tfStateServicePrincipal.Homepage = types.StringNull()
+	}
+	if responseServicePrincipal.GetId() != nil {
+		tfStateServicePrincipal.Id = types.StringValue(*responseServicePrincipal.GetId())
+	} else {
+		tfStateServicePrincipal.Id = types.StringNull()
 	}
 	if responseServicePrincipal.GetInfo() != nil {
 		tfStateInformationalUrl := servicePrincipalInformationalUrlModel{}

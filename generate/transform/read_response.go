@@ -15,7 +15,7 @@ func (rr readResponse) Attributes() []readResponseAttribute {
 
 	var readResponseAttributes []readResponseAttribute
 
-	for _, property := range rr.Template.OpenAPIPath.Get().Response().AllProperties {
+	for _, property := range rr.Template.OpenAPIPath.Get().Response().Properties() {
 
 		// Skip excluded properties
 		if slices.Contains(rr.Template.Augment().ExcludedProperties, property.Name) {
@@ -162,7 +162,7 @@ func (rra readResponseAttribute) NestedRead() []readResponseAttribute {
 
 	var read []readResponseAttribute
 
-	for _, property := range rra.Property.ObjectOf().AllProperties {
+	for _, property := range rra.Property.ObjectOf().Properties() {
 
 		// Skip excluded properties
 		if slices.Contains(rra.ReadResponse.Template.Augment().ExcludedProperties, property.Name) {

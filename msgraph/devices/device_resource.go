@@ -678,16 +678,6 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	if responseDevice.GetId() != nil {
-		tfStateDevice.Id = types.StringValue(*responseDevice.GetId())
-	} else {
-		tfStateDevice.Id = types.StringNull()
-	}
-	if responseDevice.GetDeletedDateTime() != nil {
-		tfStateDevice.DeletedDateTime = types.StringValue(responseDevice.GetDeletedDateTime().String())
-	} else {
-		tfStateDevice.DeletedDateTime = types.StringNull()
-	}
 	if responseDevice.GetAccountEnabled() != nil {
 		tfStateDevice.AccountEnabled = types.BoolValue(*responseDevice.GetAccountEnabled())
 	} else {
@@ -723,6 +713,11 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	} else {
 		tfStateDevice.ComplianceExpirationDateTime = types.StringNull()
 	}
+	if responseDevice.GetDeletedDateTime() != nil {
+		tfStateDevice.DeletedDateTime = types.StringValue(responseDevice.GetDeletedDateTime().String())
+	} else {
+		tfStateDevice.DeletedDateTime = types.StringNull()
+	}
 	if responseDevice.GetDeviceCategory() != nil {
 		tfStateDevice.DeviceCategory = types.StringValue(*responseDevice.GetDeviceCategory())
 	} else {
@@ -757,6 +752,11 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		tfStateDevice.EnrollmentType = types.StringValue(*responseDevice.GetEnrollmentType())
 	} else {
 		tfStateDevice.EnrollmentType = types.StringNull()
+	}
+	if responseDevice.GetId() != nil {
+		tfStateDevice.Id = types.StringValue(*responseDevice.GetId())
+	} else {
+		tfStateDevice.Id = types.StringNull()
 	}
 	if responseDevice.GetIsCompliant() != nil {
 		tfStateDevice.IsCompliant = types.BoolValue(*responseDevice.GetIsCompliant())

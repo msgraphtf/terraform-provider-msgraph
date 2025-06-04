@@ -422,11 +422,6 @@ func (d *sitesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		for _, responseSite := range responseSites.GetValue() {
 			tfStateSite := sitesSiteModel{}
 
-			if responseSite.GetId() != nil {
-				tfStateSite.Id = types.StringValue(*responseSite.GetId())
-			} else {
-				tfStateSite.Id = types.StringNull()
-			}
 			if responseSite.GetCreatedBy() != nil {
 				tfStateIdentitySet := sitesIdentitySetModel{}
 				responseIdentitySet := responseSite.GetCreatedBy()
@@ -495,10 +490,119 @@ func (d *sitesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			} else {
 				tfStateSite.Description = types.StringNull()
 			}
+			if responseSite.GetDisplayName() != nil {
+				tfStateSite.DisplayName = types.StringValue(*responseSite.GetDisplayName())
+			} else {
+				tfStateSite.DisplayName = types.StringNull()
+			}
 			if responseSite.GetETag() != nil {
 				tfStateSite.ETag = types.StringValue(*responseSite.GetETag())
 			} else {
 				tfStateSite.ETag = types.StringNull()
+			}
+			if responseSite.GetError() != nil {
+				tfStatePublicError := sitesPublicErrorModel{}
+				responsePublicError := responseSite.GetError()
+
+				if responsePublicError.GetCode() != nil {
+					tfStatePublicError.Code = types.StringValue(*responsePublicError.GetCode())
+				} else {
+					tfStatePublicError.Code = types.StringNull()
+				}
+				if len(responsePublicError.GetDetails()) > 0 {
+					objectValues := []basetypes.ObjectValue{}
+					for _, responsePublicErrorDetail := range responsePublicError.GetDetails() {
+						tfStatePublicErrorDetail := sitesPublicErrorDetailModel{}
+
+						if responsePublicErrorDetail.GetCode() != nil {
+							tfStatePublicErrorDetail.Code = types.StringValue(*responsePublicErrorDetail.GetCode())
+						} else {
+							tfStatePublicErrorDetail.Code = types.StringNull()
+						}
+						if responsePublicErrorDetail.GetMessage() != nil {
+							tfStatePublicErrorDetail.Message = types.StringValue(*responsePublicErrorDetail.GetMessage())
+						} else {
+							tfStatePublicErrorDetail.Message = types.StringNull()
+						}
+						if responsePublicErrorDetail.GetTarget() != nil {
+							tfStatePublicErrorDetail.Target = types.StringValue(*responsePublicErrorDetail.GetTarget())
+						} else {
+							tfStatePublicErrorDetail.Target = types.StringNull()
+						}
+						objectValue, _ := types.ObjectValueFrom(ctx, tfStatePublicErrorDetail.AttributeTypes(), tfStatePublicErrorDetail)
+						objectValues = append(objectValues, objectValue)
+					}
+					tfStatePublicError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+				}
+				if responsePublicError.GetInnerError() != nil {
+					tfStatePublicInnerError := sitesPublicInnerErrorModel{}
+					responsePublicInnerError := responsePublicError.GetInnerError()
+
+					if responsePublicInnerError.GetCode() != nil {
+						tfStatePublicInnerError.Code = types.StringValue(*responsePublicInnerError.GetCode())
+					} else {
+						tfStatePublicInnerError.Code = types.StringNull()
+					}
+					if len(responsePublicInnerError.GetDetails()) > 0 {
+						objectValues := []basetypes.ObjectValue{}
+						for _, responsePublicErrorDetail := range responsePublicInnerError.GetDetails() {
+							tfStatePublicErrorDetail := sitesPublicErrorDetailModel{}
+
+							if responsePublicErrorDetail.GetCode() != nil {
+								tfStatePublicErrorDetail.Code = types.StringValue(*responsePublicErrorDetail.GetCode())
+							} else {
+								tfStatePublicErrorDetail.Code = types.StringNull()
+							}
+							if responsePublicErrorDetail.GetMessage() != nil {
+								tfStatePublicErrorDetail.Message = types.StringValue(*responsePublicErrorDetail.GetMessage())
+							} else {
+								tfStatePublicErrorDetail.Message = types.StringNull()
+							}
+							if responsePublicErrorDetail.GetTarget() != nil {
+								tfStatePublicErrorDetail.Target = types.StringValue(*responsePublicErrorDetail.GetTarget())
+							} else {
+								tfStatePublicErrorDetail.Target = types.StringNull()
+							}
+							objectValue, _ := types.ObjectValueFrom(ctx, tfStatePublicErrorDetail.AttributeTypes(), tfStatePublicErrorDetail)
+							objectValues = append(objectValues, objectValue)
+						}
+						tfStatePublicInnerError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
+					}
+					if responsePublicInnerError.GetMessage() != nil {
+						tfStatePublicInnerError.Message = types.StringValue(*responsePublicInnerError.GetMessage())
+					} else {
+						tfStatePublicInnerError.Message = types.StringNull()
+					}
+					if responsePublicInnerError.GetTarget() != nil {
+						tfStatePublicInnerError.Target = types.StringValue(*responsePublicInnerError.GetTarget())
+					} else {
+						tfStatePublicInnerError.Target = types.StringNull()
+					}
+
+					tfStatePublicError.InnerError, _ = types.ObjectValueFrom(ctx, tfStatePublicInnerError.AttributeTypes(), tfStatePublicInnerError)
+				}
+				if responsePublicError.GetMessage() != nil {
+					tfStatePublicError.Message = types.StringValue(*responsePublicError.GetMessage())
+				} else {
+					tfStatePublicError.Message = types.StringNull()
+				}
+				if responsePublicError.GetTarget() != nil {
+					tfStatePublicError.Target = types.StringValue(*responsePublicError.GetTarget())
+				} else {
+					tfStatePublicError.Target = types.StringNull()
+				}
+
+				tfStateSite.Error, _ = types.ObjectValueFrom(ctx, tfStatePublicError.AttributeTypes(), tfStatePublicError)
+			}
+			if responseSite.GetId() != nil {
+				tfStateSite.Id = types.StringValue(*responseSite.GetId())
+			} else {
+				tfStateSite.Id = types.StringNull()
+			}
+			if responseSite.GetIsPersonalSite() != nil {
+				tfStateSite.IsPersonalSite = types.BoolValue(*responseSite.GetIsPersonalSite())
+			} else {
+				tfStateSite.IsPersonalSite = types.BoolNull()
 			}
 			if responseSite.GetLastModifiedBy() != nil {
 				tfStateIdentitySet := sitesIdentitySetModel{}
@@ -652,115 +756,6 @@ func (d *sitesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 				tfStateSite.ParentReference, _ = types.ObjectValueFrom(ctx, tfStateItemReference.AttributeTypes(), tfStateItemReference)
 			}
-			if responseSite.GetWebUrl() != nil {
-				tfStateSite.WebUrl = types.StringValue(*responseSite.GetWebUrl())
-			} else {
-				tfStateSite.WebUrl = types.StringNull()
-			}
-			if responseSite.GetDisplayName() != nil {
-				tfStateSite.DisplayName = types.StringValue(*responseSite.GetDisplayName())
-			} else {
-				tfStateSite.DisplayName = types.StringNull()
-			}
-			if responseSite.GetError() != nil {
-				tfStatePublicError := sitesPublicErrorModel{}
-				responsePublicError := responseSite.GetError()
-
-				if responsePublicError.GetCode() != nil {
-					tfStatePublicError.Code = types.StringValue(*responsePublicError.GetCode())
-				} else {
-					tfStatePublicError.Code = types.StringNull()
-				}
-				if len(responsePublicError.GetDetails()) > 0 {
-					objectValues := []basetypes.ObjectValue{}
-					for _, responsePublicErrorDetail := range responsePublicError.GetDetails() {
-						tfStatePublicErrorDetail := sitesPublicErrorDetailModel{}
-
-						if responsePublicErrorDetail.GetCode() != nil {
-							tfStatePublicErrorDetail.Code = types.StringValue(*responsePublicErrorDetail.GetCode())
-						} else {
-							tfStatePublicErrorDetail.Code = types.StringNull()
-						}
-						if responsePublicErrorDetail.GetMessage() != nil {
-							tfStatePublicErrorDetail.Message = types.StringValue(*responsePublicErrorDetail.GetMessage())
-						} else {
-							tfStatePublicErrorDetail.Message = types.StringNull()
-						}
-						if responsePublicErrorDetail.GetTarget() != nil {
-							tfStatePublicErrorDetail.Target = types.StringValue(*responsePublicErrorDetail.GetTarget())
-						} else {
-							tfStatePublicErrorDetail.Target = types.StringNull()
-						}
-						objectValue, _ := types.ObjectValueFrom(ctx, tfStatePublicErrorDetail.AttributeTypes(), tfStatePublicErrorDetail)
-						objectValues = append(objectValues, objectValue)
-					}
-					tfStatePublicError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
-				}
-				if responsePublicError.GetInnerError() != nil {
-					tfStatePublicInnerError := sitesPublicInnerErrorModel{}
-					responsePublicInnerError := responsePublicError.GetInnerError()
-
-					if responsePublicInnerError.GetCode() != nil {
-						tfStatePublicInnerError.Code = types.StringValue(*responsePublicInnerError.GetCode())
-					} else {
-						tfStatePublicInnerError.Code = types.StringNull()
-					}
-					if len(responsePublicInnerError.GetDetails()) > 0 {
-						objectValues := []basetypes.ObjectValue{}
-						for _, responsePublicErrorDetail := range responsePublicInnerError.GetDetails() {
-							tfStatePublicErrorDetail := sitesPublicErrorDetailModel{}
-
-							if responsePublicErrorDetail.GetCode() != nil {
-								tfStatePublicErrorDetail.Code = types.StringValue(*responsePublicErrorDetail.GetCode())
-							} else {
-								tfStatePublicErrorDetail.Code = types.StringNull()
-							}
-							if responsePublicErrorDetail.GetMessage() != nil {
-								tfStatePublicErrorDetail.Message = types.StringValue(*responsePublicErrorDetail.GetMessage())
-							} else {
-								tfStatePublicErrorDetail.Message = types.StringNull()
-							}
-							if responsePublicErrorDetail.GetTarget() != nil {
-								tfStatePublicErrorDetail.Target = types.StringValue(*responsePublicErrorDetail.GetTarget())
-							} else {
-								tfStatePublicErrorDetail.Target = types.StringNull()
-							}
-							objectValue, _ := types.ObjectValueFrom(ctx, tfStatePublicErrorDetail.AttributeTypes(), tfStatePublicErrorDetail)
-							objectValues = append(objectValues, objectValue)
-						}
-						tfStatePublicInnerError.Details, _ = types.ListValueFrom(ctx, objectValues[0].Type(ctx), objectValues)
-					}
-					if responsePublicInnerError.GetMessage() != nil {
-						tfStatePublicInnerError.Message = types.StringValue(*responsePublicInnerError.GetMessage())
-					} else {
-						tfStatePublicInnerError.Message = types.StringNull()
-					}
-					if responsePublicInnerError.GetTarget() != nil {
-						tfStatePublicInnerError.Target = types.StringValue(*responsePublicInnerError.GetTarget())
-					} else {
-						tfStatePublicInnerError.Target = types.StringNull()
-					}
-
-					tfStatePublicError.InnerError, _ = types.ObjectValueFrom(ctx, tfStatePublicInnerError.AttributeTypes(), tfStatePublicInnerError)
-				}
-				if responsePublicError.GetMessage() != nil {
-					tfStatePublicError.Message = types.StringValue(*responsePublicError.GetMessage())
-				} else {
-					tfStatePublicError.Message = types.StringNull()
-				}
-				if responsePublicError.GetTarget() != nil {
-					tfStatePublicError.Target = types.StringValue(*responsePublicError.GetTarget())
-				} else {
-					tfStatePublicError.Target = types.StringNull()
-				}
-
-				tfStateSite.Error, _ = types.ObjectValueFrom(ctx, tfStatePublicError.AttributeTypes(), tfStatePublicError)
-			}
-			if responseSite.GetIsPersonalSite() != nil {
-				tfStateSite.IsPersonalSite = types.BoolValue(*responseSite.GetIsPersonalSite())
-			} else {
-				tfStateSite.IsPersonalSite = types.BoolNull()
-			}
 			if responseSite.GetSharepointIds() != nil {
 				tfStateSharepointIds := sitesSharepointIdsModel{}
 				responseSharepointIds := responseSite.GetSharepointIds()
@@ -831,6 +826,11 @@ func (d *sitesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				}
 
 				tfStateSite.SiteCollection, _ = types.ObjectValueFrom(ctx, tfStateSiteCollection.AttributeTypes(), tfStateSiteCollection)
+			}
+			if responseSite.GetWebUrl() != nil {
+				tfStateSite.WebUrl = types.StringValue(*responseSite.GetWebUrl())
+			} else {
+				tfStateSite.WebUrl = types.StringNull()
 			}
 			objectValue, _ := types.ObjectValueFrom(ctx, tfStateSite.AttributeTypes(), tfStateSite)
 			objectValues = append(objectValues, objectValue)
