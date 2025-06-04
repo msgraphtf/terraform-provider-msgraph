@@ -1,7 +1,7 @@
 package {{.PackageName}}
 
 import (
-    "context"
+	"context"
 
 	{{- if .ReadResponse.IfAttrImportNeeded }}
 	"github.com/hashicorp/terraform-plugin-framework/attr"

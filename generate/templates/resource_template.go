@@ -1,7 +1,7 @@
 package {{.PackageName}}
 
 import (
-    "context"
+	"context"
 	{{- if .CreateRequest.IfUuidImportNeeded }}
 	"github.com/google/uuid"
 	{{- end}}
