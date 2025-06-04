@@ -172,7 +172,7 @@ func (cra createRequestAttribute) TfModelName() string {
 }
 
 func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
-	var cr []createRequestAttribute
+	var attributes []createRequestAttribute
 
 	for _, property := range cra.Property.ObjectOf().AllProperties {
 
@@ -187,9 +187,9 @@ func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 			Parent:        &cra,
 		}
 
-		cr = append(cr, newCreateRequest)
+		attributes = append(attributes, newCreateRequest)
 	}
 
-	return cr
+	return attributes
 }
 

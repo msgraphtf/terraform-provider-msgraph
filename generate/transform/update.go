@@ -144,8 +144,7 @@ func (ura updateRequestAttribute) TfModelName() string {
 }
 
 func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
-
-	var newAttributes []updateRequestAttribute
+	var attributes []updateRequestAttribute
 
 	for _, property := range ura.Property.ObjectOf().Properties() {
 
@@ -160,9 +159,9 @@ func (ura updateRequestAttribute) NestedUpdate() []updateRequestAttribute {
 			Parent:        &ura,
 		}
 
-		newAttributes = append(newAttributes, newUpdateRequest)
+		attributes = append(attributes, newUpdateRequest)
 	}
 
-	return newAttributes
+	return attributes
 }
 
