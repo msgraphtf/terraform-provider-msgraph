@@ -51,14 +51,6 @@ func (d *servicePrincipalsDataSource) Schema(_ context.Context, _ datasource.Sch
 				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"id": schema.StringAttribute{
-							Description: "The unique identifier for an entity. Read-only.",
-							Computed:    true,
-						},
-						"deleted_date_time": schema.StringAttribute{
-							Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-							Computed:    true,
-						},
 						"account_enabled": schema.BoolAttribute{
 							Description: "true if the service principal account is enabled; otherwise, false. If set to false, then no users are able to sign in to this app, even if they're assigned to it. Supports $filter (eq, ne, not, in).",
 							Computed:    true,
@@ -161,6 +153,10 @@ func (d *servicePrincipalsDataSource) Schema(_ context.Context, _ datasource.Sch
 							Description: "Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne). Read-only. null if the service principal wasn't created from an application template.",
 							Computed:    true,
 						},
+						"deleted_date_time": schema.StringAttribute{
+							Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+							Computed:    true,
+						},
 						"description": schema.StringAttribute{
 							Description: "Free text field to provide an internal end-user facing description of the service principal. End-user portals such MyApps displays the application description in this field. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 							Computed:    true,
@@ -175,6 +171,10 @@ func (d *servicePrincipalsDataSource) Schema(_ context.Context, _ datasource.Sch
 						},
 						"homepage": schema.StringAttribute{
 							Description: "Home page or landing page of the application.",
+							Computed:    true,
+						},
+						"id": schema.StringAttribute{
+							Description: "The unique identifier for an entity. Read-only.",
 							Computed:    true,
 						},
 						"info": schema.SingleNestedAttribute{

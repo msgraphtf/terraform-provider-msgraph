@@ -46,11 +46,6 @@ func (d *siteDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-			},
 			"created_by": schema.SingleNestedAttribute{
 				Description: "Identity of the user, device, or application that created the item. Read-only.",
 				Computed:    true,
@@ -110,8 +105,97 @@ func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Provides a user-visible description of the item. Optional.",
 				Computed:    true,
 			},
+			"display_name": schema.StringAttribute{
+				Description: "The full title for the site. Read-only.",
+				Computed:    true,
+			},
 			"e_tag": schema.StringAttribute{
 				Description: "ETag for the item. Read-only.",
+				Computed:    true,
+			},
+			"error": schema.SingleNestedAttribute{
+				Description: "",
+				Computed:    true,
+				Attributes: map[string]schema.Attribute{
+					"code": schema.StringAttribute{
+						Description: "Represents the error code.",
+						Computed:    true,
+					},
+					"details": schema.ListNestedAttribute{
+						Description: "Details of the error.",
+						Computed:    true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"code": schema.StringAttribute{
+									Description: "The error code.",
+									Computed:    true,
+								},
+								"message": schema.StringAttribute{
+									Description: "The error message.",
+									Computed:    true,
+								},
+								"target": schema.StringAttribute{
+									Description: "The target of the error.",
+									Computed:    true,
+								},
+							},
+						},
+					},
+					"inner_error": schema.SingleNestedAttribute{
+						Description: "Details of the inner error.",
+						Computed:    true,
+						Attributes: map[string]schema.Attribute{
+							"code": schema.StringAttribute{
+								Description: "The error code.",
+								Computed:    true,
+							},
+							"details": schema.ListNestedAttribute{
+								Description: "A collection of error details.",
+								Computed:    true,
+								NestedObject: schema.NestedAttributeObject{
+									Attributes: map[string]schema.Attribute{
+										"code": schema.StringAttribute{
+											Description: "The error code.",
+											Computed:    true,
+										},
+										"message": schema.StringAttribute{
+											Description: "The error message.",
+											Computed:    true,
+										},
+										"target": schema.StringAttribute{
+											Description: "The target of the error.",
+											Computed:    true,
+										},
+									},
+								},
+							},
+							"message": schema.StringAttribute{
+								Description: "The error message.",
+								Computed:    true,
+							},
+							"target": schema.StringAttribute{
+								Description: "The target of the error.",
+								Computed:    true,
+							},
+						},
+					},
+					"message": schema.StringAttribute{
+						Description: "A non-localized message for the developer.",
+						Computed:    true,
+					},
+					"target": schema.StringAttribute{
+						Description: "The target of the error.",
+						Computed:    true,
+					},
+				},
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"is_personal_site": schema.BoolAttribute{
+				Description: "Identifies whether the site is personal or not. Read-only.",
 				Computed:    true,
 			},
 			"last_modified_by": schema.SingleNestedAttribute{
@@ -242,94 +326,6 @@ func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 					},
 				},
 			},
-			"web_url": schema.StringAttribute{
-				Description: "URL that either displays the resource in the browser (for Office file formats), or is a direct link to the file (for other formats). Read-only.",
-				Computed:    true,
-			},
-			"display_name": schema.StringAttribute{
-				Description: "The full title for the site. Read-only.",
-				Computed:    true,
-			},
-			"error": schema.SingleNestedAttribute{
-				Description: "",
-				Computed:    true,
-				Attributes: map[string]schema.Attribute{
-					"code": schema.StringAttribute{
-						Description: "Represents the error code.",
-						Computed:    true,
-					},
-					"details": schema.ListNestedAttribute{
-						Description: "Details of the error.",
-						Computed:    true,
-						NestedObject: schema.NestedAttributeObject{
-							Attributes: map[string]schema.Attribute{
-								"code": schema.StringAttribute{
-									Description: "The error code.",
-									Computed:    true,
-								},
-								"message": schema.StringAttribute{
-									Description: "The error message.",
-									Computed:    true,
-								},
-								"target": schema.StringAttribute{
-									Description: "The target of the error.",
-									Computed:    true,
-								},
-							},
-						},
-					},
-					"inner_error": schema.SingleNestedAttribute{
-						Description: "Details of the inner error.",
-						Computed:    true,
-						Attributes: map[string]schema.Attribute{
-							"code": schema.StringAttribute{
-								Description: "The error code.",
-								Computed:    true,
-							},
-							"details": schema.ListNestedAttribute{
-								Description: "A collection of error details.",
-								Computed:    true,
-								NestedObject: schema.NestedAttributeObject{
-									Attributes: map[string]schema.Attribute{
-										"code": schema.StringAttribute{
-											Description: "The error code.",
-											Computed:    true,
-										},
-										"message": schema.StringAttribute{
-											Description: "The error message.",
-											Computed:    true,
-										},
-										"target": schema.StringAttribute{
-											Description: "The target of the error.",
-											Computed:    true,
-										},
-									},
-								},
-							},
-							"message": schema.StringAttribute{
-								Description: "The error message.",
-								Computed:    true,
-							},
-							"target": schema.StringAttribute{
-								Description: "The target of the error.",
-								Computed:    true,
-							},
-						},
-					},
-					"message": schema.StringAttribute{
-						Description: "A non-localized message for the developer.",
-						Computed:    true,
-					},
-					"target": schema.StringAttribute{
-						Description: "The target of the error.",
-						Computed:    true,
-					},
-				},
-			},
-			"is_personal_site": schema.BoolAttribute{
-				Description: "Identifies whether the site is personal or not. Read-only.",
-				Computed:    true,
-			},
 			"sharepoint_ids": schema.SingleNestedAttribute{
 				Description: "Returns identifiers useful for SharePoint REST compatibility. Read-only.",
 				Computed:    true,
@@ -387,6 +383,10 @@ func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 						Computed:    true,
 					},
 				},
+			},
+			"web_url": schema.StringAttribute{
+				Description: "URL that either displays the resource in the browser (for Office file formats), or is a direct link to the file (for other formats). Read-only.",
+				Computed:    true,
 			},
 		},
 	}

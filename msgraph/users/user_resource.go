@@ -55,22 +55,6 @@ func (d *userResource) Configure(_ context.Context, req resource.ConfigureReques
 func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
-			"deleted_date_time": schema.StringAttribute{
-				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
 			"about_me": schema.StringAttribute{
 				Description: "A freeform text entry field for the user to describe themselves. Returned only on $select.",
 				Optional:    true,
@@ -252,6 +236,14 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
+			"deleted_date_time": schema.StringAttribute{
+				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
 			"department": schema.StringAttribute{
 				Description: "The name of the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).",
 				Optional:    true,
@@ -360,6 +352,14 @@ func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"hire_date": schema.StringAttribute{
 				Description: "The hire date of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014, is 2014-01-01T00:00:00Z. Returned only on $select.  Note: This property is specific to SharePoint in Microsoft 365. We recommend using the native employeeHireDate property to set and update hire date values using Microsoft Graph APIs.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{

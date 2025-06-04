@@ -53,22 +53,6 @@ func (d *deviceResource) Configure(_ context.Context, req resource.ConfigureRequ
 func (d *deviceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
-			"deleted_date_time": schema.StringAttribute{
-				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
 			"account_enabled": schema.BoolAttribute{
 				Description: "true if the account is enabled; otherwise, false. Required. Default is true.  Supports $filter (eq, ne, not, in). Only callers with at least the Cloud Device Administrator role can set this property.",
 				Optional:    true,
@@ -115,6 +99,14 @@ func (d *deviceResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"compliance_expiration_date_time": schema.StringAttribute{
 				Description: "The timestamp when the device is no longer deemed compliant. The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"deleted_date_time": schema.StringAttribute{
+				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -171,6 +163,14 @@ func (d *deviceResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"enrollment_type": schema.StringAttribute{
 				Description: "Enrollment type of the device. Intune sets this property. Possible values are: unknown, userEnrollment, deviceEnrollmentManager, appleBulkWithUser, appleBulkWithoutUser, windowsAzureADJoin, windowsBulkUserless, windowsAutoEnrollment, windowsBulkAzureDomainJoin, windowsCoManagement, windowsAzureADJoinUsingDeviceAuth,appleUserEnrollment, appleUserEnrollmentWithServiceAccount. NOTE: This property might return other values apart from those listed.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{

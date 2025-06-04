@@ -30,6 +30,32 @@ func (so OpenAPISchemaObject) Type() string {
 	}
 }
 
+func (so OpenAPISchemaObject) Properties() []OpenAPISchemaProperty {
+
+	var properties []OpenAPISchemaProperty
+
+	if len(so.Schema.AllOf) == 0 {
+		for name, property := range so.Schema.Properties {
+			if strings.Contains(name, "@odata") || property.Value.Extensions["x-ms-navigationProperty"] == true {
+				continue
+			}
+			properties = append(properties, OpenAPISchemaProperty{Name: name, Schema: property.Value})
+		}
+	} else {
+		for _, schema := range so.Schema.AllOf {
+			newSchema := OpenAPISchemaObject{
+				Schema: schema.Value,
+			}
+			properties = append(properties, newSchema.Properties()...)
+		}
+	}
+
+	sort.Slice(properties[:], func(i, j int) bool {return properties[i].Name < properties[j].Name})
+
+	return properties
+
+}
+
 type OpenAPISchemaProperty struct {
 	Schema      *openapi3.Schema
 	Name        string

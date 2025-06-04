@@ -47,15 +47,6 @@ func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-			},
-			"deleted_date_time": schema.StringAttribute{
-				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-				Computed:    true,
-			},
 			"about_me": schema.StringAttribute{
 				Description: "A freeform text entry field for the user to describe themselves. Returned only on $select.",
 				Computed:    true,
@@ -153,6 +144,10 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by a guest signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
 				Computed:    true,
 			},
+			"deleted_date_time": schema.StringAttribute{
+				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+				Computed:    true,
+			},
 			"department": schema.StringAttribute{
 				Description: "The name of the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).",
 				Computed:    true,
@@ -209,6 +204,11 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"hire_date": schema.StringAttribute{
 				Description: "The hire date of the user. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014, is 2014-01-01T00:00:00Z. Returned only on $select.  Note: This property is specific to SharePoint in Microsoft 365. We recommend using the native employeeHireDate property to set and update hire date values using Microsoft Graph APIs.",
+				Computed:    true,
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
+				Optional:    true,
 				Computed:    true,
 			},
 			"identities": schema.ListNestedAttribute{

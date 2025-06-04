@@ -55,22 +55,6 @@ func (d *groupResource) Configure(_ context.Context, req resource.ConfigureReque
 func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
-			"deleted_date_time": schema.StringAttribute{
-				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
 			"assigned_labels": schema.ListNestedAttribute{
 				Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select. This property can be updated only in delegated scenarios where the caller requires both the Microsoft Graph permission and a supported administrator role.",
 				Optional:    true,
@@ -144,6 +128,14 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
+			"deleted_date_time": schema.StringAttribute{
+				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
 			"description": schema.StringAttribute{
 				Description: "An optional description for the group. Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 				Optional:    true,
@@ -176,6 +168,14 @@ func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					listplanmodifiers.UseStateForUnconfigured(),
 				},
 				ElementType: types.StringType,
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"is_assignable_to_role": schema.BoolAttribute{
 				Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group can't be a dynamic group (that is, groupTypes can't contain DynamicMembership). Only callers with at least the Privileged Role Administrator role can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",

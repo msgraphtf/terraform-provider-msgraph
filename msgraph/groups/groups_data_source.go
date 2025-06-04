@@ -51,14 +51,6 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"id": schema.StringAttribute{
-							Description: "The unique identifier for an entity. Read-only.",
-							Computed:    true,
-						},
-						"deleted_date_time": schema.StringAttribute{
-							Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-							Computed:    true,
-						},
 						"assigned_labels": schema.ListNestedAttribute{
 							Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select. This property can be updated only in delegated scenarios where the caller requires both the Microsoft Graph permission and a supported administrator role.",
 							Computed:    true,
@@ -100,6 +92,10 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Description: "Timestamp of when the group was created. The value can't be modified and is automatically populated when the group is created. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on January 1, 2014 is 2014-01-01T00:00:00Z. Returned by default. Read-only.",
 							Computed:    true,
 						},
+						"deleted_date_time": schema.StringAttribute{
+							Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+							Computed:    true,
+						},
 						"description": schema.StringAttribute{
 							Description: "An optional description for the group. Returned by default. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 							Computed:    true,
@@ -116,6 +112,10 @@ func (d *groupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 							Description: "Specifies the group type and its membership. If the collection contains Unified, the group is a Microsoft 365 group; otherwise, it's either a security group or a distribution group. For details, see groups overview.If the collection includes DynamicMembership, the group has dynamic membership; otherwise, membership is static. Returned by default. Supports $filter (eq, not).",
 							Computed:    true,
 							ElementType: types.StringType,
+						},
+						"id": schema.StringAttribute{
+							Description: "The unique identifier for an entity. Read-only.",
+							Computed:    true,
 						},
 						"is_assignable_to_role": schema.BoolAttribute{
 							Description: "Indicates whether this group can be assigned to a Microsoft Entra role. Optional. This property can only be set while creating the group and is immutable. If set to true, the securityEnabled property must also be set to true, visibility must be Hidden, and the group can't be a dynamic group (that is, groupTypes can't contain DynamicMembership). Only callers with at least the Privileged Role Administrator role can set this property. The caller must also be assigned the RoleManagement.ReadWrite.Directory permission to set this property or update the membership of such groups. For more, see Using a group to manage Microsoft Entra role assignmentsUsing this feature requires a Microsoft Entra ID P1 license. Returned by default. Supports $filter (eq, ne, not).",

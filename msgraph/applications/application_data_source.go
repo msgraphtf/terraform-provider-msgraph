@@ -47,15 +47,6 @@ func (d *applicationDataSource) Configure(_ context.Context, req datasource.Conf
 func (d *applicationDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-			},
-			"deleted_date_time": schema.StringAttribute{
-				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-				Computed:    true,
-			},
 			"add_ins": schema.ListNestedAttribute{
 				Description: "Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams can set the addIns property for its 'FileHandler' functionality. This lets services like Microsoft 365 call the application in the context of a document the user is working on.",
 				Computed:    true,
@@ -246,6 +237,10 @@ func (d *applicationDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "",
 				Computed:    true,
 			},
+			"deleted_date_time": schema.StringAttribute{
+				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+				Computed:    true,
+			},
 			"description": schema.StringAttribute{
 				Description: "Free text field to provide a description of the application object to end users. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 				Computed:    true,
@@ -260,6 +255,11 @@ func (d *applicationDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			},
 			"group_membership_claims": schema.StringAttribute{
 				Description: "Configures the groups claim issued in a user or OAuth 2.0 access token that the application expects. To set this attribute, use one of the following valid string values: None, SecurityGroup (for security groups and Microsoft Entra roles), All (this gets all of the security groups, distribution groups, and Microsoft Entra directory roles that the signed-in user is a member of).",
+				Computed:    true,
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
+				Optional:    true,
 				Computed:    true,
 			},
 			"identifier_uris": schema.ListAttribute{

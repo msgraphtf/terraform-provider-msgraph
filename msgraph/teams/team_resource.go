@@ -52,14 +52,6 @@ func (d *teamResource) Configure(_ context.Context, req resource.ConfigureReques
 func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
 			"classification": schema.StringAttribute{
 				Description: "An optional label. Typically describes the data or business sensitivity of the team. Must match one of a pre-configured set in the tenant's directory.",
 				Optional:    true,
@@ -158,6 +150,14 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 							boolplanmodifiers.UseStateForUnconfigured(),
 						},
 					},
+				},
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
 			"internal_id": schema.StringAttribute{

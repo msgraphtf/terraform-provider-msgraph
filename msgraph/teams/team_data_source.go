@@ -45,11 +45,6 @@ func (d *teamDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 func (d *teamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-			},
 			"classification": schema.StringAttribute{
 				Description: "An optional label. Typically describes the data or business sensitivity of the team. Must match one of a pre-configured set in the tenant's directory.",
 				Computed:    true,
@@ -101,6 +96,11 @@ func (d *teamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 						Computed:    true,
 					},
 				},
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"internal_id": schema.StringAttribute{
 				Description: "A unique ID for the team that has been used in a few places such as the audit log/Office 365 Management Activity API.",

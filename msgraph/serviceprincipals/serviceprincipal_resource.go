@@ -55,22 +55,6 @@ func (d *servicePrincipalResource) Configure(_ context.Context, req resource.Con
 func (d *servicePrincipalResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The unique identifier for an entity. Read-only.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
-			"deleted_date_time": schema.StringAttribute{
-				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
-			},
 			"account_enabled": schema.BoolAttribute{
 				Description: "true if the service principal account is enabled; otherwise, false. If set to false, then no users are able to sign in to this app, even if they're assigned to it. Supports $filter (eq, ne, not, in).",
 				Optional:    true,
@@ -261,6 +245,14 @@ func (d *servicePrincipalResource) Schema(_ context.Context, _ resource.SchemaRe
 					stringplanmodifiers.UseStateForUnconfigured(),
 				},
 			},
+			"deleted_date_time": schema.StringAttribute{
+				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
 			"description": schema.StringAttribute{
 				Description: "Free text field to provide an internal end-user facing description of the service principal. End-user portals such MyApps displays the application description in this field. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 				Optional:    true,
@@ -287,6 +279,14 @@ func (d *servicePrincipalResource) Schema(_ context.Context, _ resource.SchemaRe
 			},
 			"homepage": schema.StringAttribute{
 				Description: "Home page or landing page of the application.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
+			},
+			"id": schema.StringAttribute{
+				Description: "The unique identifier for an entity. Read-only.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{

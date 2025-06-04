@@ -51,14 +51,6 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"id": schema.StringAttribute{
-							Description: "The unique identifier for an entity. Read-only.",
-							Computed:    true,
-						},
-						"deleted_date_time": schema.StringAttribute{
-							Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
-							Computed:    true,
-						},
 						"account_enabled": schema.BoolAttribute{
 							Description: "true if the account is enabled; otherwise, false. This property is required when a user is created. Returned only on $select. Supports $filter (eq, ne, not, and in).",
 							Computed:    true,
@@ -148,6 +140,10 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 							Description: "Indicates whether the user account was created through one of the following methods:  As a regular school or work account (null). As an external account (Invitation). As a local account for an Azure Active Directory B2C tenant (LocalAccount). Through self-service sign-up by an internal user using email verification (EmailVerified). Through self-service sign-up by a guest signing up through a link that is part of a user flow (SelfServiceSignUp). Read-only.Returned only on $select. Supports $filter (eq, ne, not, in).",
 							Computed:    true,
 						},
+						"deleted_date_time": schema.StringAttribute{
+							Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
+							Computed:    true,
+						},
 						"department": schema.StringAttribute{
 							Description: "The name of the department in which the user works. Maximum length is 64 characters. Returned only on $select. Supports $filter (eq, ne, not , ge, le, in, and eq on null values).",
 							Computed:    true,
@@ -200,6 +196,10 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 						},
 						"given_name": schema.StringAttribute{
 							Description: "The given name (first name) of the user. Maximum length is 64 characters. Returned by default. Supports $filter (eq, ne, not , ge, le, in, startsWith, and eq on null values).",
+							Computed:    true,
+						},
+						"id": schema.StringAttribute{
+							Description: "The unique identifier for an entity. Read-only.",
 							Computed:    true,
 						},
 						"identities": schema.ListNestedAttribute{
