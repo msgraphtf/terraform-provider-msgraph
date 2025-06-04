@@ -114,8 +114,7 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 	if len(schema.AllOf) == 0 {
 		properties = getSchemaProperties(schema)
 	} else {
-		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		properties = append(properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
+		properties = append(properties, recurseUpSchema(schema.AllOf[0].Value)...)
 		properties = append(properties, getSchemaProperties(schema.AllOf[1].Value)...)
 	}
 
@@ -129,11 +128,10 @@ func recurseUpSchema(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
 	var properties []OpenAPISchemaProperty
 
-	if schema.Title != "" {
+	if len(schema.AllOf) == 0 {
 		properties = append(properties, getSchemaProperties(schema)...)
 	} else {
-		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		properties = append(properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
+		properties = append(properties, recurseUpSchema(schema.AllOf[0].Value)...)
 		properties = append(properties, getSchemaProperties(schema.AllOf[1].Value)...)
 	}
 
