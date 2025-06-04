@@ -80,14 +80,14 @@ func (sp OpenAPISchemaProperty) ObjectOf() OpenAPISchemaObject {
 	// Determines what type of data the OpenAPI schema object is
 	if strings.Join(sp.Schema.Type.Slice(), "") == "array" { // Array
 		if strings.Join(sp.Schema.Items.Value.Type.Slice(), "") == "object" || sp.Schema.Items.Ref != "" { // Array of objects
-			return getSchemaObject(getSchemaFromRef(sp.Schema.Items.Ref))
+			return getSchemaObject(sp.Schema.Items.Value)
 		} else if sp.Schema.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
-			return getSchemaObject(getSchemaFromRef(sp.Schema.Items.Value.AnyOf[0].Ref))
+			return getSchemaObject(sp.Schema.Items.Value.AnyOf[0].Value)
 		}
 	} else if sp.Schema.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
 		return getSchemaObject(sp.Schema)
 	} else if sp.Schema.AnyOf != nil { // Object
-		return getSchemaObject(getSchemaFromRef(sp.Schema.AnyOf[0].Ref))
+		return getSchemaObject(sp.Schema.AnyOf[0].Value)
 	}
 
 	return OpenAPISchemaObject{}
@@ -115,19 +115,6 @@ func (sp OpenAPISchemaProperty) Format() string {
 	} else { // Primitive type
 		return sp.Schema.Format
 	}
-}
-
-func getSchemaFromRef(ref string) *openapi3.Schema {
-
-	schemaName := strings.Split(ref, "/")[3]
-	return doc.Components.Schemas[schemaName].Value
-
-}
-
-func getSchemaObjectByRef(ref string) OpenAPISchemaObject {
-	schema := getSchemaFromRef(ref)
-	schemaObject := getSchemaObject(schema)
-	return schemaObject
 }
 
 func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {

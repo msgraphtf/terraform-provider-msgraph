@@ -55,7 +55,7 @@ func (oo openAPIPathOperationObject) Description() string {
 }
 
 func (oo openAPIPathOperationObject) Response() OpenAPISchemaObject {
-	return getSchemaObjectByRef(oo.Operation.Responses.Status(200).Value.Content.Get("application/json").Schema.Ref)
+	return getSchemaObject(oo.Operation.Responses.Status(200).Value.Content.Get("application/json").Schema.Value)
 }
 
 func (oo openAPIPathOperationObject) SelectParameters() []string {
