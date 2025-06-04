@@ -272,16 +272,16 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	qparams := groups.GroupItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &groups.GroupItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
 				"assignedLabels",
 				"assignedLicenses",
 				"classification",
 				"createdDateTime",
+				"deletedDateTime",
 				"description",
 				"displayName",
 				"expirationDateTime",
 				"groupTypes",
+				"id",
 				"isAssignableToRole",
 				"isManagementRestricted",
 				"licenseProcessingState",

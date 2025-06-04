@@ -403,21 +403,21 @@ func (d *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	qparams := sites.SiteItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &sites.SiteItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
 				"createdBy",
 				"createdDateTime",
 				"description",
+				"displayName",
 				"eTag",
+				"error",
+				"id",
+				"isPersonalSite",
 				"lastModifiedBy",
 				"lastModifiedDateTime",
 				"name",
 				"parentReference",
-				"webUrl",
-				"displayName",
-				"error",
-				"isPersonalSite",
 				"sharepointIds",
 				"siteCollection",
+				"webUrl",
 			},
 		},
 	}

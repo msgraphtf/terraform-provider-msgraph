@@ -621,12 +621,11 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	qparams := devices.DeviceItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &devices.DeviceItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
 				"accountEnabled",
 				"alternativeSecurityIds",
 				"approximateLastSignInDateTime",
 				"complianceExpirationDateTime",
+				"deletedDateTime",
 				"deviceCategory",
 				"deviceId",
 				"deviceMetadata",
@@ -635,6 +634,7 @@ func (d *deviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 				"displayName",
 				"enrollmentProfileName",
 				"enrollmentType",
+				"id",
 				"isCompliant",
 				"isManaged",
 				"isManagementRestricted",

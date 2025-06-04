@@ -2371,8 +2371,6 @@ func (d *applicationResource) Read(ctx context.Context, req resource.ReadRequest
 	qparams := applications.ApplicationItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &applications.ApplicationItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
 				"addIns",
 				"api",
 				"appId",
@@ -2381,10 +2379,12 @@ func (d *applicationResource) Read(ctx context.Context, req resource.ReadRequest
 				"certification",
 				"createdDateTime",
 				"defaultRedirectUri",
+				"deletedDateTime",
 				"description",
 				"disabledByMicrosoftStatus",
 				"displayName",
 				"groupMembershipClaims",
+				"id",
 				"identifierUris",
 				"info",
 				"isDeviceOnlyAuthSupported",

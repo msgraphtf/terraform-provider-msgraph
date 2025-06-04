@@ -1506,8 +1506,6 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 	qparams := serviceprincipals.ServicePrincipalItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &serviceprincipals.ServicePrincipalItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
 				"accountEnabled",
 				"addIns",
 				"alternativeNames",
@@ -1518,10 +1516,12 @@ func (d *servicePrincipalResource) Read(ctx context.Context, req resource.ReadRe
 				"appRoleAssignmentRequired",
 				"appRoles",
 				"applicationTemplateId",
+				"deletedDateTime",
 				"description",
 				"disabledByMicrosoftStatus",
 				"displayName",
 				"homepage",
+				"id",
 				"info",
 				"keyCredentials",
 				"loginUrl",

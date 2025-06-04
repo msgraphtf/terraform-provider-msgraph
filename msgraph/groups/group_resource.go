@@ -877,16 +877,16 @@ func (d *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	qparams := groups.GroupItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &groups.GroupItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
 				"assignedLabels",
 				"assignedLicenses",
 				"classification",
 				"createdDateTime",
+				"deletedDateTime",
 				"description",
 				"displayName",
 				"expirationDateTime",
 				"groupTypes",
+				"id",
 				"isAssignableToRole",
 				"isManagementRestricted",
 				"licenseProcessingState",

@@ -197,13 +197,13 @@ func (d *teamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	qparams := teams.TeamItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &teams.TeamItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
 				"classification",
 				"createdDateTime",
 				"description",
 				"displayName",
 				"funSettings",
 				"guestSettings",
+				"id",
 				"internalId",
 				"isArchived",
 				"memberSettings",

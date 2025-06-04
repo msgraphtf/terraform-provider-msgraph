@@ -613,13 +613,13 @@ func (d *teamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	qparams := teams.TeamItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &teams.TeamItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
 				"classification",
 				"createdDateTime",
 				"description",
 				"displayName",
 				"funSettings",
 				"guestSettings",
+				"id",
 				"internalId",
 				"isArchived",
 				"memberSettings",

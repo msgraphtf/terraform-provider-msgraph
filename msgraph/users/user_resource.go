@@ -2195,8 +2195,6 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	qparams := users.UserItemRequestBuilderGetRequestConfiguration{
 		QueryParameters: &users.UserItemRequestBuilderGetQueryParameters{
 			Select: []string{
-				"id",
-				"deletedDateTime",
 				"aboutMe",
 				"accountEnabled",
 				"ageGroup",
@@ -2211,6 +2209,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 				"country",
 				"createdDateTime",
 				"creationType",
+				"deletedDateTime",
 				"department",
 				"displayName",
 				"employeeHireDate",
@@ -2223,6 +2222,7 @@ func (d *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 				"faxNumber",
 				"givenName",
 				"hireDate",
+				"id",
 				"identities",
 				"imAddresses",
 				"interests",
