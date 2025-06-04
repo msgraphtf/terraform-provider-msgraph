@@ -16,8 +16,6 @@ func (m usersModel) AttributeTypes() map[string]attr.Type {
 }
 
 type usersUserModel struct {
-	Id                              types.String `tfsdk:"id"`
-	DeletedDateTime                 types.String `tfsdk:"deleted_date_time"`
 	AccountEnabled                  types.Bool   `tfsdk:"account_enabled"`
 	AgeGroup                        types.String `tfsdk:"age_group"`
 	AssignedLicenses                types.List   `tfsdk:"assigned_licenses"`
@@ -30,6 +28,7 @@ type usersUserModel struct {
 	Country                         types.String `tfsdk:"country"`
 	CreatedDateTime                 types.String `tfsdk:"created_date_time"`
 	CreationType                    types.String `tfsdk:"creation_type"`
+	DeletedDateTime                 types.String `tfsdk:"deleted_date_time"`
 	Department                      types.String `tfsdk:"department"`
 	DisplayName                     types.String `tfsdk:"display_name"`
 	EmployeeHireDate                types.String `tfsdk:"employee_hire_date"`
@@ -41,6 +40,7 @@ type usersUserModel struct {
 	ExternalUserStateChangeDateTime types.String `tfsdk:"external_user_state_change_date_time"`
 	FaxNumber                       types.String `tfsdk:"fax_number"`
 	GivenName                       types.String `tfsdk:"given_name"`
+	Id                              types.String `tfsdk:"id"`
 	Identities                      types.List   `tfsdk:"identities"`
 	ImAddresses                     types.List   `tfsdk:"im_addresses"`
 	IsManagementRestricted          types.Bool   `tfsdk:"is_management_restricted"`
@@ -86,8 +86,6 @@ type usersUserModel struct {
 
 func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":                                    types.StringType,
-		"deleted_date_time":                     types.StringType,
 		"account_enabled":                       types.BoolType,
 		"age_group":                             types.StringType,
 		"assigned_licenses":                     types.ListType{ElemType: types.ObjectType{AttrTypes: usersAssignedLicenseModel{}.AttributeTypes()}},
@@ -100,6 +98,7 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"country":                               types.StringType,
 		"created_date_time":                     types.StringType,
 		"creation_type":                         types.StringType,
+		"deleted_date_time":                     types.StringType,
 		"department":                            types.StringType,
 		"display_name":                          types.StringType,
 		"employee_hire_date":                    types.StringType,
@@ -111,6 +110,7 @@ func (m usersUserModel) AttributeTypes() map[string]attr.Type {
 		"external_user_state_change_date_time":  types.StringType,
 		"fax_number":                            types.StringType,
 		"given_name":                            types.StringType,
+		"id":                                    types.StringType,
 		"identities":                            types.ListType{ElemType: types.ObjectType{AttrTypes: usersObjectIdentityModel{}.AttributeTypes()}},
 		"im_addresses":                          types.ListType{ElemType: types.StringType},
 		"is_management_restricted":              types.BoolType,

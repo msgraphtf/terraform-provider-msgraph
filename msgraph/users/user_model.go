@@ -6,8 +6,6 @@ import (
 )
 
 type userModel struct {
-	Id                              types.String `tfsdk:"id"`
-	DeletedDateTime                 types.String `tfsdk:"deleted_date_time"`
 	AboutMe                         types.String `tfsdk:"about_me"`
 	AccountEnabled                  types.Bool   `tfsdk:"account_enabled"`
 	AgeGroup                        types.String `tfsdk:"age_group"`
@@ -22,6 +20,7 @@ type userModel struct {
 	Country                         types.String `tfsdk:"country"`
 	CreatedDateTime                 types.String `tfsdk:"created_date_time"`
 	CreationType                    types.String `tfsdk:"creation_type"`
+	DeletedDateTime                 types.String `tfsdk:"deleted_date_time"`
 	Department                      types.String `tfsdk:"department"`
 	DisplayName                     types.String `tfsdk:"display_name"`
 	EmployeeHireDate                types.String `tfsdk:"employee_hire_date"`
@@ -34,6 +33,7 @@ type userModel struct {
 	FaxNumber                       types.String `tfsdk:"fax_number"`
 	GivenName                       types.String `tfsdk:"given_name"`
 	HireDate                        types.String `tfsdk:"hire_date"`
+	Id                              types.String `tfsdk:"id"`
 	Identities                      types.List   `tfsdk:"identities"`
 	ImAddresses                     types.List   `tfsdk:"im_addresses"`
 	Interests                       types.List   `tfsdk:"interests"`
@@ -86,8 +86,6 @@ type userModel struct {
 
 func (m userModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":                                    types.StringType,
-		"deleted_date_time":                     types.StringType,
 		"about_me":                              types.StringType,
 		"account_enabled":                       types.BoolType,
 		"age_group":                             types.StringType,
@@ -102,6 +100,7 @@ func (m userModel) AttributeTypes() map[string]attr.Type {
 		"country":                               types.StringType,
 		"created_date_time":                     types.StringType,
 		"creation_type":                         types.StringType,
+		"deleted_date_time":                     types.StringType,
 		"department":                            types.StringType,
 		"display_name":                          types.StringType,
 		"employee_hire_date":                    types.StringType,
@@ -114,6 +113,7 @@ func (m userModel) AttributeTypes() map[string]attr.Type {
 		"fax_number":                            types.StringType,
 		"given_name":                            types.StringType,
 		"hire_date":                             types.StringType,
+		"id":                                    types.StringType,
 		"identities":                            types.ListType{ElemType: types.ObjectType{AttrTypes: userObjectIdentityModel{}.AttributeTypes()}},
 		"im_addresses":                          types.ListType{ElemType: types.StringType},
 		"interests":                             types.ListType{ElemType: types.StringType},

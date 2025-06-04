@@ -6,13 +6,13 @@ import (
 )
 
 type teamModel struct {
-	Id                types.String `tfsdk:"id"`
 	Classification    types.String `tfsdk:"classification"`
 	CreatedDateTime   types.String `tfsdk:"created_date_time"`
 	Description       types.String `tfsdk:"description"`
 	DisplayName       types.String `tfsdk:"display_name"`
 	FunSettings       types.Object `tfsdk:"fun_settings"`
 	GuestSettings     types.Object `tfsdk:"guest_settings"`
+	Id                types.String `tfsdk:"id"`
 	InternalId        types.String `tfsdk:"internal_id"`
 	IsArchived        types.Bool   `tfsdk:"is_archived"`
 	MemberSettings    types.Object `tfsdk:"member_settings"`
@@ -25,13 +25,13 @@ type teamModel struct {
 
 func (m teamModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":                 types.StringType,
 		"classification":     types.StringType,
 		"created_date_time":  types.StringType,
 		"description":        types.StringType,
 		"display_name":       types.StringType,
 		"fun_settings":       types.ObjectType{AttrTypes: teamTeamFunSettingsModel{}.AttributeTypes()},
 		"guest_settings":     types.ObjectType{AttrTypes: teamTeamGuestSettingsModel{}.AttributeTypes()},
+		"id":                 types.StringType,
 		"internal_id":        types.StringType,
 		"is_archived":        types.BoolType,
 		"member_settings":    types.ObjectType{AttrTypes: teamTeamMemberSettingsModel{}.AttributeTypes()},

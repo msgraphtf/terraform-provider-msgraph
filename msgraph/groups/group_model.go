@@ -6,16 +6,16 @@ import (
 )
 
 type groupModel struct {
-	Id                            types.String `tfsdk:"id"`
-	DeletedDateTime               types.String `tfsdk:"deleted_date_time"`
 	AssignedLabels                types.List   `tfsdk:"assigned_labels"`
 	AssignedLicenses              types.List   `tfsdk:"assigned_licenses"`
 	Classification                types.String `tfsdk:"classification"`
 	CreatedDateTime               types.String `tfsdk:"created_date_time"`
+	DeletedDateTime               types.String `tfsdk:"deleted_date_time"`
 	Description                   types.String `tfsdk:"description"`
 	DisplayName                   types.String `tfsdk:"display_name"`
 	ExpirationDateTime            types.String `tfsdk:"expiration_date_time"`
 	GroupTypes                    types.List   `tfsdk:"group_types"`
+	Id                            types.String `tfsdk:"id"`
 	IsAssignableToRole            types.Bool   `tfsdk:"is_assignable_to_role"`
 	IsManagementRestricted        types.Bool   `tfsdk:"is_management_restricted"`
 	LicenseProcessingState        types.Object `tfsdk:"license_processing_state"`
@@ -45,16 +45,16 @@ type groupModel struct {
 
 func (m groupModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":                               types.StringType,
-		"deleted_date_time":                types.StringType,
 		"assigned_labels":                  types.ListType{ElemType: types.ObjectType{AttrTypes: groupAssignedLabelModel{}.AttributeTypes()}},
 		"assigned_licenses":                types.ListType{ElemType: types.ObjectType{AttrTypes: groupAssignedLicenseModel{}.AttributeTypes()}},
 		"classification":                   types.StringType,
 		"created_date_time":                types.StringType,
+		"deleted_date_time":                types.StringType,
 		"description":                      types.StringType,
 		"display_name":                     types.StringType,
 		"expiration_date_time":             types.StringType,
 		"group_types":                      types.ListType{ElemType: types.StringType},
+		"id":                               types.StringType,
 		"is_assignable_to_role":            types.BoolType,
 		"is_management_restricted":         types.BoolType,
 		"license_processing_state":         types.ObjectType{AttrTypes: groupLicenseProcessingStateModel{}.AttributeTypes()},

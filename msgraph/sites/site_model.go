@@ -6,40 +6,40 @@ import (
 )
 
 type siteModel struct {
-	Id                   types.String `tfsdk:"id"`
 	CreatedBy            types.Object `tfsdk:"created_by"`
 	CreatedDateTime      types.String `tfsdk:"created_date_time"`
 	Description          types.String `tfsdk:"description"`
+	DisplayName          types.String `tfsdk:"display_name"`
 	ETag                 types.String `tfsdk:"e_tag"`
+	Error                types.Object `tfsdk:"error"`
+	Id                   types.String `tfsdk:"id"`
+	IsPersonalSite       types.Bool   `tfsdk:"is_personal_site"`
 	LastModifiedBy       types.Object `tfsdk:"last_modified_by"`
 	LastModifiedDateTime types.String `tfsdk:"last_modified_date_time"`
 	Name                 types.String `tfsdk:"name"`
 	ParentReference      types.Object `tfsdk:"parent_reference"`
-	WebUrl               types.String `tfsdk:"web_url"`
-	DisplayName          types.String `tfsdk:"display_name"`
-	Error                types.Object `tfsdk:"error"`
-	IsPersonalSite       types.Bool   `tfsdk:"is_personal_site"`
 	SharepointIds        types.Object `tfsdk:"sharepoint_ids"`
 	SiteCollection       types.Object `tfsdk:"site_collection"`
+	WebUrl               types.String `tfsdk:"web_url"`
 }
 
 func (m siteModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":                      types.StringType,
 		"created_by":              types.ObjectType{AttrTypes: siteIdentitySetModel{}.AttributeTypes()},
 		"created_date_time":       types.StringType,
 		"description":             types.StringType,
+		"display_name":            types.StringType,
 		"e_tag":                   types.StringType,
+		"error":                   types.ObjectType{AttrTypes: sitePublicErrorModel{}.AttributeTypes()},
+		"id":                      types.StringType,
+		"is_personal_site":        types.BoolType,
 		"last_modified_by":        types.ObjectType{AttrTypes: siteIdentitySetModel{}.AttributeTypes()},
 		"last_modified_date_time": types.StringType,
 		"name":                    types.StringType,
 		"parent_reference":        types.ObjectType{AttrTypes: siteItemReferenceModel{}.AttributeTypes()},
-		"web_url":                 types.StringType,
-		"display_name":            types.StringType,
-		"error":                   types.ObjectType{AttrTypes: sitePublicErrorModel{}.AttributeTypes()},
-		"is_personal_site":        types.BoolType,
 		"sharepoint_ids":          types.ObjectType{AttrTypes: siteSharepointIdsModel{}.AttributeTypes()},
 		"site_collection":         types.ObjectType{AttrTypes: siteSiteCollectionModel{}.AttributeTypes()},
+		"web_url":                 types.StringType,
 	}
 }
 
@@ -54,6 +54,24 @@ func (m siteIdentitySetModel) AttributeTypes() map[string]attr.Type {
 		"application": types.ObjectType{AttrTypes: siteIdentityModel{}.AttributeTypes()},
 		"device":      types.ObjectType{AttrTypes: siteIdentityModel{}.AttributeTypes()},
 		"user":        types.ObjectType{AttrTypes: siteIdentityModel{}.AttributeTypes()},
+	}
+}
+
+type sitePublicErrorModel struct {
+	Code       types.String `tfsdk:"code"`
+	Details    types.List   `tfsdk:"details"`
+	InnerError types.Object `tfsdk:"inner_error"`
+	Message    types.String `tfsdk:"message"`
+	Target     types.String `tfsdk:"target"`
+}
+
+func (m sitePublicErrorModel) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"code":        types.StringType,
+		"details":     types.ListType{ElemType: types.ObjectType{AttrTypes: sitePublicErrorDetailModel{}.AttributeTypes()}},
+		"inner_error": types.ObjectType{AttrTypes: sitePublicInnerErrorModel{}.AttributeTypes()},
+		"message":     types.StringType,
+		"target":      types.StringType,
 	}
 }
 
@@ -78,24 +96,6 @@ func (m siteItemReferenceModel) AttributeTypes() map[string]attr.Type {
 		"share_id":       types.StringType,
 		"sharepoint_ids": types.ObjectType{AttrTypes: siteSharepointIdsModel{}.AttributeTypes()},
 		"site_id":        types.StringType,
-	}
-}
-
-type sitePublicErrorModel struct {
-	Code       types.String `tfsdk:"code"`
-	Details    types.List   `tfsdk:"details"`
-	InnerError types.Object `tfsdk:"inner_error"`
-	Message    types.String `tfsdk:"message"`
-	Target     types.String `tfsdk:"target"`
-}
-
-func (m sitePublicErrorModel) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"code":        types.StringType,
-		"details":     types.ListType{ElemType: types.ObjectType{AttrTypes: sitePublicErrorDetailModel{}.AttributeTypes()}},
-		"inner_error": types.ObjectType{AttrTypes: sitePublicInnerErrorModel{}.AttributeTypes()},
-		"message":     types.StringType,
-		"target":      types.StringType,
 	}
 }
 

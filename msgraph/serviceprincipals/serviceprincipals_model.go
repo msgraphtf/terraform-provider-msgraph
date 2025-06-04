@@ -16,8 +16,6 @@ func (m servicePrincipalsModel) AttributeTypes() map[string]attr.Type {
 }
 
 type servicePrincipalsServicePrincipalModel struct {
-	Id                                     types.String `tfsdk:"id"`
-	DeletedDateTime                        types.String `tfsdk:"deleted_date_time"`
 	AccountEnabled                         types.Bool   `tfsdk:"account_enabled"`
 	AddIns                                 types.List   `tfsdk:"add_ins"`
 	AlternativeNames                       types.List   `tfsdk:"alternative_names"`
@@ -28,10 +26,12 @@ type servicePrincipalsServicePrincipalModel struct {
 	AppRoleAssignmentRequired              types.Bool   `tfsdk:"app_role_assignment_required"`
 	AppRoles                               types.List   `tfsdk:"app_roles"`
 	ApplicationTemplateId                  types.String `tfsdk:"application_template_id"`
+	DeletedDateTime                        types.String `tfsdk:"deleted_date_time"`
 	Description                            types.String `tfsdk:"description"`
 	DisabledByMicrosoftStatus              types.String `tfsdk:"disabled_by_microsoft_status"`
 	DisplayName                            types.String `tfsdk:"display_name"`
 	Homepage                               types.String `tfsdk:"homepage"`
+	Id                                     types.String `tfsdk:"id"`
 	Info                                   types.Object `tfsdk:"info"`
 	KeyCredentials                         types.List   `tfsdk:"key_credentials"`
 	LoginUrl                               types.String `tfsdk:"login_url"`
@@ -55,8 +55,6 @@ type servicePrincipalsServicePrincipalModel struct {
 
 func (m servicePrincipalsServicePrincipalModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":                                     types.StringType,
-		"deleted_date_time":                      types.StringType,
 		"account_enabled":                        types.BoolType,
 		"add_ins":                                types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsAddInModel{}.AttributeTypes()}},
 		"alternative_names":                      types.ListType{ElemType: types.StringType},
@@ -67,10 +65,12 @@ func (m servicePrincipalsServicePrincipalModel) AttributeTypes() map[string]attr
 		"app_role_assignment_required":           types.BoolType,
 		"app_roles":                              types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsAppRoleModel{}.AttributeTypes()}},
 		"application_template_id":                types.StringType,
+		"deleted_date_time":                      types.StringType,
 		"description":                            types.StringType,
 		"disabled_by_microsoft_status":           types.StringType,
 		"display_name":                           types.StringType,
 		"homepage":                               types.StringType,
+		"id":                                     types.StringType,
 		"info":                                   types.ObjectType{AttrTypes: servicePrincipalsInformationalUrlModel{}.AttributeTypes()},
 		"key_credentials":                        types.ListType{ElemType: types.ObjectType{AttrTypes: servicePrincipalsKeyCredentialModel{}.AttributeTypes()}},
 		"login_url":                              types.StringType,

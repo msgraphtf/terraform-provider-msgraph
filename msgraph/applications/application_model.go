@@ -6,8 +6,6 @@ import (
 )
 
 type applicationModel struct {
-	Id                                types.String `tfsdk:"id"`
-	DeletedDateTime                   types.String `tfsdk:"deleted_date_time"`
 	AddIns                            types.List   `tfsdk:"add_ins"`
 	Api                               types.Object `tfsdk:"api"`
 	AppId                             types.String `tfsdk:"app_id"`
@@ -16,10 +14,12 @@ type applicationModel struct {
 	Certification                     types.Object `tfsdk:"certification"`
 	CreatedDateTime                   types.String `tfsdk:"created_date_time"`
 	DefaultRedirectUri                types.String `tfsdk:"default_redirect_uri"`
+	DeletedDateTime                   types.String `tfsdk:"deleted_date_time"`
 	Description                       types.String `tfsdk:"description"`
 	DisabledByMicrosoftStatus         types.String `tfsdk:"disabled_by_microsoft_status"`
 	DisplayName                       types.String `tfsdk:"display_name"`
 	GroupMembershipClaims             types.String `tfsdk:"group_membership_claims"`
+	Id                                types.String `tfsdk:"id"`
 	IdentifierUris                    types.List   `tfsdk:"identifier_uris"`
 	Info                              types.Object `tfsdk:"info"`
 	IsDeviceOnlyAuthSupported         types.Bool   `tfsdk:"is_device_only_auth_supported"`
@@ -50,8 +50,6 @@ type applicationModel struct {
 
 func (m applicationModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":                                   types.StringType,
-		"deleted_date_time":                    types.StringType,
 		"add_ins":                              types.ListType{ElemType: types.ObjectType{AttrTypes: applicationAddInModel{}.AttributeTypes()}},
 		"api":                                  types.ObjectType{AttrTypes: applicationApiApplicationModel{}.AttributeTypes()},
 		"app_id":                               types.StringType,
@@ -60,10 +58,12 @@ func (m applicationModel) AttributeTypes() map[string]attr.Type {
 		"certification":                        types.ObjectType{AttrTypes: applicationCertificationModel{}.AttributeTypes()},
 		"created_date_time":                    types.StringType,
 		"default_redirect_uri":                 types.StringType,
+		"deleted_date_time":                    types.StringType,
 		"description":                          types.StringType,
 		"disabled_by_microsoft_status":         types.StringType,
 		"display_name":                         types.StringType,
 		"group_membership_claims":              types.StringType,
+		"id":                                   types.StringType,
 		"identifier_uris":                      types.ListType{ElemType: types.StringType},
 		"info":                                 types.ObjectType{AttrTypes: applicationInformationalUrlModel{}.AttributeTypes()},
 		"is_device_only_auth_supported":        types.BoolType,

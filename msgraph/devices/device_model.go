@@ -6,12 +6,11 @@ import (
 )
 
 type deviceModel struct {
-	Id                            types.String `tfsdk:"id"`
-	DeletedDateTime               types.String `tfsdk:"deleted_date_time"`
 	AccountEnabled                types.Bool   `tfsdk:"account_enabled"`
 	AlternativeSecurityIds        types.List   `tfsdk:"alternative_security_ids"`
 	ApproximateLastSignInDateTime types.String `tfsdk:"approximate_last_sign_in_date_time"`
 	ComplianceExpirationDateTime  types.String `tfsdk:"compliance_expiration_date_time"`
+	DeletedDateTime               types.String `tfsdk:"deleted_date_time"`
 	DeviceCategory                types.String `tfsdk:"device_category"`
 	DeviceId                      types.String `tfsdk:"device_id"`
 	DeviceMetadata                types.String `tfsdk:"device_metadata"`
@@ -20,6 +19,7 @@ type deviceModel struct {
 	DisplayName                   types.String `tfsdk:"display_name"`
 	EnrollmentProfileName         types.String `tfsdk:"enrollment_profile_name"`
 	EnrollmentType                types.String `tfsdk:"enrollment_type"`
+	Id                            types.String `tfsdk:"id"`
 	IsCompliant                   types.Bool   `tfsdk:"is_compliant"`
 	IsManaged                     types.Bool   `tfsdk:"is_managed"`
 	IsManagementRestricted        types.Bool   `tfsdk:"is_management_restricted"`
@@ -42,12 +42,11 @@ type deviceModel struct {
 
 func (m deviceModel) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":                                 types.StringType,
-		"deleted_date_time":                  types.StringType,
 		"account_enabled":                    types.BoolType,
 		"alternative_security_ids":           types.ListType{ElemType: types.ObjectType{AttrTypes: deviceAlternativeSecurityIdModel{}.AttributeTypes()}},
 		"approximate_last_sign_in_date_time": types.StringType,
 		"compliance_expiration_date_time":    types.StringType,
+		"deleted_date_time":                  types.StringType,
 		"device_category":                    types.StringType,
 		"device_id":                          types.StringType,
 		"device_metadata":                    types.StringType,
@@ -56,6 +55,7 @@ func (m deviceModel) AttributeTypes() map[string]attr.Type {
 		"display_name":                       types.StringType,
 		"enrollment_profile_name":            types.StringType,
 		"enrollment_type":                    types.StringType,
+		"id":                                 types.StringType,
 		"is_compliant":                       types.BoolType,
 		"is_managed":                         types.BoolType,
 		"is_management_restricted":           types.BoolType,
