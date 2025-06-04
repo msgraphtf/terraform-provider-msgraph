@@ -11,7 +11,7 @@ import (
 
 type OpenAPISchemaObject struct {
 	Schema     *openapi3.Schema
-	Properties []OpenAPISchemaProperty
+	AllProperties []OpenAPISchemaProperty
 }
 
 func (so OpenAPISchemaObject) Title() string {
@@ -119,7 +119,7 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 		properties = append(properties, getSchemaProperties(schema.AllOf[1].Value)...)
 	}
 
-	schemaObject.Properties = properties
+	schemaObject.AllProperties = properties
 
 	return schemaObject
 

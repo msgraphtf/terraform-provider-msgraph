@@ -17,7 +17,7 @@ func (ts schema) Attributes() []terraformSchemaAttribute {
 
 	var attributes []terraformSchemaAttribute
 
-	for _, property := range ts.Template.OpenAPIPath.Get().Response().Properties {
+	for _, property := range ts.Template.OpenAPIPath.Get().Response().AllProperties {
 
 		// Skip excluded properties
 		if slices.Contains(ts.Template.Augment().ExcludedProperties, property.Name) {
@@ -170,7 +170,7 @@ func (tsa terraformSchemaAttribute) PlanModifiers() bool {
 func (tsa terraformSchemaAttribute) NestedAttribute() []terraformSchemaAttribute {
 	var attributes []terraformSchemaAttribute
 
-	for _, property := range tsa.OpenAPISchemaProperty.ObjectOf().Properties {
+	for _, property := range tsa.OpenAPISchemaProperty.ObjectOf().AllProperties {
 
 		// Skip excluded properties
 		if slices.Contains(tsa.Schema.Template.Augment().ExcludedProperties, property.Name) {

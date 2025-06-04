@@ -69,7 +69,7 @@ func (md ModelDefinition) ModelFields() []ModelField {
 
 	var newModelFields []ModelField
 
-	for _, property := range md.OpenAPISchema.Properties {
+	for _, property := range md.OpenAPISchema.AllProperties {
 
 		// Skip excluded properties
 		if slices.Contains(md.Model.Template.Augment().ExcludedProperties, property.Name) {
@@ -93,7 +93,7 @@ func (md ModelDefinition) NestedDefinitions() []ModelDefinition {
 
 	var definitions []ModelDefinition
 
-	for _, property := range md.OpenAPISchema.Properties {
+	for _, property := range md.OpenAPISchema.AllProperties {
 
 		// Skip excluded properties
 		if slices.Contains(md.Model.Template.Augment().ExcludedProperties, property.Name) {

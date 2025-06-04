@@ -40,7 +40,7 @@ func (cr createRequest) Attributes() []createRequestAttribute {
 
 	var cra []createRequestAttribute
 
-	for _, property := range cr.Template.OpenAPIPath.Get().Response().Properties {
+	for _, property := range cr.Template.OpenAPIPath.Get().Response().AllProperties {
 
 		// Skip excluded properties
 		if slices.Contains(cr.Template.Augment().ExcludedProperties, property.Name) {
@@ -174,7 +174,7 @@ func (cra createRequestAttribute) TfModelName() string {
 func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	var cr []createRequestAttribute
 
-	for _, property := range cra.Property.ObjectOf().Properties {
+	for _, property := range cra.Property.ObjectOf().AllProperties {
 
 		// Skip excluded properties
 		if slices.Contains(cra.CreateRequest.Template.Augment().ExcludedProperties, property.Name) {

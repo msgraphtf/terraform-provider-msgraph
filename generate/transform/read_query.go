@@ -44,7 +44,7 @@ func (rq readQuery) SelectParameters() []string {
 
 	var selectParams []string
 
-	for _, p := range rq.Template.OpenAPIPath.Get().Response().Properties {
+	for _, p := range rq.Template.OpenAPIPath.Get().Response().AllProperties {
 		if !slices.Contains(rq.Template.Augment().ExcludedProperties, p.Name) {
 			selectParams = append(selectParams, p.Name)
 		}
