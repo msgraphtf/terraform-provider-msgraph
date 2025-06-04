@@ -3280,17 +3280,6 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 	// Generate API request body from plan
 	requestBodyApplication := models.NewApplication()
 
-	if !tfPlanApplication.Id.Equal(tfStateApplication.Id) {
-		tfPlanId := tfPlanApplication.Id.ValueString()
-		requestBodyApplication.SetId(&tfPlanId)
-	}
-
-	if !tfPlanApplication.DeletedDateTime.Equal(tfStateApplication.DeletedDateTime) {
-		tfPlanDeletedDateTime := tfPlanApplication.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyApplication.SetDeletedDateTime(&t)
-	}
-
 	if !tfPlanApplication.AddIns.Equal(tfStateApplication.AddIns) {
 		var tfPlanAddIns []models.AddInable
 		for k, i := range tfPlanApplication.AddIns.Elements() {
@@ -3552,6 +3541,12 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 		requestBodyApplication.SetDefaultRedirectUri(&tfPlanDefaultRedirectUri)
 	}
 
+	if !tfPlanApplication.DeletedDateTime.Equal(tfStateApplication.DeletedDateTime) {
+		tfPlanDeletedDateTime := tfPlanApplication.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyApplication.SetDeletedDateTime(&t)
+	}
+
 	if !tfPlanApplication.Description.Equal(tfStateApplication.Description) {
 		tfPlanDescription := tfPlanApplication.Description.ValueString()
 		requestBodyApplication.SetDescription(&tfPlanDescription)
@@ -3570,6 +3565,11 @@ func (r *applicationResource) Update(ctx context.Context, req resource.UpdateReq
 	if !tfPlanApplication.GroupMembershipClaims.Equal(tfStateApplication.GroupMembershipClaims) {
 		tfPlanGroupMembershipClaims := tfPlanApplication.GroupMembershipClaims.ValueString()
 		requestBodyApplication.SetGroupMembershipClaims(&tfPlanGroupMembershipClaims)
+	}
+
+	if !tfPlanApplication.Id.Equal(tfStateApplication.Id) {
+		tfPlanId := tfPlanApplication.Id.ValueString()
+		requestBodyApplication.SetId(&tfPlanId)
 	}
 
 	if !tfPlanApplication.IdentifierUris.Equal(tfStateApplication.IdentifierUris) {

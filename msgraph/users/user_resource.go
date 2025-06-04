@@ -3070,17 +3070,6 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	// Generate API request body from plan
 	requestBodyUser := models.NewUser()
 
-	if !tfPlanUser.Id.Equal(tfStateUser.Id) {
-		tfPlanId := tfPlanUser.Id.ValueString()
-		requestBodyUser.SetId(&tfPlanId)
-	}
-
-	if !tfPlanUser.DeletedDateTime.Equal(tfStateUser.DeletedDateTime) {
-		tfPlanDeletedDateTime := tfPlanUser.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyUser.SetDeletedDateTime(&t)
-	}
-
 	if !tfPlanUser.AboutMe.Equal(tfStateUser.AboutMe) {
 		tfPlanAboutMe := tfPlanUser.AboutMe.ValueString()
 		requestBodyUser.SetAboutMe(&tfPlanAboutMe)
@@ -3220,6 +3209,12 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		requestBodyUser.SetCreationType(&tfPlanCreationType)
 	}
 
+	if !tfPlanUser.DeletedDateTime.Equal(tfStateUser.DeletedDateTime) {
+		tfPlanDeletedDateTime := tfPlanUser.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyUser.SetDeletedDateTime(&t)
+	}
+
 	if !tfPlanUser.Department.Equal(tfStateUser.Department) {
 		tfPlanDepartment := tfPlanUser.Department.ValueString()
 		requestBodyUser.SetDepartment(&tfPlanDepartment)
@@ -3297,6 +3292,11 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		tfPlanHireDate := tfPlanUser.HireDate.ValueString()
 		t, _ := time.Parse(time.RFC3339, tfPlanHireDate)
 		requestBodyUser.SetHireDate(&t)
+	}
+
+	if !tfPlanUser.Id.Equal(tfStateUser.Id) {
+		tfPlanId := tfPlanUser.Id.ValueString()
+		requestBodyUser.SetId(&tfPlanId)
 	}
 
 	if !tfPlanUser.Identities.Equal(tfStateUser.Identities) {

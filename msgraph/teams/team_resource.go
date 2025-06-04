@@ -852,11 +852,6 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	// Generate API request body from plan
 	requestBodyTeam := models.NewTeam()
 
-	if !tfPlanTeam.Id.Equal(tfStateTeam.Id) {
-		tfPlanId := tfPlanTeam.Id.ValueString()
-		requestBodyTeam.SetId(&tfPlanId)
-	}
-
 	if !tfPlanTeam.Classification.Equal(tfStateTeam.Classification) {
 		tfPlanClassification := tfPlanTeam.Classification.ValueString()
 		requestBodyTeam.SetClassification(&tfPlanClassification)
@@ -928,6 +923,11 @@ func (r *teamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		}
 		requestBodyTeam.SetGuestSettings(requestBodyTeamGuestSettings)
 		tfPlanTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamGuestSettings.AttributeTypes(), tfPlanTeamGuestSettings)
+	}
+
+	if !tfPlanTeam.Id.Equal(tfStateTeam.Id) {
+		tfPlanId := tfPlanTeam.Id.ValueString()
+		requestBodyTeam.SetId(&tfPlanId)
 	}
 
 	if !tfPlanTeam.InternalId.Equal(tfStateTeam.InternalId) {

@@ -889,17 +889,6 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	// Generate API request body from plan
 	requestBodyDevice := models.NewDevice()
 
-	if !tfPlanDevice.Id.Equal(tfStateDevice.Id) {
-		tfPlanId := tfPlanDevice.Id.ValueString()
-		requestBodyDevice.SetId(&tfPlanId)
-	}
-
-	if !tfPlanDevice.DeletedDateTime.Equal(tfStateDevice.DeletedDateTime) {
-		tfPlanDeletedDateTime := tfPlanDevice.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyDevice.SetDeletedDateTime(&t)
-	}
-
 	if !tfPlanDevice.AccountEnabled.Equal(tfStateDevice.AccountEnabled) {
 		tfPlanAccountEnabled := tfPlanDevice.AccountEnabled.ValueBool()
 		requestBodyDevice.SetAccountEnabled(&tfPlanAccountEnabled)
@@ -939,6 +928,12 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		requestBodyDevice.SetComplianceExpirationDateTime(&t)
 	}
 
+	if !tfPlanDevice.DeletedDateTime.Equal(tfStateDevice.DeletedDateTime) {
+		tfPlanDeletedDateTime := tfPlanDevice.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyDevice.SetDeletedDateTime(&t)
+	}
+
 	if !tfPlanDevice.DeviceCategory.Equal(tfStateDevice.DeviceCategory) {
 		tfPlanDeviceCategory := tfPlanDevice.DeviceCategory.ValueString()
 		requestBodyDevice.SetDeviceCategory(&tfPlanDeviceCategory)
@@ -972,6 +967,11 @@ func (r *deviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !tfPlanDevice.EnrollmentType.Equal(tfStateDevice.EnrollmentType) {
 		tfPlanEnrollmentType := tfPlanDevice.EnrollmentType.ValueString()
 		requestBodyDevice.SetEnrollmentType(&tfPlanEnrollmentType)
+	}
+
+	if !tfPlanDevice.Id.Equal(tfStateDevice.Id) {
+		tfPlanId := tfPlanDevice.Id.ValueString()
+		requestBodyDevice.SetId(&tfPlanId)
 	}
 
 	if !tfPlanDevice.IsCompliant.Equal(tfStateDevice.IsCompliant) {

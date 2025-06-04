@@ -2093,17 +2093,6 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	// Generate API request body from plan
 	requestBodyServicePrincipal := models.NewServicePrincipal()
 
-	if !tfPlanServicePrincipal.Id.Equal(tfStateServicePrincipal.Id) {
-		tfPlanId := tfPlanServicePrincipal.Id.ValueString()
-		requestBodyServicePrincipal.SetId(&tfPlanId)
-	}
-
-	if !tfPlanServicePrincipal.DeletedDateTime.Equal(tfStateServicePrincipal.DeletedDateTime) {
-		tfPlanDeletedDateTime := tfPlanServicePrincipal.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyServicePrincipal.SetDeletedDateTime(&t)
-	}
-
 	if !tfPlanServicePrincipal.AccountEnabled.Equal(tfStateServicePrincipal.AccountEnabled) {
 		tfPlanAccountEnabled := tfPlanServicePrincipal.AccountEnabled.ValueBool()
 		requestBodyServicePrincipal.SetAccountEnabled(&tfPlanAccountEnabled)
@@ -2244,6 +2233,12 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 		requestBodyServicePrincipal.SetApplicationTemplateId(&tfPlanApplicationTemplateId)
 	}
 
+	if !tfPlanServicePrincipal.DeletedDateTime.Equal(tfStateServicePrincipal.DeletedDateTime) {
+		tfPlanDeletedDateTime := tfPlanServicePrincipal.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyServicePrincipal.SetDeletedDateTime(&t)
+	}
+
 	if !tfPlanServicePrincipal.Description.Equal(tfStateServicePrincipal.Description) {
 		tfPlanDescription := tfPlanServicePrincipal.Description.ValueString()
 		requestBodyServicePrincipal.SetDescription(&tfPlanDescription)
@@ -2262,6 +2257,11 @@ func (r *servicePrincipalResource) Update(ctx context.Context, req resource.Upda
 	if !tfPlanServicePrincipal.Homepage.Equal(tfStateServicePrincipal.Homepage) {
 		tfPlanHomepage := tfPlanServicePrincipal.Homepage.ValueString()
 		requestBodyServicePrincipal.SetHomepage(&tfPlanHomepage)
+	}
+
+	if !tfPlanServicePrincipal.Id.Equal(tfStateServicePrincipal.Id) {
+		tfPlanId := tfPlanServicePrincipal.Id.ValueString()
+		requestBodyServicePrincipal.SetId(&tfPlanId)
 	}
 
 	if !tfPlanServicePrincipal.Info.Equal(tfStateServicePrincipal.Info) {

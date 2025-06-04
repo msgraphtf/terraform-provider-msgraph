@@ -1239,17 +1239,6 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	// Generate API request body from plan
 	requestBodyGroup := models.NewGroup()
 
-	if !tfPlanGroup.Id.Equal(tfStateGroup.Id) {
-		tfPlanId := tfPlanGroup.Id.ValueString()
-		requestBodyGroup.SetId(&tfPlanId)
-	}
-
-	if !tfPlanGroup.DeletedDateTime.Equal(tfStateGroup.DeletedDateTime) {
-		tfPlanDeletedDateTime := tfPlanGroup.DeletedDateTime.ValueString()
-		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
-		requestBodyGroup.SetDeletedDateTime(&t)
-	}
-
 	if !tfPlanGroup.AssignedLabels.Equal(tfStateGroup.AssignedLabels) {
 		var tfPlanAssignedLabels []models.AssignedLabelable
 		for k, i := range tfPlanGroup.AssignedLabels.Elements() {
@@ -1310,6 +1299,12 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		requestBodyGroup.SetCreatedDateTime(&t)
 	}
 
+	if !tfPlanGroup.DeletedDateTime.Equal(tfStateGroup.DeletedDateTime) {
+		tfPlanDeletedDateTime := tfPlanGroup.DeletedDateTime.ValueString()
+		t, _ := time.Parse(time.RFC3339, tfPlanDeletedDateTime)
+		requestBodyGroup.SetDeletedDateTime(&t)
+	}
+
 	if !tfPlanGroup.Description.Equal(tfStateGroup.Description) {
 		tfPlanDescription := tfPlanGroup.Description.ValueString()
 		requestBodyGroup.SetDescription(&tfPlanDescription)
@@ -1332,6 +1327,11 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 			stringArrayGroupTypes = append(stringArrayGroupTypes, i.String())
 		}
 		requestBodyGroup.SetGroupTypes(stringArrayGroupTypes)
+	}
+
+	if !tfPlanGroup.Id.Equal(tfStateGroup.Id) {
+		tfPlanId := tfPlanGroup.Id.ValueString()
+		requestBodyGroup.SetId(&tfPlanId)
 	}
 
 	if !tfPlanGroup.IsAssignableToRole.Equal(tfStateGroup.IsAssignableToRole) {
