@@ -112,11 +112,11 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 	var properties []OpenAPISchemaProperty
 
 	if len(schema.AllOf) == 0 {
-		properties = recurseDownSchemaProperties(schema)
+		properties = getSchemaProperties(schema)
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
 		properties = append(properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
-		properties = append(properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
+		properties = append(properties, getSchemaProperties(schema.AllOf[1].Value)...)
 	}
 
 	schemaObject.Properties = properties
@@ -130,43 +130,37 @@ func recurseUpSchema(schema *openapi3.Schema) []OpenAPISchemaProperty {
 	var properties []OpenAPISchemaProperty
 
 	if schema.Title != "" {
-		properties = append(properties, recurseDownSchemaProperties(schema)...)
+		properties = append(properties, getSchemaProperties(schema)...)
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
 		properties = append(properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
-		properties = append(properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
+		properties = append(properties, getSchemaProperties(schema.AllOf[1].Value)...)
 	}
 
 	return properties
 
 }
 
-func recurseDownSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaProperty {
-
-	keys := make([]string, 0)
-	for k := range schema.Properties {
-		keys = append(keys, k)
-	}
-
-	sort.Strings(keys)
+func getSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaProperty {
 
 	var properties []OpenAPISchemaProperty
 
-	for _, k := range keys {
+	for name, property := range schema.Properties {
 
-		property := schema.Properties[k].Value
-
-		if strings.Contains(k, "@odata") || property.Extensions["x-ms-navigationProperty"] == true {
+		if strings.Contains(name, "@odata") || property.Value.Extensions["x-ms-navigationProperty"] == true {
 			continue
 		}
 
-		var newProperty OpenAPISchemaProperty
-
-		newProperty.Schema = property
-		newProperty.Name = k
+		newProperty := OpenAPISchemaProperty{
+			Name: name,
+			Schema: property.Value,
+		}
 
 		properties = append(properties, newProperty)
 	}
+
+	// Sort properties by name
+	sort.Slice(properties[:], func(i, j int) bool {return properties[i].Name < properties[j].Name})
 
 	return properties
 }
