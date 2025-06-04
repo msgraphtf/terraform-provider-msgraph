@@ -107,16 +107,19 @@ func getSchemaObjectByRef(ref string) OpenAPISchemaObject {
 func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 
 	var schemaObject OpenAPISchemaObject
-
 	schemaObject.Schema = schema
 
+	var properties []OpenAPISchemaProperty
+
 	if len(schema.AllOf) == 0 {
-		schemaObject.Properties = recurseDownSchemaProperties(schema)
+		properties = recurseDownSchemaProperties(schema)
 	} else {
 		parentSchema := strings.Split(schema.AllOf[0].Ref, "/")[3]
-		schemaObject.Properties = append(schemaObject.Properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
-		schemaObject.Properties = append(schemaObject.Properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
+		properties = append(properties, recurseUpSchema(doc.Components.Schemas[parentSchema].Value)...)
+		properties = append(properties, recurseDownSchemaProperties(schema.AllOf[1].Value)...)
 	}
+
+	schemaObject.Properties = properties
 
 	return schemaObject
 
