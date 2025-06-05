@@ -79,13 +79,7 @@ func (sp OpenAPISchemaProperty) ObjectOf() OpenAPISchemaObject {
 
 	// Determines what type of data the OpenAPI schema object is
 	if strings.Join(sp.Schema.Type.Slice(), "") == "array" { // Array
-		if strings.Join(sp.Schema.Items.Value.Type.Slice(), "") == "object" || sp.Schema.Items.Ref != "" { // Array of objects
-			return getSchemaObject(sp.Schema.Items.Value)
-		} else if sp.Schema.Items.Value.AnyOf != nil { // Array of objects, but structured differently for some reason
-			return getSchemaObject(sp.Schema.Items.Value.AnyOf[0].Value)
-		}
-	} else if sp.Schema.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
-		return getSchemaObject(sp.Schema)
+		return getSchemaObject(sp.Schema.Items.Value)
 	} else if sp.Schema.AnyOf != nil { // Object
 		return getSchemaObject(sp.Schema.AnyOf[0].Value)
 	}
