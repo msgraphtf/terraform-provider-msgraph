@@ -11,7 +11,6 @@ import (
 
 type OpenAPISchemaObject struct {
 	Schema     *openapi3.Schema
-	AllProperties []OpenAPISchemaProperty
 }
 
 func (so OpenAPISchemaObject) Title() string {
@@ -33,6 +32,14 @@ func (so OpenAPISchemaObject) Type() string {
 func (so OpenAPISchemaObject) Properties() []OpenAPISchemaProperty {
 
 	var properties []OpenAPISchemaProperty
+
+	// OpenAPISchemaProperty.ObjectOf() can potentially create a OpenAPISchemaObject without a Schema field.
+	// This happens when called by transform > create.go > createReqeustAttribute.NestedCreate(), when it's called through createReqeustAttribute.IfUuidImportNeeded()
+	// So we return an empty array to handle this case, otherwise it would silently fail when generating code from templates
+	// TODO: Maybe we can change the logic somewhere else to avoid this
+	if so.Schema == nil {
+		return properties
+	}
 
 	if len(so.Schema.AllOf) == 0 {
 		for name, property := range so.Schema.Properties {
@@ -82,10 +89,8 @@ func (sp OpenAPISchemaProperty) ObjectOf() OpenAPISchemaObject {
 	// Determines what type of data the OpenAPI schema object is
 	if strings.Join(sp.Schema.Type.Slice(), "") == "array" { // Array
 		schemaObject.Schema = sp.Schema.Items.Value
-		schemaObject.AllProperties = schemaObject.Properties()
 	} else if sp.Schema.AnyOf != nil { // Object
 		schemaObject.Schema = sp.Schema.AnyOf[0].Value
-		schemaObject.AllProperties = schemaObject.Properties()
 	}
 
 	return schemaObject

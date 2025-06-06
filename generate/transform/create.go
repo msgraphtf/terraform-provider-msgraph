@@ -174,7 +174,7 @@ func (cra createRequestAttribute) TfModelName() string {
 func (cra createRequestAttribute) NestedCreate() []createRequestAttribute {
 	var attributes []createRequestAttribute
 
-	for _, property := range cra.Property.ObjectOf().AllProperties {
+	for _, property := range cra.Property.ObjectOf().Properties() {
 
 		// Skip excluded properties
 		if slices.Contains(cra.CreateRequest.Template.Augment().ExcludedProperties, property.Name) {
