@@ -77,14 +77,18 @@ func (sp OpenAPISchemaProperty) Type() string {
 
 func (sp OpenAPISchemaProperty) ObjectOf() OpenAPISchemaObject {
 
+	var schemaObject OpenAPISchemaObject
+
 	// Determines what type of data the OpenAPI schema object is
 	if strings.Join(sp.Schema.Type.Slice(), "") == "array" { // Array
-		return getSchemaObject(sp.Schema.Items.Value)
+		schemaObject.Schema = sp.Schema.Items.Value
+		schemaObject.AllProperties = schemaObject.Properties()
 	} else if sp.Schema.AnyOf != nil { // Object
-		return getSchemaObject(sp.Schema.AnyOf[0].Value)
+		schemaObject.Schema = sp.Schema.AnyOf[0].Value
+		schemaObject.AllProperties = schemaObject.Properties()
 	}
 
-	return OpenAPISchemaObject{}
+	return schemaObject
 }
 
 func (sp OpenAPISchemaProperty) ArrayOf() string {
@@ -109,16 +113,5 @@ func (sp OpenAPISchemaProperty) Format() string {
 	} else { // Primitive type
 		return sp.Schema.Format
 	}
-}
-
-func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
-
-	var schemaObject OpenAPISchemaObject
-	schemaObject.Schema = schema
-
-	schemaObject.AllProperties = schemaObject.Properties()
-
-	return schemaObject
-
 }
 
