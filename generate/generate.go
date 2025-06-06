@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -8,6 +9,8 @@ import (
 
 	"terraform-provider-msgraph/generate/openapi"
 	"terraform-provider-msgraph/generate/transform"
+
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 func generateDataSource(input transform.TemplateInput) {
@@ -53,8 +56,15 @@ func generateModel(input transform.TemplateInput) {
 
 func main() {
 
+	fmt.Println("Loading")
+	doc, err := openapi3.NewLoader().LoadFromFile("./msgraph-metadata/openapi/v1.0/openapi.yaml")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Loaded")
+
 	if len(os.Args) > 1 {
-		pathObject := openapi.GetPath(os.Args[1])
+		pathObject := openapi.GetPath(doc, os.Args[1])
 
 		input := transform.TemplateInput{
 			OpenAPIPath: pathObject,
@@ -87,7 +97,7 @@ func main() {
 		}
 
 		for _, path := range knownGoodPaths {
-			pathObject := openapi.GetPath(path)
+			pathObject := openapi.GetPath(doc, path)
 			input := transform.TemplateInput{
 				OpenAPIPath: pathObject,
 			}

@@ -67,7 +67,7 @@ func (oo openAPIPathOperationObject) SelectParameters() []string {
 	return selectparams
 }
 
-func GetPath(pathname string) OpenAPIPathObject {
+func GetPath(doc *openapi3.T, pathname string) OpenAPIPathObject {
 
 	var pathObject OpenAPIPathObject
 
