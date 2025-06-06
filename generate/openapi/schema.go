@@ -116,56 +116,9 @@ func getSchemaObject(schema *openapi3.Schema) OpenAPISchemaObject {
 	var schemaObject OpenAPISchemaObject
 	schemaObject.Schema = schema
 
-	var properties []OpenAPISchemaProperty
-
-	if len(schema.AllOf) == 0 {
-		properties = getSchemaProperties(schema)
-	} else {
-		properties = append(properties, recurseUpSchema(schema.AllOf[0].Value)...)
-		properties = append(properties, getSchemaProperties(schema.AllOf[1].Value)...)
-	}
-
-	schemaObject.AllProperties = properties
+	schemaObject.AllProperties = schemaObject.Properties()
 
 	return schemaObject
 
 }
 
-func recurseUpSchema(schema *openapi3.Schema) []OpenAPISchemaProperty {
-
-	var properties []OpenAPISchemaProperty
-
-	if len(schema.AllOf) == 0 {
-		properties = append(properties, getSchemaProperties(schema)...)
-	} else {
-		properties = append(properties, recurseUpSchema(schema.AllOf[0].Value)...)
-		properties = append(properties, getSchemaProperties(schema.AllOf[1].Value)...)
-	}
-
-	return properties
-
-}
-
-func getSchemaProperties(schema *openapi3.Schema) []OpenAPISchemaProperty {
-
-	var properties []OpenAPISchemaProperty
-
-	for name, property := range schema.Properties {
-
-		if strings.Contains(name, "@odata") || property.Value.Extensions["x-ms-navigationProperty"] == true {
-			continue
-		}
-
-		newProperty := OpenAPISchemaProperty{
-			Name: name,
-			Schema: property.Value,
-		}
-
-		properties = append(properties, newProperty)
-	}
-
-	// Sort properties by name
-	sort.Slice(properties[:], func(i, j int) bool {return properties[i].Name < properties[j].Name})
-
-	return properties
-}
