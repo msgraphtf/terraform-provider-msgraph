@@ -1,4 +1,4 @@
-package openapi
+package extract
 
 import (
 	"github.com/getkin/kin-openapi/openapi3"

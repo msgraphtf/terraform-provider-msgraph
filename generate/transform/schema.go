@@ -5,7 +5,7 @@ import (
 
 	"github.com/iancoleman/strcase"
 
-	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/extract"
 )
 
 type schema struct {
@@ -91,7 +91,7 @@ func (ts schema) IfSingleNestedAttributeUsed(attributes []terraformSchemaAttribu
 // Used by templates defined inside of data_source_template.go to generate the schema
 type terraformSchemaAttribute struct {
 	Schema                *schema
-	OpenAPISchemaProperty openapi.OpenAPISchemaProperty
+	OpenAPISchemaProperty extract.OpenAPISchemaProperty
 }
 
 func (tsa terraformSchemaAttribute) Description() string {

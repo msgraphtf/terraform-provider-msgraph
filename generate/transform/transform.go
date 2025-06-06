@@ -4,7 +4,7 @@ import (
 	"os"
 	"gopkg.in/yaml.v3"
 	"strings"
-	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/extract"
 
 	"github.com/iancoleman/strcase"
 )
@@ -47,7 +47,7 @@ type queryMethod struct {
 }
 
 type TemplateInput struct {
-	OpenAPIPath   openapi.OpenAPIPathObject
+	OpenAPIPath   extract.OpenAPIPathObject
 }
 
 func (ti TemplateInput) PackageName() string {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/iancoleman/strcase"
 
-	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/extract"
 )
 
 type createRequest struct {
@@ -91,7 +91,7 @@ func (cr createRequest) IfUuidImportNeeded() bool {
 
 type createRequestAttribute struct {
 	CreateRequest *createRequest
-	Property      openapi.OpenAPISchemaProperty
+	Property      extract.OpenAPISchemaProperty
 	Parent        *createRequestAttribute
 }
 

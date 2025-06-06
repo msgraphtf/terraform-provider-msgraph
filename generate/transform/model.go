@@ -7,7 +7,7 @@ import (
 
 	"github.com/iancoleman/strcase"
 
-	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/extract"
 )
 
 type model struct {
@@ -52,7 +52,7 @@ func (m model) Definitions() []ModelDefinition {
 // Used by templates defined inside of data_source_template.go to generate the data models
 type ModelDefinition struct {
 	Model         *model
-	OpenAPISchema openapi.OpenAPISchemaObject
+	OpenAPISchema extract.OpenAPISchemaObject
 }
 
 func (md ModelDefinition) ModelName() string {
@@ -114,7 +114,7 @@ func (md ModelDefinition) NestedDefinitions() []ModelDefinition {
 
 type ModelField struct {
 	Definition *ModelDefinition
-	Property   openapi.OpenAPISchemaProperty
+	Property   extract.OpenAPISchemaProperty
 }
 
 func (mf ModelField) FieldName() string {

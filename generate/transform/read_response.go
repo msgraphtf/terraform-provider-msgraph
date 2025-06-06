@@ -4,7 +4,7 @@ import (
 	"slices"
 	"strings"
 
-	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/extract"
 )
 
 type readResponse struct {
@@ -80,7 +80,7 @@ func (rr readResponse) IfBasetypesImportNeeded() bool {
 // Used by 'read_response_template' to generate code to map the query response to the terraform model
 type readResponseAttribute struct {
 	ReadResponse *readResponse
-	Property     openapi.OpenAPISchemaProperty
+	Property     extract.OpenAPISchemaProperty
 	Parent       *readResponseAttribute
 }
 

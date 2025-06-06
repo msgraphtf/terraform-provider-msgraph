@@ -6,7 +6,7 @@ import (
 
 	"github.com/iancoleman/strcase"
 
-	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/extract"
 )
 
 type updateRequest struct {
@@ -60,7 +60,7 @@ func (ur updateRequest) Attributes() []updateRequestAttribute {
 
 type updateRequestAttribute struct {
 	UpdateRequest *updateRequest
-	Property      openapi.OpenAPISchemaProperty
+	Property      extract.OpenAPISchemaProperty
 	Parent        *updateRequestAttribute
 }
 

@@ -7,7 +7,7 @@ import (
 
 	"text/template"
 
-	"terraform-provider-msgraph/generate/openapi"
+	"terraform-provider-msgraph/generate/extract"
 	"terraform-provider-msgraph/generate/transform"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -64,7 +64,7 @@ func main() {
 	fmt.Println("Loaded")
 
 	if len(os.Args) > 1 {
-		pathObject := openapi.GetPath(doc, os.Args[1])
+		pathObject := extract.GetPath(doc, os.Args[1])
 
 		input := transform.TemplateInput{
 			OpenAPIPath: pathObject,
@@ -97,7 +97,7 @@ func main() {
 		}
 
 		for _, path := range knownGoodPaths {
-			pathObject := openapi.GetPath(doc, path)
+			pathObject := extract.GetPath(doc, path)
 			input := transform.TemplateInput{
 				OpenAPIPath: pathObject,
 			}

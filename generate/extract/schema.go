@@ -1,4 +1,4 @@
-package openapi
+package extract
 
 // schema.go handles everything related to OpenAPI schema objects
 
