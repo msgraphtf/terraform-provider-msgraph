@@ -125,7 +125,7 @@ func (r *{{.Template.BlockName.LowerCamel}}Resource) Create(ctx context.Context,
 		tfPlan{{.ParentName}}.{{.Name}}.As(ctx, &tfPlan{{.ObjectOf}}, basetypes.ObjectAsOptions{})
 		{{template "generate_create" .NestedCreate}}
 		requestBody{{.ParentName}}.Set{{.Name}}(requestBody{{.ObjectOf}})
-		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.ObjectOf}}.AttributeTypes(), requestBody{{.ObjectOf}})
+		tfPlan{{.ParentName}}.{{.Name}}, _ = types.ObjectValueFrom(ctx, tfPlan{{.ObjectOf}}.AttributeTypes(), tfPlan{{.ObjectOf}})
 	} else {
 		tfPlan{{.ParentName}}.{{.Name}} = types.ObjectNull(tfPlan{{.ParentName}}.{{.Name}}.AttributeTypes(ctx))
 	}

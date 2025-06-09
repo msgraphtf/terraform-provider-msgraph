@@ -24,3 +24,10 @@ resource "msgraph_user" "test_user" {
     password = "Ank~esYyN@2@9Y5qfxpF"
   }
 }
+
+resource "msgraph_group" "test_group" {
+  display_name = "test_group"
+  mail_enabled = false
+  mail_nickname = "test_group"
+  security_enabled = true
+}

@@ -300,7 +300,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyTeam.SetFunSettings(requestBodyTeamFunSettings)
-		tfPlanTeam.FunSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamFunSettings.AttributeTypes(), requestBodyTeamFunSettings)
+		tfPlanTeam.FunSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamFunSettings.AttributeTypes(), tfPlanTeamFunSettings)
 	} else {
 		tfPlanTeam.FunSettings = types.ObjectNull(tfPlanTeam.FunSettings.AttributeTypes(ctx))
 	}
@@ -325,7 +325,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyTeam.SetGuestSettings(requestBodyTeamGuestSettings)
-		tfPlanTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamGuestSettings.AttributeTypes(), requestBodyTeamGuestSettings)
+		tfPlanTeam.GuestSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamGuestSettings.AttributeTypes(), tfPlanTeamGuestSettings)
 	} else {
 		tfPlanTeam.GuestSettings = types.ObjectNull(tfPlanTeam.GuestSettings.AttributeTypes(ctx))
 	}
@@ -399,7 +399,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyTeam.SetMemberSettings(requestBodyTeamMemberSettings)
-		tfPlanTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamMemberSettings.AttributeTypes(), requestBodyTeamMemberSettings)
+		tfPlanTeam.MemberSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamMemberSettings.AttributeTypes(), tfPlanTeamMemberSettings)
 	} else {
 		tfPlanTeam.MemberSettings = types.ObjectNull(tfPlanTeam.MemberSettings.AttributeTypes(ctx))
 	}
@@ -445,7 +445,7 @@ func (r *teamResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyTeam.SetMessagingSettings(requestBodyTeamMessagingSettings)
-		tfPlanTeam.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamMessagingSettings.AttributeTypes(), requestBodyTeamMessagingSettings)
+		tfPlanTeam.MessagingSettings, _ = types.ObjectValueFrom(ctx, tfPlanTeamMessagingSettings.AttributeTypes(), tfPlanTeamMessagingSettings)
 	} else {
 		tfPlanTeam.MessagingSettings = types.ObjectNull(tfPlanTeam.MessagingSettings.AttributeTypes(ctx))
 	}

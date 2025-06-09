@@ -1008,7 +1008,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetApi(requestBodyApiApplication)
-		tfPlanApplication.Api, _ = types.ObjectValueFrom(ctx, tfPlanApiApplication.AttributeTypes(), requestBodyApiApplication)
+		tfPlanApplication.Api, _ = types.ObjectValueFrom(ctx, tfPlanApiApplication.AttributeTypes(), tfPlanApiApplication)
 	} else {
 		tfPlanApplication.Api = types.ObjectNull(tfPlanApplication.Api.AttributeTypes(ctx))
 	}
@@ -1136,7 +1136,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetCertification(requestBodyCertification)
-		tfPlanApplication.Certification, _ = types.ObjectValueFrom(ctx, tfPlanCertification.AttributeTypes(), requestBodyCertification)
+		tfPlanApplication.Certification, _ = types.ObjectValueFrom(ctx, tfPlanCertification.AttributeTypes(), tfPlanCertification)
 	} else {
 		tfPlanApplication.Certification = types.ObjectNull(tfPlanApplication.Certification.AttributeTypes(ctx))
 	}
@@ -1250,7 +1250,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetInfo(requestBodyInformationalUrl)
-		tfPlanApplication.Info, _ = types.ObjectValueFrom(ctx, tfPlanInformationalUrl.AttributeTypes(), requestBodyInformationalUrl)
+		tfPlanApplication.Info, _ = types.ObjectValueFrom(ctx, tfPlanInformationalUrl.AttributeTypes(), tfPlanInformationalUrl)
 	} else {
 		tfPlanApplication.Info = types.ObjectNull(tfPlanApplication.Info.AttributeTypes(ctx))
 	}
@@ -1509,7 +1509,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetOptionalClaims(requestBodyOptionalClaims)
-		tfPlanApplication.OptionalClaims, _ = types.ObjectValueFrom(ctx, tfPlanOptionalClaims.AttributeTypes(), requestBodyOptionalClaims)
+		tfPlanApplication.OptionalClaims, _ = types.ObjectValueFrom(ctx, tfPlanOptionalClaims.AttributeTypes(), tfPlanOptionalClaims)
 	} else {
 		tfPlanApplication.OptionalClaims = types.ObjectNull(tfPlanApplication.OptionalClaims.AttributeTypes(ctx))
 	}
@@ -1537,7 +1537,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetParentalControlSettings(requestBodyParentalControlSettings)
-		tfPlanApplication.ParentalControlSettings, _ = types.ObjectValueFrom(ctx, tfPlanParentalControlSettings.AttributeTypes(), requestBodyParentalControlSettings)
+		tfPlanApplication.ParentalControlSettings, _ = types.ObjectValueFrom(ctx, tfPlanParentalControlSettings.AttributeTypes(), tfPlanParentalControlSettings)
 	} else {
 		tfPlanApplication.ParentalControlSettings = types.ObjectNull(tfPlanApplication.ParentalControlSettings.AttributeTypes(ctx))
 	}
@@ -1623,7 +1623,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetPublicClient(requestBodyPublicClientApplication)
-		tfPlanApplication.PublicClient, _ = types.ObjectValueFrom(ctx, tfPlanPublicClientApplication.AttributeTypes(), requestBodyPublicClientApplication)
+		tfPlanApplication.PublicClient, _ = types.ObjectValueFrom(ctx, tfPlanPublicClientApplication.AttributeTypes(), tfPlanPublicClientApplication)
 	} else {
 		tfPlanApplication.PublicClient = types.ObjectNull(tfPlanApplication.PublicClient.AttributeTypes(ctx))
 	}
@@ -1657,7 +1657,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetRequestSignatureVerification(requestBodyRequestSignatureVerification)
-		tfPlanApplication.RequestSignatureVerification, _ = types.ObjectValueFrom(ctx, tfPlanRequestSignatureVerification.AttributeTypes(), requestBodyRequestSignatureVerification)
+		tfPlanApplication.RequestSignatureVerification, _ = types.ObjectValueFrom(ctx, tfPlanRequestSignatureVerification.AttributeTypes(), tfPlanRequestSignatureVerification)
 	} else {
 		tfPlanApplication.RequestSignatureVerification = types.ObjectNull(tfPlanApplication.RequestSignatureVerification.AttributeTypes(ctx))
 	}
@@ -1765,7 +1765,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetServicePrincipalLockConfiguration(requestBodyServicePrincipalLockConfiguration)
-		tfPlanApplication.ServicePrincipalLockConfiguration, _ = types.ObjectValueFrom(ctx, tfPlanServicePrincipalLockConfiguration.AttributeTypes(), requestBodyServicePrincipalLockConfiguration)
+		tfPlanApplication.ServicePrincipalLockConfiguration, _ = types.ObjectValueFrom(ctx, tfPlanServicePrincipalLockConfiguration.AttributeTypes(), tfPlanServicePrincipalLockConfiguration)
 	} else {
 		tfPlanApplication.ServicePrincipalLockConfiguration = types.ObjectNull(tfPlanApplication.ServicePrincipalLockConfiguration.AttributeTypes(ctx))
 	}
@@ -1793,7 +1793,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetSpa(requestBodySpaApplication)
-		tfPlanApplication.Spa, _ = types.ObjectValueFrom(ctx, tfPlanSpaApplication.AttributeTypes(), requestBodySpaApplication)
+		tfPlanApplication.Spa, _ = types.ObjectValueFrom(ctx, tfPlanSpaApplication.AttributeTypes(), tfPlanSpaApplication)
 	} else {
 		tfPlanApplication.Spa = types.ObjectNull(tfPlanApplication.Spa.AttributeTypes(ctx))
 	}
@@ -1851,7 +1851,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetVerifiedPublisher(requestBodyVerifiedPublisher)
-		tfPlanApplication.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfPlanVerifiedPublisher.AttributeTypes(), requestBodyVerifiedPublisher)
+		tfPlanApplication.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfPlanVerifiedPublisher.AttributeTypes(), tfPlanVerifiedPublisher)
 	} else {
 		tfPlanApplication.VerifiedPublisher = types.ObjectNull(tfPlanApplication.VerifiedPublisher.AttributeTypes(ctx))
 	}
@@ -1888,7 +1888,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 			}
 
 			requestBodyWebApplication.SetImplicitGrantSettings(requestBodyImplicitGrantSettings)
-			tfPlanWebApplication.ImplicitGrantSettings, _ = types.ObjectValueFrom(ctx, tfPlanImplicitGrantSettings.AttributeTypes(), requestBodyImplicitGrantSettings)
+			tfPlanWebApplication.ImplicitGrantSettings, _ = types.ObjectValueFrom(ctx, tfPlanImplicitGrantSettings.AttributeTypes(), tfPlanImplicitGrantSettings)
 		} else {
 			tfPlanWebApplication.ImplicitGrantSettings = types.ObjectNull(tfPlanWebApplication.ImplicitGrantSettings.AttributeTypes(ctx))
 		}
@@ -1931,7 +1931,7 @@ func (r *applicationResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		requestBodyApplication.SetWeb(requestBodyWebApplication)
-		tfPlanApplication.Web, _ = types.ObjectValueFrom(ctx, tfPlanWebApplication.AttributeTypes(), requestBodyWebApplication)
+		tfPlanApplication.Web, _ = types.ObjectValueFrom(ctx, tfPlanWebApplication.AttributeTypes(), tfPlanWebApplication)
 	} else {
 		tfPlanApplication.Web = types.ObjectNull(tfPlanApplication.Web.AttributeTypes(ctx))
 	}

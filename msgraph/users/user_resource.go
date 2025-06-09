@@ -871,7 +871,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyUser.SetAuthorizationInfo(requestBodyAuthorizationInfo)
-		tfPlanUser.AuthorizationInfo, _ = types.ObjectValueFrom(ctx, tfPlanAuthorizationInfo.AttributeTypes(), requestBodyAuthorizationInfo)
+		tfPlanUser.AuthorizationInfo, _ = types.ObjectValueFrom(ctx, tfPlanAuthorizationInfo.AttributeTypes(), tfPlanAuthorizationInfo)
 	} else {
 		tfPlanUser.AuthorizationInfo = types.ObjectNull(tfPlanUser.AuthorizationInfo.AttributeTypes(ctx))
 	}
@@ -1002,7 +1002,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyUser.SetEmployeeOrgData(requestBodyEmployeeOrgData)
-		tfPlanUser.EmployeeOrgData, _ = types.ObjectValueFrom(ctx, tfPlanEmployeeOrgData.AttributeTypes(), requestBodyEmployeeOrgData)
+		tfPlanUser.EmployeeOrgData, _ = types.ObjectValueFrom(ctx, tfPlanEmployeeOrgData.AttributeTypes(), tfPlanEmployeeOrgData)
 	} else {
 		tfPlanUser.EmployeeOrgData = types.ObjectNull(tfPlanUser.EmployeeOrgData.AttributeTypes(ctx))
 	}
@@ -1369,7 +1369,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyUser.SetOnPremisesExtensionAttributes(requestBodyOnPremisesExtensionAttributes)
-		tfPlanUser.OnPremisesExtensionAttributes, _ = types.ObjectValueFrom(ctx, tfPlanOnPremisesExtensionAttributes.AttributeTypes(), requestBodyOnPremisesExtensionAttributes)
+		tfPlanUser.OnPremisesExtensionAttributes, _ = types.ObjectValueFrom(ctx, tfPlanOnPremisesExtensionAttributes.AttributeTypes(), tfPlanOnPremisesExtensionAttributes)
 	} else {
 		tfPlanUser.OnPremisesExtensionAttributes = types.ObjectNull(tfPlanUser.OnPremisesExtensionAttributes.AttributeTypes(ctx))
 	}
@@ -1503,7 +1503,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyUser.SetPasswordProfile(requestBodyPasswordProfile)
-		tfPlanUser.PasswordProfile, _ = types.ObjectValueFrom(ctx, tfPlanPasswordProfile.AttributeTypes(), requestBodyPasswordProfile)
+		tfPlanUser.PasswordProfile, _ = types.ObjectValueFrom(ctx, tfPlanPasswordProfile.AttributeTypes(), tfPlanPasswordProfile)
 	} else {
 		tfPlanUser.PasswordProfile = types.ObjectNull(tfPlanUser.PasswordProfile.AttributeTypes(ctx))
 	}
@@ -1710,7 +1710,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 
 		requestBodyUser.SetSignInActivity(requestBodySignInActivity)
-		tfPlanUser.SignInActivity, _ = types.ObjectValueFrom(ctx, tfPlanSignInActivity.AttributeTypes(), requestBodySignInActivity)
+		tfPlanUser.SignInActivity, _ = types.ObjectValueFrom(ctx, tfPlanSignInActivity.AttributeTypes(), tfPlanSignInActivity)
 	} else {
 		tfPlanUser.SignInActivity = types.ObjectNull(tfPlanUser.SignInActivity.AttributeTypes(ctx))
 	}

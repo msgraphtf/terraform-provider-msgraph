@@ -473,7 +473,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		}
 
 		requestBodyGroup.SetLicenseProcessingState(requestBodyLicenseProcessingState)
-		tfPlanGroup.LicenseProcessingState, _ = types.ObjectValueFrom(ctx, tfPlanLicenseProcessingState.AttributeTypes(), requestBodyLicenseProcessingState)
+		tfPlanGroup.LicenseProcessingState, _ = types.ObjectValueFrom(ctx, tfPlanLicenseProcessingState.AttributeTypes(), tfPlanLicenseProcessingState)
 	} else {
 		tfPlanGroup.LicenseProcessingState = types.ObjectNull(tfPlanGroup.LicenseProcessingState.AttributeTypes(ctx))
 	}

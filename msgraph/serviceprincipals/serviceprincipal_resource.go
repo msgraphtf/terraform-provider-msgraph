@@ -799,7 +799,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		}
 
 		requestBodyServicePrincipal.SetInfo(requestBodyInformationalUrl)
-		tfPlanServicePrincipal.Info, _ = types.ObjectValueFrom(ctx, tfPlanInformationalUrl.AttributeTypes(), requestBodyInformationalUrl)
+		tfPlanServicePrincipal.Info, _ = types.ObjectValueFrom(ctx, tfPlanInformationalUrl.AttributeTypes(), tfPlanInformationalUrl)
 	} else {
 		tfPlanServicePrincipal.Info = types.ObjectNull(tfPlanServicePrincipal.Info.AttributeTypes(ctx))
 	}
@@ -1135,7 +1135,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		}
 
 		requestBodyServicePrincipal.SetSamlSingleSignOnSettings(requestBodySamlSingleSignOnSettings)
-		tfPlanServicePrincipal.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, tfPlanSamlSingleSignOnSettings.AttributeTypes(), requestBodySamlSingleSignOnSettings)
+		tfPlanServicePrincipal.SamlSingleSignOnSettings, _ = types.ObjectValueFrom(ctx, tfPlanSamlSingleSignOnSettings.AttributeTypes(), tfPlanSamlSingleSignOnSettings)
 	} else {
 		tfPlanServicePrincipal.SamlSingleSignOnSettings = types.ObjectNull(tfPlanServicePrincipal.SamlSingleSignOnSettings.AttributeTypes(ctx))
 	}
@@ -1210,7 +1210,7 @@ func (r *servicePrincipalResource) Create(ctx context.Context, req resource.Crea
 		}
 
 		requestBodyServicePrincipal.SetVerifiedPublisher(requestBodyVerifiedPublisher)
-		tfPlanServicePrincipal.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfPlanVerifiedPublisher.AttributeTypes(), requestBodyVerifiedPublisher)
+		tfPlanServicePrincipal.VerifiedPublisher, _ = types.ObjectValueFrom(ctx, tfPlanVerifiedPublisher.AttributeTypes(), tfPlanVerifiedPublisher)
 	} else {
 		tfPlanServicePrincipal.VerifiedPublisher = types.ObjectNull(tfPlanServicePrincipal.VerifiedPublisher.AttributeTypes(ctx))
 	}
