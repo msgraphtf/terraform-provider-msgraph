@@ -5,18 +5,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"time"
+	// "github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	"time"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/devices"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
-
-	"terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
-	"terraform-provider-msgraph/planmodifiers/listplanmodifiers"
-	"terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
+	// "terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
+	// "terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -57,34 +55,22 @@ func (d *deviceResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "true if the account is enabled; otherwise, false. Required. Default is true.  Supports $filter (eq, ne, not, in). Only callers with at least the Cloud Device Administrator role can set this property.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"alternative_security_ids": schema.ListNestedAttribute{
 				Description: "For internal use only. Not nullable. Supports $filter (eq, not, ge, le).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.List{
-					listplanmodifiers.UseStateForUnconfigured(),
-				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"identity_provider": schema.StringAttribute{
 							Description: "For internal use only.",
 							Optional:    true,
 							Computed:    true,
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifiers.UseStateForUnconfigured(),
-							},
 						},
 						"key": schema.StringAttribute{
 							Description: "For internal use only.",
 							Optional:    true,
 							Computed:    true,
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifiers.UseStateForUnconfigured(),
-							},
 						},
 					},
 				},
@@ -93,235 +79,148 @@ func (d *deviceResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only. Supports $filter (eq, ne, not, ge, le, and eq on null values) and $orderby.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"compliance_expiration_date_time": schema.StringAttribute{
 				Description: "The timestamp when the device is no longer deemed compliant. The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"deleted_date_time": schema.StringAttribute{
 				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"device_category": schema.StringAttribute{
 				Description: "User-defined property set by Intune to automatically add devices to groups and simplify managing devices.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"device_id": schema.StringAttribute{
 				Description: "Unique identifier set by Azure Device Registration Service at the time of registration. This alternate key can be used to reference the device object. Supports $filter (eq, ne, not, startsWith).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"device_metadata": schema.StringAttribute{
 				Description: "For internal use only. Set to null.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"device_ownership": schema.StringAttribute{
 				Description: "Ownership of the device. Intune sets this property. Possible values are: unknown, company, personal.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"display_name": schema.StringAttribute{
 				Description: "The display name for the device. Required. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"enrollment_profile_name": schema.StringAttribute{
 				Description: "Enrollment profile applied to the device. For example, Apple Device Enrollment Profile, Device enrollment - Corporate device identifiers, or Windows Autopilot profile name. This property is set by Intune.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"enrollment_type": schema.StringAttribute{
 				Description: "Enrollment type of the device. Intune sets this property. Possible values are: unknown, userEnrollment, deviceEnrollmentManager, appleBulkWithUser, appleBulkWithoutUser, windowsAzureADJoin, windowsBulkUserless, windowsAutoEnrollment, windowsBulkAzureDomainJoin, windowsCoManagement, windowsAzureADJoinUsingDeviceAuth,appleUserEnrollment, appleUserEnrollmentWithServiceAccount. NOTE: This property might return other values apart from those listed.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"id": schema.StringAttribute{
 				Description: "The unique identifier for an entity. Read-only.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"is_compliant": schema.BoolAttribute{
 				Description: "true if the device complies with Mobile Device Management (MDM) policies; otherwise, false. Read-only. This can only be updated by Intune for any device OS type or by an approved MDM app for Windows OS devices. Supports $filter (eq, ne, not).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"is_managed": schema.BoolAttribute{
 				Description: "true if the device is managed by a Mobile Device Management (MDM) app; otherwise, false. This can only be updated by Intune for any device OS type or by an approved MDM app for Windows OS devices. Supports $filter (eq, ne, not).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"is_management_restricted": schema.BoolAttribute{
 				Description: "",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"is_rooted": schema.BoolAttribute{
 				Description: "true if the device is rooted or jail-broken. This property can only be updated by Intune.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"management_type": schema.StringAttribute{
 				Description: "The management channel of the device. This property is set by Intune. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"manufacturer": schema.StringAttribute{
 				Description: "Manufacturer of the device. Read-only.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"mdm_app_id": schema.StringAttribute{
 				Description: "Application identifier used to register device into MDM. Read-only. Supports $filter (eq, ne, not, startsWith).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"model": schema.StringAttribute{
 				Description: "Model of the device. Read-only.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"on_premises_last_sync_date_time": schema.StringAttribute{
 				Description: "The last time at which the object was synced with the on-premises directory. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z Read-only. Supports $filter (eq, ne, not, ge, le, in).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"on_premises_security_identifier": schema.StringAttribute{
 				Description: "The on-premises security identifier (SID) for the user who was synchronized from on-premises to the cloud. Read-only. Returned only on $select. Supports $filter (eq).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"on_premises_sync_enabled": schema.BoolAttribute{
 				Description: "true if this object is synced from an on-premises directory; false if this object was originally synced from an on-premises directory but is no longer synced; null if this object has never been synced from an on-premises directory (default). Read-only. Supports $filter (eq, ne, not, in, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"operating_system": schema.StringAttribute{
 				Description: "The type of operating system on the device. Required. Supports $filter (eq, ne, not, ge, le, startsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"operating_system_version": schema.StringAttribute{
 				Description: "The version of the operating system on the device. Required. Supports $filter (eq, ne, not, ge, le, startsWith, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"physical_ids": schema.ListAttribute{
 				Description: "For internal use only. Not nullable. Supports $filter (eq, not, ge, le, startsWith,/$count eq 0, /$count ne 0).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.List{
-					listplanmodifiers.UseStateForUnconfigured(),
-				},
 				ElementType: types.StringType,
 			},
 			"profile_type": schema.StringAttribute{
 				Description: "The profile type of the device. Possible values: RegisteredDevice (default), SecureVM, Printer, Shared, IoT.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"registration_date_time": schema.StringAttribute{
 				Description: "Date and time of when the device was registered. The timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 			"system_labels": schema.ListAttribute{
 				Description: "List of labels applied to the device by the system. Supports $filter (/$count eq 0, /$count ne 0).",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.List{
-					listplanmodifiers.UseStateForUnconfigured(),
-				},
 				ElementType: types.StringType,
 			},
 			"trust_type": schema.StringAttribute{
 				Description: "Type of trust for the joined device. Read-only. Possible values:  Workplace (indicates bring your own personal devices), AzureAd (Cloud-only joined devices), ServerAd (on-premises domain joined devices joined to Microsoft Entra ID). For more information, see Introduction to device management in Microsoft Entra ID.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifiers.UseStateForUnconfigured(),
-				},
 			},
 		},
 	}

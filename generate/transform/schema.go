@@ -59,7 +59,7 @@ func (ts schema) AllAttributes() []terraformSchemaAttribute {
 func (ts schema) IfListPlanModifiersImportNeeded() bool {
 
 	for _, tsa := range ts.AllAttributes() {
-		if tsa.Type() == "ListAttribute" || tsa.Type() == "ListNestedAttribute" {
+		if (tsa.Type() == "ListAttribute" || tsa.Type() == "ListNestedAttribute") && tsa.PlanModifiers() {
 			return true
 		}
 	}
@@ -163,7 +163,8 @@ func (tsa terraformSchemaAttribute) PlanModifiers() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
 		return false
 	} else { // Resource
-		return true
+		// return true
+		return false
 	}
 }
 

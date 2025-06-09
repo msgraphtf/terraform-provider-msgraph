@@ -15,3 +15,12 @@ data "msgraph_user" "user" {
 	//user_principal_name = "AdeleV@msgraphtf.onmicrosoft.com"
 }
 
+resource "msgraph_user" "test_user" {
+  account_enabled = false
+  display_name = "Test User"
+  user_principal_name = "test_user@msgraphtf.onmicrosoft.com"
+  mail_nickname = "test_user"
+  password_profile = {
+    password = "Ank~esYyN@2@9Y5qfxpF"
+  }
+}
