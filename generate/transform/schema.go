@@ -163,8 +163,8 @@ func (tsa terraformSchemaAttribute) PlanModifiers() bool {
 	if tsa.Schema.BehaviourMode == "DataSource" {
 		return false
 	} else { // Resource
-		// return true
-		return false
+		return true
+		// return false
 	}
 }
 

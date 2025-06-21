@@ -6,17 +6,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"time"
-	// "github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"time"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/applications"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
-	// "terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
-	// "terraform-provider-msgraph/planmodifiers/objectplanmodifiers"
-	// "terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
+
+	"terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/listplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/objectplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -57,28 +59,43 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams can set the addIns property for its 'FileHandler' functionality. This lets services like Microsoft 365 call the application in the context of a document the user is working on.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
 							Description: "The unique identifier for the addIn object.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"properties": schema.ListNestedAttribute{
 							Description: "The collection of key-value pairs that define parameters that the consuming service can use or call. You must specify this property when performing a POST or a PATCH operation on the addIns collection. Required.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.List{
+								listplanmodifiers.UseStateForUnconfigured(),
+							},
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"key": schema.StringAttribute{
 										Description: "Key for the key-value pair.",
 										Optional:    true,
 										Computed:    true,
+										PlanModifiers: []planmodifier.String{
+											stringplanmodifiers.UseStateForUnconfigured(),
+										},
 									},
 									"value": schema.StringAttribute{
 										Description: "Value for the key-value pair.",
 										Optional:    true,
 										Computed:    true,
+										PlanModifiers: []planmodifier.String{
+											stringplanmodifiers.UseStateForUnconfigured(),
+										},
 									},
 								},
 							},
@@ -87,6 +104,9 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 							Description: "The unique name for the functionality exposed by the app.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 					},
 				},
@@ -95,68 +115,107 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Specifies settings for an application that implements a web API.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"accept_mapped_claims": schema.BoolAttribute{
 						Description: "When true, allows an application to use claims mapping without specifying a custom signing key.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"known_client_applications": schema.ListAttribute{
 						Description: "Used for bundling consent if you have a solution that contains two parts: a client app and a custom web API app. If you set the appID of the client app to this value, the user only consents once to the client app. Microsoft Entra ID knows that consenting to the client means implicitly consenting to the web API and automatically provisions service principals for both APIs at the same time. Both the client and the web API app must be registered in the same tenant.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						ElementType: types.StringType,
 					},
 					"oauth_2_permission_scopes": schema.ListNestedAttribute{
 						Description: "The definition of the delegated permissions exposed by the web API represented by this application registration. These delegated permissions may be requested by a client application, and may be granted by users or administrators during consent. Delegated permissions are sometimes referred to as OAuth 2.0 scopes.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"admin_consent_description": schema.StringAttribute{
 									Description: "A description of the delegated permissions, intended to be read by an administrator granting the permission on behalf of all users. This text appears in tenant-wide admin consent experiences.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"admin_consent_display_name": schema.StringAttribute{
 									Description: "The permission's title, intended to be read by an administrator granting the permission on behalf of all users.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"id": schema.StringAttribute{
 									Description: "Unique delegated permission identifier inside the collection of delegated permissions defined for a resource application.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"is_enabled": schema.BoolAttribute{
 									Description: "When you create or update a permission, this property must be set to true (which is the default). To delete a permission, this property must first be set to false.  At that point, in a subsequent call, the permission may be removed.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.Bool{
+										boolplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"origin": schema.StringAttribute{
 									Description: "",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"type": schema.StringAttribute{
 									Description: "The possible values are: User and Admin. Specifies whether this delegated permission should be considered safe for non-admin users to consent to on behalf of themselves, or whether an administrator consent should always be required. While Microsoft Graph defines the default consent requirement for each permission, the tenant administrator may override the behavior in their organization (by allowing, restricting, or limiting user consent to this delegated permission). For more information, see Configure how users consent to applications.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"user_consent_description": schema.StringAttribute{
 									Description: "A description of the delegated permissions, intended to be read by a user granting the permission on their own behalf. This text appears in consent experiences where the user is consenting only on behalf of themselves.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"user_consent_display_name": schema.StringAttribute{
 									Description: "A title for the permission, intended to be read by a user granting the permission on their own behalf. This text appears in consent experiences where the user is consenting only on behalf of themselves.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"value": schema.StringAttribute{
 									Description: "Specifies the value to include in the scp (scope) claim in access tokens. Must not exceed 120 characters in length. Allowed characters are : ! # $ % & ' ( ) * + , - . / : ;  =  ? @ [ ] ^ + _  {  } ~, and characters in the ranges 0-9, A-Z and a-z. Any other character, including the space character, aren't allowed. May not begin with ..",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 							},
 						},
@@ -165,17 +224,26 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 						Description: "Lists the client applications that are preauthorized with the specified delegated permissions to access this application's APIs. Users aren't required to consent to any preauthorized application (for the permissions specified). However, any other permissions not listed in preAuthorizedApplications (requested through incremental consent for example) will require user consent.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"app_id": schema.StringAttribute{
 									Description: "The unique identifier for the application.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"delegated_permission_ids": schema.ListAttribute{
 									Description: "The unique identifier for the oauth2PermissionScopes the application requires.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.List{
+										listplanmodifiers.UseStateForUnconfigured(),
+									},
 									ElementType: types.StringType,
 								},
 							},
@@ -187,48 +255,75 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "The unique identifier for the application that is assigned to an application by Microsoft Entra ID. Not nullable. Read-only. Alternate key. Supports $filter (eq).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"app_roles": schema.ListNestedAttribute{
 				Description: "The collection of roles defined for the application. With app role assignments, these roles can be assigned to users, groups, or service principals associated with other applications. Not nullable.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"allowed_member_types": schema.ListAttribute{
 							Description: "Specifies whether this app role can be assigned to users and groups (by setting to ['User']), to other application's (by setting to ['Application'], or both (by setting to ['User', 'Application']). App roles supporting assignment to other applications' service principals are also known as application permissions. The 'Application' value is only supported for app roles defined on application entities.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.List{
+								listplanmodifiers.UseStateForUnconfigured(),
+							},
 							ElementType: types.StringType,
 						},
 						"description": schema.StringAttribute{
 							Description: "The description for the app role. This is displayed when the app role is being assigned and, if the app role functions as an application permission, during  consent experiences.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"display_name": schema.StringAttribute{
 							Description: "Display name for the permission that appears in the app role assignment and consent experiences.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"id": schema.StringAttribute{
 							Description: "Unique role identifier inside the appRoles collection. When creating a new app role, a new GUID identifier must be provided.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"is_enabled": schema.BoolAttribute{
 							Description: "When creating or updating an app role, this must be set to true (which is the default). To delete a role, this must first be set to false.  At that point, in a subsequent call, this role may be removed.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.Bool{
+								boolplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"origin": schema.StringAttribute{
 							Description: "Specifies if the app role is defined on the application object or on the servicePrincipal entity. Must not be included in any POST or PATCH requests. Read-only.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"value": schema.StringAttribute{
 							Description: "Specifies the value to include in the roles claim in ID tokens and access tokens authenticating an assigned user or service principal. Must not exceed 120 characters in length. Allowed characters are : ! # $ % & ' ( ) * + , - . / : ;  =  ? @ [ ] ^ + _  {  } ~, and characters in the ranges 0-9, A-Z and a-z. Any other character, including the space character, aren't allowed. May not begin with ..",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 					},
 				},
@@ -237,36 +332,57 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne). Read-only. null if the app wasn't created from an application template.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"certification": schema.SingleNestedAttribute{
 				Description: "Specifies the certification status of the application.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"certification_details_url": schema.StringAttribute{
 						Description: "URL that shows certification details for the application.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"certification_expiration_date_time": schema.StringAttribute{
 						Description: "The timestamp when the current certification for the application expires.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"is_certified_by_microsoft": schema.BoolAttribute{
 						Description: "Indicates whether the application is certified by Microsoft.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"is_publisher_attested": schema.BoolAttribute{
 						Description: "Indicates whether the application has been self-attested by the application developer or the publisher.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"last_certification_date_time": schema.StringAttribute{
 						Description: "The timestamp when the certification for the application was most recently added or updated.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -274,77 +390,122 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "The date and time the application was registered. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Read-only.  Supports $filter (eq, ne, not, ge, le, in, and eq on null values) and $orderby.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"default_redirect_uri": schema.StringAttribute{
 				Description: "",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"deleted_date_time": schema.StringAttribute{
 				Description: "Date and time when this object was deleted. Always null when the object hasn't been deleted.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"description": schema.StringAttribute{
 				Description: "Free text field to provide a description of the application object to end users. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"disabled_by_microsoft_status": schema.StringAttribute{
 				Description: "Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"display_name": schema.StringAttribute{
 				Description: "The display name for the application. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"group_membership_claims": schema.StringAttribute{
 				Description: "Configures the groups claim issued in a user or OAuth 2.0 access token that the application expects. To set this attribute, use one of the following valid string values: None, SecurityGroup (for security groups and Microsoft Entra roles), All (this gets all of the security groups, distribution groups, and Microsoft Entra directory roles that the signed-in user is a member of).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"id": schema.StringAttribute{
 				Description: "The unique identifier for an entity. Read-only.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"identifier_uris": schema.ListAttribute{
 				Description: "Also known as App ID URI, this value is set when an application is used as a resource app. The identifierUris acts as the prefix for the scopes you reference in your API's code, and it must be globally unique. You can use the default value provided, which is in the form api://<appId>, or specify a more readable URI like https://contoso.com/api. For more information on valid identifierUris patterns and best practices, see Microsoft Entra application registration security best practices. Not nullable. Supports $filter (eq, ne, ge, le, startsWith).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
 				ElementType: types.StringType,
 			},
 			"info": schema.SingleNestedAttribute{
 				Description: "Basic profile information of the application such as  app's marketing, support, terms of service and privacy statement URLs. The terms of service and privacy statement are surfaced to users through the user consent experience. For more info, see How to: Add Terms of service and privacy statement for registered Microsoft Entra apps. Supports $filter (eq, ne, not, ge, le, and eq on null values).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"logo_url": schema.StringAttribute{
 						Description: "CDN URL to the application's logo, Read-only.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"marketing_url": schema.StringAttribute{
 						Description: "Link to the application's marketing page. For example, https://www.contoso.com/app/marketing",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"privacy_statement_url": schema.StringAttribute{
 						Description: "Link to the application's privacy statement. For example, https://www.contoso.com/app/privacy",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"support_url": schema.StringAttribute{
 						Description: "Link to the application's support page. For example, https://www.contoso.com/app/support",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"terms_of_service_url": schema.StringAttribute{
 						Description: "Link to the application's terms of service statement. For example, https://www.contoso.com/app/termsofservice",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -352,57 +513,90 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Specifies whether this application supports device authentication without a user. The default is false.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"is_fallback_public_client": schema.BoolAttribute{
 				Description: "Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false, which means the fallback application type is confidential client such as a web app. There are certain scenarios where Microsoft Entra ID can't determine the client application type. For example, the ROPC flow where it's configured without specifying a redirect URI. In those cases, Microsoft Entra ID interprets the application type based on the value of this property.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"key_credentials": schema.ListNestedAttribute{
 				Description: "The collection of key credentials associated with the application. Not nullable. Supports $filter (eq, not, ge, le).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"custom_key_identifier": schema.StringAttribute{
 							Description: "A 40-character binary type that can be used to identify the credential. Optional. When not provided in the payload, defaults to the thumbprint of the certificate.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"display_name": schema.StringAttribute{
 							Description: "The friendly name for the key, with a maximum length of 90 characters. Longer values are accepted but shortened. Optional.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"end_date_time": schema.StringAttribute{
 							Description: "The date and time at which the credential expires. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"key": schema.StringAttribute{
 							Description: "The certificate's raw data in byte array converted to Base64 string. Returned only on $select for a single object, that is, GET applications/{applicationId}?$select=keyCredentials or GET servicePrincipals/{servicePrincipalId}?$select=keyCredentials; otherwise, it's always null.  From a .cer certificate, you can read the key using the Convert.ToBase64String() method. For more information, see Get the certificate key.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"key_id": schema.StringAttribute{
 							Description: "The unique identifier (GUID) for the key.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"start_date_time": schema.StringAttribute{
 							Description: "The date and time at which the credential becomes valid.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"type": schema.StringAttribute{
 							Description: "The type of key credential; for example, Symmetric, AsymmetricX509Cert.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"usage": schema.StringAttribute{
 							Description: "A string that describes the purpose for which the key can be used; for example, Verify.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 					},
 				},
@@ -411,53 +605,83 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "The main logo for the application. Not nullable.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"native_authentication_apis_enabled": schema.StringAttribute{
 				Description: "Specifies whether the Native Authentication APIs are enabled for the application. The possible values are: none and all. Default is none. For more information, see Native Authentication.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"notes": schema.StringAttribute{
 				Description: "Notes relevant for the management of the application.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"oauth_2_require_post_response": schema.BoolAttribute{
 				Description: "",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"optional_claims": schema.SingleNestedAttribute{
 				Description: "Application developers can configure optional claims in their Microsoft Entra applications to specify the claims that are sent to their application by the Microsoft security token service. For more information, see How to: Provide optional claims to your app.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"access_token": schema.ListNestedAttribute{
 						Description: "The optional claims returned in the JWT access token.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"additional_properties": schema.ListAttribute{
 									Description: "Additional properties of the claim. If a property exists in this collection, it modifies the behavior of the optional claim specified in the name property.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.List{
+										listplanmodifiers.UseStateForUnconfigured(),
+									},
 									ElementType: types.StringType,
 								},
 								"essential": schema.BoolAttribute{
 									Description: "If the value is true, the claim specified by the client is necessary to ensure a smooth authorization experience for the specific task requested by the end user. The default value is false.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.Bool{
+										boolplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"name": schema.StringAttribute{
 									Description: "The name of the optional claim.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"source": schema.StringAttribute{
 									Description: "The source (directory object) of the claim. There are predefined claims and user-defined claims from extension properties. If the source value is null, the claim is a predefined optional claim. If the source value is user, the value in the name property is the extension property from the user object.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 							},
 						},
@@ -466,28 +690,43 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 						Description: "The optional claims returned in the JWT ID token.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"additional_properties": schema.ListAttribute{
 									Description: "Additional properties of the claim. If a property exists in this collection, it modifies the behavior of the optional claim specified in the name property.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.List{
+										listplanmodifiers.UseStateForUnconfigured(),
+									},
 									ElementType: types.StringType,
 								},
 								"essential": schema.BoolAttribute{
 									Description: "If the value is true, the claim specified by the client is necessary to ensure a smooth authorization experience for the specific task requested by the end user. The default value is false.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.Bool{
+										boolplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"name": schema.StringAttribute{
 									Description: "The name of the optional claim.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"source": schema.StringAttribute{
 									Description: "The source (directory object) of the claim. There are predefined claims and user-defined claims from extension properties. If the source value is null, the claim is a predefined optional claim. If the source value is user, the value in the name property is the extension property from the user object.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 							},
 						},
@@ -496,28 +735,43 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 						Description: "The optional claims returned in the SAML token.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"additional_properties": schema.ListAttribute{
 									Description: "Additional properties of the claim. If a property exists in this collection, it modifies the behavior of the optional claim specified in the name property.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.List{
+										listplanmodifiers.UseStateForUnconfigured(),
+									},
 									ElementType: types.StringType,
 								},
 								"essential": schema.BoolAttribute{
 									Description: "If the value is true, the claim specified by the client is necessary to ensure a smooth authorization experience for the specific task requested by the end user. The default value is false.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.Bool{
+										boolplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"name": schema.StringAttribute{
 									Description: "The name of the optional claim.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 								"source": schema.StringAttribute{
 									Description: "The source (directory object) of the claim. There are predefined claims and user-defined claims from extension properties. If the source value is null, the claim is a predefined optional claim. If the source value is user, the value in the name property is the extension property from the user object.",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 							},
 						},
@@ -528,17 +782,26 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Specifies parental control settings for an application.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"countries_blocked_for_minors": schema.ListAttribute{
 						Description: "Specifies the two-letter ISO country codes. Access to the application will be blocked for minors from the countries specified in this list.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						ElementType: types.StringType,
 					},
 					"legal_age_group_rule": schema.StringAttribute{
 						Description: "Specifies the legal age group rule that applies to users of the app. Can be set to one of the following values: ValueDescriptionAllowDefault. Enforces the legal minimum. This means parental consent is required for minors in the European Union and Korea.RequireConsentForPrivacyServicesEnforces the user to specify date of birth to comply with COPPA rules. RequireConsentForMinorsRequires parental consent for ages below 18, regardless of country minor rules.RequireConsentForKidsRequires parental consent for ages below 14, regardless of country minor rules.BlockMinorsBlocks minors from using the app.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -546,42 +809,66 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "The collection of password credentials associated with the application. Not nullable.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"custom_key_identifier": schema.StringAttribute{
 							Description: "Do not use.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"display_name": schema.StringAttribute{
 							Description: "Friendly name for the password. Optional.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"end_date_time": schema.StringAttribute{
 							Description: "The date and time at which the password expires represented using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Optional.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"hint": schema.StringAttribute{
 							Description: "Contains the first three characters of the password. Read-only.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"key_id": schema.StringAttribute{
 							Description: "The unique identifier for the password.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"secret_text": schema.StringAttribute{
 							Description: "Read-only; Contains the strong passwords generated by Microsoft Entra ID that are 16-64 characters in length. The generated password value is only returned during the initial POST request to addPassword. There is no way to retrieve this password in the future.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 						"start_date_time": schema.StringAttribute{
 							Description: "The date and time at which the password becomes valid. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Optional.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 					},
 				},
@@ -590,11 +877,17 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Specifies settings for installed clients such as desktop or mobile devices.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"redirect_uris": schema.ListAttribute{
 						Description: "Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent. For iOS and macOS apps, specify the value following the syntax msauth.{BUNDLEID}://auth, replacing '{BUNDLEID}'. For example, if the bundle ID is com.microsoft.identitysample.MSALiOS, the URI is msauth.com.microsoft.identitysample.MSALiOS://auth.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						ElementType: types.StringType,
 					},
 				},
@@ -603,21 +896,33 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "The verified publisher domain for the application. Read-only. For more information, see How to: Configure an application's publisher domain. Supports $filter (eq, ne, ge, le, startsWith).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"request_signature_verification": schema.SingleNestedAttribute{
 				Description: "Specifies whether this application requires Microsoft Entra ID to verify the signed authentication requests.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"allowed_weak_algorithms": schema.StringAttribute{
 						Description: "Specifies which weak algorithms are allowed.  The possible values are: rsaSha1, unknownFutureValue.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"is_signed_request_required": schema.BoolAttribute{
 						Description: "Specifies whether signed authentication requests for this application should be required.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -625,23 +930,35 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Specifies the resources that the application needs to access. This property also specifies the set of delegated permissions and application roles that it needs for each of those resources. This configuration of access to the required resources drives the consent experience. No more than 50 resource services (APIs) can be configured. Beginning mid-October 2021, the total number of required permissions must not exceed 400. For more information, see Limits on requested permissions per app. Not nullable. Supports $filter (eq, not, ge, le).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"resource_access": schema.ListNestedAttribute{
 							Description: "The list of OAuth2.0 permission scopes and app roles that the application requires from the specified resource.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.List{
+								listplanmodifiers.UseStateForUnconfigured(),
+							},
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"id": schema.StringAttribute{
 										Description: "The unique identifier of an app role or delegated permission exposed by the resource application. For delegated permissions, this should match the id property of one of the delegated permissions in the oauth2PermissionScopes collection of the resource application's service principal. For app roles (application permissions), this should match the id property of an app role in the appRoles collection of the resource application's service principal.",
 										Optional:    true,
 										Computed:    true,
+										PlanModifiers: []planmodifier.String{
+											stringplanmodifiers.UseStateForUnconfigured(),
+										},
 									},
 									"type": schema.StringAttribute{
 										Description: "Specifies whether the id property references a delegated permission or an app role (application permission). The possible values are: Scope (for delegated permissions) or Role (for app roles).",
 										Optional:    true,
 										Computed:    true,
+										PlanModifiers: []planmodifier.String{
+											stringplanmodifiers.UseStateForUnconfigured(),
+										},
 									},
 								},
 							},
@@ -650,6 +967,9 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 							Description: "The unique identifier for the resource that the application requires access to. This should be equal to the appId declared on the target resource application.",
 							Optional:    true,
 							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifiers.UseStateForUnconfigured(),
+							},
 						},
 					},
 				},
@@ -658,41 +978,65 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "The URL where the service exposes SAML metadata for federation. This property is valid only for single-tenant applications. Nullable.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"service_management_reference": schema.StringAttribute{
 				Description: "References application or service contact information from a Service or Asset Management database. Nullable.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"service_principal_lock_configuration": schema.SingleNestedAttribute{
 				Description: "Specifies whether sensitive properties of a multitenant application should be locked for editing after the application is provisioned in a tenant. Nullable. null by default.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"all_properties": schema.BoolAttribute{
 						Description: "Enables locking all sensitive properties. The sensitive properties are keyCredentials, passwordCredentials, and tokenEncryptionKeyId.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"credentials_with_usage_sign": schema.BoolAttribute{
 						Description: "Locks the keyCredentials and passwordCredentials properties for modification where credential usage type is Sign.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"credentials_with_usage_verify": schema.BoolAttribute{
 						Description: "Locks the keyCredentials and passwordCredentials properties for modification where credential usage type is Verify. This locks OAuth service principals.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"is_enabled": schema.BoolAttribute{
 						Description: "Enables or disables service principal lock configuration. To allow the sensitive properties to be updated, update this property to false to disable the lock on the service principal.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"token_encryption_key_id": schema.BoolAttribute{
 						Description: "Locks the tokenEncryptionKeyId property for modification on the service principal.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -700,16 +1044,25 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Specifies the Microsoft accounts that are supported for the current application. The possible values are: AzureADMyOrg (default), AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount, and PersonalMicrosoftAccount. See more in the table. The value of this object also limits the number of permissions an app can request. For more information, see Limits on requested permissions per app. The value for this property has implications on other app object properties. As a result, if you change this property, you might need to change other properties first. For more information, see Validation differences for signInAudience.Supports $filter (eq, ne, not).",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"spa": schema.SingleNestedAttribute{
 				Description: "Specifies settings for a single-page application, including sign out URLs and redirect URIs for authorization codes and access tokens.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"redirect_uris": schema.ListAttribute{
 						Description: "Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						ElementType: types.StringType,
 					},
 				},
@@ -718,37 +1071,58 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Custom strings that can be used to categorize and identify the application. Not nullable. Strings added here will also appear in the tags property of any associated service principals.Supports $filter (eq, not, ge, le, startsWith) and $search.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifiers.UseStateForUnconfigured(),
+				},
 				ElementType: types.StringType,
 			},
 			"token_encryption_key_id": schema.StringAttribute{
 				Description: "Specifies the keyId of a public key from the keyCredentials collection. When configured, Microsoft Entra ID encrypts all the tokens it emits by using the key this property points to. The application code that receives the encrypted token must use the matching private key to decrypt the token before it can be used for the signed-in user.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"unique_name": schema.StringAttribute{
 				Description: "The unique identifier that can be assigned to an application and used as an alternate key. Immutable. Read-only.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"verified_publisher": schema.SingleNestedAttribute{
 				Description: "Specifies the verified publisher of the application. For more information about how publisher verification helps support application security, trustworthiness, and compliance, see Publisher verification.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"added_date_time": schema.StringAttribute{
 						Description: "The timestamp when the verified publisher was first added or most recently updated.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"display_name": schema.StringAttribute{
 						Description: "The verified publisher name from the app publisher's Partner Center account.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"verified_publisher_id": schema.StringAttribute{
 						Description: "The ID of the verified publisher from the app publisher's Partner Center account.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -756,26 +1130,41 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Specifies settings for a web application.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"home_page_url": schema.StringAttribute{
 						Description: "Home page or landing page of the application.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"implicit_grant_settings": schema.SingleNestedAttribute{
 						Description: "Specifies whether this web application can request tokens using the OAuth 2.0 implicit flow.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Object{
+							objectplanmodifiers.UseStateForUnconfigured(),
+						},
 						Attributes: map[string]schema.Attribute{
 							"enable_access_token_issuance": schema.BoolAttribute{
 								Description: "Specifies whether this web application can request an access token using the OAuth 2.0 implicit flow.",
 								Optional:    true,
 								Computed:    true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifiers.UseStateForUnconfigured(),
+								},
 							},
 							"enable_id_token_issuance": schema.BoolAttribute{
 								Description: "Specifies whether this web application can request an ID token using the OAuth 2.0 implicit flow.",
 								Optional:    true,
 								Computed:    true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifiers.UseStateForUnconfigured(),
+								},
 							},
 						},
 					},
@@ -783,17 +1172,26 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 						Description: "Specifies the URL that is used by Microsoft's authorization service to log out a user using front-channel, back-channel or SAML logout protocols.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"redirect_uri_settings": schema.ListNestedAttribute{
 						Description: "",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"uri": schema.StringAttribute{
 									Description: "",
 									Optional:    true,
 									Computed:    true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifiers.UseStateForUnconfigured(),
+									},
 								},
 							},
 						},
@@ -802,6 +1200,9 @@ func (d *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 						Description: "Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifiers.UseStateForUnconfigured(),
+						},
 						ElementType: types.StringType,
 					},
 				},
