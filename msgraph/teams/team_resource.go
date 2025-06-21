@@ -4,17 +4,18 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"time"
-	// "github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"time"
 
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/microsoftgraph/msgraph-sdk-go/teams"
-	// "terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
-	// "terraform-provider-msgraph/planmodifiers/objectplanmodifiers"
-	// "terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
+
+	"terraform-provider-msgraph/planmodifiers/boolplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/objectplanmodifiers"
+	"terraform-provider-msgraph/planmodifiers/stringplanmodifiers"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -55,46 +56,73 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "An optional label. Typically describes the data or business sensitivity of the team. Must match one of a pre-configured set in the tenant's directory.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"created_date_time": schema.StringAttribute{
 				Description: "Timestamp at which the team was created.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"description": schema.StringAttribute{
 				Description: "An optional description for the team. Maximum length: 1024 characters.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"display_name": schema.StringAttribute{
 				Description: "The name of the team.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"fun_settings": schema.SingleNestedAttribute{
 				Description: "Settings to configure use of Giphy, memes, and stickers in the team.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"allow_custom_memes": schema.BoolAttribute{
 						Description: "If set to true, enables users to include custom memes.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_giphy": schema.BoolAttribute{
 						Description: "If set to true, enables Giphy use.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_stickers_and_memes": schema.BoolAttribute{
 						Description: "If set to true, enables users to include stickers and memes.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"giphy_content_rating": schema.StringAttribute{
 						Description: "Giphy content rating. Possible values are: moderate, strict.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -102,16 +130,25 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Settings to configure whether guests can create, update, or delete channels in the team.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"allow_create_update_channels": schema.BoolAttribute{
 						Description: "If set to true, guests can add and update channels.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_delete_channels": schema.BoolAttribute{
 						Description: "If set to true, guests can delete channels.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -119,51 +156,81 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "The unique identifier for an entity. Read-only.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"internal_id": schema.StringAttribute{
 				Description: "A unique ID for the team that has been used in a few places such as the audit log/Office 365 Management Activity API.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"is_archived": schema.BoolAttribute{
 				Description: "Whether this team is in read-only mode.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"member_settings": schema.SingleNestedAttribute{
 				Description: "Settings to configure whether members can perform certain actions, for example, create channels and add bots, in the team.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"allow_add_remove_apps": schema.BoolAttribute{
 						Description: "If set to true, members can add and remove apps.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_create_private_channels": schema.BoolAttribute{
 						Description: "If set to true, members can add and update private channels.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_create_update_channels": schema.BoolAttribute{
 						Description: "If set to true, members can add and update channels.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_create_update_remove_connectors": schema.BoolAttribute{
 						Description: "If set to true, members can add, update, and remove connectors.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_create_update_remove_tabs": schema.BoolAttribute{
 						Description: "If set to true, members can add, update, and remove tabs.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_delete_channels": schema.BoolAttribute{
 						Description: "If set to true, members can delete channels.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -171,31 +238,49 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Settings to configure messaging and mentions in the team.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifiers.UseStateForUnconfigured(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"allow_channel_mentions": schema.BoolAttribute{
 						Description: "If set to true, @channel mentions are allowed.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_owner_delete_messages": schema.BoolAttribute{
 						Description: "If set to true, owners can delete any message.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_team_mentions": schema.BoolAttribute{
 						Description: "If set to true, @team mentions are allowed.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_user_delete_messages": schema.BoolAttribute{
 						Description: "If set to true, users can delete their messages.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 					"allow_user_edit_messages": schema.BoolAttribute{
 						Description: "If set to true, users can edit their messages.",
 						Optional:    true,
 						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifiers.UseStateForUnconfigured(),
+						},
 					},
 				},
 			},
@@ -203,21 +288,33 @@ func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Optional. Indicates whether the team is intended for a particular use case.  Each team specialization has access to unique behaviors and experiences targeted to its use case.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"tenant_id": schema.StringAttribute{
 				Description: "The ID of the Microsoft Entra tenant.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"visibility": schema.StringAttribute{
 				Description: "The visibility of the group and team. Defaults to Public.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 			"web_url": schema.StringAttribute{
 				Description: "A hyperlink that will go to the team in the Microsoft Teams client. This is the URL that you get when you right-click a team in the Microsoft Teams client and select Get link to team. This URL should be treated as an opaque blob, and not parsed.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifiers.UseStateForUnconfigured(),
+				},
 			},
 		},
 	}
