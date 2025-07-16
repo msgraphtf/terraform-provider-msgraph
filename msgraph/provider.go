@@ -3,6 +3,7 @@ package msgraph
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"terraform-provider-msgraph/msgraph/applications"
 	"terraform-provider-msgraph/msgraph/devices"
@@ -12,6 +13,7 @@ import (
 	"terraform-provider-msgraph/msgraph/teams"
 	"terraform-provider-msgraph/msgraph/users"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 
@@ -20,7 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 // Ensure the implementation satisfies the provider.Provider interface.
@@ -43,8 +44,16 @@ func (p *msGraphProvider) Metadata(ctx context.Context, req provider.MetadataReq
 func (p *msGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"tennant_id": schema.StringAttribute{
+			"tenant_id": schema.StringAttribute{
 				Description: "Azure AD Tenant ID.",
+				Optional:    true,
+			},
+			"client_id": schema.StringAttribute{
+				Description: "Service Principal client ID",
+				Optional:    true,
+			},
+			"client_secret": schema.StringAttribute{
+				Description: "Service Principal client secret",
 				Optional:    true,
 			},
 		},
@@ -53,23 +62,44 @@ func (p *msGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest
 
 // msgraphProviderModel maps provider schema data to a Go type.
 type msgraphProviderModel struct {
-	TennantID types.String `tfsdk:"tennant_id"`
+	TenantID     types.String `tfsdk:"tenant_id"`
+	ClientID     types.String `tfsdk:"client_id"`
+	ClientSecret types.String `tfsdk:"client_secret"`
 }
 
 // Configure satisfies the provider.Provider interface for msGraphProvider.
 func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	// Provider specific implementation.
 
-	tflog.Info(ctx, "Configuring MS Graph client")
-
-	var config msgraphProviderModel
-	diags := req.Config.Get(ctx, &config)
+	var provider_config msgraphProviderModel
+	diags := req.Config.Get(ctx, &provider_config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	cred, err := azidentity.NewDefaultAzureCredential(nil)
+	tenant_id := os.Getenv("MSGRAPH_TENANT_ID")
+	client_id := os.Getenv("MSGRAPH_CLIENT_ID")
+	client_secret := os.Getenv("MSGRAPH_CLIENT_SECRET")
+
+	if provider_config.TenantID.ValueString() != "" {
+		tenant_id = provider_config.TenantID.ValueString()
+	}
+	if provider_config.ClientID.ValueString() != "" {
+		client_id = provider_config.ClientID.ValueString()
+	}
+	if provider_config.ClientSecret.ValueString() != "" {
+		client_secret = provider_config.ClientSecret.ValueString()
+	}
+
+	var cred azcore.TokenCredential
+	var err error
+
+	if tenant_id != "" && client_id != "" && client_secret != "" {
+		cred, err = azidentity.NewClientSecretCredential(tenant_id, client_id, client_secret, nil)
+	} else {
+		cred, err = azidentity.NewAzureCLICredential(nil)
+	}
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error getting credential",
@@ -81,7 +111,6 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 		fmt.Printf("Error")
 		return
 	}
-	tflog.Info(ctx, "Creating MS Graph client")
 
 	client, err := msgraphsdk.NewGraphServiceClientWithCredentials(cred, []string{"https://graph.microsoft.com/.default"})
 	if err != nil {
@@ -99,7 +128,6 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 	resp.DataSourceData = client
 	resp.ResourceData = client
 
-	tflog.Info(ctx, "Configured MS Graph client", map[string]any{"success": true})
 }
 
 // DataSources satisfies the provider.Provider interface for msGraphProvider.

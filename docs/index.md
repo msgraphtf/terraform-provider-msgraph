@@ -52,4 +52,6 @@ resource "msgraph_group" "test_group" {
 
 ### Optional
 
-- `tennant_id` (String) Azure AD Tenant ID.
+- `client_id` (String) Service Principal client ID
+- `client_secret` (String) Service Principal client secret
+- `tenant_id` (String) Azure AD Tenant ID.
