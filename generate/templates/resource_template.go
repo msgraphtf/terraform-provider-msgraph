@@ -10,6 +10,7 @@ import (
 	{{- if .ReadResponse.IfAttrImportNeeded }}
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	{{- end}}
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -119,3 +120,8 @@ func (r *{{.BlockName.LowerCamel}}Resource) Delete(ctx context.Context, req reso
 	}
 
 }
+
+func (r *{{.BlockName.LowerCamel}}Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+    resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
