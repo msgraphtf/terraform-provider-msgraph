@@ -15,4 +15,7 @@ Please see the documentation in the Terraform Registry for the full usage and fe
 
 - All resources and attributes are using a custom plan modifier which may not be suitable for all things.
 - Not using write-only attributes where applicable.
-- Currently lacks any automated testing
+- Lacks automated testing.
+- Lacks extensive logging for troubleshooting.
+- Error messages and handling can probably be improved.
+
