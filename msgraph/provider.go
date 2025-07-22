@@ -141,9 +141,7 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 			)
 		}
 		cred, err = azidentity.NewClientCertificateCredential(tenant_id, client_id, certificate, private_key, nil)
-	} else if tenant_id != "" && client_id != "" && client_certificate != "" {
 	} else if tenant_id != "" && client_id != "" && client_certificate_path != "" && client_certificate_password != "" {
-	} else if tenant_id != "" && client_id != "" && client_certificate_path != "" {
 	} else {
 		cred, err = azidentity.NewAzureCLICredential(nil)
 	}
