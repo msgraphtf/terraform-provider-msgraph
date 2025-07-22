@@ -52,6 +52,9 @@ resource "msgraph_group" "test_group" {
 
 ### Optional
 
+- `client_certificate` (String) Service Principal client certificate
+- `client_certificate_password` (String) Service Principal client certificate password
+- `client_certificate_path` (String) Service Principal client certificate path
 - `client_id` (String) Service Principal client ID
 - `client_secret` (String) Service Principal client secret
 - `tenant_id` (String) Azure AD Tenant ID.

@@ -209,7 +209,11 @@ func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.D
 func (p *msGraphProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		// Provider specific implementation
-		users.NewUserResource,
+		applications.NewApplicationResource,
+		devices.NewDeviceResource,
 		groups.NewGroupResource,
+		serviceprincipals.NewServicePrincipalResource,
+		teams.NewTeamResource,
+		users.NewUserResource,
 	}
 }
