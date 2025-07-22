@@ -8,18 +8,3 @@ dataSourceExtraOptionals:
 altReadMethods:
   - if: UserPrincipalName
     method: "Users().ByUserId(state.UserPrincipalName.ValueString())"
-resourceExtraComputed:
-  - authorizationInfo
-  - birthday
-  - createdDateTime
-  - hireDate
-  - identities
-  - lastPasswordChangeDateTime
-  - onPremisesExtensionAttributes
-  - passwordProfile
-  - forceChangePasswordNextSignIn
-  - forceChangePasswordNextSignInWithMfa
-  - password
-  - securityIdentifier
-  - signInSessionsValidFromDateTime
-  - userType
