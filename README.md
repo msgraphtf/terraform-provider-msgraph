@@ -18,6 +18,8 @@ Please see the documentation in the Terraform Registry for the full usage and fe
 - Lacks automated testing.
 - Lacks extensive logging for troubleshooting.
 - Error messages and handling can probably be improved.
+- Some resources and data sources have had to be manually adjusted (`generate/augment`), such as by excluding properties. Removing/fixing this will simplify development.
+- Documentation lacks examples.
 
 ## Requesting new endpoints
 Not all Microsoft Graph endpoints are supported. This is simply so that I don't get overwhelmed with issue reports or failed builds for the hundreds of endpoints that the Microsoft Graph API supports. So I am slowly adding new endpoints as the project matures.
