@@ -142,6 +142,21 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 		}
 		cred, err = azidentity.NewClientCertificateCredential(tenant_id, client_id, certificate, private_key, nil)
 	} else if tenant_id != "" && client_id != "" && client_certificate_path != "" && client_certificate_password != "" {
+		certificate_file, err := os.ReadFile(client_certificate_path)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error opening certificate file",
+				err.Error(),
+			)
+		}
+		certificate, private_key, err := azidentity.ParseCertificates(certificate_file, []byte(client_certificate_password))
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error parsing certificate",
+				err.Error(),
+			)
+		}
+		cred, err = azidentity.NewClientCertificateCredential(tenant_id, client_id, certificate, private_key, nil)
 	} else {
 		cred, err = azidentity.NewAzureCLICredential(nil)
 	}
