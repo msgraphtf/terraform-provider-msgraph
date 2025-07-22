@@ -2,6 +2,7 @@ package msgraph
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"os"
 
@@ -56,15 +57,30 @@ func (p *msGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest
 				Description: "Service Principal client secret",
 				Optional:    true,
 			},
+			"client_certificate": schema.StringAttribute{
+				Description: "Service Principal client certificate",
+				Optional:    true,
+			},
+			"client_certificate_path": schema.StringAttribute{
+				Description: "Service Principal client certificate path",
+				Optional:    true,
+			},
+			"client_certificate_password": schema.StringAttribute{
+				Description: "Service Principal client certificate password",
+				Optional:    true,
+			},
 		},
 	}
 }
 
 // msgraphProviderModel maps provider schema data to a Go type.
 type msgraphProviderModel struct {
-	TenantID     types.String `tfsdk:"tenant_id"`
-	ClientID     types.String `tfsdk:"client_id"`
-	ClientSecret types.String `tfsdk:"client_secret"`
+	TenantID                  types.String `tfsdk:"tenant_id"`
+	ClientID                  types.String `tfsdk:"client_id"`
+	ClientSecret              types.String `tfsdk:"client_secret"`
+	ClientCertificate         types.String `tfsdk:"client_certificate"`
+	ClientCertificatePath     types.String `tfsdk:"client_certificate_path"`
+	ClientCertificatePassword types.String `tfsdk:"client_certificate_password"`
 }
 
 // Configure satisfies the provider.Provider interface for msGraphProvider.
@@ -81,6 +97,9 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 	tenant_id := os.Getenv("MSGRAPH_TENANT_ID")
 	client_id := os.Getenv("MSGRAPH_CLIENT_ID")
 	client_secret := os.Getenv("MSGRAPH_CLIENT_SECRET")
+	client_certificate := os.Getenv("MSGRAPH_CLIENT_CERTIFICATE")
+	client_certificate_path := os.Getenv("MSGRAPH_CLIENT_CERTIFICATE_PATH")
+	client_certificate_password := os.Getenv("MSGRAPH_CLIENT_CERTIFICATE_PASSWORD")
 
 	if provider_config.TenantID.ValueString() != "" {
 		tenant_id = provider_config.TenantID.ValueString()
@@ -91,32 +110,55 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 	if provider_config.ClientSecret.ValueString() != "" {
 		client_secret = provider_config.ClientSecret.ValueString()
 	}
+	if provider_config.ClientCertificate.ValueString() != "" {
+		client_certificate = provider_config.ClientCertificate.ValueString()
+	}
+	if provider_config.ClientCertificatePath.ValueString() != "" {
+		client_certificate_path = provider_config.ClientCertificatePath.ValueString()
+	}
+	if provider_config.ClientCertificatePassword.ValueString() != "" {
+		client_certificate_password = provider_config.ClientCertificatePassword.ValueString()
+	}
 
 	var cred azcore.TokenCredential
 	var err error
 
 	if tenant_id != "" && client_id != "" && client_secret != "" {
 		cred, err = azidentity.NewClientSecretCredential(tenant_id, client_id, client_secret, nil)
+	} else if tenant_id != "" && client_id != "" && client_certificate != "" && client_certificate_password != "" {
+		decoded_client_certificate, err := base64.StdEncoding.DecodeString(client_certificate)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error decoding certificate",
+				err.Error(),
+			)
+		}
+		certificate, private_key, err := azidentity.ParseCertificates(decoded_client_certificate, []byte(client_certificate_password))
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error parsing certificate",
+				err.Error(),
+			)
+		}
+		cred, err = azidentity.NewClientCertificateCredential(tenant_id, client_id, certificate, private_key, nil)
+	} else if tenant_id != "" && client_id != "" && client_certificate != "" {
+	} else if tenant_id != "" && client_id != "" && client_certificate_path != "" && client_certificate_password != "" {
+	} else if tenant_id != "" && client_id != "" && client_certificate_path != "" {
 	} else {
 		cred, err = azidentity.NewAzureCLICredential(nil)
 	}
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error getting credential",
-			"Error getting credential",
+			err.Error(),
 		)
-	}
-
-	if resp.Diagnostics.HasError() {
-		fmt.Printf("Error")
-		return
 	}
 
 	client, err := msgraphsdk.NewGraphServiceClientWithCredentials(cred, []string{"https://graph.microsoft.com/.default"})
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error getting client",
-			"Error getting client",
+			err.Error(),
 		)
 	}
 
