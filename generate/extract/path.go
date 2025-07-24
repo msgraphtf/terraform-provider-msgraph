@@ -5,8 +5,8 @@ import (
 )
 
 type OpenAPIPathObject struct {
-	PathItem    *openapi3.PathItem
-	Path        string
+	PathItem *openapi3.PathItem
+	Path     string
 }
 
 func (po OpenAPIPathObject) Description() string {
@@ -39,7 +39,7 @@ func (po OpenAPIPathObject) Parameters() []string {
 }
 
 type openAPIPathOperationObject struct {
-	Operation        *openapi3.Operation
+	Operation *openapi3.Operation
 }
 
 func (oo openAPIPathOperationObject) Summary() string {

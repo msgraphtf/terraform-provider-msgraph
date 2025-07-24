@@ -15,18 +15,18 @@ variable "test_user_password" {
 }
 
 resource "msgraph_user" "test_user" {
-  account_enabled = false
-  display_name = "Test User"
+  account_enabled     = false
+  display_name        = "Test User"
   user_principal_name = "test_user@contoso.onmicrosoft.com"
-  mail_nickname = "test_user"
+  mail_nickname       = "test_user"
   password_profile = {
     password = var.test_user_password
   }
 }
 
 resource "msgraph_group" "test_group" {
-  display_name = "test_group"
-  mail_enabled = false
-  mail_nickname = "test_group"
+  display_name     = "test_group"
+  mail_enabled     = false
+  mail_nickname    = "test_group"
   security_enabled = true
 }

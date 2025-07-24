@@ -10,7 +10,7 @@ import (
 )
 
 type OpenAPISchemaObject struct {
-	Schema     *openapi3.Schema
+	Schema *openapi3.Schema
 }
 
 func (so OpenAPISchemaObject) Title() string {
@@ -57,15 +57,15 @@ func (so OpenAPISchemaObject) Properties() []OpenAPISchemaProperty {
 		}
 	}
 
-	sort.Slice(properties[:], func(i, j int) bool {return properties[i].Name < properties[j].Name})
+	sort.Slice(properties[:], func(i, j int) bool { return properties[i].Name < properties[j].Name })
 
 	return properties
 
 }
 
 type OpenAPISchemaProperty struct {
-	Schema      *openapi3.Schema
-	Name        string
+	Schema *openapi3.Schema
+	Name   string
 }
 
 func (sp OpenAPISchemaProperty) Description() string {
@@ -73,13 +73,13 @@ func (sp OpenAPISchemaProperty) Description() string {
 }
 
 func (sp OpenAPISchemaProperty) Type() string {
-		if sp.Schema.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
-			return "object"
-		} else if sp.Schema.AnyOf != nil { // Object
-			return "object"
-		} else {
-			return strings.Join(sp.Schema.Type.Slice(), "")
-		}
+	if sp.Schema.Title != "" { // Inline Object. It appears as a single '$ref' in the openapi doc, but kin-openapi evaluates in into an object directly
+		return "object"
+	} else if sp.Schema.AnyOf != nil { // Object
+		return "object"
+	} else {
+		return strings.Join(sp.Schema.Type.Slice(), "")
+	}
 }
 
 func (sp OpenAPISchemaProperty) ObjectOf() OpenAPISchemaObject {
@@ -119,4 +119,3 @@ func (sp OpenAPISchemaProperty) Format() string {
 		return sp.Schema.Format
 	}
 }
-
