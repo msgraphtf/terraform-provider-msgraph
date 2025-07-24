@@ -17,7 +17,7 @@ variable "test_user_password" {
 resource "msgraph_user" "test_user" {
   account_enabled = false
   display_name = "Test User"
-  user_principal_name = "test_user@msgraphtf.onmicrosoft.com"
+  user_principal_name = "test_user@contoso.onmicrosoft.com"
   mail_nickname = "test_user"
   password_profile = {
     password = var.test_user_password
