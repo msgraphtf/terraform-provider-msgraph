@@ -46,6 +46,7 @@ func (d *applicationDataSource) Configure(_ context.Context, req datasource.Conf
 // Schema defines the schema for the data source.
 func (d *applicationDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"add_ins": schema.ListNestedAttribute{
 				Description: "Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams can set the addIns property for its 'FileHandler' functionality. This lets services like Microsoft 365 call the application in the context of a document the user is working on.",

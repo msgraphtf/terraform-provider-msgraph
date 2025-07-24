@@ -46,6 +46,7 @@ func (d *userDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 // Schema defines the schema for the data source.
 func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "Represents a Microsoft Entra user account.",
 		Attributes: map[string]schema.Attribute{
 			"about_me": schema.StringAttribute{
 				Description: "A freeform text entry field for the user to describe themselves. Returned only on $select.",

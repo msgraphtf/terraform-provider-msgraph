@@ -21,6 +21,14 @@ func (so OpenAPISchemaObject) Title() string {
 	}
 }
 
+func (so OpenAPISchemaObject) Description() string {
+	if len(so.Schema.AllOf) == 0 {
+		return so.Schema.Description
+	} else {
+		return so.Schema.AllOf[1].Value.Description
+	}
+}
+
 func (so OpenAPISchemaObject) Type() string {
 	if len(so.Schema.AllOf) == 0 {
 		return strings.Join(so.Schema.Type.Slice(), "")

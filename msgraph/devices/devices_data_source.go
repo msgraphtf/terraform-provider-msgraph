@@ -45,6 +45,7 @@ func (d *devicesDataSource) Configure(_ context.Context, req datasource.Configur
 // Schema defines the schema for the data source.
 func (d *devicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"value": schema.ListNestedAttribute{
 				Description: "",

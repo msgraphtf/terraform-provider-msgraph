@@ -55,6 +55,7 @@ func (d *groupResource) Configure(_ context.Context, req resource.ConfigureReque
 // Schema defines the schema for the resource.
 func (d *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "Represents a Microsoft Entra group.",
 		Attributes: map[string]schema.Attribute{
 			"assigned_labels": schema.ListNestedAttribute{
 				Description: "The list of sensitivity label pairs (label ID, label name) associated with a Microsoft 365 group. Returned only on $select. This property can be updated only in delegated scenarios where the caller requires both the Microsoft Graph permission and a supported administrator role.",

@@ -55,6 +55,7 @@ func (d *userResource) Configure(_ context.Context, req resource.ConfigureReques
 // Schema defines the schema for the resource.
 func (d *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "Represents a Microsoft Entra user account.",
 		Attributes: map[string]schema.Attribute{
 			"about_me": schema.StringAttribute{
 				Description: "A freeform text entry field for the user to describe themselves. Returned only on $select.",

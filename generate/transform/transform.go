@@ -80,6 +80,10 @@ func (ti TemplateInput) Model() model {
 	return model{Template: &ti}
 }
 
+func (ti TemplateInput) SchemaDescription() string {
+	return strings.Replace(ti.OpenAPIPath.Get().Response().Description(), "\n", " ", -1)
+}
+
 func (ti TemplateInput) SchemaDataSource() schema {
 	return schema{Template: &ti, BehaviourMode: "DataSource"}
 }

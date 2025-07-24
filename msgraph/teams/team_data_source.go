@@ -44,6 +44,7 @@ func (d *teamDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 // Schema defines the schema for the data source.
 func (d *teamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"classification": schema.StringAttribute{
 				Description: "An optional label. Typically describes the data or business sensitivity of the team. Must match one of a pre-configured set in the tenant's directory.",

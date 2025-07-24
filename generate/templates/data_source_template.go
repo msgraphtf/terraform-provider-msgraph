@@ -54,6 +54,7 @@ func (d *{{.BlockName.LowerCamel}}DataSource) Configure(_ context.Context, req d
 // Schema defines the schema for the data source.
 func (d *{{.BlockName.LowerCamel}}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
     resp.Schema = schema.Schema{
+		Description: "{{- .SchemaDescription }}",
 		Attributes: map[string]schema.Attribute{
 			{{- template "schema_template.go" .SchemaDataSource}}
 		},

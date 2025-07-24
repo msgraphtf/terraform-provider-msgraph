@@ -53,6 +53,7 @@ func (d *deviceResource) Configure(_ context.Context, req resource.ConfigureRequ
 // Schema defines the schema for the resource.
 func (d *deviceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"account_enabled": schema.BoolAttribute{
 				Description: "true if the account is enabled; otherwise, false. Required. Default is true.  Supports $filter (eq, ne, not, in). Only callers with at least the Cloud Device Administrator role can set this property.",

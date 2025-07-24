@@ -3,12 +3,12 @@
 page_title: "msgraph_user Resource - msgraph"
 subcategory: ""
 description: |-
-  
+  Represents a Microsoft Entra user account.
 ---
 
 # msgraph_user (Resource)
 
-
+Represents a Microsoft Entra user account.
 
 
 

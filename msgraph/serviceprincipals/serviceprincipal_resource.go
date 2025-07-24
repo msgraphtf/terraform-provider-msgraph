@@ -55,6 +55,7 @@ func (d *servicePrincipalResource) Configure(_ context.Context, req resource.Con
 // Schema defines the schema for the resource.
 func (d *servicePrincipalResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"account_enabled": schema.BoolAttribute{
 				Description: "true if the service principal account is enabled; otherwise, false. If set to false, then no users are able to sign in to this app, even if they're assigned to it. Supports $filter (eq, ne, not, in).",

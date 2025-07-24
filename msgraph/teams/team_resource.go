@@ -52,6 +52,7 @@ func (d *teamResource) Configure(_ context.Context, req resource.ConfigureReques
 // Schema defines the schema for the resource.
 func (d *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"classification": schema.StringAttribute{
 				Description: "An optional label. Typically describes the data or business sensitivity of the team. Must match one of a pre-configured set in the tenant's directory.",

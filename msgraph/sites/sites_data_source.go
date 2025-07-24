@@ -44,6 +44,7 @@ func (d *sitesDataSource) Configure(_ context.Context, req datasource.ConfigureR
 // Schema defines the schema for the data source.
 func (d *sitesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"value": schema.ListNestedAttribute{
 				Description: "",

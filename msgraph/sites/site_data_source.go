@@ -45,6 +45,7 @@ func (d *siteDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 // Schema defines the schema for the data source.
 func (d *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"created_by": schema.SingleNestedAttribute{
 				Description: "Identity of the user, device, or application that created the item. Read-only.",

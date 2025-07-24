@@ -3,12 +3,12 @@
 page_title: "msgraph_group Data Source - msgraph"
 subcategory: ""
 description: |-
-  
+  Represents a Microsoft Entra group.
 ---
 
 # msgraph_group (Data Source)
 
-
+Represents a Microsoft Entra group.
 
 
 
