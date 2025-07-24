@@ -25,24 +25,35 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// Ensure the implementation satisfies the provider.Provider interface.
+// Ensure the implementation satisfies various provider interfaces.
 var (
-	_ provider.Provider = &msGraphProvider{}
+	_ provider.Provider = &MsGraphProvider{}
 )
 
-func New() provider.Provider {
-	return &msGraphProvider{}
+// MsGraphProvider defines the provider implementation
+type MsGraphProvider struct {
+	// version is set to the provider version on release, "dev" when the
+	// provider is built and ran locally, and "test" when running acceptance
+	// testing.
+	version string
 }
 
-type msGraphProvider struct{}
+// msgraphProviderModel describes the provider data model.
+type msgraphProviderModel struct {
+	TenantID                  types.String `tfsdk:"tenant_id"`
+	ClientID                  types.String `tfsdk:"client_id"`
+	ClientSecret              types.String `tfsdk:"client_secret"`
+	ClientCertificate         types.String `tfsdk:"client_certificate"`
+	ClientCertificatePath     types.String `tfsdk:"client_certificate_path"`
+	ClientCertificatePassword types.String `tfsdk:"client_certificate_password"`
+}
 
-// Metadata satisfies the provider.Provider interface for msGraphProvider
-func (p *msGraphProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
+func (p *MsGraphProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "msgraph"
+	resp.Version = p.version
 }
 
-// Schema satisfies the provider.Provider interface for msGraphProvider.
-func (p *msGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+func (p *MsGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"tenant_id": schema.StringAttribute{
@@ -73,18 +84,7 @@ func (p *msGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest
 	}
 }
 
-// msgraphProviderModel maps provider schema data to a Go type.
-type msgraphProviderModel struct {
-	TenantID                  types.String `tfsdk:"tenant_id"`
-	ClientID                  types.String `tfsdk:"client_id"`
-	ClientSecret              types.String `tfsdk:"client_secret"`
-	ClientCertificate         types.String `tfsdk:"client_certificate"`
-	ClientCertificatePath     types.String `tfsdk:"client_certificate_path"`
-	ClientCertificatePassword types.String `tfsdk:"client_certificate_password"`
-}
-
-// Configure satisfies the provider.Provider interface for msGraphProvider.
-func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+func (p *MsGraphProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	// Provider specific implementation.
 
 	var provider_config msgraphProviderModel
@@ -185,8 +185,7 @@ func (p *msGraphProvider) Configure(ctx context.Context, req provider.ConfigureR
 
 }
 
-// DataSources satisfies the provider.Provider interface for msGraphProvider.
-func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+func (p *MsGraphProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		// Provider specific implementation
 		applications.NewApplicationDataSource,
@@ -205,8 +204,7 @@ func (p *msGraphProvider) DataSources(ctx context.Context) []func() datasource.D
 	}
 }
 
-// Resources satisfies the provider.Provider interface for msGraphProvider.
-func (p *msGraphProvider) Resources(ctx context.Context) []func() resource.Resource {
+func (p *MsGraphProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		// Provider specific implementation
 		applications.NewApplicationResource,
@@ -215,5 +213,13 @@ func (p *msGraphProvider) Resources(ctx context.Context) []func() resource.Resou
 		serviceprincipals.NewServicePrincipalResource,
 		teams.NewTeamResource,
 		users.NewUserResource,
+	}
+}
+
+func New(version string) func() provider.Provider {
+	return func() provider.Provider {
+		return &MsGraphProvider{
+			version: version,
+		}
 	}
 }
