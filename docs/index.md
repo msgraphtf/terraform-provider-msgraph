@@ -15,18 +15,17 @@ description: |-
 terraform {
   required_providers {
     msgraph = {
-      source = "99-lives/msgraph"
+      source = "msgraphtf/msgraph"
     }
   }
 }
 
 provider "msgraph" {
-  # example configuration here
+  # Leave empty to use AzureCLI authentication
 }
 
-data "msgraph_user" "user" {
-	id = "0acc8010-50ea-4a54-bd71-ec485d425a74"
-	//user_principal_name = "AdeleV@msgraphtf.onmicrosoft.com"
+variable "test_user_password" {
+  type = string
 }
 
 resource "msgraph_user" "test_user" {
@@ -35,7 +34,7 @@ resource "msgraph_user" "test_user" {
   user_principal_name = "test_user@msgraphtf.onmicrosoft.com"
   mail_nickname = "test_user"
   password_profile = {
-    password = "Ank~esYyN@2@9Y5qfxpF"
+    password = var.test_user_password
   }
 }
 
