@@ -55,29 +55,30 @@ func (p *MsGraphProvider) Metadata(ctx context.Context, req provider.MetadataReq
 
 func (p *MsGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "The msgraph provider allows managing resources in the Microsoft Graph API.",
 		Attributes: map[string]schema.Attribute{
 			"tenant_id": schema.StringAttribute{
 				Description: "Azure AD Tenant ID.",
 				Optional:    true,
 			},
 			"client_id": schema.StringAttribute{
-				Description: "Service Principal client ID",
+				Description: "Service Principal client ID.",
 				Optional:    true,
 			},
 			"client_secret": schema.StringAttribute{
-				Description: "Service Principal client secret",
+				Description: "Service Principal client secret.",
 				Optional:    true,
 			},
 			"client_certificate": schema.StringAttribute{
-				Description: "Service Principal client certificate",
+				Description: "Service Principal client certificate.",
 				Optional:    true,
 			},
 			"client_certificate_path": schema.StringAttribute{
-				Description: "Service Principal client certificate path",
+				Description: "Service Principal client certificate path.",
 				Optional:    true,
 			},
 			"client_certificate_password": schema.StringAttribute{
-				Description: "Service Principal client certificate password",
+				Description: "Service Principal client certificate password.",
 				Optional:    true,
 			},
 		},
