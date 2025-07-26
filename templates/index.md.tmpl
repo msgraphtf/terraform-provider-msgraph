@@ -27,6 +27,17 @@ Not all Microsoft Graph endpoints are supported (yet). This is simply so that I 
 
 That said, if you have a use case for a particular endpoint, then I am committed to adding new endpoints upon request. Please [open an issue](https://github.com/msgraphtf/terraform-provider-msgraph/issues), requesting the endpoint you want, and I will add it as soon as I can. And please provide feedback and bug reports for it.
 
+## Authentication
+
+This plugin supports several different methods for authenticating to Microsoft Graph:
+
+- Authentication via Service Principal with a client secret.
+  - Requires configuring the `tenant_id`, `client_id`, and `client_secret` values.
+- Authentication via Service Principal with a certificate.
+  - Requires configuring the `tenant_id`, `client_id`, `client_certificate` or `client_certificate_path`, and `client_certificate_password` values.
+- Authentication via AzureCLI.
+  - Requires no configuration. The provider will fallback to this option when the above options are not available.
+
 {{ if .HasExample -}}
 ## Example Usage
 

@@ -58,27 +58,27 @@ func (p *MsGraphProvider) Schema(ctx context.Context, req provider.SchemaRequest
 		Description: "The msgraph provider allows managing resources in the Microsoft Graph API.",
 		Attributes: map[string]schema.Attribute{
 			"tenant_id": schema.StringAttribute{
-				Description: "Azure AD Tenant ID.",
+				Description: "Azure AD Tenant ID. This can also be sourced from the `MSGRAPH_TENANT_ID` environment variable.",
 				Optional:    true,
 			},
 			"client_id": schema.StringAttribute{
-				Description: "Service Principal client ID.",
+				Description: "Service Principal client ID. This can also be sourced from the `MSGRAPH_CLIENT_ID` environment variable.",
 				Optional:    true,
 			},
 			"client_secret": schema.StringAttribute{
-				Description: "Service Principal client secret.",
+				Description: "Service Principal client secret. This can also be sourced from the `MSGRAPH_CLIENT_SECRET` environment variable.",
 				Optional:    true,
 			},
 			"client_certificate": schema.StringAttribute{
-				Description: "Service Principal client certificate.",
+				Description: "Service Principal client certificate, base64 encoded. This can also be sourced from the `MSGRAPH_CLIENT_CERTIFICATE` environment variable.",
 				Optional:    true,
 			},
 			"client_certificate_path": schema.StringAttribute{
-				Description: "Service Principal client certificate path.",
+				Description: "Service Principal client certificate path. This can also be sourced from the `MSGRAPH_CLIENT_CERTIFICATE_PATH` environment variable.",
 				Optional:    true,
 			},
 			"client_certificate_password": schema.StringAttribute{
-				Description: "Service Principal client certificate password.",
+				Description: "Service Principal client certificate password. This can also be sourced from the `MSGRAPH_CLIENT_CERTIFICATE_PASSWORD` environment variable.",
 				Optional:    true,
 			},
 		},

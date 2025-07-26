@@ -27,6 +27,17 @@ Not all Microsoft Graph endpoints are supported (yet). This is simply so that I 
 
 That said, if you have a use case for a particular endpoint, then I am committed to adding new endpoints upon request. Please [open an issue](https://github.com/msgraphtf/terraform-provider-msgraph/issues), requesting the endpoint you want, and I will add it as soon as I can. And please provide feedback and bug reports for it.
 
+## Authentication
+
+This plugin supports several different methods for authenticating to Microsoft Graph:
+
+- Authentication via Service Principal with a client secret.
+  - Requires configuring the `tenant_id`, `client_id`, and `client_secret` values.
+- Authentication via Service Principal with a certificate.
+  - Requires configuring the `tenant_id`, `client_id`, `client_certificate` or `client_certificate_path`, and `client_certificate_password` values.
+- Authentication via AzureCLI.
+  - Requires no configuration. The provider will fallback to this option when the above options are not available.
+
 ## Example Usage
 
 ```terraform
@@ -69,9 +80,9 @@ resource "msgraph_group" "test_group" {
 
 ### Optional
 
-- `client_certificate` (String) Service Principal client certificate.
-- `client_certificate_password` (String) Service Principal client certificate password.
-- `client_certificate_path` (String) Service Principal client certificate path.
-- `client_id` (String) Service Principal client ID.
-- `client_secret` (String) Service Principal client secret.
-- `tenant_id` (String) Azure AD Tenant ID.
+- `client_certificate` (String) Service Principal client certificate, base64 encoded. This can also be sourced from the `MSGRAPH_CLIENT_CERTIFICATE` environment variable.
+- `client_certificate_password` (String) Service Principal client certificate password. This can also be sourced from the `MSGRAPH_CLIENT_CERTIFICATE_PASSWORD` environment variable.
+- `client_certificate_path` (String) Service Principal client certificate path. This can also be sourced from the `MSGRAPH_CLIENT_CERTIFICATE_PATH` environment variable.
+- `client_id` (String) Service Principal client ID. This can also be sourced from the `MSGRAPH_CLIENT_ID` environment variable.
+- `client_secret` (String) Service Principal client secret. This can also be sourced from the `MSGRAPH_CLIENT_SECRET` environment variable.
+- `tenant_id` (String) Azure AD Tenant ID. This can also be sourced from the `MSGRAPH_TENANT_ID` environment variable.
