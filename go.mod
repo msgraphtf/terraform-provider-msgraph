@@ -11,7 +11,7 @@ require (
 	github.com/getkin/kin-openapi v0.132.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-docs v0.22.0
-	github.com/hashicorp/terraform-plugin-framework v1.15.0
+	github.com/hashicorp/terraform-plugin-framework v1.15.1
 	github.com/iancoleman/strcase v0.3.0
 	github.com/microsoftgraph/msgraph-sdk-go v1.81.0
 	gopkg.in/yaml.v3 v3.0.1
