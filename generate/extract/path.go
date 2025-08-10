@@ -1,10 +1,13 @@
 package extract
 
 import (
+	"strings"
+
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
 type OpenAPIPathObject struct {
+	Doc      *openapi3.T
 	PathItem *openapi3.PathItem
 	Path     string
 }
@@ -14,7 +17,7 @@ func (po OpenAPIPathObject) Description() string {
 }
 
 func (po OpenAPIPathObject) Get() openAPIPathOperationObject {
-	return openAPIPathOperationObject{Operation: po.PathItem.Get}
+	return openAPIPathOperationObject{Operation: po.PathItem.Get, OpenAPIPathObject: &po}
 }
 
 func (po OpenAPIPathObject) Post() openAPIPathOperationObject {
@@ -39,6 +42,7 @@ func (po OpenAPIPathObject) Parameters() []string {
 }
 
 type openAPIPathOperationObject struct {
+	OpenAPIPathObject *OpenAPIPathObject
 	Operation *openapi3.Operation
 }
 
@@ -55,7 +59,14 @@ func (oo openAPIPathOperationObject) Description() string {
 }
 
 func (oo openAPIPathOperationObject) Response() OpenAPISchemaObject {
-	return OpenAPISchemaObject{Schema: oo.Operation.Responses.Status(200).Value.Content.Get("application/json").Schema.Value}
+	if oo.Operation.Responses.Status(200).Ref != "" { // Usually this is a collection response
+		response_string := strings.Split(oo.Operation.Responses.Status(200).Ref, "/")[3]
+		response_object := oo.OpenAPIPathObject.Doc.Components.Responses[response_string]
+		schema_object := response_object.Value.Content["application/json"].Schema.Value
+		return OpenAPISchemaObject{Schema: schema_object}
+	} else {
+		return OpenAPISchemaObject{Schema: oo.Operation.Responses.Status(200).Value.Content.Get("application/json").Schema.Value}
+	}
 }
 
 func (oo openAPIPathOperationObject) SelectParameters() []string {
@@ -73,6 +84,7 @@ func GetPath(doc *openapi3.T, pathname string) OpenAPIPathObject {
 
 	path := doc.Paths.Find(pathname)
 
+	pathObject.Doc = doc
 	pathObject.PathItem = path
 	pathObject.Path = pathname
 
