@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/terraform-plugin-docs v0.22.0
 	github.com/hashicorp/terraform-plugin-framework v1.15.1
 	github.com/iancoleman/strcase v0.3.0
-	github.com/microsoftgraph/msgraph-sdk-go v1.82.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.83.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
