@@ -6,7 +6,7 @@ go 1.23.7
 toolchain go1.24.1
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.18.2
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.19.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.11.0
 	github.com/getkin/kin-openapi v0.132.0
 	github.com/google/uuid v1.6.0
